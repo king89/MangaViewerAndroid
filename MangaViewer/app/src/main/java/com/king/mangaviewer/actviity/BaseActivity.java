@@ -57,6 +57,12 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        getAppViewModel().Setting.saveSetting(this);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
         int itemId = item.getItemId();

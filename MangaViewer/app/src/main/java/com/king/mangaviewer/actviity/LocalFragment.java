@@ -32,17 +32,21 @@ public class LocalFragment extends Fragment {
     private Boolean firstLvl = true;
     private ListView lv;
     private Item[] fileList;
-    private File path = new File(Environment.getExternalStorageDirectory() + "/Books/Manga");
+    private File path;
     private String chosenFile;
 
 
     public LocalFragment() {
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        String defalutPaht = ((MainActivity) this.getActivity()).getAppViewModel().Setting.getDefaultLocalMangaPath();
+        //TODO
+        path = new File(Environment.getExternalStorageDirectory() + defalutPaht);
         View rootView = inflater.inflate(R.layout.fragment_local, container, false);
 
         lv = (ListView) rootView.findViewById(R.id.listView);
@@ -155,28 +159,30 @@ public class LocalFragment extends Fragment {
             Log.e(TAG, "path does not exist");
         }
 
-        adapter = new ArrayAdapter<Item>(this.getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1,
-                fileList) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                // creates view
-                View view = super.getView(position, convertView, parent);
-                TextView textView = (TextView) view
-                        .findViewById(android.R.id.text1);
+        if (fileList != null) {
+            adapter = new ArrayAdapter<Item>(this.getActivity(),
+                    android.R.layout.simple_list_item_1, android.R.id.text1,
+                    fileList) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    // creates view
+                    View view = super.getView(position, convertView, parent);
+                    TextView textView = (TextView) view
+                            .findViewById(android.R.id.text1);
 
-                // put the image on the text view
-                textView.setCompoundDrawablesWithIntrinsicBounds(
-                        fileList[position].icon, 0, 0, 0);
+                    // put the image on the text view
+                    textView.setCompoundDrawablesWithIntrinsicBounds(
+                            fileList[position].icon, 0, 0, 0);
 
-                // add margin between image and text (support various screen
-                // densities)
-                int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
-                textView.setCompoundDrawablePadding(dp5);
+                    // add margin between image and text (support various screen
+                    // densities)
+                    int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
+                    textView.setCompoundDrawablePadding(dp5);
 
-                return view;
-            }
-        };
+                    return view;
+                }
+            };
+        }
 
     }
 

@@ -5,8 +5,9 @@ import com.king.mangaviewer.common.MangaPattern.WebIManhua;
 import com.king.mangaviewer.common.MangaPattern.WebTestManga;
 
 public class Constants {
-    public static String MANGAFOLDER = "Manga";
-    public static String LOGTAG = "MangaViewer";
+    public final static String MANGAFOLDER = "Manga";
+    public final static String SETTINGFOLDER = "Setting";
+    public final static String LOGTAG = "MangaViewer";
 
     public static enum MSGType {
         Menu,

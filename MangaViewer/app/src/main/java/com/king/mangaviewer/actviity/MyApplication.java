@@ -16,8 +16,13 @@ public class MyApplication extends Application {
         super();
         // TODO Auto-generated constructor stub
         AppViewModel = new AppViewModel();
-        SettingHelper = new SettingHelper();
-        MangaHelper = new MangaHelper(this, SettingHelper);
+        MangaHelper = new MangaHelper(this);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        AppViewModel.Setting = AppViewModel.Setting.loadSetting(this);
     }
 
 }

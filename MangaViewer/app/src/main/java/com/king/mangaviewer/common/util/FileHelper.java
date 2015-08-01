@@ -4,9 +4,11 @@ import android.util.Log;
 
 import com.king.mangaviewer.common.Constants;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -103,11 +105,11 @@ public class FileHelper {
     public static byte[] loadFile(String filePath) {
         File file = new File(filePath);
         if (file.isFile() && file.canRead()) {
-            FileInputStream fis = null;
+            BufferedInputStream fis = null;
             try {
-                fis = new FileInputStream(file);
+                fis = new BufferedInputStream(new FileInputStream(file));
                 byte[] buffer = null;
-                buffer = new byte[fis.read()];
+                buffer = new byte[(int) file.length()];
                 fis.read(buffer);
                 return buffer;
             } catch (Exception e) {

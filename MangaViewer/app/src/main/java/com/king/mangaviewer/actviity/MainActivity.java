@@ -144,7 +144,10 @@ public class MainActivity extends BaseActivity {
                 break;
             case 1:
                 fragment = new LocalFragment();
-
+                break;
+            case 2:
+                fragment = new SettingFragment();
+                break;
             default:
                 break;
         }
