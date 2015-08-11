@@ -105,7 +105,7 @@ public class MangaMenuItemAdapter extends BaseAdapter {
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
                 //Toast.makeText(context, "Item", Toast.LENGTH_SHORT).show();
-                viewModel.selectedMangaMenuItem = menu.get(menuPos);
+                viewModel.setSelectedMangaMenuItem(menu.get(menuPos));
                 context.startActivity(new Intent(context, MangaChapterActivity.class));
                 ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
             }

@@ -60,7 +60,7 @@ public class MangaChapterActivity extends BaseActivity {
 
         ListAdapter adapter = new MangaChapterItemAdapter(this,
                 this.getAppViewModel().Manga,
-                this.getAppViewModel().Manga.mangaChapterList);
+                this.getAppViewModel().Manga.getMangaChapterList());
 
         listView.setAdapter(adapter);
     }
@@ -74,7 +74,7 @@ public class MangaChapterActivity extends BaseActivity {
     @Override
     protected String getActionBarTitle() {
         // TODO Auto-generated method stub
-        return this.getAppViewModel().Manga.selectedMangaMenuItem.getTitle();
+        return this.getAppViewModel().Manga.getSelectedMangaMenuItem().getTitle();
     }
 
     @Override

@@ -67,10 +67,14 @@ public class BaseActivity extends ActionBarActivity {
         // TODO Auto-generated method stub
         int itemId = item.getItemId();
         if (itemId == android.R.id.home) {
-            finish();
-            overridePendingTransition(R.anim.in_leftright, R.anim.out_leftright);
+            goBack();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void goBack() {
+        finish();
+        overridePendingTransition(R.anim.in_leftright, R.anim.out_leftright);
     }
 
     public AppViewModel getAppViewModel() {

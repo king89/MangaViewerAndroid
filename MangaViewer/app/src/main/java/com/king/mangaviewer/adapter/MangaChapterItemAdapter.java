@@ -81,7 +81,7 @@ public class MangaChapterItemAdapter extends BaseAdapter {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                viewModel.selectedMangaChapterItem = chapter.get(position);
+                viewModel.setSelectedMangaChapterItem(chapter.get(position));
                 context.startActivity(new Intent(context, MangaPageActivity.class));
                 ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
 

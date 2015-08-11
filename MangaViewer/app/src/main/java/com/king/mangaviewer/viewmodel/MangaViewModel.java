@@ -8,12 +8,14 @@ import java.util.List;
 
 public class MangaViewModel extends ViewModelBase {
 
-    public MangaMenuItem selectedMangaMenuItem = null;
-    public List<MangaChapterItem> mangaChapterList = null;
-    public MangaChapterItem selectedMangaChapterItem = null;
-    public List<MangaPageItem> mangaPageList = null;
-    public MangaPageItem selectedMangaPageItem = null;
-    List<MangaMenuItem> mangaMenuList = null;
+    private MangaMenuItem selectedMangaMenuItem = null;
+    private List<MangaChapterItem> mangaChapterList = null;
+    private MangaChapterItem selectedMangaChapterItem = null;
+    private List<MangaPageItem> mangaPageList = null;
+    private MangaPageItem selectedMangaPageItem = null;
+    private List<MangaMenuItem> mangaMenuList = null;
+
+    private int nowPagePosition = 0;
 
     public List<MangaMenuItem> getMangaMenuList() {
         return mangaMenuList;
@@ -62,5 +64,14 @@ public class MangaViewModel extends ViewModelBase {
 
     public void setSelectedMangaPageItem(MangaPageItem selectedMangaPageItem) {
         this.selectedMangaPageItem = selectedMangaPageItem;
+    }
+
+    public int getNowPagePosition()
+    {
+        return nowPagePosition;
+    }
+    public void setNowPagePosition(int p)
+    {
+        nowPagePosition = p;
     }
 }

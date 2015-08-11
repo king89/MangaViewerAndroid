@@ -1,38 +1,39 @@
 package com.king.mangaviewer.actviity;
 
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.king.mangaviewer.IViewFlipperControl;
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.R.layout;
 import com.king.mangaviewer.common.AsyncImageLoader;
+import com.king.mangaviewer.common.Component.FitXImageView;
+import com.king.mangaviewer.common.Component.MyViewFlipper;
 import com.king.mangaviewer.common.util.MangaHelper.GetImageCallback;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
 import java.util.List;
 
-public class MangaPageActivity extends BaseActivity implements OnTouchListener {
+public class MangaPageActivity extends BaseActivity implements IViewFlipperControl {
 
-    ViewFlipper vFlipper = null;
+    MyViewFlipper vFlipper = null;
     int mCurrPos = 0;
     LayoutInflater mInflater = null;
     List<MangaPageItem> pageList = null;
-    GestureDetector gestureDetector = null;
+
     private AsyncImageLoader asyncImageLoader = null;
     private boolean isFullScreen;
-
+    View mDecorView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,29 +43,60 @@ public class MangaPageActivity extends BaseActivity implements OnTouchListener {
     @Override
     protected String getActionBarTitle() {
         // TODO Auto-generated method stub
-        return this.getAppViewModel().Manga.selectedMangaMenuItem.getTitle();
+        return this.getAppViewModel().Manga.getSelectedMangaChapterItem().getTitle();
     }
 
     @Override
     protected void initControl() {
         // TODO Auto-generated method stub
+        mDecorView = getWindow().getDecorView();
+        mDecorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                    // TODO: The system bars are visible. Make any desired
+                    // adjustments to your UI, such as showing the action bar or
+                    // other navigational controls.
+                    isFullScreen = false;
+                } else {
+                    // TODO: The system bars are NOT visible. Make any desired
+                    // adjustments to your UI, such as hiding the action bar or
+                    // other navigational controls.
+                    isFullScreen = true;
+                }
+            }
+        });
+
         mInflater = LayoutInflater.from(this);
-        gestureDetector = new GestureDetector(this, new GestureListener());
         asyncImageLoader = new AsyncImageLoader();
 
         setContentView(R.layout.activity_manga_page);
-        vFlipper = (ViewFlipper) this.findViewById(R.id.viewFlipper);
-        vFlipper.setOnTouchListener(this);
+        vFlipper = (MyViewFlipper) this.findViewById(R.id.viewFlipper);
+        vFlipper.setViewControl(this);
         fullScreen();
+        mCurrPos = getAppViewModel().Manga.getNowPagePosition();
+        if (getAppViewModel().Manga.getMangaPageList() == null) {
+            new Thread() {
 
-        new Thread() {
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    getPageList();
+                }
+            }.start();
+        }
+        else
+        {
+            pageList = getAppViewModel().Manga.getMangaPageList();
+            setView(mCurrPos,mCurrPos);
+        }
+    }
 
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                getPageList();
-            }
-        }.start();
+    @Override
+    protected void goBack() {
+        getAppViewModel().Manga.setNowPagePosition(0);
+        getAppViewModel().Manga.setMangaPageList(null);
+        super.goBack();
     }
 
     @Override
@@ -80,9 +112,14 @@ public class MangaPageActivity extends BaseActivity implements OnTouchListener {
         return true;
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
     private void setView(int curr, int next) {
         View v = (View) mInflater.inflate(R.layout.list_manga_page_item, null);
-        ImageView iv = (ImageView) v.findViewById(R.id.imageView);
+        FitXImageView iv = (FitXImageView) v.findViewById(R.id.imageView);
         TextView tv = (TextView) v.findViewById(R.id.textView);
         // iv.setScaleType(ImageView.ScaleType.FIT_XY);
         if (curr < next && next > pageList.size() - 1)
@@ -111,7 +148,7 @@ public class MangaPageActivity extends BaseActivity implements OnTouchListener {
             iv.setImageDrawable(cachedImage);
         } else {
             Drawable tImage = getResources()
-                    .getDrawable(R.drawable.ic_launcher);
+                    .getDrawable(R.mipmap.ic_launcher);
             iv.setImageDrawable(tImage);
         }
 
@@ -119,48 +156,45 @@ public class MangaPageActivity extends BaseActivity implements OnTouchListener {
             vFlipper.removeViewAt(0);
         }
         vFlipper.addView(v, vFlipper.getChildCount());
+        getAppViewModel().Manga.setNowPagePosition(next);
         mCurrPos = next;
 
     }
 
-    private void movePrevious() {
+    public void movePrevious() {
+
         setView(mCurrPos, mCurrPos - 1);
         vFlipper.setInAnimation(this, R.anim.in_leftright);
         vFlipper.setOutAnimation(this, R.anim.out_leftright);
         vFlipper.showPrevious();
     }
 
-    private void moveNext() {
+    public void moveNext() {
         setView(mCurrPos, mCurrPos + 1);
         vFlipper.setInAnimation(this, R.anim.in_rightleft);
         vFlipper.setOutAnimation(this, R.anim.out_rightleft);
         vFlipper.showNext();
     }
 
+    @Override
+    public void scroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+
+    }
+
+    @Override
+    public void fling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+
+    }
     private void getPageList() {
         MangaViewModel mangaViewModel = this.getAppViewModel().Manga;
         pageList = this.getMangaHelper().GetPageList(
-                mangaViewModel.selectedMangaChapterItem);
+                mangaViewModel.getSelectedMangaChapterItem());
         mangaViewModel.setMangaPageList(pageList);
         handler.sendEmptyMessage(0);
     }
 
-    private void ToggleActionBar() {
-        if (this.getActionBar().isShowing()) {
-            this.getActionBar().hide();
-        } else {
-            this.getActionBar().show();
-        }
-    }
+    public void fullScreen() {
 
-    @Override
-    public boolean onTouch(View arg0, MotionEvent event) {
-        // TODO Auto-generated method stub
-        return gestureDetector.onTouchEvent(event);
-    }
-
-    private void fullScreen() {
-        View mDecorView = getWindow().getDecorView();
         isFullScreen = !isFullScreen;
         if (isFullScreen) {
             mDecorView.setSystemUiVisibility(
@@ -179,57 +213,5 @@ public class MangaPageActivity extends BaseActivity implements OnTouchListener {
 
     }
 
-    class GestureListener extends SimpleOnGestureListener {
 
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            // TODO Auto-generated method stub
-            Log.i("TEST", "onDoubleTap");
-            return super.onDoubleTap(e);
-        }
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            // TODO Auto-generated method stub
-            Log.i("TEST", "onDown");
-            return true;
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                               float velocityY) {
-            // TODO Auto-generated method stub
-            Log.i("TEST", "onFling:velocityX = " + velocityX + " velocityY"
-                    + velocityY);
-            int x = (int) (e2.getX() - e1.getX());
-            if (x > 0) {
-                movePrevious();
-            } else {
-                moveNext();
-            }
-            return false;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            // TODO Auto-generated method stub
-            Log.i("TEST", "onLongPress");
-            super.onLongPress(e);
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2,
-                                float distanceX, float distanceY) {
-            // TODO Auto-generated method stub
-            Log.i("TEST", "onScroll:distanceX = " + distanceX + " distanceY = "
-                    + distanceY);
-            return super.onScroll(e1, e2, distanceX, distanceY);
-        }
-
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            fullScreen();
-            return super.onSingleTapConfirmed(e);
-        }
-    }
 }
