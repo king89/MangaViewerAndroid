@@ -1,14 +1,29 @@
-package com.king.mangaviewer.common.Component;
+package com.king.mangaviewer.common.component;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.king.mangaviewer.IViewFlipperControl;
+import com.king.mangaviewer.R;
+import com.king.mangaviewer.actviity.BaseActivity;
+import com.king.mangaviewer.common.util.MangaHelper;
+import com.king.mangaviewer.model.MangaPageItem;
+import com.king.mangaviewer.viewmodel.MangaViewModel;
+import com.king.mangaviewer.viewmodel.SettingViewModel;
+
+import java.util.List;
 
 /**
  * Created by KinG on 8/10/2015.
@@ -16,17 +31,142 @@ import com.king.mangaviewer.IViewFlipperControl;
 public class MyViewFlipper extends ViewFlipper {
 
     GestureDetector gestureDetector = null;
-    IViewFlipperControl viewControl = null;
+    List<MangaPageItem> pageList = null;
+    LayoutInflater mInflater = null;
+    MangaViewModel mangaViewModel = null;
+    SettingViewModel settingViewModel = null;
+    private boolean isFullScreen;
+    View mDecorView;
+
+    int mCurrPos;
+    boolean fromRightToLeft;
+    int animatePreInId;
+    int animatePreOutId;
+
+    int animateNextInId;
+    int animateNextOutId;
+
+    boolean goNextChapter = false;
+    boolean goPrevChapter = false;
+
+    boolean orderDesc = true;
+
+    Handler updateHandler;
+    Handler mHideHandler;
+    Runnable mHideRunnable;
+
+    private final int delayMillis = 2000;
 
     public MyViewFlipper(Context context) {
         super(context);
-        gestureDetector = new GestureDetector(context, new GestureListener());
+        initControl();
     }
 
     public MyViewFlipper(Context context, AttributeSet attrs) {
         super(context, attrs);
-        gestureDetector = new GestureDetector(context, new GestureListener());
+        initControl();
+    }
 
+    public void setFullScreen(boolean b){
+        isFullScreen = b;
+        fullScreen();
+    }
+    private void initControl() {
+
+        mInflater = LayoutInflater.from(getContext());
+        setFromRightToLeft(false);
+        gestureDetector = new GestureDetector(getContext(), new GestureListener());
+        mDecorView = ((Activity) getContext()).getWindow().getDecorView();
+        mDecorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                    // TODO: The system bars are visible. Make any desired
+                    // adjustments to your UI, such as showing the action bar or
+                    // other navigational controls.
+                    isFullScreen = false;
+                } else {
+                    // TODO: The system bars are NOT visible. Make any desired
+                    // adjustments to your UI, such as hiding the action bar or
+                    // other navigational controls.
+                    isFullScreen = true;
+                }
+            }
+        });
+
+        mHideHandler = new Handler();
+        mHideRunnable = new Runnable() {
+            @Override
+            public void run() {
+                setFullScreen(true);
+            }
+        };
+
+
+    }
+
+    private void initial(){
+        pageList = null;
+        this.removeAllViews();
+        mangaViewModel.setMangaPageList(null);
+        initial(mangaViewModel, settingViewModel, updateHandler, fromRightToLeft);
+    }
+    public void initial(MangaViewModel mvm, SettingViewModel svm, Handler handler, boolean frtl) {
+        mangaViewModel = mvm;
+        settingViewModel = svm;
+        updateHandler = handler;
+        setFromRightToLeft(frtl);
+
+        delayFullScreen();
+
+        if (mangaViewModel.getMangaPageList() == null) {
+            new Thread() {
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    getPageList();
+                }
+            }.start();
+        } else {
+            pageList = mangaViewModel.getMangaPageList();
+            setView(getCurrPos(), getCurrPos());
+        }
+    }
+
+    private void delayFullScreen() {
+        setFullScreen(false);
+        mHideHandler.removeCallbacks(mHideRunnable);
+        mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            setView(getCurrPos(), getCurrPos());
+            updateHandler.sendEmptyMessage(0);
+        }
+    };
+
+    private void getPageList() {
+        pageList = getBaseActivty().getMangaHelper().GetPageList(
+                mangaViewModel.getSelectedMangaChapterItem());
+        mangaViewModel.setMangaPageList(pageList);
+
+        handler.sendEmptyMessage(0);
+    }
+
+    public boolean getOrderDesc(){
+        return orderDesc;
+    }
+    public int getCurrPos() {
+        mCurrPos = mangaViewModel.getNowPagePosition();
+        return mCurrPos;
+    }
+
+    public void setCurrPos(int mCurrPos) {
+        this.mCurrPos = mCurrPos;
+        mangaViewModel.setNowPagePosition(mCurrPos);
     }
 
     @Override
@@ -36,14 +176,150 @@ public class MyViewFlipper extends ViewFlipper {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-
         return gestureDetector.onTouchEvent(ev);
     }
 
+    private BaseActivity getBaseActivty() {
+        return ((BaseActivity) getContext());
+    }
+
+    public void setFromRightToLeft(boolean b) {
+        fromRightToLeft = b;
+        if (!fromRightToLeft) {
+            animatePreInId = R.anim.in_rightleft;
+            animatePreOutId = R.anim.out_rightleft;
+
+            animateNextInId = R.anim.in_leftright;
+            animateNextOutId = R.anim.out_leftright;
+        } else {
+            animatePreInId = R.anim.in_leftright;
+            animatePreOutId = R.anim.out_leftright;
+
+            animateNextInId = R.anim.in_rightleft;
+            animateNextOutId = R.anim.out_rightleft;
+
+        }
+    }
+
+    private void setView(int curr, int next) {
+        View v = (View) mInflater.inflate(R.layout.list_manga_page_item, null);
+        FitXImageView iv = (FitXImageView) v.findViewById(R.id.imageView);
+        TextView tv = (TextView) v.findViewById(R.id.textView);
+        // iv.setScaleType(ImageView.ScaleType.FIT_XY);
+        if (curr < next && next > pageList.size() - 1)
+            next = 0;
+        else if (curr > next && next < 0)
+            next = pageList.size() - 1;
+
+        // iv.setImageResource(mImages[next]);
+        String pageNum = (next + 1) + "/" + pageList.size();
+        tv.setText(pageNum);
 
 
-    public void setViewControl(IViewFlipperControl control) {
-        this.viewControl = control;
+        Drawable cachedImage = getBaseActivty().getMangaHelper().getPageImage(
+                pageList.get(next), iv, new MangaHelper.GetImageCallback() {
+
+                    public void imageLoaded(Drawable imageDrawable,
+                                            ImageView imageView, String imageUrl) {
+                        // TODO Auto-generated method stub
+                        if (imageDrawable != null && imageView != null) {
+                            imageView.setImageDrawable(imageDrawable);
+                        }
+
+                    }
+                });
+        if (cachedImage != null) {
+            iv.setImageDrawable(cachedImage);
+        } else {
+            Drawable tImage = getResources()
+                    .getDrawable(R.mipmap.ic_launcher);
+            iv.setImageDrawable(tImage);
+        }
+
+        if (this.getChildCount() > 1) {
+            this.removeViewAt(0);
+        }
+        this.addView(v, this.getChildCount());
+
+        setCurrPos(next);
+        goPrevChapter = false;
+        goNextChapter = false;
+    }
+
+    public void movePrevious() {
+
+        if (mCurrPos - 1 < 0) {
+            showFirstOrLastPageTips();
+        } else {
+            setView(mCurrPos, mCurrPos - 1);
+            this.showPrevious();
+
+
+        }
+    }
+    public void moveNext() {
+        if (mCurrPos + 1 > pageList.size() - 1) {
+            showFirstOrLastPageTips();
+        } else {
+            setView(mCurrPos, mCurrPos + 1);
+            this.showNext();
+        }
+    }
+
+    private void showFirstOrLastPageTips() {
+        if (mCurrPos == 0){
+            if (goPrevChapter) {
+                goPrevChapter();
+                return;
+            }else {
+                Toast.makeText(getContext(), getResources().getString(R.string.first_page), Toast.LENGTH_SHORT).show();
+                goPrevChapter = true;
+            }
+        }
+        if (mCurrPos == pageList.size() - 1){
+            if (goNextChapter)
+            {
+                goNextChapter();
+                return;
+            }else {
+                Toast.makeText(getContext(), getResources().getString(R.string.last_page), Toast.LENGTH_SHORT).show();
+                goNextChapter = true;
+            }
+        }
+    }
+
+    private void goPrevChapter() {
+        int index = mangaViewModel.getMangaChapterList().indexOf(mangaViewModel.getSelectedMangaChapterItem());
+        if (getOrderDesc() && index + 1 < mangaViewModel.getMangaChapterList().size())
+        {
+            mangaViewModel.setSelectedMangaChapterItem(index + 1);
+            this.initial();
+        }
+    }
+    private void goNextChapter() {
+        int index = mangaViewModel.getMangaChapterList().indexOf(mangaViewModel.getSelectedMangaChapterItem());
+        if (getOrderDesc() && index - 1 > 0)
+        {
+            mangaViewModel.setSelectedMangaChapterItem(index - 1);
+            this.initial();
+        }
+    }
+    public void fullScreen() {
+        if (isFullScreen) {
+            mDecorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE);
+        } else {
+            mDecorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
+
     }
 
     class GestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -63,10 +339,17 @@ public class MyViewFlipper extends ViewFlipper {
                     + velocityY);
             if (Math.abs(velocityX) > Math.abs(velocityY)) {
                 int x = (int) (e2.getX() - e1.getX());
+                if (!fromRightToLeft) {
+                    x = -x;
+                }
                 if (x > 0) {
-                    viewControl.movePrevious();
+                    MyViewFlipper.this.setInAnimation(MyViewFlipper.this.getContext(), animatePreInId);
+                    MyViewFlipper.this.setOutAnimation(MyViewFlipper.this.getContext(), animatePreOutId);
+                    movePrevious();
                 } else {
-                    viewControl.moveNext();
+                    MyViewFlipper.this.setInAnimation(MyViewFlipper.this.getContext(), animateNextInId);
+                    MyViewFlipper.this.setOutAnimation(MyViewFlipper.this.getContext(), animateNextOutId);
+                    moveNext();
                 }
                 return true;
             } else {
@@ -85,7 +368,11 @@ public class MyViewFlipper extends ViewFlipper {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            viewControl.fullScreen();
+            if (!isFullScreen) {
+                setFullScreen(true);
+            }else{
+                delayFullScreen();
+            }
             return super.onSingleTapConfirmed(e);
         }
     }

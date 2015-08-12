@@ -29,7 +29,6 @@ public class BaseActivity extends ActionBarActivity {
         initActionBar();
     }
 
-    ;
 
     protected void initActionBar() {
         // TODO Auto-generated method stub
@@ -54,6 +53,15 @@ public class BaseActivity extends ActionBarActivity {
 
     protected void update(Message msg) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (IsCanBack()) {
+            goBack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

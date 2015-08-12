@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.animation.AnimationUtils;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.common.Component.MangaImageSwitcher;
+import com.king.mangaviewer.common.component.MangaImageSwitcher;
 
 import java.util.ArrayList;
 

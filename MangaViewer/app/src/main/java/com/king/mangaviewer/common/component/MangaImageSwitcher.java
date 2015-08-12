@@ -1,4 +1,4 @@
-package com.king.mangaviewer.common.Component;
+package com.king.mangaviewer.common.component;
 
 import android.app.Activity;
 import android.content.Context;
