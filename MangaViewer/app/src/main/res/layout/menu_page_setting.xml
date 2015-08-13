@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="150dp"
+              android:baselineAligned="false"
+              android:orientation="vertical"
+              android:weightSum="1"
+              android:background="#ffffff"
+              android:paddingBottom="1dp"
+              android:padding="10dp">
+
+
+    <Switch
+        android:id="@+id/LRSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/reading_direction"
+        />
+        <!--android:thumb="@drawable/swith_selector"-->
+        <!--android:track="@drawable/switch_bg"-->
+
+
+    <Switch
+        android:id="@+id/splitPageSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/split_page" />
+</LinearLayout>
