@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="200dp"
+              android:layout_height="170dp"
               android:baselineAligned="false"
               android:orientation="vertical"
-              android:padding="5dp"
-              android:weightSum="1">
+              android:weightSum="1"
+              android:background="@drawable/background_with_shadow"
+              android:paddingBottom="1dp"
+    >
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="140dp"
         android:adjustViewBounds="false"
         android:scaleType="centerCrop"
         android:src="@android:color/background_dark"
         />
 
-    <TextView
+    <me.grantland.widget.AutofitTextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_weight="0.03"
+        android:layout_height="30dp"
         android:autoText="false"
-        android:background="#cfcfcf"
+        android:background="#dfdfdf"
         android:ellipsize="end"
         android:gravity="center_vertical|center_horizontal"
-        android:maxHeight="30dp"
-        android:text="Medium Text"/>
+        android:text="Medium Text"
+        android:singleLine="true"
+        android:textColor="#000000"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"/>
 
 </LinearLayout>

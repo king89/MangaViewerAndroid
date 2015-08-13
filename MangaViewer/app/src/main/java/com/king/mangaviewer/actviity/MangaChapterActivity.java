@@ -1,6 +1,7 @@
 package com.king.mangaviewer.actviity;
 
 import android.app.ProgressDialog;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter;
+import com.king.mangaviewer.common.AsyncImageLoader;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
@@ -32,6 +34,24 @@ public class MangaChapterActivity extends BaseActivity {
         imageView = (ImageView) this.findViewById(R.id.imageView);
         textView = (TextView) this.findViewById(R.id.textView);
 
+        textView.setText(this.getAppViewModel().Manga.getSelectedMangaMenuItem().getTitle());
+        String imagePath = this.getAppViewModel().Manga.getSelectedMangaMenuItem().getImagePath();
+        Drawable cachedImage = new AsyncImageLoader().loadDrawable(imagePath,
+                imageView, new AsyncImageLoader.ImageCallback() {
+
+                    public void imageLoaded(Drawable imageDrawable,
+                                            ImageView imageView, String imageUrl) {
+                        // TODO Auto-generated method stub
+                        if (imageDrawable != null) {
+                            imageView.setImageDrawable(imageDrawable);
+                        }
+
+
+                    }
+                });
+        if (cachedImage != null) {
+            imageView.setImageDrawable(cachedImage);
+        }
         new Thread() {
 
             @Override

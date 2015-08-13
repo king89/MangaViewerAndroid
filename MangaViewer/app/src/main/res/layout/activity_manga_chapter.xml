@@ -6,7 +6,11 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp">
 
         <ImageView
             android:id="@+id/imageView"
@@ -23,14 +27,19 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@+id/imageView"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="TextView"/>
+
 
     </RelativeLayout>
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:choiceMode="singleChoice"
+        android:dividerHeight="0px"
+        android:divider="@null">
     </ListView>
 
 </LinearLayout>
