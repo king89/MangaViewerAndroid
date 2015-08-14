@@ -13,7 +13,7 @@ public class MangaChapterItem extends BaseItem {
 
     public MangaChapterItem(String id, String title, String description,
                             String imagePath, String url, MangaMenuItem menu) {
-        super(id, title, description, imagePath, url);
+        super(id, title, description, imagePath, url, menu.getMangaWebSource());
         this.menu = menu;
     }
 

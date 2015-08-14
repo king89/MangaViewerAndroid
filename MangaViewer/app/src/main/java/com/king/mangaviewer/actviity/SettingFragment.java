@@ -2,24 +2,16 @@ package com.king.mangaviewer.actviity;
 
 
 import android.support.v4.app.Fragment;
-import android.app.ProgressDialog;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
 import com.king.mangaviewer.common.Constants;
-import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
-
-import java.util.List;
 
 
 public class SettingFragment extends Fragment {
@@ -38,18 +30,18 @@ public class SettingFragment extends Fragment {
         sv = ((MainActivity) this.getActivity()).getAppViewModel().Setting;
         gv = (RadioGroup) rootView.findViewById(R.id.radioGroup);
         int checkedId = 0;
-        for (int i = 0; i < Constants.WebSiteEnum.values().length; i++) {
+        for (int i = 0; i < sv.getMangaWebSources().size(); i++) {
             RadioButton b = new RadioButton(this.getActivity());
-            b.setText(Constants.WebSiteEnum.values()[i].name());
-            b.setTag(Constants.WebSiteEnum.values()[i]);
+            b.setText(sv.getMangaWebSources().get(i).getDisplayName());
+            b.setTag(i);
             b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    sv.setSelectedWebSite((Constants.WebSiteEnum) v.getTag());
+                    sv.setSelectedWebSource(sv.getMangaWebSources().get((int)v.getTag()));
                 }
             });
             //checked
-            if (sv.getSelectedWebSite() == Constants.WebSiteEnum.values()[i])
+            if (sv.getSelectedWebSource().getId() == sv.getMangaWebSources().get(i).getId())
                 checkedId = i;
             gv.addView(b);
         }

@@ -3,11 +3,12 @@ package com.king.mangaviewer.common.MangaPattern;
 import android.content.Context;
 
 import com.king.mangaviewer.common.Constants.WebSiteEnum;
+import com.king.mangaviewer.model.MangaWebSource;
 
 public class PatternFactory {
-    public static WebSiteBasePattern getPattern(Context context, WebSiteEnum type) {
+    public static WebSiteBasePattern getPattern(Context context, MangaWebSource type) {
         try {
-            return (WebSiteBasePattern) Class.forName(type.getClsName()).getConstructor(Context.class).newInstance(context);
+            return (WebSiteBasePattern) Class.forName(type.getClassName()).getConstructor(Context.class).newInstance(context);
         } catch (InstantiationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

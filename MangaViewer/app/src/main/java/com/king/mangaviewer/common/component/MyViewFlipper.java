@@ -2,6 +2,9 @@ package com.king.mangaviewer.common.component;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -11,7 +14,9 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -55,7 +60,13 @@ public class MyViewFlipper extends ViewFlipper {
     Handler mHideHandler;
     Runnable mHideRunnable;
 
-    private final int delayMillis = 2000;
+    private final int delayMillis = 2500;
+
+    private int halfMode = 0; // 0:not 1:first half 2:second half
+
+    private boolean isSplitPage = true;
+
+    private final Object lock = new Object();
 
     public MyViewFlipper(Context context) {
         super(context);
@@ -67,10 +78,11 @@ public class MyViewFlipper extends ViewFlipper {
         initControl();
     }
 
-    public void setFullScreen(boolean b){
+    public void setFullScreen(boolean b) {
         isFullScreen = b;
         fullScreen();
     }
+
     private void initControl() {
 
         mInflater = LayoutInflater.from(getContext());
@@ -105,12 +117,13 @@ public class MyViewFlipper extends ViewFlipper {
 
     }
 
-    private void initial(){
+    private void initial() {
         pageList = null;
         this.removeAllViews();
         mangaViewModel.setMangaPageList(null);
         initial(mangaViewModel, settingViewModel, updateHandler, fromRightToLeft);
     }
+
     public void initial(MangaViewModel mvm, SettingViewModel svm, Handler handler, boolean frtl) {
         mangaViewModel = mvm;
         settingViewModel = svm;
@@ -148,6 +161,15 @@ public class MyViewFlipper extends ViewFlipper {
         }
     };
 
+    private boolean canSplitPage() {
+        if (this.getContext().getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE &&
+                isSplitPage == true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void getPageList() {
         pageList = getBaseActivty().getMangaHelper().GetPageList(
                 mangaViewModel.getSelectedMangaChapterItem());
@@ -156,9 +178,10 @@ public class MyViewFlipper extends ViewFlipper {
         handler.sendEmptyMessage(0);
     }
 
-    public boolean getOrderDesc(){
+    public boolean getOrderDesc() {
         return orderDesc;
     }
+
     public int getCurrPos() {
         mCurrPos = mangaViewModel.getNowPagePosition();
         return mCurrPos;
@@ -201,7 +224,13 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    private void setView(int curr, int next) {
+    public void goToPageNum(int num) {
+        if (pageList != null && num >= 0 && num < this.pageList.size() - 1) {
+            setView(0, num);
+        }
+    }
+
+    private void setView(final int curr, int next) {
         View v = (View) mInflater.inflate(R.layout.list_manga_page_item, null);
         FitXImageView iv = (FitXImageView) v.findViewById(R.id.imageView);
         TextView tv = (TextView) v.findViewById(R.id.textView);
@@ -215,6 +244,11 @@ public class MyViewFlipper extends ViewFlipper {
         String pageNum = (next + 1) + "/" + pageList.size();
         tv.setText(pageNum);
 
+        final int fnext = next;
+
+        synchronized (lock) {
+            setCurrPos(next);
+        }
 
         Drawable cachedImage = getBaseActivty().getMangaHelper().getPageImage(
                 pageList.get(next), iv, new MangaHelper.GetImageCallback() {
@@ -223,13 +257,14 @@ public class MyViewFlipper extends ViewFlipper {
                                             ImageView imageView, String imageUrl) {
                         // TODO Auto-generated method stub
                         if (imageDrawable != null && imageView != null) {
-                            imageView.setImageDrawable(imageDrawable);
+                            //imageView.setImageDrawable(imageDrawable);
+                            showImage(imageView, imageDrawable, curr, fnext);
                         }
 
                     }
                 });
         if (cachedImage != null) {
-            iv.setImageDrawable(cachedImage);
+            showImage(iv, cachedImage, curr, next);
         } else {
             Drawable tImage = getResources()
                     .getDrawable(R.mipmap.ic_launcher);
@@ -241,23 +276,92 @@ public class MyViewFlipper extends ViewFlipper {
         }
         this.addView(v, this.getChildCount());
 
-        setCurrPos(next);
+
         goPrevChapter = false;
         goNextChapter = false;
     }
 
-    public void movePrevious() {
+    private void showImage(ImageView iv, Drawable d, int curr, int next) {
+        if (canSplitPage()) {
+            Bitmap img = ((BitmapDrawable) d).getBitmap();
+            int w = img.getWidth();
+            int h = img.getHeight();
+            //ensure this image should be shown
+            synchronized (lock) {
+                if (next == mCurrPos) {
+                    if (halfMode == 0) {
+                        //make it half
+                        if (w > h) {
+                            if (curr > next) {
+                                halfMode = 2;
+                                img = Bitmap.createBitmap(img, 0, 0, w / 2, h);
+                            } else {
+                                halfMode = 1;
+                                img = Bitmap.createBitmap(img, w / 2, 0, w / 2, h);
+                            }
+
+                        }
+                    } else if (halfMode == 1) {
+                        img = Bitmap.createBitmap(img, w / 2, 0, w / 2, h);
+                    } else if (halfMode == 2) {
+                        img = Bitmap.createBitmap(img, 0, 0, w / 2, h);
+                    }
+                }
+            }
+            iv.setImageDrawable(new BitmapDrawable(img));
+        } else {
+            iv.setImageDrawable(d);
+        }
+    }
+
+    private void movePrevious() {
 
         if (mCurrPos - 1 < 0) {
             showFirstOrLastPageTips();
         } else {
             setView(mCurrPos, mCurrPos - 1);
             this.showPrevious();
-
-
         }
     }
-    public void moveNext() {
+
+    private void movePreviousHalf() {
+        if (mCurrPos - 1 < 0 && (halfMode == 0 || halfMode == 1)) {
+            showFirstOrLastPageTips();
+        } else {
+            int next = mCurrPos;
+            if (mCurrPos > 0 && (halfMode == 0 || halfMode == 1)) {
+                next--;
+            }
+            if (halfMode == 1 || halfMode == 2) {
+                halfMode--;
+            }
+            halfMode = halfMode % 3;
+
+            setView(mCurrPos, next);
+            this.showPrevious();
+        }
+    }
+
+    private void moveNextHalf() {
+        if (mCurrPos + 1 > pageList.size() - 1 && (halfMode == 0 || halfMode == 2)) {
+            showFirstOrLastPageTips();
+        } else {
+            int next = mCurrPos;
+            if (mCurrPos < pageList.size() - 1 && (halfMode == 0 || halfMode == 2)) {
+                next++;
+            }
+            if (halfMode == 1 || halfMode == 2) {
+                halfMode++;
+            }
+            halfMode = halfMode % 3;
+
+            setView(mCurrPos, next);
+            this.showNext();
+        }
+    }
+
+    private void moveNext() {
+
         if (mCurrPos + 1 > pageList.size() - 1) {
             showFirstOrLastPageTips();
         } else {
@@ -267,21 +371,20 @@ public class MyViewFlipper extends ViewFlipper {
     }
 
     private void showFirstOrLastPageTips() {
-        if (mCurrPos == 0){
+        if (mCurrPos == 0) {
             if (goPrevChapter) {
                 goPrevChapter();
                 return;
-            }else {
+            } else {
                 Toast.makeText(getContext(), getResources().getString(R.string.first_page), Toast.LENGTH_SHORT).show();
                 goPrevChapter = true;
             }
         }
-        if (mCurrPos == pageList.size() - 1){
-            if (goNextChapter)
-            {
+        if (mCurrPos == pageList.size() - 1) {
+            if (goNextChapter) {
                 goNextChapter();
                 return;
-            }else {
+            } else {
                 Toast.makeText(getContext(), getResources().getString(R.string.last_page), Toast.LENGTH_SHORT).show();
                 goNextChapter = true;
             }
@@ -290,20 +393,20 @@ public class MyViewFlipper extends ViewFlipper {
 
     private void goPrevChapter() {
         int index = mangaViewModel.getMangaChapterList().indexOf(mangaViewModel.getSelectedMangaChapterItem());
-        if (getOrderDesc() && index + 1 < mangaViewModel.getMangaChapterList().size())
-        {
+        if (getOrderDesc() && index + 1 < mangaViewModel.getMangaChapterList().size()) {
             mangaViewModel.setSelectedMangaChapterItem(index + 1);
             this.initial();
         }
     }
+
     private void goNextChapter() {
         int index = mangaViewModel.getMangaChapterList().indexOf(mangaViewModel.getSelectedMangaChapterItem());
-        if (getOrderDesc() && index - 1 > 0)
-        {
+        if (getOrderDesc() && index - 1 >= 0) {
             mangaViewModel.setSelectedMangaChapterItem(index - 1);
             this.initial();
         }
     }
+
     public void fullScreen() {
         if (isFullScreen) {
             mDecorView.setSystemUiVisibility(
@@ -313,6 +416,8 @@ public class MyViewFlipper extends ViewFlipper {
                             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                             | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                             | View.SYSTEM_UI_FLAG_IMMERSIVE);
+            //show page slider
+
         } else {
             mDecorView.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -345,11 +450,19 @@ public class MyViewFlipper extends ViewFlipper {
                 if (x > 0) {
                     MyViewFlipper.this.setInAnimation(MyViewFlipper.this.getContext(), animatePreInId);
                     MyViewFlipper.this.setOutAnimation(MyViewFlipper.this.getContext(), animatePreOutId);
-                    movePrevious();
+                    if (canSplitPage()) {
+                        movePreviousHalf();
+                    } else {
+                        movePrevious();
+                    }
                 } else {
                     MyViewFlipper.this.setInAnimation(MyViewFlipper.this.getContext(), animateNextInId);
                     MyViewFlipper.this.setOutAnimation(MyViewFlipper.this.getContext(), animateNextOutId);
-                    moveNext();
+                    if (canSplitPage()) {
+                        moveNextHalf();
+                    } else {
+                        moveNext();
+                    }
                 }
                 return true;
             } else {
@@ -370,7 +483,7 @@ public class MyViewFlipper extends ViewFlipper {
         public boolean onSingleTapConfirmed(MotionEvent e) {
             if (!isFullScreen) {
                 setFullScreen(true);
-            }else{
+            } else {
                 delayFullScreen();
             }
             return super.onSingleTapConfirmed(e);

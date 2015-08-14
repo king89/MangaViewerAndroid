@@ -24,7 +24,7 @@ public class MangaPageItem extends BaseItem {
     public MangaPageItem(String id, String title, String description,
                          String imagePath, String url, MangaChapterItem chapter, int nowNum,
                          int totalNum) {
-        super(id, title, description, imagePath, url);
+        super(id, title, description, imagePath, url, chapter.getMangaWebSource());
         this.chapter = chapter;
         this.nowNum = nowNum;
         this.totalNum = totalNum;

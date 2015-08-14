@@ -1,11 +1,7 @@
 package com.king.mangaviewer;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.ActivityUnitTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
-import android.test.suitebuilder.annotation.SmallTest;
 
 import com.king.mangaviewer.actviity.MainActivity;
 import com.king.mangaviewer.common.util.SettingHelper;
@@ -37,6 +33,6 @@ public class SettingMouldeTest extends ActivityInstrumentationTestCase2<MainActi
         svm = SettingViewModel.loadSetting(mLaunchIntent);
 
         assertNotNull(svm);
-        assertNotNull(svm.getSelectedWebSite());
+        assertNotNull(svm.getSelectedWebSource());
     }
 }

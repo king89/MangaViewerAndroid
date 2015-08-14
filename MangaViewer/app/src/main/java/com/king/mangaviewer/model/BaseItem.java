@@ -2,13 +2,14 @@ package com.king.mangaviewer.model;
 
 import java.io.Serializable;
 
-public class BaseItem implements Serializable {
+public class BaseItem implements Serializable{
     String id = "";
     String title = "";
     String description = "";
     String imagePath = "";
     String url = "";
 
+    MangaWebSource mMangaWebSource;
     /**
      * @param id
      * @param title
@@ -17,12 +18,13 @@ public class BaseItem implements Serializable {
      */
 
     public BaseItem(String id, String title, String description,
-                    String imagePath, String url) {
+                    String imagePath, String url, MangaWebSource mangaWebSource) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.imagePath = imagePath;
         this.url = url;
+        this.mMangaWebSource = mangaWebSource;
     }
 
     public String getId() {
@@ -65,5 +67,7 @@ public class BaseItem implements Serializable {
         this.url = url;
     }
 
-
+    public MangaWebSource getMangaWebSource() {
+        return mMangaWebSource;
+    }
 }

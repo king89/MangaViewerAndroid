@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sources>
+    <Source id="0">
+        <Name>HHComic</Name>
+        <DisplayName>HHComic</DisplayName>
+        <ClassName>com.king.mangaviewer.common.MangaPattern.WebHHComic</ClassName>
+        <Order>0</Order>
+        <Language></Language>
+        <Enable>1</Enable>
+    </Source>
+    <Source id="1">
+        <Name>TestManga</Name>
+        <DisplayName>TestManga</DisplayName>
+        <ClassName>com.king.mangaviewer.common.MangaPattern.WebTestManga</ClassName>
+        <Order>1</Order>
+        <Language></Language>
+        <Enable>1</Enable>
+    </Source>
+
+</Sources>

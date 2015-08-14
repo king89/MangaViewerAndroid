@@ -7,11 +7,14 @@ import com.google.gson.Gson;
 import com.king.mangaviewer.actviity.MyApplication;
 import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.common.Constants.WebSiteEnum;
+import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SettingHelper {
 
@@ -34,14 +37,20 @@ public class SettingHelper {
         String fileName = SETTINGFILE;
 
         byte[] data = FileHelper.loadFile(folderName, fileName);
+        SettingViewModel tmp = null;
         if (data != null) {
             String ss = new String(data);
-            SettingViewModel tmp = new Gson().fromJson(ss, SettingViewModel.class);
-            return tmp;
+            tmp = new Gson().fromJson(ss, SettingViewModel.class);
+
         } else {
-            return new SettingViewModel();
+            tmp = new SettingViewModel();
         }
+
+        return tmp;
     }
+
+
+
 
     public static String getSettingFolder(Context context) {
         //TODO
