@@ -15,6 +15,9 @@
     <string name="reading_direction">Reading Direction</string>
     <string name="split_page">Split Page</string>
 
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
+
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
         <item>Home</item>
@@ -35,5 +38,7 @@
         <item>@drawable/ic_launcher</item>
         <item>@drawable/ic_launcher</item>
     </array>
+
+    <string name="action_settings">Settings</string>
 
 </resources>

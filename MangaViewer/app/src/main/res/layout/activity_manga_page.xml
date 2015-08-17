@@ -1,22 +1,91 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="${relativePackage}.${activityClass}">
+<FrameLayout xmlns:ads="http://schemas.android.com/apk/res-auto"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="${relativePackage}.${activityClass}">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/linearLayout"
         android:background="@android:color/background_dark"
         android:orientation="vertical">
 
         <com.king.mangaviewer.common.component.MyViewFlipper
             android:id="@+id/viewFlipper"
+            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
         </com.king.mangaviewer.common.component.MyViewFlipper>
 
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal|bottom"
+            android:fitsSystemWindows="false"
+            ads:adSize="SMART_BANNER"
+            ads:adUnitId="@string/banner_ad_unit_id"
+            android:layout_weight="0"/>
     </LinearLayout>
+    <FrameLayout android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:fitsSystemWindows="true"
+                 android:layout_gravity="bottom">
 
-</RelativeLayout>
+        <LinearLayout android:id="@+id/fullscreen_content_controls"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_gravity="center_horizontal|bottom"
+                      android:background="@color/gray_over_lay"
+                      android:orientation="vertical"
+                      tools:ignore="UselessParent"
+                      android:paddingBottom="15dp"
+                      android:paddingLeft="5dp"
+                      android:paddingRight="5dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-/-"
+                android:id="@+id/textView_pageNum"
+                android:textColor="#33b5e5"
+                android:textStyle="bold"
+                android:layout_gravity="center|bottom"
+                />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/frButton"
+                    android:background="@mipmap/ic_fast_rewind_white"/>
+
+                <SeekBar
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/seekBar"
+                    android:layout_weight="1"
+                    android:splitTrack="false"
+                    android:mirrorForRtl="false"/>
+
+                <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/ffButton"
+                    android:background="@mipmap/ic_fast_forward_white"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </FrameLayout>
+</FrameLayout>

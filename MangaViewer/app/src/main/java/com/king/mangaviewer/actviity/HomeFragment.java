@@ -48,11 +48,6 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         gv = (GridView) rootView.findViewById(R.id.gridView);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            gv.setNumColumns(5);
-        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            gv.setNumColumns(3);
-        }
         progressDialog = ProgressDialog.show(this.getActivity(), "Loading",
                 "Loading");
 

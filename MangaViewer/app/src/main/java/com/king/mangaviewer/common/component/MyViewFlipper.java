@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -42,7 +43,7 @@ public class MyViewFlipper extends ViewFlipper {
     SettingViewModel settingViewModel = null;
     private boolean isFullScreen;
     View mDecorView;
-
+    OnCurrentPosChangedListener mCurrentPosChangedListener;
     int mCurrPos;
     boolean fromRightToLeft;
     int animatePreInId;
@@ -60,7 +61,7 @@ public class MyViewFlipper extends ViewFlipper {
     Handler mHideHandler;
     Runnable mHideRunnable;
 
-    private final int delayMillis = 2500;
+    private final int delayMillis = 3000;
 
     private int halfMode = 0; // 0:not 1:first half 2:second half
 
@@ -89,22 +90,7 @@ public class MyViewFlipper extends ViewFlipper {
         setFromRightToLeft(false);
         gestureDetector = new GestureDetector(getContext(), new GestureListener());
         mDecorView = ((Activity) getContext()).getWindow().getDecorView();
-        mDecorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-            @Override
-            public void onSystemUiVisibilityChange(int visibility) {
-                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-                    // TODO: The system bars are visible. Make any desired
-                    // adjustments to your UI, such as showing the action bar or
-                    // other navigational controls.
-                    isFullScreen = false;
-                } else {
-                    // TODO: The system bars are NOT visible. Make any desired
-                    // adjustments to your UI, such as hiding the action bar or
-                    // other navigational controls.
-                    isFullScreen = true;
-                }
-            }
-        });
+
 
         mHideHandler = new Handler();
         mHideRunnable = new Runnable() {
@@ -147,12 +133,23 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    private void delayFullScreen() {
+    public int getPageCount(){
+        if (pageList != null) {
+            return this.pageList.size();
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    public void delayFullScreen() {
         setFullScreen(false);
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
-
+    public void setOnCurrentPosChangedListener(OnCurrentPosChangedListener l){
+        this.mCurrentPosChangedListener = l;
+    }
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -190,6 +187,10 @@ public class MyViewFlipper extends ViewFlipper {
     public void setCurrPos(int mCurrPos) {
         this.mCurrPos = mCurrPos;
         mangaViewModel.setNowPagePosition(mCurrPos);
+        if(mCurrentPosChangedListener != null)
+        {
+            mCurrentPosChangedListener.onChanged(mCurrPos);
+        }
     }
 
     @Override
@@ -225,15 +226,16 @@ public class MyViewFlipper extends ViewFlipper {
     }
 
     public void goToPageNum(int num) {
-        if (pageList != null && num >= 0 && num < this.pageList.size() - 1) {
+        if (pageList != null && num >= 0 && num <= this.pageList.size() - 1) {
+            setCurrPos(num);
             setView(0, num);
+            this.showNext();
         }
     }
 
     private void setView(final int curr, int next) {
         View v = (View) mInflater.inflate(R.layout.list_manga_page_item, null);
         FitXImageView iv = (FitXImageView) v.findViewById(R.id.imageView);
-        TextView tv = (TextView) v.findViewById(R.id.textView);
         // iv.setScaleType(ImageView.ScaleType.FIT_XY);
         if (curr < next && next > pageList.size() - 1)
             next = 0;
@@ -241,15 +243,18 @@ public class MyViewFlipper extends ViewFlipper {
             next = pageList.size() - 1;
 
         // iv.setImageResource(mImages[next]);
-        String pageNum = (next + 1) + "/" + pageList.size();
-        tv.setText(pageNum);
 
         final int fnext = next;
-
         synchronized (lock) {
             setCurrPos(next);
         }
-
+//        //sync SeekBar
+//        if (mSeekBar != null || mSeekBarTextView != null)
+//        {
+//            mSeekBar.setProgress(next);
+//            String pageNum = (next + 1) + "/" + pageList.size();
+//            mSeekBarTextView.setText(pageNum);
+//        }
         Drawable cachedImage = getBaseActivty().getMangaHelper().getPageImage(
                 pageList.get(next), iv, new MangaHelper.GetImageCallback() {
 
@@ -391,7 +396,7 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    private void goPrevChapter() {
+    public void goPrevChapter() {
         int index = mangaViewModel.getMangaChapterList().indexOf(mangaViewModel.getSelectedMangaChapterItem());
         if (getOrderDesc() && index + 1 < mangaViewModel.getMangaChapterList().size()) {
             mangaViewModel.setSelectedMangaChapterItem(index + 1);
@@ -399,7 +404,7 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    private void goNextChapter() {
+    public void goNextChapter() {
         int index = mangaViewModel.getMangaChapterList().indexOf(mangaViewModel.getSelectedMangaChapterItem());
         if (getOrderDesc() && index - 1 >= 0) {
             mangaViewModel.setSelectedMangaChapterItem(index - 1);
@@ -407,7 +412,7 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    public void fullScreen() {
+    private void fullScreen() {
         if (isFullScreen) {
             mDecorView.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -427,6 +432,9 @@ public class MyViewFlipper extends ViewFlipper {
 
     }
 
+    public interface OnCurrentPosChangedListener{
+        public void onChanged(int pos);
+    }
     class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
