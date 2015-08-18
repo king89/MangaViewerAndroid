@@ -47,6 +47,11 @@ public class BaseActivity extends ActionBarActivity {
 
     }
 
+    protected void setActionBarTitle(String title){
+        ActionBar actionBar = this.getSupportActionBar();
+        actionBar.setTitle(title);
+    }
+
     protected boolean IsCanBack() {
         return false;
     }

@@ -21,7 +21,7 @@ import com.king.mangaviewer.common.component.MyViewFlipper;
 
 public class MangaPageActivity extends BaseActivity {
 
-    MyViewFlipper vFlipper = null;
+    public MyViewFlipper vFlipper = null;
     private View mDecorView;
     SeekBar sb = null;
 

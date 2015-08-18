@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.common.Constants;
@@ -46,6 +48,19 @@ public class SettingFragment extends Fragment {
             gv.addView(b);
         }
         ((RadioButton) gv.getChildAt(checkedId)).setChecked(true);
+
+        //Folder size Part
+        TextView tv = (TextView)rootView.findViewById(R.id.folderSizeTextView);
+        tv.setText(sv.getMangaFolderSize(this.getActivity()));
+
+        Button bt = (Button)rootView.findViewById(R.id.clear_data_button);
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sv.resetMangaFolder(getActivity());
+            }
+        });
+
         return rootView;
     }
 }

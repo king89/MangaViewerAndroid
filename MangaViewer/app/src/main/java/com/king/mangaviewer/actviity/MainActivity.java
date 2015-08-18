@@ -147,6 +147,9 @@ public class MainActivity extends BaseActivity {
                 fragment = new LocalFragment();
                 break;
             case 2:
+                fragment = new FavouriteFragment();
+                break;
+            case 5:
                 fragment = new SettingFragment();
                 break;
             default:
@@ -154,6 +157,8 @@ public class MainActivity extends BaseActivity {
         }
 
         if (fragment != null) {
+
+            //set fragment
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.frame_container, fragment).commit();
@@ -161,7 +166,8 @@ public class MainActivity extends BaseActivity {
             // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
-            setTitle(navMenuTitles[position]);
+            mTitle = navMenuTitles[position];
+            this.setActionBarTitle(navMenuTitles[position]);
             mDrawerLayout.closeDrawer(mDrawerList);
         } else {
             // error in creating fragment

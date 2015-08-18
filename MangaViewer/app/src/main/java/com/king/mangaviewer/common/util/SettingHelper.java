@@ -64,6 +64,16 @@ public class SettingHelper {
         }
     }
 
+    public static String getMangaFolder(Context context){
+        // Check if have external storage
+        if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
+            return context.getExternalFilesDir(null) + File.separator
+                    + Constants.MANGAFOLDER;
+        } else {
+            return context.getFilesDir() + File.separator
+                    + Constants.MANGAFOLDER;
+        }
+    }
     public WebSiteEnum getWebType() {
         return WebSiteEnum.HHComic;
     }

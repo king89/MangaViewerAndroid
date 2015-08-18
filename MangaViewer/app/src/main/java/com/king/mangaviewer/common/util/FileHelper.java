@@ -138,7 +138,7 @@ public class FileHelper {
 
     public static String concatPath(String path1, String path2) {
         String result = path1;
-        if (path1.lastIndexOf(File.separator) > 0) {
+        if (path1.substring(path1.length()-1) == File.separator) {
             result = path1 + path2;
         } else {
             result = result + File.separator + path2;
@@ -154,5 +154,49 @@ public class FileHelper {
     public static Object deserializeObject(String filePath) {
         return null;
 
+    }
+
+    public static void resetFolder(String folderPath){
+        File folder = new File(folderPath);
+        if (folder.exists()){
+            deleteRecursive(folder);
+        }
+        folder = new File(folderPath);
+        folder.mkdirs();
+    }
+
+    private static  void deleteRecursive(File fileOrDirectory) {
+
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                deleteRecursive(child);
+
+        fileOrDirectory.delete();
+
+    }
+
+    public static long getFileOrFolderSize(File dir) {
+
+        if (dir.exists()) {
+            long result = 0;
+            File[] fileList = dir.listFiles();
+            for(int i = 0; i < fileList.length; i++) {
+                // Recursive call if it's a directory
+                if(fileList[i].isDirectory()) {
+                    result += getFileOrFolderSize(fileList[i]);
+                } else {
+                    // Sum the file size in bytes
+                    result += fileList[i].length();
+                }
+            }
+            return result; // return the file size
+        }
+        return 0;
+    }
+
+    public static String calFileSize(long size) {
+        //use MB for unit
+        int s = (int) Math.ceil(size / 1024.0f / 1024.0f);
+        return s + " MB";
     }
 }

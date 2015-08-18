@@ -13,13 +13,19 @@ import org.w3c.dom.Element;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.common.Constants;
+import com.king.mangaviewer.common.util.FileHelper;
+import com.king.mangaviewer.common.util.MangaHelper;
 import com.king.mangaviewer.common.util.SettingHelper;
+import com.king.mangaviewer.model.FavouriteMangaMenuItem;
+import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaWebSource;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class SettingViewModel extends ViewModelBase {
@@ -27,11 +33,16 @@ public class SettingViewModel extends ViewModelBase {
     private MangaWebSource mSelectedWebSource;
     private String mDefaultLocalMangaPath;
     private List<MangaWebSource> mMangaWebSources;
+    private HashMap<String, FavouriteMangaMenuItem> mFavouriteMangaList;
 
     public static SettingViewModel loadSetting(Context context) {
         SettingViewModel svm = SettingHelper.loadSetting(context);
-
+        //Manga Sources
         svm.mMangaWebSources = loadMangaSource(context);
+        //Favourite mangas
+        if (svm.mFavouriteMangaList == null) {
+            svm.mFavouriteMangaList = new HashMap<>();
+        }
 
         if (svm.mSelectedWebSource == null) {
             svm.mSelectedWebSource = svm.mMangaWebSources.get(0);
@@ -46,6 +57,7 @@ public class SettingViewModel extends ViewModelBase {
 
         return svm;
     }
+
 
     private static List<MangaWebSource> loadMangaSource(Context context) {
         List<MangaWebSource> mws = new ArrayList<MangaWebSource>();
@@ -74,7 +86,7 @@ public class SettingViewModel extends ViewModelBase {
                     String language = eElement.getElementsByTagName("Language").item(0).getTextContent();
                     int enable = Integer.parseInt(eElement.getElementsByTagName("Enable").item(0).getTextContent());
 
-                    mws.add(new MangaWebSource(id,name,displayName,className,order,language,enable));
+                    mws.add(new MangaWebSource(id, name, displayName, className, order, language, enable));
                 }
             }
 
@@ -82,7 +94,7 @@ public class SettingViewModel extends ViewModelBase {
             e.printStackTrace();
         }
 
-       // mws.add(new MangaWebSource(3, "manga3", "manga3", "com.king.mangaviewer.common.MangaPattern.WebHHComic", 2, "manga", 1));
+        // mws.add(new MangaWebSource(3, "manga3", "manga3", "com.king.mangaviewer.common.MangaPattern.WebHHComic", 2, "manga", 1));
         Collections.sort(mws);
         return mws;
     }
@@ -95,8 +107,48 @@ public class SettingViewModel extends ViewModelBase {
         this.mMangaWebSources = mMangaWebSources;
     }
 
+    public boolean checkIsFavourited(MangaMenuItem manga){
+        if (mFavouriteMangaList.containsKey(manga.getHash())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public boolean addFavouriteManga(MangaMenuItem manga) {
+        if (mFavouriteMangaList.containsKey(manga.getHash())) {
+            return false;
+        } else {
+            mFavouriteMangaList.put(manga.getHash(), new FavouriteMangaMenuItem(manga));
+            return true;
+        }
+
+    }
+
+    public boolean removeFavouriteManga(MangaMenuItem manga) {
+        if (mFavouriteMangaList.containsKey(manga.getHash())) {
+            mFavouriteMangaList.remove(manga.getHash());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Collection<FavouriteMangaMenuItem> getFavouriteMangaList(){
+        return this.mFavouriteMangaList.values();
+    }
     public MangaWebSource getSelectedWebSource() {
         return mSelectedWebSource;
+    }
+
+    public void resetMangaFolder(Context context) {
+        String folder = SettingHelper.getMangaFolder(context);
+        FileHelper.resetFolder(folder);
+    }
+
+    public String getMangaFolderSize(Context context) {
+        String folder = SettingHelper.getMangaFolder(context);
+        long size = FileHelper.getFileOrFolderSize(new File(folder));
+        return FileHelper.calFileSize(size);
     }
 
     public void setSelectedWebSource(MangaWebSource webSite) {

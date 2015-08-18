@@ -16,9 +16,11 @@ import com.king.mangaviewer.R;
 import com.king.mangaviewer.actviity.MangaChapterActivity;
 import com.king.mangaviewer.common.AsyncImageLoader;
 import com.king.mangaviewer.common.AsyncImageLoader.ImageCallback;
+import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MangaMenuItemAdapter extends BaseAdapter {
@@ -26,10 +28,10 @@ public class MangaMenuItemAdapter extends BaseAdapter {
     private LayoutInflater mInflater = null;
     private MangaViewModel viewModel;
     private AsyncImageLoader asyncImageLoader = null;
-    private List<MangaMenuItem> menu;
+    private List<? extends MangaMenuItem> menu;
 
     public MangaMenuItemAdapter(Context context, MangaViewModel viewModel,
-                                List<MangaMenuItem> menu) {
+                                List<? extends MangaMenuItem> menu) {
         super();
         this.mInflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
