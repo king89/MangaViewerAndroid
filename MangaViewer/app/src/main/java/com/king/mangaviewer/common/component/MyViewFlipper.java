@@ -14,11 +14,7 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -45,7 +41,7 @@ public class MyViewFlipper extends ViewFlipper {
     View mDecorView;
     OnCurrentPosChangedListener mCurrentPosChangedListener;
     int mCurrPos;
-    boolean fromRightToLeft;
+
     int animatePreInId;
     int animatePreOutId;
 
@@ -65,7 +61,6 @@ public class MyViewFlipper extends ViewFlipper {
 
     private int halfMode = 0; // 0:not 1:first half 2:second half
 
-    private boolean isSplitPage = true;
 
     private final Object lock = new Object();
 
@@ -87,7 +82,6 @@ public class MyViewFlipper extends ViewFlipper {
     private void initControl() {
 
         mInflater = LayoutInflater.from(getContext());
-        setFromRightToLeft(false);
         gestureDetector = new GestureDetector(getContext(), new GestureListener());
         mDecorView = ((Activity) getContext()).getWindow().getDecorView();
 
@@ -107,15 +101,14 @@ public class MyViewFlipper extends ViewFlipper {
         pageList = null;
         this.removeAllViews();
         mangaViewModel.setMangaPageList(null);
-        initial(mangaViewModel, settingViewModel, updateHandler, fromRightToLeft);
+        initial(mangaViewModel, settingViewModel, updateHandler);
     }
 
-    public void initial(MangaViewModel mvm, SettingViewModel svm, Handler handler, boolean frtl) {
+    public void initial(MangaViewModel mvm, SettingViewModel svm, Handler handler) {
         mangaViewModel = mvm;
         settingViewModel = svm;
         updateHandler = handler;
-        setFromRightToLeft(frtl);
-
+        initPageAnimation();
         delayFullScreen();
 
         if (mangaViewModel.getMangaPageList() == null) {
@@ -133,6 +126,17 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
+
+    private boolean getIsSplitPage() {
+        if (settingViewModel != null)
+        {
+            return settingViewModel.getIsSplitPage();
+        }
+        else{
+            return true;
+        }
+
+    }
     public int getPageCount(){
         if (pageList != null) {
             return this.pageList.size();
@@ -158,9 +162,12 @@ public class MyViewFlipper extends ViewFlipper {
         }
     };
 
+    public void stopAutoFullscreen(){
+        mHideHandler.removeCallbacks(mHideRunnable);
+    }
     private boolean canSplitPage() {
         if (this.getContext().getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE &&
-                isSplitPage == true) {
+                getIsSplitPage()) {
             return true;
         } else {
             return false;
@@ -207,9 +214,8 @@ public class MyViewFlipper extends ViewFlipper {
         return ((BaseActivity) getContext());
     }
 
-    public void setFromRightToLeft(boolean b) {
-        fromRightToLeft = b;
-        if (!fromRightToLeft) {
+    public void initPageAnimation() {
+        if (getIsFromLeftToRight()) {
             animatePreInId = R.anim.in_rightleft;
             animatePreOutId = R.anim.out_rightleft;
 
@@ -225,11 +231,19 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
+    public void refresh(){
+        initPageAnimation();
+        halfMode = 0;
+        setView(getCurrPos(),getCurrPos());
+        this.showNext();
+    }
     public void goToPageNum(int num) {
         if (pageList != null && num >= 0 && num <= this.pageList.size() - 1) {
+            halfMode = 0;
+            int t = getCurrPos();
             setCurrPos(num);
-            setView(0, num);
-            this.showNext();
+            setView(t, num);
+            this.showPrevious();
         }
     }
 
@@ -248,13 +262,6 @@ public class MyViewFlipper extends ViewFlipper {
         synchronized (lock) {
             setCurrPos(next);
         }
-//        //sync SeekBar
-//        if (mSeekBar != null || mSeekBarTextView != null)
-//        {
-//            mSeekBar.setProgress(next);
-//            String pageNum = (next + 1) + "/" + pageList.size();
-//            mSeekBarTextView.setText(pageNum);
-//        }
         Drawable cachedImage = getBaseActivty().getMangaHelper().getPageImage(
                 pageList.get(next), iv, new MangaHelper.GetImageCallback() {
 
@@ -272,7 +279,7 @@ public class MyViewFlipper extends ViewFlipper {
             showImage(iv, cachedImage, curr, next);
         } else {
             Drawable tImage = getResources()
-                    .getDrawable(R.mipmap.ic_launcher);
+                    .getDrawable(R.mipmap.ic_preloader_background);
             iv.setImageDrawable(tImage);
         }
 
@@ -432,6 +439,15 @@ public class MyViewFlipper extends ViewFlipper {
 
     }
 
+    public boolean getIsFromLeftToRight() {
+        if (settingViewModel != null){
+            return settingViewModel.getIsFromLeftToRight();
+        }
+        else{
+            return true;
+        }
+    }
+
     public interface OnCurrentPosChangedListener{
         public void onChanged(int pos);
     }
@@ -452,7 +468,7 @@ public class MyViewFlipper extends ViewFlipper {
                     + velocityY);
             if (Math.abs(velocityX) > Math.abs(velocityY)) {
                 int x = (int) (e2.getX() - e1.getX());
-                if (!fromRightToLeft) {
+                if (getIsFromLeftToRight()) {
                     x = -x;
                 }
                 if (x > 0) {

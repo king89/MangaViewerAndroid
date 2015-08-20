@@ -50,7 +50,7 @@ public class SettingFragment extends Fragment {
         ((RadioButton) gv.getChildAt(checkedId)).setChecked(true);
 
         //Folder size Part
-        TextView tv = (TextView)rootView.findViewById(R.id.folderSizeTextView);
+        final TextView tv = (TextView)rootView.findViewById(R.id.folderSizeTextView);
         tv.setText(sv.getMangaFolderSize(this.getActivity()));
 
         Button bt = (Button)rootView.findViewById(R.id.clear_data_button);
@@ -58,6 +58,7 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 sv.resetMangaFolder(getActivity());
+                tv.setText(sv.getMangaFolderSize(SettingFragment.this.getActivity()));
             }
         });
 

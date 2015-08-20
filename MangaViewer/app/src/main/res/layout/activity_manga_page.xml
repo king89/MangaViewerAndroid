@@ -54,10 +54,9 @@
                 android:layout_height="wrap_content"
                 android:text="-/-"
                 android:id="@+id/textView_pageNum"
-                android:textColor="#33b5e5"
                 android:textStyle="bold"
                 android:layout_gravity="center|bottom"
-                />
+                android:textColor="@color/text_color_blue"/>
 
             <LinearLayout
                 android:orientation="horizontal"

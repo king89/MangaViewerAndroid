@@ -8,9 +8,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
@@ -142,7 +144,7 @@ public class MangaPageActivity extends BaseActivity {
             }
         });
         //start
-        vFlipper.initial(getAppViewModel().Manga, getAppViewModel().Setting, handler, false);
+        vFlipper.initial(getAppViewModel().Manga, getAppViewModel().Setting, handler);
     }
 
     @Override
@@ -182,6 +184,7 @@ public class MangaPageActivity extends BaseActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_setting) {
 
+            vFlipper.stopAutoFullscreen();
             View v = findViewById(R.id.menu_setting);
             displayPopupWindow(v);
 
@@ -193,6 +196,29 @@ public class MangaPageActivity extends BaseActivity {
     private void displayPopupWindow(View anchorView) {
         PopupWindow popup = new PopupWindow(this);
         View layout = getLayoutInflater().inflate(R.layout.menu_page_setting, null);
+
+        //Init Switch
+        Switch isFTRSwitch = (Switch)layout.findViewById(R.id.LTRSwitch);
+        Switch splitPageSwitch = (Switch)layout.findViewById(R.id.splitPageSwitch);
+
+        isFTRSwitch.setChecked(getAppViewModel().Setting.getIsFromLeftToRight());
+        isFTRSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                getAppViewModel().Setting.setIsFromLeftToRight(isChecked);
+                vFlipper.refresh();
+
+            }
+        });
+        splitPageSwitch.setChecked(getAppViewModel().Setting.getIsSplitPage());
+        splitPageSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                getAppViewModel().Setting.setIsSplitPage(isChecked);
+                vFlipper.refresh();
+            }
+        });
+
         popup.setContentView(layout);
         // Set content width and height
         popup.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);

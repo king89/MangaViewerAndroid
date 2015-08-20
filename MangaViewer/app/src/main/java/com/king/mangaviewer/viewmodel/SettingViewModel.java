@@ -35,6 +35,9 @@ public class SettingViewModel extends ViewModelBase {
     private List<MangaWebSource> mMangaWebSources;
     private HashMap<String, FavouriteMangaMenuItem> mFavouriteMangaList;
 
+    private boolean mIsFromLeftToRight = false;
+    private boolean mIsSplitPage = true;
+
     public static SettingViewModel loadSetting(Context context) {
         SettingViewModel svm = SettingHelper.loadSetting(context);
         //Manga Sources
@@ -58,6 +61,21 @@ public class SettingViewModel extends ViewModelBase {
         return svm;
     }
 
+    public void setIsFromLeftToRight(boolean mIsFromLeftToRight) {
+        this.mIsFromLeftToRight = mIsFromLeftToRight;
+    }
+
+    public void setIsSplitPage(boolean mIsSplitPage) {
+        this.mIsSplitPage = mIsSplitPage;
+    }
+
+    public boolean getIsFromLeftToRight() {
+        return mIsFromLeftToRight;
+    }
+
+    public boolean getIsSplitPage() {
+        return mIsSplitPage;
+    }
 
     private static List<MangaWebSource> loadMangaSource(Context context) {
         List<MangaWebSource> mws = new ArrayList<MangaWebSource>();
@@ -107,13 +125,14 @@ public class SettingViewModel extends ViewModelBase {
         this.mMangaWebSources = mMangaWebSources;
     }
 
-    public boolean checkIsFavourited(MangaMenuItem manga){
+    public boolean checkIsFavourited(MangaMenuItem manga) {
         if (mFavouriteMangaList.containsKey(manga.getHash())) {
             return true;
         } else {
             return false;
         }
     }
+
     public boolean addFavouriteManga(MangaMenuItem manga) {
         if (mFavouriteMangaList.containsKey(manga.getHash())) {
             return false;
@@ -133,9 +152,10 @@ public class SettingViewModel extends ViewModelBase {
         }
     }
 
-    public Collection<FavouriteMangaMenuItem> getFavouriteMangaList(){
+    public Collection<FavouriteMangaMenuItem> getFavouriteMangaList() {
         return this.mFavouriteMangaList.values();
     }
+
     public MangaWebSource getSelectedWebSource() {
         return mSelectedWebSource;
     }

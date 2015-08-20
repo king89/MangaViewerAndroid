@@ -9,5 +9,5 @@
 
     <color name="gray_over_lay">#ee626262</color>
     <color name="black_overlay">#66bbbbbb</color>
-
+<color name="text_color_blue">#33b5e5</color>
 </resources>
