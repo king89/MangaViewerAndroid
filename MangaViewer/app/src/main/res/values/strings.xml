@@ -47,5 +47,7 @@
     <string name="yes">YES</string>
     <string name="local_current_path">Current Path</string>
     <string name="local_set_default_path">Set Default</string>
-<string name="local_set_default_path_successed">Set Default Path Successed</string>
+    <string name="local_set_default_path_successed">Set Default Path Successed</string>
+    <string name="no_more_prev_chapter">No Previous Chapter</string>
+    <string name="no_more_next_chapter">No Next Chapter</string>
 </resources>

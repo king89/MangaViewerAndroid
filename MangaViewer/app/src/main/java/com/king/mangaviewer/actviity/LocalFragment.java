@@ -63,7 +63,9 @@ public class LocalFragment extends Fragment {
         String[] childFolders = extraPath.split("/");
         for (String s : childFolders)
         {
-            str.add(s);
+            if (!s.isEmpty()) {
+                str.add(s);
+            }
         }
         View rootView = inflater.inflate(R.layout.fragment_local, container, false);
         final TextView tv = (TextView) rootView.findViewById(R.id.textView);
@@ -75,7 +77,7 @@ public class LocalFragment extends Fragment {
                 if (activity != null)
                 {
                     activity.getAppViewModel().Setting.setDefaultLocalMangaPath(extraPath);
-                    Toast.makeText(getActivity(),getString(R.string.local_set_default_path_successed),Toast.LENGTH_SHORT);
+                    Toast.makeText(getActivity(),getString(R.string.local_set_default_path_successed),Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -132,7 +134,7 @@ public class LocalFragment extends Fragment {
                 else {
                     // Perform action with file picked
 
-                    ((MainActivity) getActivity()).getAppViewModel().LoacalManga.setSelectedFilePath(path.getAbsolutePath() + "/" + chosenFile);
+                    ((MainActivity) getActivity()).getAppViewModel().LoacalManga.setSelectedFilePath(path, chosenFile);
                     getActivity().startActivity(new Intent(getActivity(), LocalReadActivity.class));
                     getActivity().overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
                 }

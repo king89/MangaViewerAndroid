@@ -1,6 +1,9 @@
 package com.king.mangaviewer.common.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -8,6 +11,7 @@ import android.widget.ImageView;
 
 import com.king.mangaviewer.actviity.MyApplication;
 import com.king.mangaviewer.common.Constants.SaveType;
+import com.king.mangaviewer.common.MangaPattern.LocalManga;
 import com.king.mangaviewer.common.MangaPattern.PatternFactory;
 import com.king.mangaviewer.common.MangaPattern.WebSiteBasePattern;
 import com.king.mangaviewer.model.MangaChapterItem;
@@ -16,8 +20,11 @@ import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class MangaHelper {
     String menuHtml = "";
@@ -42,7 +49,7 @@ public class MangaHelper {
     }
 
     /* Page */
-    public String GetIamgeByImageUrl(MangaPageItem page) {
+    public String GetImageByImageUrl(MangaPageItem page) {
         return null;
 
     }
@@ -69,32 +76,49 @@ public class MangaHelper {
     }
 
     public Drawable getPageImage(final MangaPageItem page, final ImageView imageView, final GetImageCallback imageCallback) {
-        final String imageUrl = page.getImagePath();
-        if (imageUrl != null && imageUrl != "") {
-            //从磁盘中获取
-            Drawable drawable = Drawable.createFromPath(imageUrl);
-            return drawable;
+        //For Local Manga
+        if (page.getMangaWebSource().getClassName() == LocalManga.class.getName()) {
+            ZipFile zf = null;
+            try {
+                zf = new ZipFile(page.getChapter().getUrl());
 
+                ZipEntry ze = zf.getEntry(page.getUrl());
+                Bitmap img = BitmapFactory.decodeStream(zf.getInputStream(ze));
+                return new BitmapDrawable(img);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+
+
+            final String imageUrl = page.getImagePath();
+            if (imageUrl != null && imageUrl != "") {
+                //从磁盘中获取
+                Drawable drawable = Drawable.createFromPath(imageUrl);
+                return drawable;
+
+            }
+            final Handler handler = new Handler() {
+                public void handleMessage(Message message) {
+                    imageCallback.imageLoaded((Drawable) message.obj, imageView, imageUrl);
+                }
+            };
+            //建立新一个新的线程下载图片
+            new Thread() {
+                @Override
+                public void run() {
+                    WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
+                            page.getMangaWebSource());
+                    String tmpPath = mPattern.DownloadImgPage(page.getWebImageUrl(), page, SaveType.Temp, page.getUrl());
+                    page.setImagePath(tmpPath);
+                    Drawable drawable = Drawable.createFromPath(tmpPath);
+                    Message message = handler.obtainMessage(0, drawable);
+                    handler.sendMessage(message);
+                }
+            }.start();
+            return null;
         }
-        final Handler handler = new Handler() {
-            public void handleMessage(Message message) {
-                imageCallback.imageLoaded((Drawable) message.obj, imageView, imageUrl);
-            }
-        };
-        //建立新一个新的线程下载图片
-        new Thread() {
-            @Override
-            public void run() {
-                WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
-                        page.getMangaWebSource());
-                String tmpPath = mPattern.DownloadImgPage(page.getWebImageUrl(), page, SaveType.Temp, page.getUrl());
-                page.setImagePath(tmpPath);
-                Drawable drawable = Drawable.createFromPath(tmpPath);
-                Message message = handler.obtainMessage(0, drawable);
-                handler.sendMessage(message);
-            }
-        }.start();
-        return null;
     }
 
     /* Chapter */

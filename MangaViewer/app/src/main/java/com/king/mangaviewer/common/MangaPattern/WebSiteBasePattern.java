@@ -8,6 +8,7 @@ import com.king.mangaviewer.common.Constants.SaveType;
 import com.king.mangaviewer.common.util.FileHelper;
 import com.king.mangaviewer.common.util.StringUtils;
 import com.king.mangaviewer.model.MangaPageItem;
+import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.model.TitleAndUrl;
 
 import org.apache.http.HttpEntity;
@@ -111,15 +112,20 @@ public class WebSiteBasePattern {
     }
 
     public String getMangaFolder() {
-        // Check if have external storage
-        if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
-            return context.getExternalFilesDir(null) + File.separator
-                    + Constants.MANGAFOLDER + File.separator
-                    + this.getClass().getSimpleName();
-        } else {
-            return context.getFilesDir() + File.separator
-                    + Constants.MANGAFOLDER + File.separator
-                    + this.getClass().getSimpleName();
+        if (context != null) {
+            // Check if have external storage
+            if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
+                return context.getExternalFilesDir(null) + File.separator
+                        + Constants.MANGAFOLDER + File.separator
+                        + this.getClass().getSimpleName();
+            } else {
+                return context.getFilesDir() + File.separator
+                        + Constants.MANGAFOLDER + File.separator
+                        + this.getClass().getSimpleName();
+            }
+        }
+        else {
+            return null;
         }
 
     }
@@ -178,4 +184,5 @@ public class WebSiteBasePattern {
     public List<TitleAndUrl> GetSearchingList(String queryText, int pageNum) {
         return null;
     }
+
 }

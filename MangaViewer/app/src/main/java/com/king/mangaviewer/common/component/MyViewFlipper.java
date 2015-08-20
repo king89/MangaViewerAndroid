@@ -37,7 +37,7 @@ public class MyViewFlipper extends ViewFlipper {
     LayoutInflater mInflater = null;
     MangaViewModel mangaViewModel = null;
     SettingViewModel settingViewModel = null;
-    private boolean isFullScreen;
+    protected boolean isFullScreen;
     View mDecorView;
     OnCurrentPosChangedListener mCurrentPosChangedListener;
     int mCurrPos;
@@ -57,12 +57,12 @@ public class MyViewFlipper extends ViewFlipper {
     Handler mHideHandler;
     Runnable mHideRunnable;
 
-    private final int delayMillis = 3000;
+    protected final int delayMillis = 3000;
 
-    private int halfMode = 0; // 0:not 1:first half 2:second half
+    protected int halfMode = 0; // 0:not 1:first half 2:second half
 
 
-    private final Object lock = new Object();
+    protected final Object lock = new Object();
 
     public MyViewFlipper(Context context) {
         super(context);
@@ -79,7 +79,7 @@ public class MyViewFlipper extends ViewFlipper {
         fullScreen();
     }
 
-    private void initControl() {
+    protected void initControl() {
 
         mInflater = LayoutInflater.from(getContext());
         gestureDetector = new GestureDetector(getContext(), new GestureListener());
@@ -97,7 +97,7 @@ public class MyViewFlipper extends ViewFlipper {
 
     }
 
-    private void initial() {
+    protected void initial() {
         pageList = null;
         this.removeAllViews();
         mangaViewModel.setMangaPageList(null);
@@ -127,34 +127,34 @@ public class MyViewFlipper extends ViewFlipper {
     }
 
 
-    private boolean getIsSplitPage() {
-        if (settingViewModel != null)
-        {
+    protected boolean getIsSplitPage() {
+        if (settingViewModel != null) {
             return settingViewModel.getIsSplitPage();
-        }
-        else{
+        } else {
             return true;
         }
 
     }
-    public int getPageCount(){
+
+    public int getPageCount() {
         if (pageList != null) {
             return this.pageList.size();
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
+
     public void delayFullScreen() {
         setFullScreen(false);
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
-    public void setOnCurrentPosChangedListener(OnCurrentPosChangedListener l){
+
+    public void setOnCurrentPosChangedListener(OnCurrentPosChangedListener l) {
         this.mCurrentPosChangedListener = l;
     }
-    private Handler handler = new Handler() {
+
+    protected Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             setView(getCurrPos(), getCurrPos());
@@ -162,10 +162,11 @@ public class MyViewFlipper extends ViewFlipper {
         }
     };
 
-    public void stopAutoFullscreen(){
+    public void stopAutoFullscreen() {
         mHideHandler.removeCallbacks(mHideRunnable);
     }
-    private boolean canSplitPage() {
+
+    protected boolean canSplitPage() {
         if (this.getContext().getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE &&
                 getIsSplitPage()) {
             return true;
@@ -174,7 +175,7 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    private void getPageList() {
+    protected void getPageList() {
         pageList = getBaseActivty().getMangaHelper().GetPageList(
                 mangaViewModel.getSelectedMangaChapterItem());
         mangaViewModel.setMangaPageList(pageList);
@@ -194,8 +195,7 @@ public class MyViewFlipper extends ViewFlipper {
     public void setCurrPos(int mCurrPos) {
         this.mCurrPos = mCurrPos;
         mangaViewModel.setNowPagePosition(mCurrPos);
-        if(mCurrentPosChangedListener != null)
-        {
+        if (mCurrentPosChangedListener != null) {
             mCurrentPosChangedListener.onChanged(mCurrPos);
         }
     }
@@ -210,7 +210,7 @@ public class MyViewFlipper extends ViewFlipper {
         return gestureDetector.onTouchEvent(ev);
     }
 
-    private BaseActivity getBaseActivty() {
+    protected BaseActivity getBaseActivty() {
         return ((BaseActivity) getContext());
     }
 
@@ -231,12 +231,13 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    public void refresh(){
+    public void refresh() {
         initPageAnimation();
         halfMode = 0;
-        setView(getCurrPos(),getCurrPos());
+        setView(getCurrPos(), getCurrPos());
         this.showNext();
     }
+
     public void goToPageNum(int num) {
         if (pageList != null && num >= 0 && num <= this.pageList.size() - 1) {
             halfMode = 0;
@@ -247,7 +248,7 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    private void setView(final int curr, int next) {
+    protected void setView(final int curr, int next) {
         View v = (View) mInflater.inflate(R.layout.list_manga_page_item, null);
         FitXImageView iv = (FitXImageView) v.findViewById(R.id.imageView);
         // iv.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -293,7 +294,7 @@ public class MyViewFlipper extends ViewFlipper {
         goNextChapter = false;
     }
 
-    private void showImage(ImageView iv, Drawable d, int curr, int next) {
+    protected void showImage(ImageView iv, Drawable d, int curr, int next) {
         if (canSplitPage()) {
             Bitmap img = ((BitmapDrawable) d).getBitmap();
             int w = img.getWidth();
@@ -326,7 +327,7 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    private void movePrevious() {
+    protected void movePrevious() {
 
         if (mCurrPos - 1 < 0) {
             showFirstOrLastPageTips();
@@ -336,7 +337,7 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    private void movePreviousHalf() {
+    protected void movePreviousHalf() {
         if (mCurrPos - 1 < 0 && (halfMode == 0 || halfMode == 1)) {
             showFirstOrLastPageTips();
         } else {
@@ -354,7 +355,7 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    private void moveNextHalf() {
+    protected void moveNextHalf() {
         if (mCurrPos + 1 > pageList.size() - 1 && (halfMode == 0 || halfMode == 2)) {
             showFirstOrLastPageTips();
         } else {
@@ -372,7 +373,7 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    private void moveNext() {
+    protected void moveNext() {
 
         if (mCurrPos + 1 > pageList.size() - 1) {
             showFirstOrLastPageTips();
@@ -382,7 +383,7 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-    private void showFirstOrLastPageTips() {
+    protected void showFirstOrLastPageTips() {
         if (mCurrPos == 0) {
             if (goPrevChapter) {
                 goPrevChapter();
@@ -408,6 +409,8 @@ public class MyViewFlipper extends ViewFlipper {
         if (getOrderDesc() && index + 1 < mangaViewModel.getMangaChapterList().size()) {
             mangaViewModel.setSelectedMangaChapterItem(index + 1);
             this.initial();
+        }else{
+            Toast.makeText(getContext(),getResources().getString(R.string.no_more_prev_chapter),Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -416,10 +419,12 @@ public class MyViewFlipper extends ViewFlipper {
         if (getOrderDesc() && index - 1 >= 0) {
             mangaViewModel.setSelectedMangaChapterItem(index - 1);
             this.initial();
+        }else{
+            Toast.makeText(getContext(),getResources().getString(R.string.no_more_next_chapter),Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void fullScreen() {
+    protected void fullScreen() {
         if (isFullScreen) {
             mDecorView.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -440,17 +445,17 @@ public class MyViewFlipper extends ViewFlipper {
     }
 
     public boolean getIsFromLeftToRight() {
-        if (settingViewModel != null){
+        if (settingViewModel != null) {
             return settingViewModel.getIsFromLeftToRight();
-        }
-        else{
+        } else {
             return true;
         }
     }
 
-    public interface OnCurrentPosChangedListener{
+    public interface OnCurrentPosChangedListener {
         public void onChanged(int pos);
     }
+
     class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
@@ -465,8 +470,9 @@ public class MyViewFlipper extends ViewFlipper {
                                float velocityY) {
             // TODO Auto-generated method stub
             Log.i("TEST", "onFling:velocityX = " + velocityX + " velocityY"
-                    + velocityY);
-            if (Math.abs(velocityX) > Math.abs(velocityY)) {
+                    + velocityY + " Tangle :" + Math.toDegrees(Math.atan(velocityY / velocityX)));
+            double maxDegree = 30;
+            if (Math.abs(velocityX) > Math.abs(velocityY) && Math.abs(Math.toDegrees(Math.atan(velocityY / velocityX))) < maxDegree) {
                 int x = (int) (e2.getX() - e1.getX());
                 if (getIsFromLeftToRight()) {
                     x = -x;
@@ -498,8 +504,8 @@ public class MyViewFlipper extends ViewFlipper {
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                 float distanceX, float distanceY) {
             // TODO Auto-generated method stub
-            Log.i("TEST", "onScroll:distanceX = " + distanceX + " distanceY = "
-                    + distanceY);
+//            Log.i("TEST", "onScroll:distanceX = " + distanceX + " distanceY = "
+//                    + distanceY);
             return false;
         }
 

@@ -20,24 +20,36 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.common.component.MyViewFlipper;
+import com.king.mangaviewer.viewmodel.MangaViewModel;
+import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 public class MangaPageActivity extends BaseActivity {
 
     public MyViewFlipper vFlipper = null;
     private View mDecorView;
     SeekBar sb = null;
+    AdView mAdView;
 
+    MangaViewModel mMangaViewModel;
+    SettingViewModel mSettingViewModel;
     ImageButton mFRImageButton, mFFImageButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initViewModels();
         super.onCreate(savedInstanceState);
 
+
+    }
+
+    protected void initViewModels() {
+        mMangaViewModel = getAppViewModel().Manga;
+        mSettingViewModel = getAppViewModel().Setting;
     }
 
     @Override
     protected String getActionBarTitle() {
         // TODO Auto-generated method stub
-        return this.getAppViewModel().Manga.getSelectedMangaChapterItem().getTitle();
+        return this.mMangaViewModel.getSelectedMangaChapterItem().getTitle();
     }
 
     @Override
@@ -87,9 +99,7 @@ public class MangaPageActivity extends BaseActivity {
             }
         });
         //ad
-        AdView adView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        InitAd();
 
         //seekbar
         final TextView tv = (TextView) findViewById(R.id.textView_pageNum);
@@ -144,7 +154,14 @@ public class MangaPageActivity extends BaseActivity {
             }
         });
         //start
-        vFlipper.initial(getAppViewModel().Manga, getAppViewModel().Setting, handler);
+        vFlipper.initial(mMangaViewModel, mSettingViewModel, handler);
+    }
+
+    protected void InitAd() {
+
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     @Override
@@ -154,8 +171,8 @@ public class MangaPageActivity extends BaseActivity {
 
     @Override
     protected void goBack() {
-        getAppViewModel().Manga.setNowPagePosition(0);
-        getAppViewModel().Manga.setMangaPageList(null);
+        mMangaViewModel.setNowPagePosition(0);
+        mMangaViewModel.setMangaPageList(null);
         super.goBack();
     }
 
@@ -201,20 +218,20 @@ public class MangaPageActivity extends BaseActivity {
         Switch isFTRSwitch = (Switch)layout.findViewById(R.id.LTRSwitch);
         Switch splitPageSwitch = (Switch)layout.findViewById(R.id.splitPageSwitch);
 
-        isFTRSwitch.setChecked(getAppViewModel().Setting.getIsFromLeftToRight());
+        isFTRSwitch.setChecked(mSettingViewModel.getIsFromLeftToRight());
         isFTRSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                getAppViewModel().Setting.setIsFromLeftToRight(isChecked);
+                mSettingViewModel.setIsFromLeftToRight(isChecked);
                 vFlipper.refresh();
 
             }
         });
-        splitPageSwitch.setChecked(getAppViewModel().Setting.getIsSplitPage());
+        splitPageSwitch.setChecked(mSettingViewModel.getIsSplitPage());
         splitPageSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                getAppViewModel().Setting.setIsSplitPage(isChecked);
+                mSettingViewModel.setIsSplitPage(isChecked);
                 vFlipper.refresh();
             }
         });
