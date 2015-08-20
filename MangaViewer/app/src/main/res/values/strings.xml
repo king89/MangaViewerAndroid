@@ -8,7 +8,7 @@
     <string name="title_activity_manga_page">MangaPageActivity</string>
     <string name="local">Local</string>
     <string name="latest_update">Latest Update</string>
-    <string name="choosefile">Choose Your Manga File</string>
+    <string name="choosefile">Choose Your Manga File(.zip)</string>
     <string name="setting">Settings</string>
     <string name="setting_source">Sources</string>
     <string name="setting_folder_size">Cache File Size</string>
@@ -18,27 +18,25 @@
     <string name="split_page">Auto Split Page:\t\t\t</string>
     <string name="favourite">Favourite</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-
+    <string name="all_manga">All Manga</string>
 
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
         <item>@string/latest_update</item>
+        <item>@string/all_manga</item>
         <item>@string/local</item>
         <item>@string/favourite</item>
-        <item>Communities</item>
-        <item>Pages</item>
         <item>@string/setting</item>
     </string-array>
 
     <!-- Nav Drawer List Item Icons -->
     <!-- Keep them in order as the titles are in -->
     <array name="nav_drawer_icons">
-        <item>@drawable/ic_launcher</item>
-        <item>@drawable/ic_launcher</item>
-        <item>@drawable/ic_launcher</item>
-        <item>@drawable/ic_launcher</item>
-        <item>@drawable/ic_launcher</item>
-        <item>@drawable/ic_launcher</item>
+        <item>@mipmap/ic_alarm_on_white</item>
+        <item>@mipmap/ic_storage_white</item>
+        <item>@mipmap/ic_folder_open_white</item>
+        <item>@mipmap/ic_star_white</item>
+        <item>@mipmap/ic_settings</item>
     </array>
 
     <string name="action_settings">Settings</string>
@@ -47,5 +45,7 @@
     <string name="do_you_want_to_delete">Are you Sure to Delete this item ?</string>
     <string name="deleting_dialog_title">Deleting Item</string>
     <string name="yes">YES</string>
-
+    <string name="local_current_path">Current Path</string>
+    <string name="local_set_default_path">Set Default</string>
+<string name="local_set_default_path_successed">Set Default Path Successed</string>
 </resources>
