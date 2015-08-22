@@ -11,7 +11,7 @@
         android:horizontalSpacing="5dp"
         android:verticalSpacing="10dp"
         android:clipToPadding="false"
-        android:numColumns="3"
+        android:numColumns="@integer/gridvivew_column_num"
         android:scrollingCache="true"
         android:smoothScrollbar="true"
         android:scrollbarStyle="outsideOverlay"

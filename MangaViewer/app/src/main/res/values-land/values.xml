@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="gridvivew_column_num">3</integer>
+    <integer name="gridvivew_column_num">5</integer>
 </resources>

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
@@ -29,7 +30,8 @@ import java.util.List;
 
 public class FavouriteFragment extends Fragment {
 
-    public GridView gv;
+    private GridView gv;
+    private TextView tv;
 
     public FavouriteFragment() {
         this.setHasOptionsMenu(true);
@@ -60,7 +62,7 @@ public class FavouriteFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         gv = (GridView) rootView.findViewById(R.id.gridView);
-
+        tv = (TextView) rootView.findViewById(R.id.textView);
 //        gv.setClickable(true);
 //        gv.setLongClickable(true);
 //        gv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -97,5 +99,11 @@ public class FavouriteFragment extends Fragment {
                 copy.getAppViewModel().Manga,
                 list);
         gv.setAdapter(adapter);
+        tv.setVisibility(View.GONE);
+        if (list.size() == 0) {
+            tv.setText(getString(R.string.favourite_no_favourite_manga));
+            tv.setVisibility(View.VISIBLE);
+        }
+
     }
 }

@@ -50,4 +50,5 @@
     <string name="local_set_default_path_successed">Set Default Path Successed</string>
     <string name="no_more_prev_chapter">No Previous Chapter</string>
     <string name="no_more_next_chapter">No Next Chapter</string>
+    <string name="favourite_no_favourite_manga">No Favourite Manga</string>
 </resources>
