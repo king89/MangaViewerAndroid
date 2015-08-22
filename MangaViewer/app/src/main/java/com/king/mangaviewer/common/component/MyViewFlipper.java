@@ -99,6 +99,7 @@ public class MyViewFlipper extends ViewFlipper {
 
     protected void initial() {
         pageList = null;
+        halfMode = 0;
         this.removeAllViews();
         mangaViewModel.setMangaPageList(null);
         initial(mangaViewModel, settingViewModel, updateHandler);

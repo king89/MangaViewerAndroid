@@ -114,6 +114,7 @@ public class MangaPageActivity extends BaseActivity {
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
                 tv.setText("" + (progress + 1) + "/" + vFlipper.getPageCount());
             }
 
@@ -134,6 +135,7 @@ public class MangaPageActivity extends BaseActivity {
             @Override
             public void onChanged(int pos) {
                 sb.setProgress(pos);
+                sb.setMax(vFlipper.getPageCount() - 1);
                 tv.setText("" + (pos + 1) + "/" + vFlipper.getPageCount());
             }
         });
