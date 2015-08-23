@@ -1,41 +1,28 @@
 package com.king.mangaviewer.actviity;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.preference.DialogPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.preference.MangaViewerDialogPreference;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
-
-import java.util.List;
 
 import static android.widget.Toast.*;
 
@@ -256,7 +243,7 @@ public class SettingsActivity extends PreferenceActivity {
             addPreferencesFromResource(R.xml.pref_general);
 
             //Cache Size
-            final MangaViewerDialogPreference p = (MangaViewerDialogPreference)findPreference(getString(R.string.pref_setting_storage_size_key));
+            final MangaViewerDialogPreference p = (MangaViewerDialogPreference)findPreference(getString(R.string.pref_key_setting_storage_size));
             p.setOnDialogClickListener(new MangaViewerDialogPreference.OnDialogClickListener() {
                 @Override
                 public void onClick() {

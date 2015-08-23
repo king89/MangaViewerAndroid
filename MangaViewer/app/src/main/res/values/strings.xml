@@ -51,13 +51,14 @@
     <string name="no_more_prev_chapter">No Previous Chapter</string>
     <string name="no_more_next_chapter">No Next Chapter</string>
     <string name="favourite_no_favourite_manga">No Favourite Manga</string>
-    <string name="pref_setting_storage_size_key">pref_setting_storage_size_key</string>
-    <string name="pref_title_setting_storage_size">Clear Cache Files</string>
     <string name="setting_msg_cache_cleared">Cache Files Cleared</string>
+
+    <string name="pref_key_setting_storage_size">pref_key_setting_storage_size</string>
+    <string name="pref_title_setting_storage_size">Clear Cache Files</string>
     <string name="pref_catagory_general">General</string>
     <string name="pref_catagory_reading">Reading</string>
     <string name="pref_catagory_system">System</string>
-    <string name="split_page_summary">Auto split page into two part</string>
+    <string name="pref_summary_split_page">Auto split page into two part</string>
     <string name="pref_title_contact_us">Contact Us</string>
     <string name="pref_key_contact_us">pref_key_contact_us</string>
     <string name="pref_key_rate">pref_key_rate</string>

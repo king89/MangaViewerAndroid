@@ -37,7 +37,7 @@
 
         <SwitchPreference
             android:defaultValue="true"
-            android:summary="@string/split_page_summary"
+            android:summary="@string/pref_summary_split_page"
             android:title="@string/split_page"
             >
 
@@ -49,7 +49,7 @@
         <Preference android:title="@string/pref_title_version"/>
 
         <com.king.mangaviewer.preference.MangaViewerDialogPreference
-            android:key="@string/pref_setting_storage_size_key"
+            android:key="@string/pref_key_setting_storage_size"
             android:title="@string/pref_title_setting_storage_size"
             android:dialogMessage="@string/pref_dialog_message_clear_cache"
             />

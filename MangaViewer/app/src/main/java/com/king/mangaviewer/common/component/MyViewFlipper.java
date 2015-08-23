@@ -303,22 +303,31 @@ public class MyViewFlipper extends ViewFlipper {
             //ensure this image should be shown
             synchronized (lock) {
                 if (next == mCurrPos) {
+                    //determine the half 1 part with "isFromLeftToRight"
+                    int halfOne, halfTwo;
+                    if (getIsFromLeftToRight()) {
+                        halfOne = 0;
+                        halfTwo = w / 2;
+                    } else {
+                        halfOne = w / 2;
+                        halfTwo = 0;
+                    }
                     if (halfMode == 0) {
                         //make it half
                         if (w > h) {
                             if (curr > next) {
                                 halfMode = 2;
-                                img = Bitmap.createBitmap(img, 0, 0, w / 2, h);
+                                img = Bitmap.createBitmap(img, halfOne, 0, w / 2, h);
                             } else {
                                 halfMode = 1;
-                                img = Bitmap.createBitmap(img, w / 2, 0, w / 2, h);
+                                img = Bitmap.createBitmap(img, halfTwo, 0, w / 2, h);
                             }
 
                         }
                     } else if (halfMode == 1) {
-                        img = Bitmap.createBitmap(img, w / 2, 0, w / 2, h);
+                        img = Bitmap.createBitmap(img, halfTwo, 0, w / 2, h);
                     } else if (halfMode == 2) {
-                        img = Bitmap.createBitmap(img, 0, 0, w / 2, h);
+                        img = Bitmap.createBitmap(img, halfOne, 0, w / 2, h);
                     }
                 }
             }
@@ -410,8 +419,8 @@ public class MyViewFlipper extends ViewFlipper {
         if (getOrderDesc() && index + 1 < mangaViewModel.getMangaChapterList().size()) {
             mangaViewModel.setSelectedMangaChapterItem(index + 1);
             this.initial();
-        }else{
-            Toast.makeText(getContext(),getResources().getString(R.string.no_more_prev_chapter),Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), getResources().getString(R.string.no_more_prev_chapter), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -420,8 +429,8 @@ public class MyViewFlipper extends ViewFlipper {
         if (getOrderDesc() && index - 1 >= 0) {
             mangaViewModel.setSelectedMangaChapterItem(index - 1);
             this.initial();
-        }else{
-            Toast.makeText(getContext(),getResources().getString(R.string.no_more_next_chapter),Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), getResources().getString(R.string.no_more_next_chapter), Toast.LENGTH_SHORT).show();
         }
     }
 
