@@ -1,9 +1,11 @@
 package com.king.mangaviewer.actviity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -43,7 +45,7 @@ public class MainActivity extends BaseActivity {
     private TypedArray navMenuIcons;
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
-
+    private int mSelectedPosition;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,7 +146,13 @@ public class MainActivity extends BaseActivity {
                 fragment = new FavouriteFragment();
                 break;
             case 4:
-                fragment = new SettingFragment();
+                mDrawerList.setItemChecked(mSelectedPosition, true);
+                mDrawerList.setSelection(mSelectedPosition);
+                mTitle = navMenuTitles[mSelectedPosition];
+                this.setActionBarTitle(navMenuTitles[mSelectedPosition]);
+                mDrawerLayout.closeDrawer(mDrawerList);
+                startActivity(new Intent(this, SettingsActivity.class));
+                this.overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
                 break;
             default:
                 break;
@@ -158,6 +166,7 @@ public class MainActivity extends BaseActivity {
                     .replace(R.id.frame_container, fragment).commit();
 
             // update selected item and title, then close the drawer
+            mSelectedPosition = position;
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
             mTitle = navMenuTitles[position];

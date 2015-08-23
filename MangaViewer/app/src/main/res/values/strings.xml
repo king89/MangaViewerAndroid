@@ -14,8 +14,8 @@
     <string name="setting_folder_size">Cache File Size</string>
     <string name="last_page">Last Page</string>
     <string name="first_page">First Page</string>
-    <string name="reading_direction">Reading Direction:\t\t\t</string>
-    <string name="split_page">Auto Split Page:\t\t\t</string>
+    <string name="reading_direction">Reading Direction\t\t\t</string>
+    <string name="split_page">Auto Split Page\t\t\t</string>
     <string name="favourite">Favourite</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="all_manga">All Manga</string>
@@ -51,4 +51,20 @@
     <string name="no_more_prev_chapter">No Previous Chapter</string>
     <string name="no_more_next_chapter">No Next Chapter</string>
     <string name="favourite_no_favourite_manga">No Favourite Manga</string>
+    <string name="pref_setting_storage_size_key">pref_setting_storage_size_key</string>
+    <string name="pref_title_setting_storage_size">Clear Cache Files</string>
+    <string name="setting_msg_cache_cleared">Cache Files Cleared</string>
+    <string name="pref_catagory_general">General</string>
+    <string name="pref_catagory_reading">Reading</string>
+    <string name="pref_catagory_system">System</string>
+    <string name="split_page_summary">Auto split page into two part</string>
+    <string name="pref_title_contact_us">Contact Us</string>
+    <string name="pref_key_contact_us">pref_key_contact_us</string>
+    <string name="pref_key_rate">pref_key_rate</string>
+    <string name="pref_title_rate">Rate Me</string>
+    <string name="pref_title_version">Version</string>
+    <string name="pref_dialog_message_clear_cache">Are you sure clear the cache files ?</string>
+    <string name="pref_data_rate_me">http://google.com</string>
+    <string name="pref_data_contact_us">mailto:mangaviewer2015@gmail.com?subject=About Suggestion</string>
+    <string name="pref_data_contact_us_email_text">About MangaViewer.</string>
 </resources>

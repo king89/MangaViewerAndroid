@@ -1,0 +1,57 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <PreferenceCategory android:title="@string/pref_catagory_general">
+        <!--Contact Us-->
+        <Preference
+            android:key="@string/pref_key_contact_us"
+            android:title="@string/pref_title_contact_us">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/pref_data_contact_us">
+                <extra
+                    android:name="android.intent.extra.TEXT"
+                    android:value="@string/pref_data_contact_us_email_text"/>
+            </intent>
+        </Preference>
+        <!--Rate-->
+        <Preference
+            android:key="@string/pref_key_rate"
+            android:title="@string/pref_title_rate">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/pref_data_rate_me"></intent>
+        </Preference>
+
+        <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+             dismiss it. -->
+        <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/pref_manga_sources_titles"
+            android:entryValues="@array/pref_manga_sources_values"
+            android:key="example_list"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:title="@string/pref_title_manga_sources"/>
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:summary="@string/split_page_summary"
+            android:title="@string/split_page"
+            >
+
+        </SwitchPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_catagory_system">
+
+        <Preference android:title="@string/pref_title_version"/>
+
+        <com.king.mangaviewer.preference.MangaViewerDialogPreference
+            android:key="@string/pref_setting_storage_size_key"
+            android:title="@string/pref_title_setting_storage_size"
+            android:dialogMessage="@string/pref_dialog_message_clear_cache"
+            />
+    </PreferenceCategory>
+</PreferenceScreen>
