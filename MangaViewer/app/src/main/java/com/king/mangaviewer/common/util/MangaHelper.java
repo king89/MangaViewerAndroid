@@ -141,7 +141,7 @@ public class MangaHelper {
     /* Menu */
     public List<MangaMenuItem> GetNewMangeList() {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
-                getSettingViewModel().getSelectedWebSource());
+                getSettingViewModel().getSelectedWebSource(context));
         String html = getMenuHtml(mPattern);
         List<TitleAndUrl> pageUrlList = mPattern.GetTopMangaList(html);
 
@@ -149,7 +149,7 @@ public class MangaHelper {
         for (int i = 0; i < pageUrlList.size(); i++) {
             menuList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
                     .getTitle(), null, pageUrlList.get(i).getImagePath(),
-                    pageUrlList.get(i).getUrl(), getSettingViewModel().getSelectedWebSource()));
+                    pageUrlList.get(i).getUrl(), getSettingViewModel().getSelectedWebSource(context)));
         }
 
         return menuList;
@@ -158,7 +158,7 @@ public class MangaHelper {
     /* Search */
     public List<MangaMenuItem> GetSearchMangeList(String query, int pageNum) {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
-                getSettingViewModel().getSelectedWebSource());
+                getSettingViewModel().getSelectedWebSource(context));
         String html = getMenuHtml(mPattern);
         List<TitleAndUrl> pageUrlList = mPattern.GetSearchingList(query, pageNum);
 
@@ -166,7 +166,7 @@ public class MangaHelper {
         for (int i = 0; i < pageUrlList.size(); i++) {
             menuList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
                     .getTitle(), null, pageUrlList.get(i).getImagePath(),
-                    pageUrlList.get(i).getUrl(), getSettingViewModel().getSelectedWebSource()));
+                    pageUrlList.get(i).getUrl(), getSettingViewModel().getSelectedWebSource(context)));
         }
 
         return menuList;

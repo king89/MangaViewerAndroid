@@ -151,7 +151,7 @@ public class MainActivity extends BaseActivity {
                 mTitle = navMenuTitles[mSelectedPosition];
                 this.setActionBarTitle(navMenuTitles[mSelectedPosition]);
                 mDrawerLayout.closeDrawer(mDrawerList);
-                startActivity(new Intent(this, SettingsActivity.class));
+                startActivityForResult(new Intent(this, SettingsActivity.class), 1);
                 this.overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
                 break;
             default:
@@ -176,6 +176,12 @@ public class MainActivity extends BaseActivity {
             // error in creating fragment
             Log.e("MainActivity", "Error in creating fragment");
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        displayView(mSelectedPosition);
     }
 
     @Override

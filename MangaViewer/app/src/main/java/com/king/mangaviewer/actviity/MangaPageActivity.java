@@ -33,6 +33,7 @@ public class MangaPageActivity extends BaseActivity {
     MangaViewModel mMangaViewModel;
     SettingViewModel mSettingViewModel;
     ImageButton mFRImageButton, mFFImageButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         initViewModels();
@@ -141,14 +142,14 @@ public class MangaPageActivity extends BaseActivity {
         });
 
         //Image Button
-        mFFImageButton = (ImageButton)findViewById(R.id.ffButton);
+        mFFImageButton = (ImageButton) findViewById(R.id.ffButton);
         mFFImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vFlipper.goNextChapter();
             }
         });
-        mFRImageButton = (ImageButton)findViewById(R.id.frButton);
+        mFRImageButton = (ImageButton) findViewById(R.id.frButton);
         mFRImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,8 +218,8 @@ public class MangaPageActivity extends BaseActivity {
         View layout = getLayoutInflater().inflate(R.layout.menu_page_setting, null);
 
         //Init Switch
-        Switch isFTRSwitch = (Switch)layout.findViewById(R.id.LTRSwitch);
-        Switch splitPageSwitch = (Switch)layout.findViewById(R.id.splitPageSwitch);
+        Switch isFTRSwitch = (Switch) layout.findViewById(R.id.LTRSwitch);
+        Switch splitPageSwitch = (Switch) layout.findViewById(R.id.splitPageSwitch);
 
         isFTRSwitch.setChecked(mSettingViewModel.getIsFromLeftToRight());
         isFTRSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -229,11 +230,11 @@ public class MangaPageActivity extends BaseActivity {
 
             }
         });
-        splitPageSwitch.setChecked(mSettingViewModel.getIsSplitPage());
+        splitPageSwitch.setChecked(mSettingViewModel.getIsSplitPage(this));
         splitPageSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mSettingViewModel.setIsSplitPage(isChecked);
+                mSettingViewModel.setIsSplitPage(MangaPageActivity.this, isChecked);
                 vFlipper.refresh();
             }
         });

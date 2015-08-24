@@ -42,7 +42,7 @@
     <string name="action_settings">Settings</string>
     <string name="favourited">Favourited</string>
     <string name="unfavourited">Unfavourited</string>
-    <string name="do_you_want_to_delete">Are you Sure to Delete this item ?</string>
+    <string name="do_you_want_to_delete">Are you Sure You Want To Delete This Item ?</string>
     <string name="deleting_dialog_title">Deleting Item</string>
     <string name="yes">YES</string>
     <string name="local_current_path">Current Path</string>
@@ -54,18 +54,25 @@
     <string name="setting_msg_cache_cleared">Cache Files Cleared</string>
 
     <string name="pref_key_setting_storage_size">pref_key_setting_storage_size</string>
-    <string name="pref_title_setting_storage_size">Clear Cache Files</string>
+    <string name="pref_key_contact_us">pref_key_contact_us</string>
+    <string name="pref_key_rate">pref_key_rate</string>
+    <string name="pref_key_manga_sources">pref_key_manga_sources</string>
+    <string name="pref_key_split_page">pref_key_split_page</string>
+
     <string name="pref_catagory_general">General</string>
     <string name="pref_catagory_reading">Reading</string>
     <string name="pref_catagory_system">System</string>
-    <string name="pref_summary_split_page">Auto split page into two part</string>
+
+    <string name="pref_summary_split_page">Auto Split Page Into Two Part</string>
+
     <string name="pref_title_contact_us">Contact Us</string>
-    <string name="pref_key_contact_us">pref_key_contact_us</string>
-    <string name="pref_key_rate">pref_key_rate</string>
+    <string name="pref_title_setting_storage_size">Clear Cache Files</string>
     <string name="pref_title_rate">Rate Me</string>
     <string name="pref_title_version">Version</string>
-    <string name="pref_dialog_message_clear_cache">Are you sure clear the cache files ?</string>
+
+    <string name="pref_dialog_message_clear_cache">Are You Sure You Want To Clear The Cache Files ?</string>
     <string name="pref_data_rate_me">http://google.com</string>
     <string name="pref_data_contact_us">mailto:mangaviewer2015@gmail.com?subject=About Suggestion</string>
-    <string name="pref_data_contact_us_email_text">About MangaViewer.</string>
+    <string name="pref_data_contact_us_email_text">About MangaViewer</string>
+
 </resources>

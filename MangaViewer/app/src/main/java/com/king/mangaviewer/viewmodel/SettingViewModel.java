@@ -2,6 +2,8 @@ package com.king.mangaviewer.viewmodel;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
@@ -41,7 +43,7 @@ public class SettingViewModel extends ViewModelBase {
     public static SettingViewModel loadSetting(Context context) {
         SettingViewModel svm = SettingHelper.loadSetting(context);
         //Manga Sources
-        svm.mMangaWebSources = loadMangaSource(context);
+        svm.setMangaWebSources(loadMangaSource(context));
         //Favourite mangas
         if (svm.mFavouriteMangaList == null) {
             svm.mFavouriteMangaList = new HashMap<>();
@@ -65,7 +67,11 @@ public class SettingViewModel extends ViewModelBase {
         this.mIsFromLeftToRight = mIsFromLeftToRight;
     }
 
-    public void setIsSplitPage(boolean mIsSplitPage) {
+    public void setIsSplitPage(Context context, boolean mIsSplitPage) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(context.getString(R.string.pref_key_split_page),mIsSplitPage);
+        editor.commit();
         this.mIsSplitPage = mIsSplitPage;
     }
 
@@ -73,7 +79,9 @@ public class SettingViewModel extends ViewModelBase {
         return mIsFromLeftToRight;
     }
 
-    public boolean getIsSplitPage() {
+    public boolean getIsSplitPage(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        mIsSplitPage = sp.getBoolean(context.getString(R.string.pref_key_split_page),true);
         return mIsSplitPage;
     }
 
@@ -156,7 +164,10 @@ public class SettingViewModel extends ViewModelBase {
         return this.mFavouriteMangaList.values();
     }
 
-    public MangaWebSource getSelectedWebSource() {
+    public MangaWebSource getSelectedWebSource(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        String id = sp.getString(context.getString(R.string.pref_key_manga_sources),"0");
+        setSelectedWebSource(Integer.parseInt(id));
         return mSelectedWebSource;
     }
 
@@ -173,6 +184,16 @@ public class SettingViewModel extends ViewModelBase {
 
     public void setSelectedWebSource(MangaWebSource webSite) {
         mSelectedWebSource = webSite;
+    }
+
+    public void setSelectedWebSource(int id) {
+        mSelectedWebSource = null;
+        for (MangaWebSource m : mMangaWebSources) {
+            if (id == m.getId()) {
+                mSelectedWebSource = m;
+            }
+        }
+
     }
 
     public String getDefaultLocalMangaPath() {

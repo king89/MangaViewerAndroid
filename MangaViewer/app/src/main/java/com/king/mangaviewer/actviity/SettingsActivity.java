@@ -2,6 +2,7 @@ package com.king.mangaviewer.actviity;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,17 +11,21 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.preference.MangaViewerDialogPreference;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
@@ -41,7 +46,7 @@ import static android.widget.Toast.*;
 public class SettingsActivity extends PreferenceActivity {
 
     private AppCompatDelegate mDelegate;
-
+    private static final String LOG_TAG = "SettingsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,17 +60,29 @@ public class SettingsActivity extends PreferenceActivity {
 
     }
 
-    public SettingViewModel getSettingViewModel(){
-        return ((MyApplication)getApplication()).AppViewModel.Setting;
+    public SettingViewModel getSettingViewModel() {
+        return ((MyApplication) getApplication()).AppViewModel.Setting;
     }
+
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        if (item.getItemId() == android.R.id.home)
-        {
-            finish();
-            this.overridePendingTransition(R.anim.in_leftright, R.anim.out_leftright);
+        if (item.getItemId() == android.R.id.home) {
+            finishSetting();
         }
-        return super.onMenuItemSelected(featureId,item);
+        return super.onMenuItemSelected(featureId, item);
+    }
+
+    private void finishSetting() {
+        Intent returnIntent = new Intent();
+        setResult(RESULT_OK, returnIntent);
+        finish();
+        this.overridePendingTransition(R.anim.in_leftright, R.anim.out_leftright);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishSetting();
+        super.onBackPressed();
     }
 
     @Override
@@ -149,10 +166,10 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
     @Override
-    protected boolean isValidFragment(String fragmentName)
-    {
+    protected boolean isValidFragment(String fragmentName) {
         return true;
     }
+
     /**
      * {@inheritDoc}
      */
@@ -201,7 +218,7 @@ public class SettingsActivity extends PreferenceActivity {
                                 ? listPreference.getEntries()[index]
                                 : null);
 
-            }  else {
+            } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);
@@ -237,27 +254,38 @@ public class SettingsActivity extends PreferenceActivity {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragment {
+        SettingViewModel mSettingViewMdoel = null;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
-
+            mSettingViewMdoel = ((SettingsActivity) getActivity()).getSettingViewModel();
             //Cache Size
-            final MangaViewerDialogPreference p = (MangaViewerDialogPreference)findPreference(getString(R.string.pref_key_setting_storage_size));
+            final MangaViewerDialogPreference p = (MangaViewerDialogPreference) findPreference(getString(R.string.pref_key_setting_storage_size));
             p.setOnDialogClickListener(new MangaViewerDialogPreference.OnDialogClickListener() {
                 @Override
                 public void onClick() {
-                    ((SettingsActivity)getActivity()).getSettingViewModel().resetMangaFolder(getActivity());
-                    p.setSummary(((SettingsActivity)getActivity()).getSettingViewModel().getMangaFolderSize(getActivity()));
+                    mSettingViewMdoel.resetMangaFolder(getActivity());
+                    p.setSummary(mSettingViewMdoel.getMangaFolderSize(getActivity()));
                     makeText(getActivity(), getString(R.string.setting_msg_cache_cleared), LENGTH_SHORT).show();
                 }
             });
-            p.setSummary(((SettingsActivity)getActivity()).getSettingViewModel().getMangaFolderSize(getActivity()));
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+            p.setSummary(mSettingViewMdoel.getMangaFolderSize(getActivity()));
+
+            //Manga Sources
+            final ListPreference mangaSourcesPref = (ListPreference) findPreference(getString(R.string.pref_key_manga_sources));
+            String value = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(mangaSourcesPref.getKey(), "");
+            CharSequence[] csEntries = new CharSequence[mSettingViewMdoel.getMangaWebSources().size()];
+            CharSequence[] csValues = new CharSequence[mSettingViewMdoel.getMangaWebSources().size()];
+            for (int i = 0; i < mSettingViewMdoel.getMangaWebSources().size(); i++) {
+                csEntries[i] = mSettingViewMdoel.getMangaWebSources().get(i).getDisplayName();
+                csValues[i] = "" + mSettingViewMdoel.getMangaWebSources().get(i).getId();
+            }
+            mangaSourcesPref.setEntries(csEntries);
+            mangaSourcesPref.setEntryValues(csValues);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_manga_sources)));
+
         }
     }
 

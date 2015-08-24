@@ -130,7 +130,7 @@ public class MyViewFlipper extends ViewFlipper {
 
     protected boolean getIsSplitPage() {
         if (settingViewModel != null) {
-            return settingViewModel.getIsSplitPage();
+            return settingViewModel.getIsSplitPage(getContext());
         } else {
             return true;
         }
@@ -304,30 +304,31 @@ public class MyViewFlipper extends ViewFlipper {
             synchronized (lock) {
                 if (next == mCurrPos) {
                     //determine the half 1 part with "isFromLeftToRight"
-                    int halfOne, halfTwo;
+                    int halfPartTwo, halfPartOne;
                     if (getIsFromLeftToRight()) {
-                        halfOne = 0;
-                        halfTwo = w / 2;
+                        halfPartOne = w / 2;
+                        halfPartTwo = 0;
                     } else {
-                        halfOne = w / 2;
-                        halfTwo = 0;
+                        halfPartOne = 0;
+                        halfPartTwo = w / 2;
+
                     }
                     if (halfMode == 0) {
                         //make it half
                         if (w > h) {
                             if (curr > next) {
                                 halfMode = 2;
-                                img = Bitmap.createBitmap(img, halfOne, 0, w / 2, h);
+                                img = Bitmap.createBitmap(img, halfPartTwo, 0, w / 2, h);
                             } else {
                                 halfMode = 1;
-                                img = Bitmap.createBitmap(img, halfTwo, 0, w / 2, h);
+                                img = Bitmap.createBitmap(img, halfPartOne, 0, w / 2, h);
                             }
 
                         }
                     } else if (halfMode == 1) {
-                        img = Bitmap.createBitmap(img, halfTwo, 0, w / 2, h);
+                        img = Bitmap.createBitmap(img, halfPartOne, 0, w / 2, h);
                     } else if (halfMode == 2) {
-                        img = Bitmap.createBitmap(img, halfOne, 0, w / 2, h);
+                        img = Bitmap.createBitmap(img, halfPartTwo, 0, w / 2, h);
                     }
                 }
             }
