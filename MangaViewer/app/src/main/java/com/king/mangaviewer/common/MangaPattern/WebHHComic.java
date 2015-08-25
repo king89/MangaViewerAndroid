@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,11 +40,17 @@ public class WebHHComic extends WebSiteBasePattern {
     String code = "";
     String key = "tazsicoewrm";
 
+    public final static String ALL_MANGA_STATE_PAGE_KEY = "key_page_key";
+    public final static String ALL_MANGA_STATE_PAGE_NUM_NOW = "key_page_num_now";
+    public final static String ALL_MANGA_STATE_TOTAL_PAGE_NUM_THIS_KEY = "key_total_page_num";
+    public final static String ALL_MANGA_STATE_NO_MORE = "key_no_more";
+
     public WebHHComic(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
         WEBSITEURL = "http://www.hhxiee.cc/";
         WEBSEARCHURL = "http://somanhua.com/?key=";
+        WEBALLMANGABASEURL = "http://www.hhxiee.cc/hhabc/";
         CHARSET = "gb2312";
     }
 
@@ -79,7 +86,7 @@ public class WebHHComic extends WebSiteBasePattern {
     @Override
     public List<String> GetPageList(String firstPageUrl) {
         if (firstPageHtml == null) {
-            firstPageHtml = GetHtml(firstPageUrl);
+            firstPageHtml = getHtml(firstPageUrl);
         }
         //Get code
         Pattern codeRe = Pattern.compile("(?<=PicListUrl = \")(.+?)(?=\")");
@@ -102,7 +109,7 @@ public class WebHHComic extends WebSiteBasePattern {
 
     @Override
     public List<TitleAndUrl> GetChapterList(String chapterUrl) {
-        String html = GetHtml(chapterUrl);
+        String html = getHtml(chapterUrl);
         //Rex1  = <ul class="mh_fj" .+<li>.+</li></ul>
         Pattern rGetUl = Pattern.compile("<ul class=\"bi\"[\\s\\S]+?</ul>");
         //Rex2 = <li>.*?</li>
@@ -162,18 +169,89 @@ public class WebHHComic extends WebSiteBasePattern {
         String turl = WEBSEARCHURL + queryText;
         Log.v(LOG_TAG, "Seache: " + turl);
         List<TitleAndUrl> mangaList = new ArrayList<TitleAndUrl>();
-        String html = GetHtml(turl);
+        String html = getHtml(turl);
 
         Document doc = Jsoup.parse(html);
 
         Element el = doc.select(".dSHtm").get(0);
-        for (int i = 0; i < el.childNodeSize(); i++) {
+        for (int i = 0; i < el.children().size(); i++) {
             String title = el.child(i).select("a").first().text();
             String url = el.child(i).select("a").first().attr("href");
             String imageUrl = el.child(i).select("a").first().select("img").attr("src");
 
+            if (url.startsWith("/")) {
+                url = WEBSITEURL + url;
+            }
             mangaList.add(new TitleAndUrl(title, url, imageUrl));
         }
         return mangaList;
+    }
+
+    @Override
+    public List<TitleAndUrl> getAllManga(HashMap<String, Object> state) {
+        List<TitleAndUrl> mangaList = new ArrayList<>();
+        double mangaCountEachPage = 24.0f;
+
+        String pageKey = state.containsKey(ALL_MANGA_STATE_PAGE_KEY) ? state.get(ALL_MANGA_STATE_PAGE_KEY).toString() : "a";
+        int pageNum = state.containsKey(ALL_MANGA_STATE_PAGE_NUM_NOW) ? (int) state.get(ALL_MANGA_STATE_PAGE_NUM_NOW) : 1;
+        int totalPageNumThisKey = state.containsKey(ALL_MANGA_STATE_TOTAL_PAGE_NUM_THIS_KEY) ?
+                (int) state.get(ALL_MANGA_STATE_TOTAL_PAGE_NUM_THIS_KEY) : -1;
+        boolean noMore = state.containsKey(ALL_MANGA_STATE_NO_MORE) ? (boolean) state.get(ALL_MANGA_STATE_NO_MORE) : false;
+
+        if (!noMore) {
+            //if totalPageNumThisKey == -1 means first time, then just go on
+            if (totalPageNumThisKey != -1) {
+                //increase page num
+                if (pageNum + 1 <= totalPageNumThisKey) {
+                    pageNum++;
+                }
+                //cant' increase page num, so increase key
+                else {
+                    pageKey = "" + ((char) (pageKey.charAt(0) + 1));
+                    if (pageKey.charAt(0) > 'z') {
+                        noMore = true;
+                    }
+                }
+            }
+
+            state.put(ALL_MANGA_STATE_NO_MORE,noMore);
+            state.put(ALL_MANGA_STATE_PAGE_KEY, pageKey);
+            state.put(ALL_MANGA_STATE_PAGE_NUM_NOW, pageNum);
+
+            //start get html
+            if (!noMore) {
+                String trul = WEBALLMANGABASEURL + pageKey + "/" + pageNum + ".htm";
+                String html = getHtml(trul);
+                if (!html.isEmpty())
+                {
+
+                    Document doc = Jsoup.parse(html);
+                    Element el = doc.select(".replz").get(0);
+                    //get total Page num
+                    int totalMangaForThisKey = Integer.parseInt(el.select("font").get(0).text());
+                    totalPageNumThisKey = (int)Math.ceil(totalMangaForThisKey / mangaCountEachPage);
+                    state.put(ALL_MANGA_STATE_TOTAL_PAGE_NUM_THIS_KEY, totalPageNumThisKey);
+
+                    //get manga list
+                    el = doc.select(".list").get(0);
+                    for (int i = 0; i < el.children().size(); i++) {
+                        String title = el.child(i).select("a").text();
+                        String url = el.child(i).select("a").attr("href");
+                        String imageUrl = el.child(i).select("img").attr("src");
+
+                        if (url.startsWith("/")) {
+                            url = WEBSITEURL + url;
+                        }
+                        mangaList.add(new TitleAndUrl(title, url, imageUrl));
+                    }
+
+                    return mangaList;
+                }else {
+
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 }

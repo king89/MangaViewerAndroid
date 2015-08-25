@@ -22,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,6 +30,7 @@ import java.util.regex.Pattern;
 public class WebSiteBasePattern {
     public String WEBSITEURL = "";
     public String WEBSEARCHURL = "";
+    public String WEBALLMANGABASEURL = "";
     public String CHARSET = "utf8";
     protected int startNum = 1;
     protected int totalNum = 1;
@@ -92,7 +94,7 @@ public class WebSiteBasePattern {
 
     // public void DownloadOnePage(String pageUrl,String folder,int nowPageNum)
     // { return; }
-    public String GetHtml(String Url) {
+    public String getHtml(String Url) {
         URL url;
         try {
             url = new URL(Url);
@@ -185,4 +187,7 @@ public class WebSiteBasePattern {
         return null;
     }
 
+    public List<TitleAndUrl> getAllManga(HashMap<String, Object> state) {
+        return null;
+    }
 }

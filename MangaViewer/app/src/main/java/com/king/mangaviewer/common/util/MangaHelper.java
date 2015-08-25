@@ -22,6 +22,7 @@ import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -41,7 +42,7 @@ public class MangaHelper {
 
     private String getMenuHtml(WebSiteBasePattern pattern) {
         if (menuHtml.equalsIgnoreCase("")) {
-            return pattern.GetHtml(pattern.WEBSITEURL);
+            return pattern.getHtml(pattern.WEBSITEURL);
         } else {
             return menuHtml;
         }
@@ -153,6 +154,22 @@ public class MangaHelper {
         }
 
         return menuList;
+    }
+
+    public List<MangaMenuItem> getAllManga(List<MangaMenuItem> mangaList, HashMap<String, Object> state) {
+        WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
+                getSettingViewModel().getSelectedWebSource(context));
+
+        List<TitleAndUrl> pageUrlList = mPattern.getAllManga(state);
+
+        if (pageUrlList != null) {
+            for (int i = 0; i < pageUrlList.size(); i++) {
+                mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
+                        .getTitle(), null, pageUrlList.get(i).getImagePath(),
+                        pageUrlList.get(i).getUrl(), getSettingViewModel().getSelectedWebSource(context)));
+            }
+        }
+        return mangaList;
     }
 
     /* Search */

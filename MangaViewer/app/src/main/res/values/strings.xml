@@ -6,19 +6,22 @@
     <string name="refresh">Refresh</string>
     <string name="title_activity_manga_chapter">MangaChapterActivity</string>
     <string name="title_activity_manga_page">MangaPageActivity</string>
-    <string name="local">Local</string>
-    <string name="latest_update">Latest Update</string>
+
     <string name="choosefile">Choose Your Manga File(.zip)</string>
-    <string name="setting">Settings</string>
     <string name="setting_source">Sources</string>
     <string name="setting_folder_size">Cache File Size</string>
     <string name="last_page">Last Page</string>
     <string name="first_page">First Page</string>
     <string name="reading_direction">Reading Direction\t\t\t</string>
     <string name="split_page">Auto Split Page\t\t\t</string>
-    <string name="favourite">Favourite</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="all_manga">All Manga</string>
+
+    <!--Menu-->
+    <string name="latest_update">Latest Releases</string>
+    <string name="all_manga">Top Manga</string>
+    <string name="local">Local</string>
+    <string name="favourite">Favourite</string>
+    <string name="setting">Settings</string>
 
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
@@ -53,6 +56,7 @@
     <string name="favourite_no_favourite_manga">No Favourite Manga</string>
     <string name="setting_msg_cache_cleared">Cache Files Cleared</string>
 
+    <!--Preference-->
     <string name="pref_key_setting_storage_size">pref_key_setting_storage_size</string>
     <string name="pref_key_contact_us">pref_key_contact_us</string>
     <string name="pref_key_rate">pref_key_rate</string>
@@ -74,5 +78,8 @@
     <string name="pref_data_rate_me">http://google.com</string>
     <string name="pref_data_contact_us">mailto:mangaviewer2015@gmail.com?subject=About Suggestion</string>
     <string name="pref_data_contact_us_email_text">About MangaViewer</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -18,7 +18,7 @@ import com.king.mangaviewer.model.MangaMenuItem;
 import java.util.List;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseFragment {
 
     public GridView gv;
     ProgressDialog progressDialog;

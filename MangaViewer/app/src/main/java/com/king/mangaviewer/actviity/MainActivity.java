@@ -134,10 +134,13 @@ public class MainActivity extends BaseActivity {
     private void displayView(int position) {
         // update the main content by replacing fragments
 
-        Fragment fragment = null;
+        BaseFragment fragment = null;
         switch (position) {
             case 0:
                 fragment = new HomeFragment();
+                break;
+            case 1:
+                fragment = new AllMangaFragment();
                 break;
             case 2:
                 fragment = new LocalFragment();

@@ -4,6 +4,8 @@ import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaPageItem;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MangaViewModel extends ViewModelBase {
@@ -15,10 +17,37 @@ public class MangaViewModel extends ViewModelBase {
     private MangaPageItem selectedMangaPageItem = null;
     private List<MangaMenuItem> mangaMenuList = null;
 
+    private  List<MangaMenuItem> mAllMangaList = null;
+    private HashMap<String, Object> mAllMangaStateHash = null;
     private int nowPagePosition = 0;
 
     public List<MangaMenuItem> getMangaMenuList() {
         return mangaMenuList;
+    }
+
+    public List<MangaMenuItem> getAllMangaList(){
+        if (mAllMangaList == null)
+            mAllMangaList = new ArrayList<>();
+        return mAllMangaList;
+    }
+
+    public void setAllMangaStateHash(HashMap<String, Object> mAllMangaStateHash) {
+        this.mAllMangaStateHash = mAllMangaStateHash;
+    }
+
+    public HashMap<String, Object> getmAllMangaStateHash() {
+        if (mAllMangaStateHash == null)
+            mAllMangaStateHash = new HashMap<>();
+        return mAllMangaStateHash;
+    }
+
+    public void resetAllMangaList() {
+        mAllMangaList = null;
+        mAllMangaStateHash = null;
+    }
+
+    public void setAllMangaList(List<MangaMenuItem> mAllMangaList) {
+        this.mAllMangaList = mAllMangaList;
     }
 
     public void setMangaMenuList(List<MangaMenuItem> mangaMenuList) {
@@ -81,4 +110,5 @@ public class MangaViewModel extends ViewModelBase {
     {
         nowPagePosition = p;
     }
+
 }

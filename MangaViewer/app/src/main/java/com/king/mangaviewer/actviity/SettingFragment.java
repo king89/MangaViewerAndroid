@@ -18,7 +18,7 @@ import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 
-public class SettingFragment extends Fragment {
+public class SettingFragment extends BaseFragment {
 
     private RadioGroup gv;
     private SettingViewModel sv;

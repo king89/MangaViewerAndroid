@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class LocalFragment extends Fragment {
+public class LocalFragment extends BaseFragment {
 
     private static final String TAG = "F_PATH";
     // Stores names of traversed directories

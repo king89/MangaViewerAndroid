@@ -87,7 +87,7 @@ public class WebIManhua extends WebSiteBasePattern {
     public List<TitleAndUrl> GetChapterList(String chapterUrl) {
         // TODO Auto-generated method stub
         // http://comic.131.com/content/shaonian/2104.html
-        String html = GetHtml(chapterUrl);
+        String html = getHtml(chapterUrl);
         // Rex1 = <ul class="mh_fj" .+<li>.+</li></ul>
         Pattern rGetUl = Pattern.compile("id=[\"']subBookList[\"']>.+?</ul>");
         // Rex2 = <li>.*?</li>
@@ -116,7 +116,7 @@ public class WebIManhua extends WebSiteBasePattern {
         try {
             // TODO Auto-generated method stub
             if (firstPageHtml == null) {
-                firstPageHtml = GetHtml(firstPageUrl);
+                firstPageHtml = getHtml(firstPageUrl);
             }
             totalNum = GetTotalNum(firstPageHtml);
             pageList = new ArrayList<String>();

@@ -36,13 +36,13 @@ public class SettingMouldeTest extends ActivityInstrumentationTestCase2<MainActi
         mLaunchIntent = (MainActivity) (getActivity());
         SettingViewModel svm = SettingViewModel.loadSetting(mLaunchIntent);
 
-        svm.addFavouriteManga(new FavouriteMangaMenuItem(new MangaMenuItem("1", "1", "1", "1", "url", svm.getSelectedWebSource())));
+        svm.addFavouriteManga(new FavouriteMangaMenuItem(new MangaMenuItem("1", "1", "1", "1", "url", svm.getSelectedWebSource(mLaunchIntent))));
         SettingHelper.saveSetting(mLaunchIntent, svm);
 
         svm = SettingViewModel.loadSetting(mLaunchIntent);
 
         assertNotNull(svm);
-        assertNotNull(svm.getSelectedWebSource());
+        assertNotNull(svm.getSelectedWebSource(mLaunchIntent));
     }
 
 //    @MediumTest

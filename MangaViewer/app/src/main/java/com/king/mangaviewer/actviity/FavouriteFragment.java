@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class FavouriteFragment extends Fragment {
+public class FavouriteFragment extends BaseFragment {
 
     private GridView gv;
     private TextView tv;
