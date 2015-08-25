@@ -15,3 +15,23 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-optimizationpasses 5
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-verbose
+
+-dontwarn org.joda.time.**
+-keep class org.joda.time.** {
+*;
+}
+
+-keep class com.king.mangaviewer.common.MangaPattern.** {
+public *;
+}
+
+-keep class android.support.**{*;}
+-keep class org.jsoup.**{*;}
+-keep class com.google.**{*;}
+-keep class me.grantland.widget.**{*;}
