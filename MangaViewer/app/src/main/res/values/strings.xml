@@ -83,5 +83,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="msg_loading">Loading...</string>
     <string name="title_loading">Loading</string>
+    <string name="msg_tap_two_to_exit">Tap Back Again To Exit App</string>
 
 </resources>

@@ -37,7 +37,7 @@ public class SettingViewModel extends ViewModelBase {
     private List<MangaWebSource> mMangaWebSources;
     private HashMap<String, FavouriteMangaMenuItem> mFavouriteMangaList;
 
-    private boolean mIsFromLeftToRight = false;
+    private boolean mIsFromLeftToRight = true;
     private boolean mIsSplitPage = true;
 
     public static SettingViewModel loadSetting(Context context) {
@@ -63,9 +63,7 @@ public class SettingViewModel extends ViewModelBase {
         return svm;
     }
 
-    public void setIsFromLeftToRight(boolean mIsFromLeftToRight) {
-        this.mIsFromLeftToRight = mIsFromLeftToRight;
-    }
+
 
     public void setIsSplitPage(Context context, boolean mIsSplitPage) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -73,6 +71,10 @@ public class SettingViewModel extends ViewModelBase {
         editor.putBoolean(context.getString(R.string.pref_key_split_page),mIsSplitPage);
         editor.commit();
         this.mIsSplitPage = mIsSplitPage;
+    }
+
+    public void setIsFromLeftToRight(boolean mIsFromLeftToRight) {
+        this.mIsFromLeftToRight = mIsFromLeftToRight;
     }
 
     public boolean getIsFromLeftToRight() {

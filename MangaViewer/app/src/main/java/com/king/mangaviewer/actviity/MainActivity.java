@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -26,6 +27,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.NavDrawerListAdapter;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
 
+    private static final long DELAYTIME = 5000;
     CharSequence mTitle;
     CharSequence mDrawerTitle;
     private DrawerLayout mDrawerLayout;
@@ -46,6 +49,8 @@ public class MainActivity extends BaseActivity {
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
     private int mSelectedPosition;
+    private int mTwoTapToExit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,11 +79,9 @@ public class MainActivity extends BaseActivity {
 
         // adding nav drawer items to array
         // Home
-        for (int i = 0; i < navMenuTitles.length; i++)
-        {
+        for (int i = 0; i < navMenuTitles.length; i++) {
             navDrawerItems.add(new NavDrawerItem(navMenuTitles[i], navMenuIcons.getResourceId(i, -1)));
         }
-
 
 
         // Recycle the typed array
@@ -238,25 +241,32 @@ public class MainActivity extends BaseActivity {
     protected void initControl() {
         // TODO Auto-generated method stub
         setContentView(R.layout.activity_main_menu);
+        mTwoTapToExit = 0;
+    }
 
-//		progressDialog = ProgressDialog.show(MainActivity.this, "Loading",
-//				"Loading");
-//
-//		new Thread() {
-//			@Override
-//			public void run() {
-//				// TODO Auto-generated method stub
-//
-//				List<MangaMenuItem> mList = MainActivity.this.getMangaHelper()
-//						.GetNewMangeList();
-//				MainActivity.this.getAppViewModel().Manga
-//						.setNewMangaMenuList(mList);
-//
-//				handler.sendEmptyMessage(0);
-//			}
-//		}.start();
-//
-//		gv = (GridView) this.findViewById(R.id.gridView);
+    @Override
+    public void onBackPressed() {
+        if (mTwoTapToExit < 1) {
+            if (!mDrawerLayout.isDrawerOpen(mDrawerList)) {
+                mDrawerLayout.openDrawer(mDrawerList);
+            }else {
+                mDrawerLayout.closeDrawer(mDrawerList);
+            }
+            mTwoTapToExit++;
+            exitAppHandler.removeCallbacks(exitAppRunable);
+            exitAppHandler.postDelayed(exitAppRunable, DELAYTIME);
+            Toast.makeText(this,getString(R.string.msg_tap_two_to_exit),Toast.LENGTH_LONG).show();
+        } else {
+            super.onBackPressed();
+        }
 
     }
+
+    private Handler exitAppHandler = new Handler();
+    private Runnable exitAppRunable = new Runnable() {
+        @Override
+        public void run() {
+            mTwoTapToExit = 0;
+        }
+    };
 }
