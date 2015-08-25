@@ -49,8 +49,8 @@ public class HomeFragment extends BaseFragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         gv = (GridView) rootView.findViewById(R.id.gridView);
-        progressDialog = ProgressDialog.show(this.getActivity(), "Loading",
-                "Loading");
+        progressDialog = ProgressDialog.show(this.getActivity(), getString(R.string.title_loading),
+                getString(R.string.msg_loading));
 
         new Thread() {
             @Override

@@ -6,13 +6,15 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
 import com.king.mangaviewer.common.util.MangaHelper;
 import com.king.mangaviewer.model.MangaMenuItem;
@@ -27,17 +29,24 @@ import java.util.List;
  */
 public class MangaGridView extends GridView {
 
+    private String LOG = "MangaGridView";
     private HashMap<String, Object> mStateHash;
-    private boolean flag_loading;
+    private boolean flagLoading;
+    private Object flagLock = new Object();
     private List<MangaMenuItem> mMangaList;
-    private TextView mLoadingFooter;
-
+    private View mLoadingFooter;
+    private MangaViewModel mMangaViewModel;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
 
-            ((BaseAdapter) MangaGridView.this.getAdapter()).notifyDataSetChanged();
-            flag_loading = false;
+            if (MangaGridView.this.getAdapter() != null) {
+                ((BaseAdapter) MangaGridView.this.getAdapter()).notifyDataSetChanged();
+            }
+            if (mLoadingFooter != null) {
+                mLoadingFooter.setVisibility(GONE);
+            }
+            setFlagLoading(false);
             super.handleMessage(msg);
         }
     };
@@ -64,21 +73,25 @@ public class MangaGridView extends GridView {
     }
 
     public void Initial(MangaViewModel mangaViewModel) {
+        mMangaViewModel = mangaViewModel;
         this.mMangaList = mangaViewModel.getAllMangaList();
         this.mStateHash = mangaViewModel.getmAllMangaStateHash();
-
-        this.setAdapter(new MangaMenuItemAdapter(getContext(), mangaViewModel, mMangaList));
+        MangaGridView.this.setAdapter(new MangaMenuItemAdapter(getContext(), mMangaViewModel, mMangaList));
         getMoreManga();
     }
 
     private void Init() {
         this.setOnScrollListener(mOnScrollListener);
         mLoadingFooter = new TextView(getContext());
-        mLoadingFooter.setText("LOADING");
+    }
+
+    public void setLoadingFooter(View view) {
+        mLoadingFooter = view;
     }
 
     protected void getMoreManga() {
-
+        setFlagLoading(true);
+        mLoadingFooter.setVisibility(VISIBLE);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -93,17 +106,28 @@ public class MangaGridView extends GridView {
     OnScrollListener mOnScrollListener = new OnScrollListener() {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
-
+            Log.i(LOG, "" + scrollState);
         }
 
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
-                if (flag_loading == false) {
-                    flag_loading = true;
+                if (getFlagLoading() == false) {
                     getMoreManga();
                 }
             }
         }
     };
+
+    public void setFlagLoading(boolean flagLoading) {
+        synchronized (flagLock) {
+            this.flagLoading = flagLoading;
+        }
+    }
+
+    public boolean getFlagLoading() {
+        synchronized (flagLock) {
+            return flagLoading;
+        }
+    }
 }
