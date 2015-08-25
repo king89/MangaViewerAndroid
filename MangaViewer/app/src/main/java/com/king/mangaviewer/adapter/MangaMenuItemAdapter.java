@@ -70,17 +70,14 @@ public class MangaMenuItemAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
         ViewHolder holder = null;
+        //alway new a ViewHolder
+        holder = new ViewHolder();
 
-        if (convertView == null) {
-            holder = new ViewHolder();
+        convertView = mInflater.inflate(R.layout.list_manga_menu_item, null);
+        holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
+        holder.textView = (TextView) convertView.findViewById(R.id.textView);
+        convertView.setTag(holder);
 
-            convertView = mInflater.inflate(R.layout.list_manga_menu_item, null);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
-            holder.textView = (TextView) convertView.findViewById(R.id.textView);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
         String imagePath = this.menu.get(position).getImagePath();
         Drawable cachedImage = asyncImageLoader.loadDrawable(imagePath,
                 holder.imageView, new ImageCallback() {
