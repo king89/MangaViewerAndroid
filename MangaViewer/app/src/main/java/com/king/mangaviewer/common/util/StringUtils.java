@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class StringUtils {
 
@@ -27,6 +30,25 @@ public class StringUtils {
         }
 
         return sBuilder.toString();
+    }
+
+    public static String getHash(String tx) {
+        MessageDigest m = null;
+        try {
+            m = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        m.reset();
+        m.update(tx.getBytes());
+        byte[] digest = m.digest();
+        BigInteger bigInt = new BigInteger(1, digest);
+        String hashtext = bigInt.toString(16);
+        // Now we need to zero pad it if you actually want the full 32 chars.
+        while (hashtext.length() < 32) {
+            hashtext = "0" + hashtext;
+        }
+        return hashtext;
     }
 
 }

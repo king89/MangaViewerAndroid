@@ -20,6 +20,7 @@ import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,14 +92,14 @@ public class MangaHelper {
                 return null;
             }
         } else {
-
-
-            final String imageUrl = page.getImagePath();
-            if (imageUrl != null && imageUrl != "") {
+            //get pre page image file path, if exist just use it, if not : download
+            final WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
+                    page.getMangaWebSource());
+            final String imageUrl = mPattern.getPrePageImageFilePath(page.getWebImageUrl(), page);
+            if (!imageUrl.isEmpty() && (new File(imageUrl).exists())) {
                 //从磁盘中获取
                 Drawable drawable = Drawable.createFromPath(imageUrl);
                 return drawable;
-
             }
             final Handler handler = new Handler() {
                 public void handleMessage(Message message) {
@@ -109,8 +110,7 @@ public class MangaHelper {
             new Thread() {
                 @Override
                 public void run() {
-                    WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
-                            page.getMangaWebSource());
+
                     String tmpPath = mPattern.DownloadImgPage(page.getWebImageUrl(), page, SaveType.Temp, page.getUrl());
                     page.setImagePath(tmpPath);
                     Drawable drawable = Drawable.createFromPath(tmpPath);

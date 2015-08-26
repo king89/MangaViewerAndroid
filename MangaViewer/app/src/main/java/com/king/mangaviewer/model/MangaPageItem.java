@@ -1,5 +1,7 @@
 package com.king.mangaviewer.model;
 
+import com.king.mangaviewer.common.util.StringUtils;
+
 import java.io.File;
 
 public class MangaPageItem extends BaseItem {
@@ -31,7 +33,8 @@ public class MangaPageItem extends BaseItem {
     }
 
     public String getFolderPath() {
-        return this.getChapter().getMenu().getTitle().getBytes().toString() + File.separator + this.getChapter().getTitle().getBytes().toString();
+        return StringUtils.getHash(this.getChapter().getMenu().getTitle()) + File.separator
+                + StringUtils.getHash(this.getChapter().getTitle());
     }
 
 

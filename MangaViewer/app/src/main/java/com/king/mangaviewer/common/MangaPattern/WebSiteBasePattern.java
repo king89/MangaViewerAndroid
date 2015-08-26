@@ -7,6 +7,7 @@ import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.common.Constants.SaveType;
 import com.king.mangaviewer.common.util.FileHelper;
 import com.king.mangaviewer.common.util.StringUtils;
+import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.model.TitleAndUrl;
@@ -18,9 +19,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -125,12 +129,25 @@ public class WebSiteBasePattern {
                         + Constants.MANGAFOLDER + File.separator
                         + this.getClass().getSimpleName();
             }
-        }
-        else {
+        } else {
             return null;
         }
 
     }
+
+    public String getPrePageImageFilePath(String imgUrl, MangaPageItem pageItem) {
+        String folderName = getMangaFolder() + File.separator
+                + pageItem.getFolderPath();
+        String fileName = FileHelper.getFileName(imgUrl);
+        File dir = new File(folderName);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        File file = new File(dir.getAbsolutePath() + File.separator
+                + fileName);
+        return file.getAbsolutePath();
+    }
+
 
     public String DownloadImgPage(String imgUrl, MangaPageItem pageItem,
                                   SaveType saveType, String refer) {
