@@ -57,24 +57,21 @@ public class MangaHelper {
     }
 
     public List<MangaPageItem> GetPageList(MangaChapterItem chapter) {
-
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                 chapter.getMangaWebSource());
         List<String> pageUrlList = mPattern.GetPageList(chapter.getUrl());
         List<MangaPageItem> mangaPageList = new ArrayList<MangaPageItem>();
-
-        for (int i = 0; i < pageUrlList.size(); i++) {
-
-            MangaPageItem item = new MangaPageItem("page-" + i, null, null,
-                    null, pageUrlList.get(i), chapter, i,
-                    pageUrlList.size());
-            item.setWebImageUrl(mPattern.GetImageUrl(item.getUrl(),
-                    item.getNowNum()));
-            mangaPageList.add(item);
-
+        if (pageUrlList != null) {
+            for (int i = 0; i < pageUrlList.size(); i++) {
+                MangaPageItem item = new MangaPageItem("page-" + i, null, null,
+                        null, pageUrlList.get(i), chapter, i,
+                        pageUrlList.size());
+                item.setWebImageUrl(mPattern.GetImageUrl(item.getUrl(),
+                        item.getNowNum()));
+                mangaPageList.add(item);
+            }
         }
         return mangaPageList;
-
     }
 
     public Drawable getPageImage(final MangaPageItem page, final ImageView imageView, final GetImageCallback imageCallback) {
@@ -83,7 +80,6 @@ public class MangaHelper {
             ZipFile zf = null;
             try {
                 zf = new ZipFile(page.getChapter().getUrl());
-
                 ZipEntry ze = zf.getEntry(page.getUrl());
                 Bitmap img = BitmapFactory.decodeStream(zf.getInputStream(ze));
                 return new BitmapDrawable(img);
@@ -101,6 +97,7 @@ public class MangaHelper {
                 Drawable drawable = Drawable.createFromPath(imageUrl);
                 return drawable;
             }
+
             final Handler handler = new Handler() {
                 public void handleMessage(Message message) {
                     imageCallback.imageLoaded((Drawable) message.obj, imageView, imageUrl);
@@ -110,7 +107,6 @@ public class MangaHelper {
             new Thread() {
                 @Override
                 public void run() {
-
                     String tmpPath = mPattern.DownloadImgPage(page.getWebImageUrl(), page, SaveType.Temp, page.getUrl());
                     page.setImagePath(tmpPath);
                     Drawable drawable = Drawable.createFromPath(tmpPath);
@@ -128,14 +124,14 @@ public class MangaHelper {
                 menu.getMangaWebSource());
 
         List<TitleAndUrl> tauList = mPattern.GetChapterList(menu.getUrl());
-
         List<MangaChapterItem> list = new ArrayList<MangaChapterItem>();
-        for (int i = 0; i < tauList.size(); i++) {
-            list.add(new MangaChapterItem("Chapter-" + i, tauList.get(i)
-                    .getTitle(), null, tauList.get(i).getImagePath(),
-                    tauList.get(i).getUrl(), menu));
+        if (tauList != null) {
+            for (int i = 0; i < tauList.size(); i++) {
+                list.add(new MangaChapterItem("Chapter-" + i, tauList.get(i)
+                        .getTitle(), null, tauList.get(i).getImagePath(),
+                        tauList.get(i).getUrl(), menu));
+            }
         }
-
         return list;
     }
 
@@ -145,14 +141,14 @@ public class MangaHelper {
                 getSettingViewModel().getSelectedWebSource(context));
         String html = getMenuHtml(mPattern);
         List<TitleAndUrl> pageUrlList = mPattern.GetTopMangaList(html);
-
         List<MangaMenuItem> menuList = new ArrayList<MangaMenuItem>();
-        for (int i = 0; i < pageUrlList.size(); i++) {
-            menuList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
-                    .getTitle(), null, pageUrlList.get(i).getImagePath(),
-                    pageUrlList.get(i).getUrl(), getSettingViewModel().getSelectedWebSource(context)));
+        if (pageUrlList != null) {
+            for (int i = 0; i < pageUrlList.size(); i++) {
+                menuList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
+                        .getTitle(), null, pageUrlList.get(i).getImagePath(),
+                        pageUrlList.get(i).getUrl(), getSettingViewModel().getSelectedWebSource(context)));
+            }
         }
-
         return menuList;
     }
 
@@ -161,7 +157,6 @@ public class MangaHelper {
                 getSettingViewModel().getSelectedWebSource(context));
 
         List<TitleAndUrl> pageUrlList = mPattern.getAllManga(state);
-
         if (pageUrlList != null) {
             for (int i = 0; i < pageUrlList.size(); i++) {
                 mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
@@ -178,14 +173,14 @@ public class MangaHelper {
                 getSettingViewModel().getSelectedWebSource(context));
         String html = getMenuHtml(mPattern);
         List<TitleAndUrl> pageUrlList = mPattern.GetSearchingList(query, pageNum);
-
         List<MangaMenuItem> menuList = new ArrayList<MangaMenuItem>();
-        for (int i = 0; i < pageUrlList.size(); i++) {
-            menuList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
-                    .getTitle(), null, pageUrlList.get(i).getImagePath(),
-                    pageUrlList.get(i).getUrl(), getSettingViewModel().getSelectedWebSource(context)));
+        if (pageUrlList != null) {
+            for (int i = 0; i < pageUrlList.size(); i++) {
+                menuList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
+                        .getTitle(), null, pageUrlList.get(i).getImagePath(),
+                        pageUrlList.get(i).getUrl(), getSettingViewModel().getSelectedWebSource(context)));
+            }
         }
-
         return menuList;
     }
 

@@ -2,6 +2,8 @@ package com.king.mangaviewer.common.MangaPattern;
 
 import android.content.Context;
 
+import com.king.mangaviewer.common.Constants;
+import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 
 import java.util.ArrayList;
@@ -85,5 +87,10 @@ public class WebTestManga extends WebSiteBasePattern {
             e.printStackTrace();
         }
         return topMangaList;
+    }
+
+    @Override
+    public String DownloadImgPage(String imgUrl, MangaPageItem pageItem, Constants.SaveType saveType, String refer) {
+        return "/data/data/com.king.mangaviewer/files/Manga/WebHHComic/2daec2e9537278215341f33310f213de/053c8358510daf469ce0b68793e59b7a/z_0001_10370.JPG";
     }
 }
