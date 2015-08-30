@@ -26,6 +26,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class FitXImageView extends ImageView {
     private static final float MAX_ZOOM = 3;
     private static final float MIN_ZOOM = 1;
+    public static final double ZOOM_EXP = 1e-3;
     private GestureDetectorCompat gestureDetector;
     private ScaleGestureDetector mScaleGestureDetector;
     private OverScroller overScroller;
@@ -82,6 +83,15 @@ public class FitXImageView extends ImageView {
 
     public void setIsFirstLoadedFinished(boolean b) {
         this.isFirstLoadedFinished = b;
+    }
+
+    public boolean isZoomed() {
+        Log.i("IsZoom", "" + Math.abs(actualZoomFactor - fitZoomFactor));
+        if (Math.abs(actualZoomFactor - fitZoomFactor) < ZOOM_EXP) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override

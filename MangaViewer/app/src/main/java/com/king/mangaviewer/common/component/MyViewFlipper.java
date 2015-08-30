@@ -482,6 +482,13 @@ public class MyViewFlipper extends ViewFlipper {
             // TODO Auto-generated method stub
             Log.i("TEST", "onFling:velocityX = " + velocityX + " velocityY"
                     + velocityY + " Tangle :" + Math.toDegrees(Math.atan(velocityY / velocityX)));
+
+            FitXImageView fiv = (FitXImageView)getCurrentView().findViewById(R.id.imageView);;
+            if (fiv.isZoomed())
+            {
+                return false;
+            }
+
             double maxDegree = 30;
             if (Math.abs(velocityX) > Math.abs(velocityY) && Math.abs(Math.toDegrees(Math.atan(velocityY / velocityX))) < maxDegree) {
                 int x = (int) (e2.getX() - e1.getX());
