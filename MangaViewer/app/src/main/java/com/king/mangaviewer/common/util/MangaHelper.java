@@ -136,11 +136,11 @@ public class MangaHelper {
     }
 
     /* Menu */
-    public List<MangaMenuItem> GetNewMangeList() {
+    public List<MangaMenuItem> getLatestMangeList() {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                 getSettingViewModel().getSelectedWebSource(context));
-        String html = getMenuHtml(mPattern);
-        List<TitleAndUrl> pageUrlList = mPattern.GetTopMangaList(html);
+        String html = mPattern.getLatestMangaHtml();
+        List<TitleAndUrl> pageUrlList = mPattern.getLatestMangaList(html);
         List<MangaMenuItem> menuList = new ArrayList<MangaMenuItem>();
         if (pageUrlList != null) {
             for (int i = 0; i < pageUrlList.size(); i++) {
@@ -171,7 +171,6 @@ public class MangaHelper {
     public List<MangaMenuItem> GetSearchMangeList(String query, int pageNum) {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                 getSettingViewModel().getSelectedWebSource(context));
-        String html = getMenuHtml(mPattern);
         List<TitleAndUrl> pageUrlList = mPattern.GetSearchingList(query, pageNum);
         List<MangaMenuItem> menuList = new ArrayList<MangaMenuItem>();
         if (pageUrlList != null) {
@@ -182,6 +181,15 @@ public class MangaHelper {
             }
         }
         return menuList;
+    }
+
+    public String getMenuCover(MangaMenuItem menu) {
+        WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
+                menu.getMangaWebSource());
+        if (menu.getImagePath().isEmpty()) {
+            menu.setImagePath(mPattern.getMenuCover(menu));
+        }
+        return menu.getImagePath();
     }
 
 

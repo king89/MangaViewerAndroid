@@ -1,9 +1,7 @@
 package com.king.mangaviewer.actviity;
 
 
-import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -58,7 +56,7 @@ public class HomeFragment extends BaseFragment {
                 // TODO Auto-generated method stub
                 MainActivity copy = (MainActivity) getActivity();
                 List<MangaMenuItem> mList = copy.getMangaHelper()
-                        .GetNewMangeList();
+                        .getLatestMangeList();
                 copy.getAppViewModel().Manga
                         .setMangaMenuList(mList);
 

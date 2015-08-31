@@ -20,7 +20,7 @@
     <string name="menu_main_setting_title">Change Mange Source</string>
     <!--Menu-->
     <string name="latest_update">Latest Releases</string>
-    <string name="all_manga">Top Manga</string>
+    <string name="all_manga">All Manga</string>
     <string name="local">Local</string>
     <string name="favourite">Favourite</string>
     <string name="setting">Settings</string>

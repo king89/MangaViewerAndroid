@@ -4,15 +4,24 @@
         <Name>HHComic</Name>
         <DisplayName>HHComic</DisplayName>
         <ClassName>com.king.mangaviewer.common.MangaPattern.WebHHComic</ClassName>
-        <Order>0</Order>
+        <Order>1</Order>
         <Language></Language>
         <Enable>1</Enable>
     </Source>
     <Source id="1">
+        <Name>MangaFox</Name>
+        <DisplayName>MangaFox</DisplayName>
+        <ClassName>com.king.mangaviewer.common.MangaPattern.WebMangaFox</ClassName>
+        <Order>0</Order>
+        <Language></Language>
+        <Enable>1</Enable>
+    </Source>
+
+    <Source id="999">
         <Name>TestManga</Name>
         <DisplayName>TestManga</DisplayName>
         <ClassName>com.king.mangaviewer.common.MangaPattern.WebTestManga</ClassName>
-        <Order>1</Order>
+        <Order>999</Order>
         <Language></Language>
         <Enable>1</Enable>
     </Source>

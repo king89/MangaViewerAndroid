@@ -136,7 +136,7 @@ public class WebHHComic extends WebSiteBasePattern {
     }
 
     @Override
-    public List<TitleAndUrl> GetTopMangaList(String html) {
+    public List<TitleAndUrl> getLatestMangaList(String html) {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
 
         try {
@@ -153,7 +153,7 @@ public class WebHHComic extends WebSiteBasePattern {
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
-            Log.e(LOG_TAG, "GetTopMangaList");
+            Log.e(LOG_TAG, "getLatestMangaList");
         }
         return topMangaList;
     }

@@ -1,9 +1,14 @@
 package com.king.mangaviewer.common;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.ImageView;
+
+import com.king.mangaviewer.common.util.MangaHelper;
+import com.king.mangaviewer.model.MangaMenuItem;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,6 +65,47 @@ public class AsyncImageLoader {
             }
         }.start();
         return null;
+    }
+
+    public Drawable loadImageFromMenuItem(final Context context, final MangaMenuItem menu, final ImageView imageView, final ImageCallback imageCallback) {
+
+        if (!menu.getImagePath().isEmpty() && imageCache.containsKey(menu.getImagePath())) {
+            //从缓存中获取
+            SoftReference<Drawable> softReference = imageCache.get(menu.getImagePath());
+            Drawable drawable = softReference.get();
+            if (drawable != null) {
+                return drawable;
+            }
+        }
+
+        final Handler handler = new Handler() {
+            public void handleMessage(Message message) {
+                ImageAndUrl iau = (ImageAndUrl) message.obj;
+                imageCallback.imageLoaded(iau.drawable, imageView, iau.imageUrl);
+            }
+        };
+        //建立新一个新的线程下载图片
+        new Thread() {
+            @Override
+            public void run() {
+                final String imageUrl = new MangaHelper(context).getMenuCover(menu);
+                Drawable drawable = loadImageFromUrl(imageUrl);
+                imageCache.put(imageUrl, new SoftReference<Drawable>(drawable));
+                Message message = handler.obtainMessage(0, new ImageAndUrl(drawable, imageUrl));
+                handler.sendMessage(message);
+            }
+        }.start();
+        return null;
+    }
+
+    private class ImageAndUrl {
+        public Drawable drawable;
+        public String imageUrl;
+
+        public ImageAndUrl(Drawable drawable, String imageUrl) {
+            this.drawable = drawable;
+            this.imageUrl = imageUrl;
+        }
     }
 
     //回调接口

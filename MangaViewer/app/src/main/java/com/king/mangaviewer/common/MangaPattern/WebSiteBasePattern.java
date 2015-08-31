@@ -35,6 +35,7 @@ public class WebSiteBasePattern {
     public String WEBSITEURL = "";
     public String WEBSEARCHURL = "";
     public String WEBALLMANGABASEURL = "";
+    public String WEBLATESTMANGABASEURL = "";
     public String CHARSET = "utf8";
     protected int startNum = 1;
     protected int totalNum = 1;
@@ -117,6 +118,12 @@ public class WebSiteBasePattern {
 
     }
 
+    public String getLatestMangaHtml(){
+        return getHtml(this.WEBSITEURL);
+    }
+    public String getAllMangaHtml(){
+        return getHtml(this.WEBALLMANGABASEURL);
+    }
     public String getMangaFolder() {
         if (context != null) {
             // Check if have external storage
@@ -192,7 +199,7 @@ public class WebSiteBasePattern {
     /*
      * // // Menu //
      */
-    public List<TitleAndUrl> GetTopMangaList(String html) {
+    public List<TitleAndUrl> getLatestMangaList(String html) {
         return null;
     }
 
@@ -206,5 +213,9 @@ public class WebSiteBasePattern {
 
     public List<TitleAndUrl> getAllManga(HashMap<String, Object> state) {
         return null;
+    }
+
+    public String getMenuCover(MangaMenuItem menu) {
+        return menu.getImagePath();
     }
 }

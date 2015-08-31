@@ -98,7 +98,7 @@ public class LocalManga extends WebSiteBasePattern {
 
 
     @Override
-    public List<TitleAndUrl> GetTopMangaList(String html) {
+    public List<TitleAndUrl> getLatestMangaList(String html) {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
 
         for (int i = 0; i < 10; i++) {

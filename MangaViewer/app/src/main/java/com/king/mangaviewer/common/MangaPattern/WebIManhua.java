@@ -51,7 +51,7 @@ public class WebIManhua extends WebSiteBasePattern {
     }
 
     @Override
-    public List<TitleAndUrl> GetTopMangaList(String html) {
+    public List<TitleAndUrl> getLatestMangaList(String html) {
         // TODO Auto-generated method stub
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
 
@@ -77,7 +77,7 @@ public class WebIManhua extends WebSiteBasePattern {
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
-            Log.e(LOG_TAG, "GetTopMangaList");
+            Log.e(LOG_TAG, "getLatestMangaList");
         }
         return topMangaList;
 
