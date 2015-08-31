@@ -11,11 +11,13 @@
     <string name="setting_source">Sources</string>
     <string name="setting_folder_size">Cache File Size</string>
     <string name="last_page">Last Page</string>
+    <string name="last_page_again">Fling Again To Next Chapter</string>
     <string name="first_page">First Page</string>
+    <string name="first_page_again">Fling Again To Prev Chapter</string>
     <string name="reading_direction">Reading Direction\t\t\t</string>
     <string name="split_page">Auto Split Page\t\t\t</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-
+    <string name="menu_main_setting_title">Change Mange Source</string>
     <!--Menu-->
     <string name="latest_update">Latest Releases</string>
     <string name="all_manga">Top Manga</string>

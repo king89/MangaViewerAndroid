@@ -22,18 +22,25 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.NavDrawerListAdapter;
 import com.king.mangaviewer.common.util.NavDrawerItem;
+import com.king.mangaviewer.model.MangaWebSource;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends BaseActivity {
 
@@ -210,13 +217,49 @@ public class MainActivity extends BaseActivity {
         }
         switch (item.getItemId()) {
             case R.id.menu_setting:
-                new AlertDialog.Builder(this).setMessage("Setting").show();
+                View v = findViewById(R.id.menu_setting);
+                displayMangaSource(v);
                 return true;
             case R.id.menu_refresh:
                 displayView(mDrawerList.getCheckedItemPosition());
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void displayMangaSource(View anchorView) {
+        final PopupWindow popup = new PopupWindow(this);
+        View layout = getLayoutInflater().inflate(R.layout.menu_main_setting, null);
+
+        ListView lv = (ListView) layout.findViewById(R.id.listView);
+
+        final List<MangaWebSource> mws = getAppViewModel().Setting.getMangaWebSources();
+        List<String> source = new ArrayList<>();
+        if (mws != null) {
+
+            for (MangaWebSource m : mws) {
+                source.add(m.getDisplayName());
+            }
+        }
+        lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, source));
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                getAppViewModel().Setting.setSelectedWebSource(mws.get(position), MainActivity.this);
+                displayView(mSelectedPosition);
+                popup.dismiss();
+            }
+        });
+
+        popup.setContentView(layout);
+        // Set content width and height
+        popup.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        popup.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+        // Closes the popup window when touch outside of it - when looses focus
+        popup.setOutsideTouchable(true);
+        popup.setFocusable(true);
+        // Show anchored to button
+        popup.showAsDropDown(anchorView);
     }
 
     /**
@@ -249,13 +292,13 @@ public class MainActivity extends BaseActivity {
         if (mTwoTapToExit < 1) {
             if (!mDrawerLayout.isDrawerOpen(mDrawerList)) {
                 mDrawerLayout.openDrawer(mDrawerList);
-            }else {
+            } else {
                 mDrawerLayout.closeDrawer(mDrawerList);
             }
             mTwoTapToExit++;
             exitAppHandler.removeCallbacks(exitAppRunable);
             exitAppHandler.postDelayed(exitAppRunable, DELAYTIME);
-            Toast.makeText(this,getString(R.string.msg_tap_two_to_exit),Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.msg_tap_two_to_exit), Toast.LENGTH_LONG).show();
         } else {
             super.onBackPressed();
         }

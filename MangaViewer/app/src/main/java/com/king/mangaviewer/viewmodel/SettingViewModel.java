@@ -64,11 +64,10 @@ public class SettingViewModel extends ViewModelBase {
     }
 
 
-
     public void setIsSplitPage(Context context, boolean mIsSplitPage) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean(context.getString(R.string.pref_key_split_page),mIsSplitPage);
+        editor.putBoolean(context.getString(R.string.pref_key_split_page), mIsSplitPage);
         editor.commit();
         this.mIsSplitPage = mIsSplitPage;
     }
@@ -83,7 +82,7 @@ public class SettingViewModel extends ViewModelBase {
 
     public boolean getIsSplitPage(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        mIsSplitPage = sp.getBoolean(context.getString(R.string.pref_key_split_page),true);
+        mIsSplitPage = sp.getBoolean(context.getString(R.string.pref_key_split_page), true);
         return mIsSplitPage;
     }
 
@@ -168,8 +167,8 @@ public class SettingViewModel extends ViewModelBase {
 
     public MangaWebSource getSelectedWebSource(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        String id = sp.getString(context.getString(R.string.pref_key_manga_sources),"0");
-        setSelectedWebSource(Integer.parseInt(id));
+        String id = sp.getString(context.getString(R.string.pref_key_manga_sources), "0");
+        setSelectedWebSource(Integer.parseInt(id), context);
         return mSelectedWebSource;
     }
 
@@ -184,15 +183,19 @@ public class SettingViewModel extends ViewModelBase {
         return FileHelper.calFileSize(size);
     }
 
-    public void setSelectedWebSource(MangaWebSource webSite) {
+    public void setSelectedWebSource(MangaWebSource webSite, Context context) {
         mSelectedWebSource = webSite;
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(context.getString(R.string.pref_key_manga_sources), mSelectedWebSource.getId() + "");
+        editor.commit();
     }
 
-    public void setSelectedWebSource(int id) {
+    public void setSelectedWebSource(int id, Context context) {
         mSelectedWebSource = null;
         for (MangaWebSource m : mMangaWebSources) {
             if (id == m.getId()) {
-                mSelectedWebSource = m;
+                setSelectedWebSource(m, context);
             }
         }
 

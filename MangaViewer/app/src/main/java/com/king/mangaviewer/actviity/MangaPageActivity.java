@@ -15,6 +15,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -165,6 +166,14 @@ public class MangaPageActivity extends BaseActivity {
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                mAdView.setVisibility(View.GONE);
+                super.onAdFailedToLoad(errorCode);
+            }
+        });
+
     }
 
     @Override
