@@ -1,6 +1,7 @@
 package com.king.mangaviewer.common.MangaPattern;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
@@ -10,6 +11,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,14 +23,15 @@ import java.util.List;
 public class WebMangaFox extends WebSiteBasePattern {
 
 
-    private static String mRestSearchString = "&type=&author_method=cw&author=&artist_method=cw&artist=&genres[Action]=0&genres[Adult]=0&genres[Adventure]=0&genres[Comedy]=0&genres[Doujinshi]=0&genres[Drama]=0&genres[Ecchi]=0&genres[Fantasy]=0&genres[Gender%20Bender]=0&genres[Harem]=0&genres[Historical]=0&genres[Horror]=0&genres[Josei]=0&genres[Martial%20Arts]=0&genres[Mature]=0&genres[Mecha]=0&genres[Mystery]=0&genres[One%20Shot]=0&genres[Psychological]=0&genres[Romance]=0&genres[School%20Life]=0&genres[Sci-fi]=0&genres[Seinen]=0&genres[Shoujo]=0&genres[Shoujo%20Ai]=0&genres[Shounen]=0&genres[Shounen%20Ai]=0&genres[Slice%20of%20Life]=0&genres[Smut]=0&genres[Sports]=0&genres[Supernatural]=0&genres[Tragedy]=0&genres[Webtoons]=0&genres[Yaoi]=0&genres[Yuri]=0&released_method=eq&released=&rating_method=eq&rating=&is_completed=&advopts=1";
+    private static String mRestSearchString = "&type=&author_method=cw&author=&artist_method=cw&artist=&genres%5BAction%5D=0&genres%5BAdult%5D=0&genres%5BAdventure%5D=0&genres%5BComedy%5D=0&genres%5BDoujinshi%5D=0&genres%5BDrama%5D=0&genres%5BEcchi%5D=0&genres%5BFantasy%5D=0&genres%5BGender+Bender%5D=0&genres%5BHarem%5D=0&genres%5BHistorical%5D=0&genres%5BHorror%5D=0&genres%5BJosei%5D=0&genres%5BMartial+Arts%5D=0&genres%5BMature%5D=0&genres%5BMecha%5D=0&genres%5BMystery%5D=0&genres%5BOne+Shot%5D=0&genres%5BPsychological%5D=0&genres%5BRomance%5D=0&genres%5BSchool+Life%5D=0&genres%5BSci-fi%5D=0&genres%5BSeinen%5D=0&genres%5BShoujo%5D=0&genres%5BShoujo+Ai%5D=0&genres%5BShounen%5D=0&genres%5BShounen+Ai%5D=0&genres%5BSlice+of+Life%5D=0&genres%5BSmut%5D=0&genres%5BSports%5D=0&genres%5BSupernatural%5D=0&genres%5BTragedy%5D=0&genres%5BWebtoons%5D=0&genres%5BYaoi%5D=0&genres%5BYuri%5D=0&released_method=eq&released=&rating_method=eq&rating=&is_completed=&advopts=1&sort=views&order=za";
+    private static String LOG_TAG = "WebMangaFox";
 
     public WebMangaFox(Context context) {
         super(context);
         WEBSITEURL = "http://mangafox.me/";
         WEBLATESTMANGABASEURL = "http://mangafox.me/directory/%s?latest";
-        WEBSEARCHURL = "http://mangafox.me/search.php?name_method=cw&name=%s&page=%d";
-        WEBALLMANGABASEURL = "http://mangafox.me/directory/";
+        WEBSEARCHURL = "http://mangafox.me/search.php?name_method=cw&name=%s&page=%d%s";
+        WEBALLMANGABASEURL = "http://mangafox.me/directory/%d.htm";
         CHARSET = "utf8";
     }
 
@@ -59,6 +62,136 @@ public class WebMangaFox extends WebSiteBasePattern {
         String url = doc.select(".cover img").attr("src");
         return url;
     }
+
+    @Override
+    public List<TitleAndUrl> getAllManga(HashMap<String, Object> state) {
+
+        boolean noMore = false;
+        if (state.containsKey(STATE_NO_MORE)) {
+            noMore = (boolean) state.get(STATE_NO_MORE);
+        }
+
+        if (!noMore) {
+            int pageNum = 1;
+            int totalNum = 0;
+            String html = "";
+            //no total num means first time
+            if (!state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
+
+                String turl = String.format(WEBALLMANGABASEURL, pageNum);
+                Log.v(LOG_TAG, "All Manga: " + turl);
+                html = getHtml(turl);
+                totalNum = getSearchTotalNum(html);
+                state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalNum);
+            } else {
+                if (state.containsKey(STATE_PAGE_NUM_NOW)) {
+                    pageNum = (int) state.get(STATE_PAGE_NUM_NOW);
+                }
+
+                totalNum = (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY);
+                if (pageNum + 1 <= totalNum) {
+                    pageNum++;
+                    state.put(STATE_PAGE_NUM_NOW, pageNum);
+                } else {
+                    state.put(STATE_NO_MORE, true);
+                    return null;
+                }
+
+                String turl = String.format(WEBALLMANGABASEURL, pageNum);
+                Log.v(LOG_TAG, "All Manga: " + turl);
+                html = getHtml(turl);
+            }
+
+            List<TitleAndUrl> mangaList = new ArrayList<>();
+
+            Document doc = Jsoup.parse(html);
+            Elements el = doc.select(".list li");
+            for (int i = 0; i < el.size(); i++) {
+                String title = el.get(i).select(".title").text();
+                String url = el.get(i).select(".title").attr("href");
+                if (url.startsWith("/")) {
+                    url = WEBSITEURL + url;
+                }
+                String imageUrl = el.get(i).select(".manga_img img").attr("src");
+                mangaList.add(new TitleAndUrl(title, url, imageUrl));
+            }
+            return mangaList;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<TitleAndUrl> getSearchingList(HashMap<String, Object> state) {
+
+        boolean noMore = false;
+        if (state.containsKey(STATE_NO_MORE)) {
+            noMore = (boolean) state.get(STATE_NO_MORE);
+        }
+
+        if (!noMore) {
+            String queryText = "";
+            try {
+                queryText = state.get(STATE_SEARCH_QUERYTEXT).toString();
+                queryText = java.net.URLEncoder.encode(queryText, CHARSET);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            int pageNum = 1;
+            int totalNum = 0;
+            String html = "";
+            //no total num means first time
+            if (!state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
+
+                String turl = String.format(WEBSEARCHURL, queryText, pageNum, mRestSearchString);
+                Log.v(LOG_TAG, "Search: " + turl);
+                html = getHtml(turl);
+                totalNum = getSearchTotalNum(html);
+                state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalNum);
+            } else {
+                if (state.containsKey(STATE_PAGE_NUM_NOW)) {
+                    pageNum = (int) state.get(STATE_PAGE_NUM_NOW);
+                }
+
+                totalNum = (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY);
+                if (pageNum + 1 <= totalNum) {
+                    pageNum++;
+                    state.put(STATE_PAGE_NUM_NOW, pageNum);
+                } else {
+                    state.put(STATE_NO_MORE, true);
+                    return null;
+                }
+
+                String turl = String.format(WEBSEARCHURL, queryText, pageNum, mRestSearchString);
+                Log.v(LOG_TAG, "Search: " + turl);
+                html = getHtml(turl);
+            }
+
+            List<TitleAndUrl> mangaList = new ArrayList<>();
+
+            Document doc = Jsoup.parse(html);
+            Elements el = doc.select(".series_preview");
+            for (int i = 0; i < el.size(); i++) {
+                String title = el.get(i).text();
+                String url = el.get(i).attr("href");
+                if (url.startsWith("/")) {
+                    url = WEBSITEURL + url;
+                }
+                mangaList.add(new TitleAndUrl(title, url));
+            }
+            return mangaList;
+        } else {
+            return null;
+        }
+    }
+
+    private int getSearchTotalNum(String html) {
+        Document doc = Jsoup.parse(html);
+        Elements els = doc.select("#nav ul li");
+        int index = els.size() - 2;
+        return Integer.parseInt(els.get(index).text());
+    }
+
 
     //Chapter
 
@@ -110,7 +243,7 @@ public class WebMangaFox extends WebSiteBasePattern {
             for (int i = 1; i <= total; i++) {
                 pageList.add(preFileName + i + ".html");
             }
-        }else {
+        } else {
             for (int i = 1; i <= total; i++) {
                 pageList.add(preFileName + fileName.replace("1", i + ""));
             }
@@ -125,8 +258,5 @@ public class WebMangaFox extends WebSiteBasePattern {
         return doc.select("#image").attr("src");
     }
 
-    @Override
-    public List<TitleAndUrl> getSearchingList(HashMap<String, Object> state) {
-        return super.getSearchingList(state);
-    }
+
 }

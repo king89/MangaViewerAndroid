@@ -32,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WebSiteBasePattern {
+    private static final int HTTP_TIMEOUT_NUM = 300000;
     public String WEBSITEURL = "";
     public String WEBSEARCHURL = "";
     public String WEBALLMANGABASEURL = "";
@@ -110,6 +111,7 @@ public class WebSiteBasePattern {
         try {
             url = new URL(Url);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(HTTP_TIMEOUT_NUM);
             conn.setDoInput(true);
             conn.connect();
             InputStream inputStream = conn.getInputStream();

@@ -107,7 +107,7 @@ public class MangaGridView extends GridView {
     OnScrollListener mOnScrollListener = new OnScrollListener() {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
-            Log.i(LOG, "" + scrollState);
+            //Log.i(LOG, "" + scrollState);
         }
 
         @Override
