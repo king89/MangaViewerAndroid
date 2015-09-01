@@ -21,6 +21,7 @@ import java.util.List;
 
 public class MangaChapterItemAdapter extends BaseAdapter {
 
+    int MAX_TITLE_LENGTH = 20;
     private Context context;
     private LayoutInflater mInflater = null;
     private MangaViewModel viewModel;
@@ -75,6 +76,10 @@ public class MangaChapterItemAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         String chapterTitle = chapter.get(position).getTitle();
+        if (chapter.get(position).getMenu().getTitle().length() > MAX_TITLE_LENGTH)
+        {
+            chapterTitle = chapterTitle.replace(chapter.get(position).getMenu().getTitle(),context.getString(R.string.prefix_chapter_title));
+        }
         holder.textView.setText(chapterTitle);
         convertView.setOnClickListener(new OnClickListener() {
 

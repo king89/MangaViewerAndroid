@@ -66,8 +66,7 @@ public class MangaHelper {
                 MangaPageItem item = new MangaPageItem("page-" + i, null, null,
                         null, pageUrlList.get(i), chapter, i,
                         pageUrlList.size());
-                item.setWebImageUrl(mPattern.GetImageUrl(item.getUrl(),
-                        item.getNowNum()));
+
                 mangaPageList.add(item);
             }
         }
@@ -91,22 +90,28 @@ public class MangaHelper {
             //get pre page image file path, if exist just use it, if not : download
             final WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                     page.getMangaWebSource());
-            final String imageUrl = mPattern.getPrePageImageFilePath(page.getWebImageUrl(), page);
-            if (!imageUrl.isEmpty() && (new File(imageUrl).exists())) {
-                //从磁盘中获取
-                Drawable drawable = Drawable.createFromPath(imageUrl);
-                return drawable;
-            }
 
+            if (!page.getWebImageUrl().isEmpty()) {
+                final String imageUrl = mPattern.getPrePageImageFilePath(page.getWebImageUrl(), page);
+                if (!imageUrl.isEmpty() && (new File(imageUrl).exists())) {
+                    //从磁盘中获取
+                    Drawable drawable = Drawable.createFromPath(imageUrl);
+                    return drawable;
+                }
+            }
             final Handler handler = new Handler() {
                 public void handleMessage(Message message) {
-                    imageCallback.imageLoaded((Drawable) message.obj, imageView, imageUrl);
+                    imageCallback.imageLoaded((Drawable) message.obj, imageView, null);
                 }
             };
             //建立新一个新的线程下载图片
             new Thread() {
                 @Override
                 public void run() {
+                    if (page.getWebImageUrl().isEmpty()) {
+                        page.setWebImageUrl(mPattern.GetImageUrl(page.getUrl(),
+                                page.getNowNum()));
+                    }
                     String tmpPath = mPattern.DownloadImgPage(page.getWebImageUrl(), page, SaveType.Temp, page.getUrl());
                     page.setImagePath(tmpPath);
                     Drawable drawable = Drawable.createFromPath(tmpPath);

@@ -21,13 +21,15 @@ import com.king.mangaviewer.viewmodel.MangaViewModel;
 
 import java.util.List;
 
+import me.grantland.widget.AutofitTextView;
+
 public class MangaChapterActivity extends BaseActivity {
 
     protected ProgressDialog progressDialog;
 
     ListView listView = null;
     ImageView imageView = null;
-    TextView textView = null;
+    AutofitTextView textView = null;
 
     @Override
     protected void initControl() {
@@ -36,8 +38,7 @@ public class MangaChapterActivity extends BaseActivity {
 
         listView = (ListView) this.findViewById(R.id.listView);
         imageView = (ImageView) this.findViewById(R.id.imageView);
-        textView = (TextView) this.findViewById(R.id.textView);
-
+        textView = (AutofitTextView) this.findViewById(R.id.textView);
         textView.setText(this.getAppViewModel().Manga.getSelectedMangaMenuItem().getTitle());
         String imagePath = this.getAppViewModel().Manga.getSelectedMangaMenuItem().getImagePath();
         Drawable cachedImage = new AsyncImageLoader().loadDrawable(imagePath,
@@ -49,8 +50,6 @@ public class MangaChapterActivity extends BaseActivity {
                         if (imageDrawable != null) {
                             imageView.setImageDrawable(imageDrawable);
                         }
-
-
                     }
                 });
         if (cachedImage != null) {

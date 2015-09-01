@@ -53,7 +53,8 @@ public class SettingViewModel extends ViewModelBase {
             svm.mSelectedWebSource = svm.mMangaWebSources.get(0);
         } else {
             //ensure get the latest manga source
-            svm.mSelectedWebSource = svm.mMangaWebSources.get(svm.mSelectedWebSource.getId());
+            int id = svm.mSelectedWebSource.getId();
+            svm.setSelectedWebSource(id,context);
         }
 
         if (svm.mDefaultLocalMangaPath == null) {

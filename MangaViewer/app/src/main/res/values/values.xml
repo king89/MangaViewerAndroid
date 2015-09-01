@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="gridvivew_column_num">3</integer>
+    <integer name="max_text_size">24</integer>
 </resources>

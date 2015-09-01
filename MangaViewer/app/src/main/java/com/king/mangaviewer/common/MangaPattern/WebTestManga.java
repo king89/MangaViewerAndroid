@@ -48,7 +48,7 @@ public class WebTestManga extends WebSiteBasePattern {
 
         for (int i = 0; i < 10; i++) {
             String url = "url-" + i;
-            String title = "chapter-" + i;
+            String title = "chapterchapterchapterchapterchapterchapterchapterchapterchapterchapterchapter-" + i;
             chapterList.add(new TitleAndUrl(title, url));
         }
 
@@ -62,7 +62,7 @@ public class WebTestManga extends WebSiteBasePattern {
 
         for (int i = 0; i < 10; i++) {
             String url = WEBSITEURL + i;
-            String title = "Test Menu " + i;
+            String title = "Test MenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenu " + i;
             String imageUrl = "";
             topMangaList.add(new TitleAndUrl(title, url, imageUrl));
 
@@ -82,7 +82,7 @@ public class WebTestManga extends WebSiteBasePattern {
                 topMangaList.add(new TitleAndUrl(title, url, imageUrl));
 
             }
-            Thread.sleep(4000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

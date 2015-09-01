@@ -87,8 +87,7 @@ public class WebSiteBasePattern {
     }
 
     public String GetImageUrl(String pageUrl, int nowPage) {
-        String test = "http://i1.imanhua.com/Cover/2011-10/sishen.jpg";
-        return test;
+        return pageUrl;
     }
 
     // public void GetImageByImageUrl(MangaPageItem page,SaveType saveType) {

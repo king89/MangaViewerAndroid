@@ -3,6 +3,7 @@ package com.king.mangaviewer.common.MangaPattern;
 import android.content.Context;
 import android.util.Log;
 
+import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 
 import org.jsoup.Jsoup;
@@ -33,6 +34,7 @@ public class WebMangaFox extends WebSiteBasePattern {
         CHARSET = "utf8";
     }
 
+    //Menu
     @Override
     public List<TitleAndUrl> getLatestMangaList(String html) {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
@@ -51,4 +53,72 @@ public class WebMangaFox extends WebSiteBasePattern {
         return topMangaList;
 
     }
+
+    @Override
+    public String getMenuCover(MangaMenuItem menu) {
+        String html = getHtml(menu.getUrl());
+        Document doc = Jsoup.parse(html);
+        String url = doc.select(".cover img").attr("src");
+        return url;
+    }
+
+    //Chapter
+
+    @Override
+    public List<TitleAndUrl> GetChapterList(String chapterUrl) {
+        List<TitleAndUrl> chapterList = new ArrayList<>();
+
+        String html = getHtml(chapterUrl);
+        Document doc = Jsoup.parse(html);
+        Elements el = doc.select(".chlist");
+
+        for (int i = 0; i < el.size(); i++) {
+            Elements els = el.get(i).select(".tips");
+            String vol = el.get(i).previousElementSibling().select(".volume").first().textNodes().get(0).text();
+
+            Iterator it = els.iterator();
+            while (it.hasNext()) {
+                Element e = (Element) it.next();
+                String url = e.attr("href");
+                String title = e.text();
+                if (!vol.toLowerCase().contains("not")) {
+                    title = title + " - " + vol;
+                }
+                if (url.startsWith("/")) {
+                    url = WEBSITEURL + url;
+                }
+
+                chapterList.add(new TitleAndUrl(title, url));
+            }
+        }
+
+        return chapterList;
+    }
+
+
+    //Page
+
+
+    @Override
+    public List<String> GetPageList(String firstPageUrl) {
+        List<String> pageList = new ArrayList<>();
+        String html = getHtml(firstPageUrl);
+        int total = GetTotalNum(html);
+
+        String fileName = firstPageUrl.substring(firstPageUrl.lastIndexOf("/"));
+        String preFileName = firstPageUrl.substring(0, firstPageUrl.lastIndexOf("/"));
+
+        for (int i = 1; i <= total; i++) {
+            pageList.add(preFileName + fileName.replace("1", i + ""));
+        }
+        return pageList;
+    }
+
+    @Override
+    public String GetImageUrl(String pageUrl, int nowPage) {
+        String html = getHtml(pageUrl);
+        Document doc = Jsoup.parse(html);
+        return doc.select("#image").attr("src");
+    }
+
 }
