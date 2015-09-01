@@ -35,7 +35,7 @@ public class MangaViewModel extends ViewModelBase {
         this.mAllMangaStateHash = mAllMangaStateHash;
     }
 
-    public HashMap<String, Object> getmAllMangaStateHash() {
+    public HashMap<String, Object> getAllMangaStateHash() {
         if (mAllMangaStateHash == null)
             mAllMangaStateHash = new HashMap<>();
         return mAllMangaStateHash;

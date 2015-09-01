@@ -39,11 +39,8 @@ public class WebHHComic extends WebSiteBasePattern {
             "http://img.hhmanhua.net.3348.net:9393/dm16/",};
     String code = "";
     String key = "tazsicoewrm";
+    String pageWord = "&pageIndex=";
 
-    public final static String ALL_MANGA_STATE_PAGE_KEY = "key_page_key";
-    public final static String ALL_MANGA_STATE_PAGE_NUM_NOW = "key_page_num_now";
-    public final static String ALL_MANGA_STATE_TOTAL_PAGE_NUM_THIS_KEY = "key_total_page_num";
-    public final static String ALL_MANGA_STATE_NO_MORE = "key_no_more";
 
     public WebHHComic(Context context) {
         super(context);
@@ -159,32 +156,75 @@ public class WebHHComic extends WebSiteBasePattern {
     }
 
     @Override
-    public List<TitleAndUrl> GetSearchingList(String queryText, int pageNum) {
+    public List<TitleAndUrl> getSearchingList(HashMap<String, Object> state) {
 
-        try {
-            queryText = java.net.URLEncoder.encode(queryText, CHARSET);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        boolean noMore = false;
+        if (state.containsKey(STATE_NO_MORE))
+        {
+            noMore = (boolean)state.get(STATE_NO_MORE);
         }
-        String turl = WEBSEARCHURL + queryText;
-        Log.v(LOG_TAG, "Seache: " + turl);
-        List<TitleAndUrl> mangaList = new ArrayList<TitleAndUrl>();
-        String html = getHtml(turl);
 
-        Document doc = Jsoup.parse(html);
-
-        Element el = doc.select(".dSHtm").get(0);
-        for (int i = 0; i < el.children().size(); i++) {
-            String title = el.child(i).select("a").first().text();
-            String url = el.child(i).select("a").first().attr("href");
-            String imageUrl = el.child(i).select("a").first().select("img").attr("src");
-
-            if (url.startsWith("/")) {
-                url = WEBSITEURL + url;
+        if (!noMore) {
+            String queryText = state.get(STATE_SEARCH_QUERYTEXT).toString();
+            try {
+                queryText = java.net.URLEncoder.encode(queryText, CHARSET);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-            mangaList.add(new TitleAndUrl(title, url, imageUrl));
+            int pageNum = 1;
+            int totalNum = 0;
+            String html = "";
+            //no total num means first time
+            if (!state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
+
+                String turl = WEBSEARCHURL + queryText + pageWord + pageNum;
+                Log.v(LOG_TAG, "Search: " + turl);
+                html = getHtml(turl);
+                totalNum = getSearchTotalNum(html);
+                state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalNum);
+            } else {
+                if (state.containsKey(STATE_PAGE_NUM_NOW)) {
+                    pageNum = (int) state.get(STATE_PAGE_NUM_NOW);
+                }
+
+                totalNum = (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY);
+                if (pageNum + 1 <= totalNum) {
+                    pageNum++;
+                    state.put(STATE_PAGE_NUM_NOW, pageNum);
+                } else {
+                    state.put(STATE_NO_MORE, true);
+                    return null;
+                }
+
+                String turl = WEBSEARCHURL + queryText + pageWord + pageNum;
+                Log.v(LOG_TAG, "Search: " + turl);
+                html = getHtml(turl);
+            }
+
+            List<TitleAndUrl> mangaList = new ArrayList<>();
+
+            Document doc = Jsoup.parse(html);
+            Element el = doc.select(".dSHtm").get(0);
+            for (int i = 0; i < el.children().size(); i++) {
+                String title = el.child(i).select("a").first().text();
+                String url = el.child(i).select("a").first().attr("href");
+                String imageUrl = el.child(i).select("a").first().select("img").attr("src");
+
+                if (url.startsWith("/")) {
+                    url = WEBSITEURL + url;
+                }
+                mangaList.add(new TitleAndUrl(title, url, imageUrl));
+            }
+            return mangaList;
+        }else {
+            return  null;
         }
-        return mangaList;
+    }
+
+    private int getSearchTotalNum(String html) {
+        Document doc = Jsoup.parse(html);
+        String num = doc.select("#labPageCount").text();
+        return Integer.parseInt(num);
     }
 
     @Override
@@ -192,11 +232,11 @@ public class WebHHComic extends WebSiteBasePattern {
         List<TitleAndUrl> mangaList = new ArrayList<>();
         double mangaCountEachPage = 24.0f;
 
-        String pageKey = state.containsKey(ALL_MANGA_STATE_PAGE_KEY) ? state.get(ALL_MANGA_STATE_PAGE_KEY).toString() : "a";
-        int pageNum = state.containsKey(ALL_MANGA_STATE_PAGE_NUM_NOW) ? (int) state.get(ALL_MANGA_STATE_PAGE_NUM_NOW) : 1;
-        int totalPageNumThisKey = state.containsKey(ALL_MANGA_STATE_TOTAL_PAGE_NUM_THIS_KEY) ?
-                (int) state.get(ALL_MANGA_STATE_TOTAL_PAGE_NUM_THIS_KEY) : -1;
-        boolean noMore = state.containsKey(ALL_MANGA_STATE_NO_MORE) ? (boolean) state.get(ALL_MANGA_STATE_NO_MORE) : false;
+        String pageKey = state.containsKey(STATE_PAGE_KEY) ? state.get(STATE_PAGE_KEY).toString() : "a";
+        int pageNum = state.containsKey(STATE_PAGE_NUM_NOW) ? (int) state.get(STATE_PAGE_NUM_NOW) : 1;
+        int totalPageNumThisKey = state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY) ?
+                (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY) : -1;
+        boolean noMore = state.containsKey(STATE_NO_MORE) ? (boolean) state.get(STATE_NO_MORE) : false;
 
         if (!noMore) {
             //if totalPageNumThisKey == -1 means first time, then just go on
@@ -214,23 +254,22 @@ public class WebHHComic extends WebSiteBasePattern {
                 }
             }
 
-            state.put(ALL_MANGA_STATE_NO_MORE,noMore);
-            state.put(ALL_MANGA_STATE_PAGE_KEY, pageKey);
-            state.put(ALL_MANGA_STATE_PAGE_NUM_NOW, pageNum);
+            state.put(STATE_NO_MORE, noMore);
+            state.put(STATE_PAGE_KEY, pageKey);
+            state.put(STATE_PAGE_NUM_NOW, pageNum);
 
             //start get html
             if (!noMore) {
                 String trul = WEBALLMANGABASEURL + pageKey + "/" + pageNum + ".htm";
                 String html = getHtml(trul);
-                if (!html.isEmpty())
-                {
+                if (!html.isEmpty()) {
 
                     Document doc = Jsoup.parse(html);
                     Element el = doc.select(".replz").get(0);
                     //get total Page num
                     int totalMangaForThisKey = Integer.parseInt(el.select("font").get(0).text());
-                    totalPageNumThisKey = (int)Math.ceil(totalMangaForThisKey / mangaCountEachPage);
-                    state.put(ALL_MANGA_STATE_TOTAL_PAGE_NUM_THIS_KEY, totalPageNumThisKey);
+                    totalPageNumThisKey = (int) Math.ceil(totalMangaForThisKey / mangaCountEachPage);
+                    state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalPageNumThisKey);
 
                     //get manga list
                     el = doc.select(".list").get(0);
@@ -246,7 +285,7 @@ public class WebHHComic extends WebSiteBasePattern {
                     }
 
                     return mangaList;
-                }else {
+                } else {
 
                     return null;
                 }

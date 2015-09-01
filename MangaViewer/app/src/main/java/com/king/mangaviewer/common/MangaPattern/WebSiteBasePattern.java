@@ -42,6 +42,13 @@ public class WebSiteBasePattern {
     protected String firstPageHtml = null;
     private Context context;
 
+    public static final String STATE_SEARCH_QUERYTEXT = "key_search_querytext";
+    public final static String STATE_PAGE_KEY = "key_page_key";
+    public final static String STATE_PAGE_NUM_NOW = "key_page_num_now";
+    public final static String STATE_TOTAL_PAGE_NUM_THIS_KEY = "key_total_page_num";
+    public final static String STATE_NO_MORE = "key_no_more";
+
+
     public WebSiteBasePattern(Context context) {
         this.context = context;
     }
@@ -206,7 +213,7 @@ public class WebSiteBasePattern {
         return null;
     }
 
-    public List<TitleAndUrl> GetSearchingList(String queryText, int pageNum) {
+    public List<TitleAndUrl> getSearchingList(HashMap<String, Object> state) {
         return null;
     }
 

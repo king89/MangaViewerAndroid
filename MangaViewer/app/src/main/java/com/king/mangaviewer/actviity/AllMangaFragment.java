@@ -14,8 +14,10 @@ import android.widget.TextView;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
 import com.king.mangaviewer.common.component.MangaGridView;
+import com.king.mangaviewer.common.util.MangaHelper;
 import com.king.mangaviewer.model.MangaMenuItem;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -38,12 +40,17 @@ public class AllMangaFragment extends BaseFragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_all_manga, container, false);
-        TextView tv = (TextView)rootView.findViewById(R.id.textView);
+        TextView tv = (TextView) rootView.findViewById(R.id.textView);
         gv = (MangaGridView) rootView.findViewById(R.id.gridView);
         gv.setLoadingFooter(tv);
         //reset all manga list
         getMangaViewModel().resetAllMangaList();
-        gv.Initial(getMangaViewModel());
+        gv.Initial(getMangaViewModel(), new MangaGridView.IGetMore() {
+            @Override
+            public void getMoreManga(List<MangaMenuItem> mMangaList, HashMap<String, Object> state) {
+                new MangaHelper(getActivity()).getAllManga(mMangaList, state);
+            }
+        });
         return rootView;
     }
 }

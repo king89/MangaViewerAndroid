@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
-import android.widget.GridView;
+import android.widget.TextView;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
+import com.king.mangaviewer.common.MangaPattern.WebSiteBasePattern;
+import com.king.mangaviewer.common.component.MangaGridView;
+import com.king.mangaviewer.common.util.MangaHelper;
 import com.king.mangaviewer.model.MangaMenuItem;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -20,33 +23,15 @@ import java.util.List;
  */
 public class SearchResultActivity extends BaseActivity {
 
-    private GridView gv;
+    public MangaGridView gv;
     private ProgressDialog progressDialog;
-    public android.os.Handler handler = new android.os.Handler() {
-        public void handleMessage(android.os.Message msg) {
+    HashMap<String, Object> state = new HashMap<String, Object>();
 
-            MangaMenuItemAdapter adapter = new MangaMenuItemAdapter(SearchResultActivity.this,
-                    SearchResultActivity.this.getAppViewModel().Manga,
-                    SearchResultActivity.this.getAppViewModel().Manga.getMangaMenuList());
-            gv.setAdapter(adapter);
-
-            if (progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
-
-        }
-
-        ;
-
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_result);
-        gv = (GridView) this.findViewById(R.id.gridView);
-        progressDialog = ProgressDialog.show(this, "Loading",
-                "Loading");
+        setContentView(R.layout.fragment_all_manga);
 
         handleIntent(getIntent());
     }
@@ -80,19 +65,21 @@ public class SearchResultActivity extends BaseActivity {
     }
 
     private void getQueryResult(final String query) {
-        new Thread() {
+        gv = (MangaGridView) this.findViewById(R.id.gridView);
+
+        TextView tv = (TextView) findViewById(R.id.textView);
+        gv = (MangaGridView) findViewById(R.id.gridView);
+        gv.setLoadingFooter(tv);
+        //reset all manga list
+        this.getAppViewModel().Manga.resetAllMangaList();
+        this.getAppViewModel().Manga.getAllMangaStateHash().put(WebSiteBasePattern.STATE_SEARCH_QUERYTEXT, query);
+
+        gv.Initial(this.getAppViewModel().Manga, new MangaGridView.IGetMore() {
             @Override
-            public void run() {
-                // TODO Auto-generated method stub
-
-                List<MangaMenuItem> mList = SearchResultActivity.this.getMangaHelper()
-                        .GetSearchMangeList(query, 0);
-                SearchResultActivity.this.getAppViewModel().Manga
-                        .setMangaMenuList(mList);
-
-                handler.sendEmptyMessage(0);
+            public void getMoreManga(List<MangaMenuItem> mMangaList, HashMap<String, Object> state) {
+                new MangaHelper(SearchResultActivity.this).getSearchMangeList(mMangaList, state);
             }
-        }.start();
+        });
     }
 
     @Override

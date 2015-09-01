@@ -1,7 +1,6 @@
 package com.king.mangaviewer.common.MangaPattern;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
@@ -12,10 +11,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by KinG on 8/31/2015.
@@ -108,8 +106,14 @@ public class WebMangaFox extends WebSiteBasePattern {
         String fileName = firstPageUrl.substring(firstPageUrl.lastIndexOf("/"));
         String preFileName = firstPageUrl.substring(0, firstPageUrl.lastIndexOf("/"));
 
-        for (int i = 1; i <= total; i++) {
-            pageList.add(preFileName + fileName.replace("1", i + ""));
+        if (fileName.isEmpty()) {
+            for (int i = 1; i <= total; i++) {
+                pageList.add(preFileName + i + ".html");
+            }
+        }else {
+            for (int i = 1; i <= total; i++) {
+                pageList.add(preFileName + fileName.replace("1", i + ""));
+            }
         }
         return pageList;
     }
@@ -121,4 +125,8 @@ public class WebMangaFox extends WebSiteBasePattern {
         return doc.select("#image").attr("src");
     }
 
+    @Override
+    public List<TitleAndUrl> getSearchingList(HashMap<String, Object> state) {
+        return super.getSearchingList(state);
+    }
 }

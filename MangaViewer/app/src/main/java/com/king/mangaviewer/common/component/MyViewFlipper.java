@@ -401,7 +401,7 @@ public class MyViewFlipper extends ViewFlipper {
                 return;
             } else {
                 Toast.makeText(getContext(), getResources().getString(R.string.first_page), Toast.LENGTH_SHORT).show();
-                Toast.makeText(getContext(), getResources().getString(R.string.first_page_again), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), getResources().getString(R.string.first_page_again), Toast.LENGTH_SHORT).show();
                 goPrevChapter = true;
             }
         }
@@ -411,7 +411,7 @@ public class MyViewFlipper extends ViewFlipper {
                 return;
             } else {
                 Toast.makeText(getContext(), getResources().getString(R.string.last_page), Toast.LENGTH_SHORT).show();
-                Toast.makeText(getContext(), getResources().getString(R.string.last_page_again), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), getResources().getString(R.string.last_page_again), Toast.LENGTH_SHORT).show();
                 goNextChapter = true;
             }
         }

@@ -11,16 +11,12 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
-import com.king.mangaviewer.common.util.MangaHelper;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,6 +32,7 @@ public class MangaGridView extends GridView {
     private List<MangaMenuItem> mMangaList;
     private View mLoadingFooter;
     private MangaViewModel mMangaViewModel;
+    private IGetMore mIGetMoreManga;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -72,10 +69,11 @@ public class MangaGridView extends GridView {
         Init();
     }
 
-    public void Initial(MangaViewModel mangaViewModel) {
+    public void Initial(MangaViewModel mangaViewModel, IGetMore func) {
         mMangaViewModel = mangaViewModel;
         this.mMangaList = mangaViewModel.getAllMangaList();
-        this.mStateHash = mangaViewModel.getmAllMangaStateHash();
+        this.mStateHash = mangaViewModel.getAllMangaStateHash();
+        this.setIGetMoreMangaFunciton(func);
         MangaGridView.this.setAdapter(new MangaMenuItemAdapter(getContext(), mMangaViewModel, mMangaList));
         getMoreManga();
     }
@@ -95,7 +93,10 @@ public class MangaGridView extends GridView {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                new MangaHelper(getContext()).getAllManga(mMangaList, mStateHash);
+                if (mIGetMoreManga != null) {
+                    mIGetMoreManga.getMoreManga(mMangaList, mStateHash);
+                }
+                //new MangaHelper(getContext()).getAllManga(mMangaList, mStateHash);
 
                 handler.sendEmptyMessage(0);
             }
@@ -129,5 +130,14 @@ public class MangaGridView extends GridView {
         synchronized (flagLock) {
             return flagLoading;
         }
+    }
+
+    public interface IGetMore{
+        public void getMoreManga(List<MangaMenuItem> menuList, HashMap<String, Object> state);
+    }
+
+    public void setIGetMoreMangaFunciton(IGetMore func)
+    {
+        this.mIGetMoreManga = func;
     }
 }
