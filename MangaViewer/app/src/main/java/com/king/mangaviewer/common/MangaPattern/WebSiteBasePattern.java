@@ -2,6 +2,7 @@ package com.king.mangaviewer.common.MangaPattern;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.common.Constants.SaveType;
@@ -9,7 +10,6 @@ import com.king.mangaviewer.common.util.FileHelper;
 import com.king.mangaviewer.common.util.StringUtils;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaPageItem;
-import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.model.TitleAndUrl;
 
 import org.apache.http.HttpEntity;
@@ -19,12 +19,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WebSiteBasePattern {
+    private final static String LOG_TAG = "WebSiteBasePattern";
     private static final int HTTP_TIMEOUT_NUM = 300000;
     public String WEBSITEURL = "";
     public String WEBSEARCHURL = "";
@@ -126,12 +125,14 @@ public class WebSiteBasePattern {
 
     }
 
-    public String getLatestMangaHtml(){
+    public String getLatestMangaHtml() {
         return getHtml(this.WEBSITEURL);
     }
-    public String getAllMangaHtml(){
+
+    public String getAllMangaHtml() {
         return getHtml(this.WEBALLMANGABASEURL);
     }
+
     public String getMangaFolder() {
         if (context != null) {
             // Check if have external storage
@@ -215,13 +216,120 @@ public class WebSiteBasePattern {
         return null;
     }
 
+    /*Searching Manga*/
     public List<TitleAndUrl> getSearchingList(HashMap<String, Object> state) {
+        boolean noMore = false;
+        if (state.containsKey(STATE_NO_MORE)) {
+            noMore = (boolean) state.get(STATE_NO_MORE);
+        }
+
+        if (!noMore) {
+            String queryText = state.get(STATE_SEARCH_QUERYTEXT).toString();
+            try {
+                queryText = java.net.URLEncoder.encode(queryText, CHARSET);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            int pageNum = 1;
+            int totalNum = 0;
+            String html = "";
+            //no total num means first time
+            if (!state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
+
+                String turl = getSearchUrl(queryText, pageNum);
+                Log.v(LOG_TAG, "Search: " + turl);
+                html = getHtml(turl);
+                totalNum = getSearchTotalNum(html);
+                state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalNum);
+            } else {
+                if (state.containsKey(STATE_PAGE_NUM_NOW)) {
+                    pageNum = (int) state.get(STATE_PAGE_NUM_NOW);
+                }
+                totalNum = (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY);
+                if (pageNum + 1 <= totalNum) {
+                    pageNum++;
+                    state.put(STATE_PAGE_NUM_NOW, pageNum);
+                } else {
+                    state.put(STATE_NO_MORE, true);
+                    return null;
+                }
+                String turl = getSearchUrl(queryText, pageNum);
+                Log.v(LOG_TAG, "Search: " + turl);
+                html = getHtml(turl);
+            }
+            return getSearchList(html);
+        } else {
+            return null;
+        }
+    }
+
+    protected int getSearchTotalNum(String html) {
+        return 0;
+    }
+
+    protected String getSearchUrl(String queryText, int pageNum) {
+        return "";
+    }
+
+    protected List<TitleAndUrl> getSearchList(String html) {
+        return null;
+    }
+    /*Searching Manga*/
+
+    /*AllManga*/
+    public List<TitleAndUrl> getAllMangaList(HashMap<String, Object> state) {
+        boolean noMore = false;
+        if (state.containsKey(STATE_NO_MORE)) {
+            noMore = (boolean) state.get(STATE_NO_MORE);
+        }
+
+        if (!noMore) {
+            int pageNum = 1;
+            int totalNum = 0;
+            String html = "";
+            //no total num means first time
+            if (!state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
+
+                String turl = getAllMangaUrl(pageNum);
+                Log.v(LOG_TAG, "Search: " + turl);
+                html = getHtml(turl);
+                totalNum = getAllMangaTotalNum(html);
+                state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalNum);
+            } else {
+                if (state.containsKey(STATE_PAGE_NUM_NOW)) {
+                    pageNum = (int) state.get(STATE_PAGE_NUM_NOW);
+                }
+                totalNum = (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY);
+                if (pageNum + 1 <= totalNum) {
+                    pageNum++;
+                    state.put(STATE_PAGE_NUM_NOW, pageNum);
+                } else {
+                    state.put(STATE_NO_MORE, true);
+                    return null;
+                }
+                String turl = getAllMangaUrl(pageNum);
+                Log.v(LOG_TAG, "Search: " + turl);
+                html = getHtml(turl);
+            }
+            return getAllMangaList(html);
+        } else {
+            return null;
+        }
+    }
+
+    protected List<TitleAndUrl> getAllMangaList(String html) {
         return null;
     }
 
-    public List<TitleAndUrl> getAllManga(HashMap<String, Object> state) {
-        return null;
+    protected int getAllMangaTotalNum(String html) {
+        return 0;
     }
+
+    protected String getAllMangaUrl(int pageNum) {
+        return "";
+    }
+    /*AllManga*/
+
 
     public String getMenuCover(MangaMenuItem menu) {
         return menu.getImagePath();

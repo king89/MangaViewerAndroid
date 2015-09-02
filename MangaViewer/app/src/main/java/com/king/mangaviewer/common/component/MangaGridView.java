@@ -96,7 +96,7 @@ public class MangaGridView extends GridView {
                 if (mIGetMoreManga != null) {
                     mIGetMoreManga.getMoreManga(mMangaList, mStateHash);
                 }
-                //new MangaHelper(getContext()).getAllManga(mMangaList, mStateHash);
+                //new MangaHelper(getContext()).getAllMangaList(mMangaList, mStateHash);
 
                 handler.sendEmptyMessage(0);
             }

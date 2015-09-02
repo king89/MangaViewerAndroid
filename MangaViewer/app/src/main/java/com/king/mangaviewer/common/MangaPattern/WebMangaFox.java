@@ -64,134 +64,62 @@ public class WebMangaFox extends WebSiteBasePattern {
     }
 
     @Override
-    public List<TitleAndUrl> getAllManga(HashMap<String, Object> state) {
+    protected List<TitleAndUrl> getAllMangaList(String html) {
+        List<TitleAndUrl> mangaList = new ArrayList<>();
 
-        boolean noMore = false;
-        if (state.containsKey(STATE_NO_MORE)) {
-            noMore = (boolean) state.get(STATE_NO_MORE);
-        }
-
-        if (!noMore) {
-            int pageNum = 1;
-            int totalNum = 0;
-            String html = "";
-            //no total num means first time
-            if (!state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
-
-                String turl = String.format(WEBALLMANGABASEURL, pageNum);
-                Log.v(LOG_TAG, "All Manga: " + turl);
-                html = getHtml(turl);
-                totalNum = getSearchTotalNum(html);
-                state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalNum);
-            } else {
-                if (state.containsKey(STATE_PAGE_NUM_NOW)) {
-                    pageNum = (int) state.get(STATE_PAGE_NUM_NOW);
-                }
-
-                totalNum = (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY);
-                if (pageNum + 1 <= totalNum) {
-                    pageNum++;
-                    state.put(STATE_PAGE_NUM_NOW, pageNum);
-                } else {
-                    state.put(STATE_NO_MORE, true);
-                    return null;
-                }
-
-                String turl = String.format(WEBALLMANGABASEURL, pageNum);
-                Log.v(LOG_TAG, "All Manga: " + turl);
-                html = getHtml(turl);
+        Document doc = Jsoup.parse(html);
+        Elements el = doc.select(".list li");
+        for (int i = 0; i < el.size(); i++) {
+            String title = el.get(i).select(".title").text();
+            String url = el.get(i).select(".title").attr("href");
+            if (url.startsWith("/")) {
+                url = WEBSITEURL + url;
             }
-
-            List<TitleAndUrl> mangaList = new ArrayList<>();
-
-            Document doc = Jsoup.parse(html);
-            Elements el = doc.select(".list li");
-            for (int i = 0; i < el.size(); i++) {
-                String title = el.get(i).select(".title").text();
-                String url = el.get(i).select(".title").attr("href");
-                if (url.startsWith("/")) {
-                    url = WEBSITEURL + url;
-                }
-                String imageUrl = el.get(i).select(".manga_img img").attr("src");
-                mangaList.add(new TitleAndUrl(title, url, imageUrl));
-            }
-            return mangaList;
-        } else {
-            return null;
+            String imageUrl = el.get(i).select(".manga_img img").attr("src");
+            mangaList.add(new TitleAndUrl(title, url, imageUrl));
         }
+        return mangaList;
     }
 
     @Override
-    public List<TitleAndUrl> getSearchingList(HashMap<String, Object> state) {
+    protected List<TitleAndUrl> getSearchList(String html) {
+        List<TitleAndUrl> mangaList = new ArrayList<>();
 
-        boolean noMore = false;
-        if (state.containsKey(STATE_NO_MORE)) {
-            noMore = (boolean) state.get(STATE_NO_MORE);
+        Document doc = Jsoup.parse(html);
+        Elements el = doc.select(".series_preview");
+        for (int i = 0; i < el.size(); i++) {
+            String title = el.get(i).text();
+            String url = el.get(i).attr("href");
+            if (url.startsWith("/")) {
+                url = WEBSITEURL + url;
+            }
+            mangaList.add(new TitleAndUrl(title, url));
         }
-
-        if (!noMore) {
-            String queryText = "";
-            try {
-                queryText = state.get(STATE_SEARCH_QUERYTEXT).toString();
-                queryText = java.net.URLEncoder.encode(queryText, CHARSET);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            int pageNum = 1;
-            int totalNum = 0;
-            String html = "";
-            //no total num means first time
-            if (!state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
-
-                String turl = String.format(WEBSEARCHURL, queryText, pageNum, mRestSearchString);
-                Log.v(LOG_TAG, "Search: " + turl);
-                html = getHtml(turl);
-                totalNum = getSearchTotalNum(html);
-                state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalNum);
-            } else {
-                if (state.containsKey(STATE_PAGE_NUM_NOW)) {
-                    pageNum = (int) state.get(STATE_PAGE_NUM_NOW);
-                }
-
-                totalNum = (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY);
-                if (pageNum + 1 <= totalNum) {
-                    pageNum++;
-                    state.put(STATE_PAGE_NUM_NOW, pageNum);
-                } else {
-                    state.put(STATE_NO_MORE, true);
-                    return null;
-                }
-
-                String turl = String.format(WEBSEARCHURL, queryText, pageNum, mRestSearchString);
-                Log.v(LOG_TAG, "Search: " + turl);
-                html = getHtml(turl);
-            }
-
-            List<TitleAndUrl> mangaList = new ArrayList<>();
-
-            Document doc = Jsoup.parse(html);
-            Elements el = doc.select(".series_preview");
-            for (int i = 0; i < el.size(); i++) {
-                String title = el.get(i).text();
-                String url = el.get(i).attr("href");
-                if (url.startsWith("/")) {
-                    url = WEBSITEURL + url;
-                }
-                mangaList.add(new TitleAndUrl(title, url));
-            }
-            return mangaList;
-        } else {
-            return null;
-        }
+        return mangaList;
     }
 
-    private int getSearchTotalNum(String html) {
+    @Override
+    protected int getSearchTotalNum(String html) {
         Document doc = Jsoup.parse(html);
         Elements els = doc.select("#nav ul li");
         int index = els.size() - 2;
         return Integer.parseInt(els.get(index).text());
     }
 
+    @Override
+    protected int getAllMangaTotalNum(String html) {
+        return getSearchTotalNum(html);
+    }
+
+    @Override
+    protected String getSearchUrl(String queryText, int pageNum) {
+        return String.format(WEBSEARCHURL, queryText, pageNum, mRestSearchString);
+    }
+
+    @Override
+    protected String getAllMangaUrl(int pageNum) {
+        return String.format(WEBALLMANGABASEURL, pageNum);
+    }
 
     //Chapter
 
@@ -219,6 +147,11 @@ public class WebMangaFox extends WebSiteBasePattern {
                     url = WEBSITEURL + url;
                 }
 
+                if (url.endsWith("/"))
+                {
+                    url = url + "1.htm";
+                }
+
                 chapterList.add(new TitleAndUrl(title, url));
             }
         }
@@ -228,8 +161,6 @@ public class WebMangaFox extends WebSiteBasePattern {
 
 
     //Page
-
-
     @Override
     public List<String> GetPageList(String firstPageUrl) {
         List<String> pageList = new ArrayList<>();

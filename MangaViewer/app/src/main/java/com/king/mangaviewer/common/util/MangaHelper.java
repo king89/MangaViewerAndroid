@@ -161,7 +161,7 @@ public class MangaHelper {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                 getSettingViewModel().getSelectedWebSource(context));
 
-        List<TitleAndUrl> pageUrlList = mPattern.getAllManga(state);
+        List<TitleAndUrl> pageUrlList = mPattern.getAllMangaList(state);
         if (pageUrlList != null) {
             for (int i = 0; i < pageUrlList.size(); i++) {
                 mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)

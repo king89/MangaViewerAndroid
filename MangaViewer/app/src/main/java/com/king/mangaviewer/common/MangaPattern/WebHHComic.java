@@ -155,80 +155,40 @@ public class WebHHComic extends WebSiteBasePattern {
         return topMangaList;
     }
 
+
     @Override
-    public List<TitleAndUrl> getSearchingList(HashMap<String, Object> state) {
+    protected List<TitleAndUrl> getSearchList(String html) {
+        List<TitleAndUrl> mangaList = new ArrayList<>();
 
-        boolean noMore = false;
-        if (state.containsKey(STATE_NO_MORE))
-        {
-            noMore = (boolean)state.get(STATE_NO_MORE);
+        Document doc = Jsoup.parse(html);
+        Element el = doc.select(".dSHtm").get(0);
+        for (int i = 0; i < el.children().size(); i++) {
+            String title = el.child(i).select("a").first().text();
+            String url = el.child(i).select("a").first().attr("href");
+            String imageUrl = el.child(i).select("a").first().select("img").attr("src");
+
+            if (url.startsWith("/")) {
+                url = WEBSITEURL + url;
+            }
+            mangaList.add(new TitleAndUrl(title, url, imageUrl));
         }
-
-        if (!noMore) {
-            String queryText = state.get(STATE_SEARCH_QUERYTEXT).toString();
-            try {
-                queryText = java.net.URLEncoder.encode(queryText, CHARSET);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            int pageNum = 1;
-            int totalNum = 0;
-            String html = "";
-            //no total num means first time
-            if (!state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
-
-                String turl = WEBSEARCHURL + queryText + pageWord + pageNum;
-                Log.v(LOG_TAG, "Search: " + turl);
-                html = getHtml(turl);
-                totalNum = getSearchTotalNum(html);
-                state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalNum);
-            } else {
-                if (state.containsKey(STATE_PAGE_NUM_NOW)) {
-                    pageNum = (int) state.get(STATE_PAGE_NUM_NOW);
-                }
-
-                totalNum = (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY);
-                if (pageNum + 1 <= totalNum) {
-                    pageNum++;
-                    state.put(STATE_PAGE_NUM_NOW, pageNum);
-                } else {
-                    state.put(STATE_NO_MORE, true);
-                    return null;
-                }
-
-                String turl = WEBSEARCHURL + queryText + pageWord + pageNum;
-                Log.v(LOG_TAG, "Search: " + turl);
-                html = getHtml(turl);
-            }
-
-            List<TitleAndUrl> mangaList = new ArrayList<>();
-
-            Document doc = Jsoup.parse(html);
-            Element el = doc.select(".dSHtm").get(0);
-            for (int i = 0; i < el.children().size(); i++) {
-                String title = el.child(i).select("a").first().text();
-                String url = el.child(i).select("a").first().attr("href");
-                String imageUrl = el.child(i).select("a").first().select("img").attr("src");
-
-                if (url.startsWith("/")) {
-                    url = WEBSITEURL + url;
-                }
-                mangaList.add(new TitleAndUrl(title, url, imageUrl));
-            }
-            return mangaList;
-        }else {
-            return  null;
-        }
+        return mangaList;
     }
 
-    private int getSearchTotalNum(String html) {
+    @Override
+    protected int getSearchTotalNum(String html) {
         Document doc = Jsoup.parse(html);
         String num = doc.select("#labPageCount").text();
         return Integer.parseInt(num);
     }
 
     @Override
-    public List<TitleAndUrl> getAllManga(HashMap<String, Object> state) {
+    protected String getSearchUrl(String queryText, int pageNum) {
+        return WEBSEARCHURL + queryText + pageWord + pageNum;
+    }
+
+    @Override
+    public List<TitleAndUrl> getAllMangaList(HashMap<String, Object> state) {
         List<TitleAndUrl> mangaList = new ArrayList<>();
         double mangaCountEachPage = 24.0f;
 
