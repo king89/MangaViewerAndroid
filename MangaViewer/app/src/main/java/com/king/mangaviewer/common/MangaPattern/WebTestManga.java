@@ -57,7 +57,7 @@ public class WebTestManga extends WebSiteBasePattern {
     }
 
     @Override
-    public List<TitleAndUrl> getLatestMangaList(String html) {
+    public List<TitleAndUrl> getLatestMangaList(HashMap<String, Object> state) {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
 
         for (int i = 0; i < 10; i++) {

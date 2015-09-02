@@ -125,12 +125,8 @@ public class WebSiteBasePattern {
 
     }
 
-    public String getLatestMangaHtml() {
-        return getHtml(this.WEBSITEURL);
-    }
-
-    public String getAllMangaHtml() {
-        return getHtml(this.WEBALLMANGABASEURL);
+    public String getLatestMangaUrl() {
+        return this.WEBLATESTMANGABASEURL;
     }
 
     public String getMangaFolder() {
@@ -208,7 +204,12 @@ public class WebSiteBasePattern {
     /*
      * // // Menu //
      */
-    public List<TitleAndUrl> getLatestMangaList(String html) {
+    public List<TitleAndUrl> getLatestMangaList(HashMap<String, Object> state) {
+        String html = getHtml(getLatestMangaUrl());
+        return getLatestMangaList(html);
+    }
+
+    protected List<TitleAndUrl> getLatestMangaList(String html){
         return null;
     }
 

@@ -51,8 +51,9 @@ public class WebIManhua extends WebSiteBasePattern {
     }
 
     @Override
-    public List<TitleAndUrl> getLatestMangaList(String html) {
+    public List<TitleAndUrl> getLatestMangaList(HashMap<String, Object> state) {
         // TODO Auto-generated method stub
+        String html = getHtml(getLatestMangaUrl());
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
 
         try {

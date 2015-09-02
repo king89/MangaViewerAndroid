@@ -144,8 +144,8 @@ public class MangaHelper {
     public List<MangaMenuItem> getLatestMangeList() {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                 getSettingViewModel().getSelectedWebSource(context));
-        String html = mPattern.getLatestMangaHtml();
-        List<TitleAndUrl> pageUrlList = mPattern.getLatestMangaList(html);
+        String html = mPattern.getHtml(mPattern.getLatestMangaUrl());
+        List<TitleAndUrl> pageUrlList = mPattern.getLatestMangaList(null);
         List<MangaMenuItem> menuList = new ArrayList<MangaMenuItem>();
         if (pageUrlList != null) {
             for (int i = 0; i < pageUrlList.size(); i++) {

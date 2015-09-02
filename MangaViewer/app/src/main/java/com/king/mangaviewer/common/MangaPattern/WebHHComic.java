@@ -9,7 +9,6 @@ import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +46,7 @@ public class WebHHComic extends WebSiteBasePattern {
         // TODO Auto-generated constructor stub
         WEBSITEURL = "http://www.hhxiee.cc/";
         WEBSEARCHURL = "http://somanhua.com/?key=";
+        WEBLATESTMANGABASEURL = "http://www.hhxiee.cc/";
         WEBALLMANGABASEURL = "http://www.hhxiee.cc/hhabc/";
         CHARSET = "gb2312";
     }
@@ -133,9 +133,8 @@ public class WebHHComic extends WebSiteBasePattern {
     }
 
     @Override
-    public List<TitleAndUrl> getLatestMangaList(String html) {
+    protected List<TitleAndUrl> getLatestMangaList(String html) {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
-
         try {
             Pattern rGetUl = Pattern
                     .compile("<div id=\"inhh\">[\\s\\S]+?<img src=\"(.+?)\" .+?>[\\s\\S]+?<a href=\"(.+?)\".+?>(.+?)</a>");
@@ -145,7 +144,6 @@ public class WebHHComic extends WebSiteBasePattern {
                 String title = m.group(3);
                 String imageUrl = m.group(1);
                 topMangaList.add(new TitleAndUrl(title, url, imageUrl));
-
             }
         } catch (Exception e) {
             // TODO: handle exception

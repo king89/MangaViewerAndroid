@@ -1,7 +1,6 @@
 package com.king.mangaviewer.common.MangaPattern;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
@@ -11,7 +10,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,7 +27,7 @@ public class WebMangaFox extends WebSiteBasePattern {
     public WebMangaFox(Context context) {
         super(context);
         WEBSITEURL = "http://mangafox.me/";
-        WEBLATESTMANGABASEURL = "http://mangafox.me/directory/%s?latest";
+        WEBLATESTMANGABASEURL = "http://mangafox.me/";
         WEBSEARCHURL = "http://mangafox.me/search.php?name_method=cw&name=%s&page=%d%s";
         WEBALLMANGABASEURL = "http://mangafox.me/directory/%d.htm";
         CHARSET = "utf8";
@@ -37,7 +35,7 @@ public class WebMangaFox extends WebSiteBasePattern {
 
     //Menu
     @Override
-    public List<TitleAndUrl> getLatestMangaList(String html) {
+    protected List<TitleAndUrl> getLatestMangaList(String html) {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
 
         Document doc = Jsoup.parse(html);

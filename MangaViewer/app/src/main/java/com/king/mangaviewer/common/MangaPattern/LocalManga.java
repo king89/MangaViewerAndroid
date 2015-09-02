@@ -3,7 +3,6 @@ package com.king.mangaviewer.common.MangaPattern;
 import android.content.Context;
 import android.util.Log;
 
-import com.king.mangaviewer.R;
 import com.king.mangaviewer.model.TitleAndUrl;
 
 import java.io.File;
@@ -11,6 +10,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -98,7 +98,7 @@ public class LocalManga extends WebSiteBasePattern {
 
 
     @Override
-    public List<TitleAndUrl> getLatestMangaList(String html) {
+    public List<TitleAndUrl> getLatestMangaList(HashMap<String, Object> state) {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
 
         for (int i = 0; i < 10; i++) {
