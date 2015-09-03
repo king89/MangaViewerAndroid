@@ -43,7 +43,7 @@ public class WebMangaFox extends WebSiteBasePattern {
         Iterator i = el.iterator();
         while (i.hasNext()) {
             Element e = (Element) i.next();
-            String url = e.select("a").attr("href");
+            String url = checkUrl(e.select("a").attr("href"));
             String title = e.select("a").text();
             String imageUrl = "";
             topMangaList.add(new TitleAndUrl(title, url, imageUrl));
@@ -69,10 +69,7 @@ public class WebMangaFox extends WebSiteBasePattern {
         Elements el = doc.select(".list li");
         for (int i = 0; i < el.size(); i++) {
             String title = el.get(i).select(".title").text();
-            String url = el.get(i).select(".title").attr("href");
-            if (url.startsWith("/")) {
-                url = WEBSITEURL + url;
-            }
+            String url = checkUrl(el.get(i).select(".title").attr("href"));
             String imageUrl = el.get(i).select(".manga_img img").attr("src");
             mangaList.add(new TitleAndUrl(title, url, imageUrl));
         }
@@ -87,10 +84,7 @@ public class WebMangaFox extends WebSiteBasePattern {
         Elements el = doc.select(".series_preview");
         for (int i = 0; i < el.size(); i++) {
             String title = el.get(i).text();
-            String url = el.get(i).attr("href");
-            if (url.startsWith("/")) {
-                url = WEBSITEURL + url;
-            }
+            String url = checkUrl(el.get(i).attr("href"));
             mangaList.add(new TitleAndUrl(title, url));
         }
         return mangaList;

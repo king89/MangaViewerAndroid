@@ -103,6 +103,15 @@ public class WebSiteBasePattern {
         return 0;
     }
 
+    protected String checkUrl(String url)
+    {
+        if (url.startsWith("/"))
+        {
+            url = WEBSITEURL + url.substring(1);
+        }
+        return url;
+    }
+
     // public void DownloadOnePage(String pageUrl,String folder,int nowPageNum)
     // { return; }
     public String getHtml(String Url) {
