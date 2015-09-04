@@ -22,6 +22,7 @@ import java.util.List;
 public class WebMangaReader extends WebSiteBasePattern {
 
     private final static int PAGE_SIZE = 30;
+    public static final int SEARCH_LIST_PAGE_SIZE = 30;
 
     public WebMangaReader(Context context) {
         super(context);
@@ -108,6 +109,50 @@ public class WebMangaReader extends WebSiteBasePattern {
 
     @Override
     protected String getSearchUrl(String queryText, int pageNum) {
-        return super.getSearchUrl(queryText, pageNum);
+        return super.getSearchUrl(queryText, (pageNum - 1) * SEARCH_LIST_PAGE_SIZE);
+    }
+
+    @Override
+    protected int getSearchTotalNum(String html) {
+        Document doc = Jsoup.parse(html);
+        String t = doc.select("#sp a").last().attr("href");
+        t = t.substring(t.lastIndexOf("=") + 1);
+        int num = (int) Math.ceil(Integer.parseInt(t) / (SEARCH_LIST_PAGE_SIZE * 1.0f)) + 1;
+        return num;
+    }
+
+    @Override
+    protected List<TitleAndUrl> getSearchList(String html) {
+        List<TitleAndUrl> mangaList = new ArrayList<>();
+        Document doc = Jsoup.parse(html);
+        Elements el = doc.select(".mangaresultitem a");
+
+        for (int i = 0; i < el.size(); i++) {
+            String title = el.get(i).text();
+            String url = checkUrl(el.get(i).attr("href"));
+            mangaList.add(new TitleAndUrl(title, url));
+        }
+        return mangaList;
+
+    }
+
+
+    @Override
+    protected int getAllMangaTotalNum(String html) {
+        Document doc = Jsoup.parse(html);
+        String t = doc.select("#sp a").last().attr("href");
+        t = t.substring(t.lastIndexOf("/") + 1);
+        int num = (int) Math.ceil(Integer.parseInt(t) / (SEARCH_LIST_PAGE_SIZE * 1.0f)) + 1;
+        return num;
+    }
+
+    @Override
+    protected List<TitleAndUrl> getAllMangaList(String html) {
+        return getSearchList(html);
+    }
+
+    @Override
+    protected String getAllMangaUrl(int pageNum) {
+        return super.getAllMangaUrl((pageNum - 1) * SEARCH_LIST_PAGE_SIZE);
     }
 }
