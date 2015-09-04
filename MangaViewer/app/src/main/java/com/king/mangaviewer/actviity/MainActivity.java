@@ -1,8 +1,5 @@
 package com.king.mangaviewer.actviity;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -11,13 +8,10 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,13 +19,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
@@ -145,32 +134,24 @@ public class MainActivity extends BaseActivity {
         // update the main content by replacing fragments
 
         BaseFragment fragment = null;
-        switch (position) {
-            case 0:
-                fragment = new HomeFragment();
-                break;
-            case 1:
-                fragment = new AllMangaFragment();
-                break;
-            case 2:
-                fragment = new LocalFragment();
-                break;
-            case 3:
-                fragment = new FavouriteFragment();
-                break;
-            case 4:
-                mDrawerList.setItemChecked(mSelectedPosition, true);
-                mDrawerList.setSelection(mSelectedPosition);
-                mTitle = navMenuTitles[mSelectedPosition];
-                this.setActionBarTitle(navMenuTitles[mSelectedPosition]);
-                mDrawerLayout.closeDrawer(mDrawerList);
-                startActivityForResult(new Intent(this, SettingsActivity.class), 1);
-                this.overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
-                break;
-            default:
-                break;
+        String select = navMenuTitles[position];
+        if (select.equalsIgnoreCase(getString(R.string.nav_latest_update))) {
+            fragment = new HomeFragment();
+        } else if (select.equalsIgnoreCase(getString(R.string.nav_all_manga))) {
+            fragment = new AllMangaFragment();
+        } else if (select.equalsIgnoreCase(getString(R.string.nav_local))) {
+            fragment = new LocalFragment();
+        } else if (select.equalsIgnoreCase(getString(R.string.nav_favourite))) {
+            fragment = new FavouriteFragment();
+        } else if (select.equalsIgnoreCase(getString(R.string.nav_setting))) {
+            mDrawerList.setItemChecked(mSelectedPosition, true);
+            mDrawerList.setSelection(mSelectedPosition);
+            mTitle = navMenuTitles[mSelectedPosition];
+            this.setActionBarTitle(navMenuTitles[mSelectedPosition]);
+            mDrawerLayout.closeDrawer(mDrawerList);
+            startActivityForResult(new Intent(this, SettingsActivity.class), 1);
+            this.overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
         }
-
         if (fragment != null) {
 
             //set fragment
@@ -240,8 +221,7 @@ public class MainActivity extends BaseActivity {
             int i = 0;
             for (MangaWebSource m : mws) {
                 source.add(m.getDisplayName());
-                if (m.getId() == getAppViewModel().Setting.getSelectedWebSource(this).getId())
-                {
+                if (m.getId() == getAppViewModel().Setting.getSelectedWebSource(this).getId()) {
                     tSelectWebSourcePos = i;
                 }
                 i++;
@@ -257,7 +237,7 @@ public class MainActivity extends BaseActivity {
                 popup.dismiss();
             }
         });
-        lv.setItemChecked(tSelectWebSourcePos,true);
+        lv.setItemChecked(tSelectWebSourcePos, true);
         popup.setContentView(layout);
         // Set content width and height
         popup.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
