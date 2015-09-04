@@ -20,22 +20,23 @@ import java.util.regex.Pattern;
  */
 public class WebHHComic extends WebSiteBasePattern {
     String LOG_TAG = "WebHHComic";
-    String[] ServerList = new String[]{"http://img.hhmanhua.net.3348.net:9393/dm01/",
-            "http://img.hhmanhua.net.3348.net:9393/dm02/",
-            "http://img.hhmanhua.net.3348.net:9393/dm03/",
-            "http://img.hhmanhua.net.3348.net:9393/dm04/",
-            "http://img.hhmanhua.net.3348.net:9393/dm05/",
-            "http://img.hhmanhua.net.3348.net:9393/dm06/",
-            "http://img.hhmanhua.net.3348.net:9393/dm07/",
-            "http://img.hhmanhua.net.3348.net:9393/dm08/",
-            "http://img.hhmanhua.net.3348.net:9393/dm09/",
-            "http://img.hhmanhua.net.3348.net:9393/dm10/",
-            "http://img.hhmanhua.net.3348.net:9393/dm11/",
-            "http://img.hhmanhua.net.3348.net:9393/dm12/",
-            "http://img.hhmanhua.net.3348.net:9393/dm13/",
+    String[] ServerList = new String[]{
+            "http://img2.hhcomic.net/dm01/",
+            "http://img2.hhcomic.net/dm02/",
+            "http://img2.hhcomic.net/dm03/",
+            "http://img2.hhcomic.net/dm04/",
+            "http://img2.hhcomic.net/dm05/",
+            "http://img2.hhcomic.net/dm06/",
+            "http://img2.hhcomic.net/dm07/",
+            "http://img2.hhcomic.net/dm08/",
+            "http://img2.hhcomic.net/dm09/",
+            "http://img2.hhcomic.net/dm10/",
+            "http://img2.hhcomic.net/dm11/",
+            "http://img2.hhcomic.net/dm12/",
+            "http://img2.hhcomic.net/dm13/",
             "http://8.8.8.8:99/dm14/",
-            "http://img.hhmanhua.net.3348.net:9393/dm15/",
-            "http://img.hhmanhua.net.3348.net:9393/dm16/",};
+            "http://img2.hhcomic.net/dm15/",
+            "http://img2.hhcomic.net/dm16/"};
     String code = "";
     String key = "tazsicoewrm";
     String pageWord = "&pageIndex=";

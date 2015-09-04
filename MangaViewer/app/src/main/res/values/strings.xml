@@ -87,5 +87,6 @@
     <string name="title_loading">Loading</string>
     <string name="msg_tap_two_to_exit">Tap Back Again To Exit App</string>
     <string name="prefix_chapter_title">Chapter</string>
+    <string name="msg_page_no_page">No Page In This Chapter, Please Try Again.</string>
 
 </resources>

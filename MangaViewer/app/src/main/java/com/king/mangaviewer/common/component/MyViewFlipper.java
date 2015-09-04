@@ -158,8 +158,14 @@ public class MyViewFlipper extends ViewFlipper {
     protected Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            setView(getCurrPos(), getCurrPos());
-            updateHandler.sendEmptyMessage(0);
+            if (pageList.size() > 0) {
+                setView(getCurrPos(), getCurrPos());
+                updateHandler.sendEmptyMessage(0);
+            }else{
+                Toast.makeText(getContext(), getContext().getString(R.string.msg_page_no_page), Toast.LENGTH_SHORT).show();
+            }
+
+
         }
     };
 
@@ -180,7 +186,6 @@ public class MyViewFlipper extends ViewFlipper {
         pageList = getBaseActivty().getMangaHelper().GetPageList(
                 mangaViewModel.getSelectedMangaChapterItem());
         mangaViewModel.setMangaPageList(pageList);
-
         handler.sendEmptyMessage(0);
     }
 
@@ -253,10 +258,11 @@ public class MyViewFlipper extends ViewFlipper {
         View v = (View) mInflater.inflate(R.layout.list_manga_page_item, null);
         FitXImageView iv = (FitXImageView) v.findViewById(R.id.imageView);
         // iv.setScaleType(ImageView.ScaleType.FIT_XY);
-        if (curr < next && next > pageList.size() - 1)
+        if (curr < next && next > pageList.size() - 1) {
             next = 0;
-        else if (curr > next && next < 0)
+        } else if (curr > next && next < 0) {
             next = pageList.size() - 1;
+        }
 
         // iv.setImageResource(mImages[next]);
 
@@ -264,19 +270,22 @@ public class MyViewFlipper extends ViewFlipper {
         synchronized (lock) {
             setCurrPos(next);
         }
-        Drawable cachedImage = getBaseActivty().getMangaHelper().getPageImage(
-                pageList.get(next), iv, new MangaHelper.GetImageCallback() {
+        Drawable cachedImage = null;
+        if (pageList.size() > next) {
+            cachedImage = getBaseActivty().getMangaHelper().getPageImage(
+                    pageList.get(next), iv, new MangaHelper.GetImageCallback() {
 
-                    public void imageLoaded(Drawable imageDrawable,
-                                            ImageView imageView, String imageUrl) {
-                        // TODO Auto-generated method stub
-                        if (imageDrawable != null && imageView != null) {
-                            //imageView.setImageDrawable(imageDrawable);
-                            showImage(imageView, imageDrawable, curr, fnext);
+                        public void imageLoaded(Drawable imageDrawable,
+                                                ImageView imageView, String imageUrl) {
+                            // TODO Auto-generated method stub
+                            if (imageDrawable != null && imageView != null) {
+                                //imageView.setImageDrawable(imageDrawable);
+                                showImage(imageView, imageDrawable, curr, fnext);
+                            }
+
                         }
-
-                    }
-                });
+                    });
+        }
         if (cachedImage != null) {
             showImage(iv, cachedImage, curr, next);
         } else {
@@ -475,19 +484,26 @@ public class MyViewFlipper extends ViewFlipper {
         public boolean onDown(MotionEvent e) {
             // TODO Auto-generated method stub
             Log.i("TEST", "onDown");
-            return false;
+            if (pageList.size() == 0) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
-            // TODO Auto-generated method stub
+            //no page, just dont handle the fling
+            if (pageList.size() == 0) {
+                return true;
+            }
             Log.i("TEST", "onFling:velocityX = " + velocityX + " velocityY"
                     + velocityY + " Tangle :" + Math.toDegrees(Math.atan(velocityY / velocityX)));
 
-            FitXImageView fiv = (FitXImageView)getCurrentView().findViewById(R.id.imageView);;
-            if (fiv.isZoomed())
-            {
+            FitXImageView fiv = (FitXImageView) getCurrentView().findViewById(R.id.imageView);
+            ;
+            if (fiv.isZoomed()) {
                 return false;
             }
 
