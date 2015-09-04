@@ -31,7 +31,7 @@ public class SearchResultActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_all_manga);
+        setContentView(R.layout.activity_search_result);
 
         handleIntent(getIntent());
     }
@@ -66,6 +66,10 @@ public class SearchResultActivity extends BaseActivity {
 
     private void getQueryResult(final String query) {
         gv = (MangaGridView) this.findViewById(R.id.gridView);
+
+        TextView mangaSourceTv = (TextView) this.findViewById(R.id.manga_source_textView);
+        String selectedMangaSourceName = getAppViewModel().Setting.getSelectedWebSource(this).getDisplayName();
+        mangaSourceTv.setText(selectedMangaSourceName);
 
         TextView tv = (TextView) findViewById(R.id.textView);
         gv = (MangaGridView) findViewById(R.id.gridView);

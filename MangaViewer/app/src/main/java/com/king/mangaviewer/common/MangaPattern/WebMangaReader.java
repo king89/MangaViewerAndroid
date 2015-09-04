@@ -105,4 +105,9 @@ public class WebMangaReader extends WebSiteBasePattern {
         Document doc = Jsoup.parse(html);
         return doc.select("#img").attr("src");
     }
+
+    @Override
+    protected String getSearchUrl(String queryText, int pageNum) {
+        return super.getSearchUrl(queryText, pageNum);
+    }
 }

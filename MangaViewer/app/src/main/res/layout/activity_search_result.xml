@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:layout_height="match_parent">
 
-    <GridView
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/manga_source_textView"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:textColor="#ffffff"
+        android:background="@color/red_over_lay"/>
+
+    <com.king.mangaviewer.common.component.MangaGridView
         android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,6 +31,26 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:paddingLeft="20dp"
-        android:paddingRight="20dp">
-</GridView>
+        android:paddingRight="20dp"
+        android:layout_weight="1"
+       ></com.king.mangaviewer.common.component.MangaGridView>
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black_overlay"
+        android:layout_weight="0"
+        android:padding="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/msg_loading"
+            android:id="@+id/textView"
+            android:textAlignment="center"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
 </LinearLayout>

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
@@ -45,7 +46,9 @@ public class HomeFragment extends BaseFragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-
+        TextView tv = (TextView) rootView.findViewById(R.id.manga_source_textView);
+        String selectedMangaSourceName = getSettingViewModel().getSelectedWebSource(getActivity()).getDisplayName();
+        tv.setText(selectedMangaSourceName);
         gv = (GridView) rootView.findViewById(R.id.gridView);
         progressDialog = ProgressDialog.show(this.getActivity(), getString(R.string.title_loading),
                 getString(R.string.msg_loading));

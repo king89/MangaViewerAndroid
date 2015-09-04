@@ -39,14 +39,13 @@ public class WebHHComic extends WebSiteBasePattern {
             "http://img2.hhcomic.net/dm16/"};
     String code = "";
     String key = "tazsicoewrm";
-    String pageWord = "&pageIndex=";
 
 
     public WebHHComic(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
         WEBSITEURL = "http://www.hhxiee.cc/";
-        WEBSEARCHURL = "http://somanhua.com/?key=";
+        WEBSEARCHURL = "http://somanhua.com/?key=%s&pageIndex=%d";
         WEBLATESTMANGABASEURL = "http://www.hhxiee.cc/";
         WEBALLMANGABASEURL = "http://www.hhxiee.cc/hhabc/";
         CHARSET = "gb2312";
@@ -181,10 +180,6 @@ public class WebHHComic extends WebSiteBasePattern {
         return Integer.parseInt(num);
     }
 
-    @Override
-    protected String getSearchUrl(String queryText, int pageNum) {
-        return WEBSEARCHURL + queryText + pageWord + pageNum;
-    }
 
     @Override
     public List<TitleAndUrl> getAllMangaList(HashMap<String, Object> state) {

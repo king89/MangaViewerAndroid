@@ -40,6 +40,11 @@ public class AllMangaFragment extends BaseFragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_all_manga, container, false);
+
+        TextView mangaSourceTv = (TextView) rootView.findViewById(R.id.manga_source_textView);
+        String selectedMangaSourceName = getSettingViewModel().getSelectedWebSource(getActivity()).getDisplayName();
+        mangaSourceTv.setText(selectedMangaSourceName);
+
         TextView tv = (TextView) rootView.findViewById(R.id.textView);
         gv = (MangaGridView) rootView.findViewById(R.id.gridView);
         gv.setLoadingFooter(tv);

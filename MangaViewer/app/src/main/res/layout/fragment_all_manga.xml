@@ -3,7 +3,18 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/manga_source_textView"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:textColor="#ffffff"
+        android:background="@color/red_over_lay"/>
     <com.king.mangaviewer.common.component.MangaGridView
         android:id="@+id/gridView"
         android:layout_width="match_parent"

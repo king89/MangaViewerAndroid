@@ -103,10 +103,8 @@ public class WebSiteBasePattern {
         return 0;
     }
 
-    protected String checkUrl(String url)
-    {
-        if (url.startsWith("/"))
-        {
+    protected String checkUrl(String url) {
+        if (url.startsWith("/")) {
             url = WEBSITEURL + url.substring(1);
         }
         return url;
@@ -218,7 +216,7 @@ public class WebSiteBasePattern {
         return getLatestMangaList(html);
     }
 
-    protected List<TitleAndUrl> getLatestMangaList(String html){
+    protected List<TitleAndUrl> getLatestMangaList(String html) {
         return null;
     }
 
@@ -278,7 +276,7 @@ public class WebSiteBasePattern {
     }
 
     protected String getSearchUrl(String queryText, int pageNum) {
-        return "";
+        return String.format(WEBSEARCHURL, queryText, pageNum);
     }
 
     protected List<TitleAndUrl> getSearchList(String html) {
@@ -336,7 +334,7 @@ public class WebSiteBasePattern {
     }
 
     protected String getAllMangaUrl(int pageNum) {
-        return "";
+        return String.format(WEBALLMANGABASEURL, pageNum);
     }
     /*AllManga*/
 

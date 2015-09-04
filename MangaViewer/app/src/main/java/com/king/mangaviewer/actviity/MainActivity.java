@@ -234,14 +234,21 @@ public class MainActivity extends BaseActivity {
         ListView lv = (ListView) layout.findViewById(R.id.listView);
 
         final List<MangaWebSource> mws = getAppViewModel().Setting.getMangaWebSources();
+        int tSelectWebSourcePos = 0;
         List<String> source = new ArrayList<>();
         if (mws != null) {
-
+            int i = 0;
             for (MangaWebSource m : mws) {
                 source.add(m.getDisplayName());
+                if (m.getId() == getAppViewModel().Setting.getSelectedWebSource(this).getId())
+                {
+                    tSelectWebSourcePos = i;
+                }
+                i++;
             }
         }
-        lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, source));
+
+        lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, source));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -250,7 +257,7 @@ public class MainActivity extends BaseActivity {
                 popup.dismiss();
             }
         });
-
+        lv.setItemChecked(tSelectWebSourcePos,true);
         popup.setContentView(layout);
         // Set content width and height
         popup.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);

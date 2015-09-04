@@ -108,11 +108,6 @@ public class WebMangaFox extends WebSiteBasePattern {
         return String.format(WEBSEARCHURL, queryText, pageNum, mRestSearchString);
     }
 
-    @Override
-    protected String getAllMangaUrl(int pageNum) {
-        return String.format(WEBALLMANGABASEURL, pageNum);
-    }
-
     //Chapter
 
     @Override
