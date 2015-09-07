@@ -88,5 +88,7 @@
     <string name="msg_tap_two_to_exit">Tap Back Again To Exit App</string>
     <string name="prefix_chapter_title">Chapter</string>
     <string name="msg_page_no_page">No Page In This Chapter, Please Try Again.</string>
+    <string name="msg_notify_updated_service_title">The Mangas You Favourited Has Updated</string>
+    <string name="msg_notify_updated_service_text">Check The Updated Manga</string>
 
 </resources>

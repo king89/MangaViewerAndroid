@@ -10,6 +10,8 @@ import com.king.mangaviewer.R;
 import com.king.mangaviewer.common.util.MangaHelper;
 import com.king.mangaviewer.common.util.SettingHelper;
 import com.king.mangaviewer.viewmodel.AppViewModel;
+import com.king.mangaviewer.viewmodel.MangaViewModel;
+import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 
 public class BaseActivity extends ActionBarActivity {
@@ -100,5 +102,12 @@ public class BaseActivity extends ActionBarActivity {
 
     public SettingHelper getSettingHelper() {
         return ((MyApplication) this.getApplication()).SettingHelper;
+    }
+
+    public SettingViewModel getSettingViewModel(){
+        return getAppViewModel().Setting;
+    }
+    public MangaViewModel getMangaViewModel(){
+        return getAppViewModel().Manga;
     }
 }

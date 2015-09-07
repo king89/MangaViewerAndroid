@@ -143,11 +143,21 @@ public class SettingViewModel extends ViewModelBase {
         }
     }
 
-    public boolean addFavouriteManga(MangaMenuItem manga) {
+    public boolean addFavouriteManga(MangaMenuItem manga, int chapterCount) {
         if (mFavouriteMangaList.containsKey(manga.getHash())) {
             return false;
         } else {
-            mFavouriteMangaList.put(manga.getHash(), new FavouriteMangaMenuItem(manga));
+            mFavouriteMangaList.put(manga.getHash(), new FavouriteMangaMenuItem(manga, chapterCount));
+            return true;
+        }
+
+    }
+
+    public boolean addFavouriteManga(FavouriteMangaMenuItem manga) {
+        if (mFavouriteMangaList.containsKey(manga.getHash())) {
+            return false;
+        } else {
+            mFavouriteMangaList.put(manga.getHash(), manga);
             return true;
         }
 

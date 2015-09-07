@@ -40,16 +40,22 @@ public class SettingHelper {
         SettingViewModel tmp = null;
         if (data != null) {
             String ss = new String(data);
-            tmp = new Gson().fromJson(ss, SettingViewModel.class);
+            try {
+                tmp = new Gson().fromJson(ss, SettingViewModel.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
+            if (tmp == null)
+            {
+                tmp = new SettingViewModel();
+            }
         } else {
             tmp = new SettingViewModel();
         }
 
         return tmp;
     }
-
-
 
 
     public static String getSettingFolder(Context context) {
@@ -64,7 +70,7 @@ public class SettingHelper {
         }
     }
 
-    public static String getMangaFolder(Context context){
+    public static String getMangaFolder(Context context) {
         // Check if have external storage
         if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
             return context.getExternalFilesDir(null) + File.separator
@@ -74,6 +80,7 @@ public class SettingHelper {
                     + Constants.MANGAFOLDER;
         }
     }
+
     public WebSiteEnum getWebType() {
         return WebSiteEnum.HHComic;
     }

@@ -60,7 +60,7 @@ public class FavouriteFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_favourite, container, false);
         gv = (GridView) rootView.findViewById(R.id.gridView);
         tv = (TextView) rootView.findViewById(R.id.textView);
 //        gv.setClickable(true);
