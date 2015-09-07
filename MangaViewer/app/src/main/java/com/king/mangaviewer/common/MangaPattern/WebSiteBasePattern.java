@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 
 public class WebSiteBasePattern {
     private final static String LOG_TAG = "WebSiteBasePattern";
-    private static final int HTTP_TIMEOUT_NUM = 300000;
+    private static final int HTTP_TIMEOUT_NUM = 10000;
     public String WEBSITEURL = "";
     public String WEBSEARCHURL = "";
     public String WEBALLMANGABASEURL = "";
@@ -213,6 +213,10 @@ public class WebSiteBasePattern {
      */
     public List<TitleAndUrl> getLatestMangaList(HashMap<String, Object> state) {
         String html = getHtml(getLatestMangaUrl());
+        if (html == null || html.isEmpty())
+        {
+            return null;
+        }
         return getLatestMangaList(html);
     }
 

@@ -14,6 +14,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
+import com.king.mangaviewer.common.MangaPattern.WebSiteBasePattern;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
@@ -33,6 +34,8 @@ public class MangaGridView extends GridView {
     private View mLoadingFooter;
     private MangaViewModel mMangaViewModel;
     private IGetMore mIGetMoreManga;
+    private boolean mNoMore = false;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -42,6 +45,9 @@ public class MangaGridView extends GridView {
             }
             if (mLoadingFooter != null) {
                 mLoadingFooter.setVisibility(GONE);
+            }
+            if (mStateHash.containsKey(WebSiteBasePattern.STATE_NO_MORE)) {
+                mNoMore = (boolean) mStateHash.get(WebSiteBasePattern.STATE_NO_MORE);
             }
             setFlagLoading(false);
             super.handleMessage(msg);
@@ -113,7 +119,7 @@ public class MangaGridView extends GridView {
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
-                if (getFlagLoading() == false) {
+                if (getFlagLoading() == false && !mNoMore) {
                     getMoreManga();
                 }
             }
