@@ -20,6 +20,15 @@ public class FavouriteMangaMenuItem extends MangaMenuItem implements Comparable<
         this.mChapterCount = chapterCount;
     }
 
+    public static FavouriteMangaMenuItem createFavouriteMangaMenuItem(MangaMenuItem menu, String favouriteDate,
+                                                                      String updatedDate, int chapterCount,int updateCount){
+        FavouriteMangaMenuItem item = new FavouriteMangaMenuItem(menu,chapterCount);
+        item.setUpdateCount(updateCount);
+        item.setUpdatedDate(updatedDate);
+        item.mFavouriteDate = favouriteDate;
+        return item;
+    }
+
     @Override
     public int compareTo(FavouriteMangaMenuItem another) {
         if (this.mUpdatedDate != null && another.mUpdatedDate != null) {
@@ -28,6 +37,18 @@ public class FavouriteMangaMenuItem extends MangaMenuItem implements Comparable<
         else {
             return this.getTitle().compareTo(another.getTitle());
         }
+    }
+
+    public String getFavouriteDate() {
+        return mFavouriteDate;
+    }
+
+    public String getUpdatedDate() {
+        return mUpdatedDate;
+    }
+
+    public void setUpdatedDate(String mUpdatedDate) {
+        this.mUpdatedDate = mUpdatedDate;
     }
 
     public int getChapterCount() {

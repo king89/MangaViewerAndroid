@@ -40,6 +40,8 @@ public class SettingViewModel extends ViewModelBase {
     private boolean mIsFromLeftToRight = true;
     private boolean mIsSplitPage = true;
 
+    private int mUpdatedFavouriteMangaCount;
+
     public static SettingViewModel loadSetting(Context context) {
         SettingViewModel svm = SettingHelper.loadSetting(context);
         //Manga Sources
@@ -222,5 +224,13 @@ public class SettingViewModel extends ViewModelBase {
 
     public void saveSetting(Context context) {
         SettingHelper.saveSetting(context, this);
+    }
+
+    public int getUpdatedFavouriteMangaCount() {
+        return mUpdatedFavouriteMangaCount;
+    }
+
+    public void setUpdatedFavouriteMangaCount(int updatedFavouriteMangaCount) {
+        this.mUpdatedFavouriteMangaCount = updatedFavouriteMangaCount;
     }
 }

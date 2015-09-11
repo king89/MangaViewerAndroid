@@ -103,8 +103,14 @@ public class AutoNotifyUpdatedService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        long t = getResources().getInteger(R.integer.auto_update_service_interval);
+        //use for debug,if it -1, then use for release
+        if (t == -1)
+        {
+            t = ALERT_POLL_INTERVAL;
+        }
         timer = new Timer();
-        timer.schedule(task, 5000, ALERT_POLL_INTERVAL);
+        timer.schedule(task, 5000, t);
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 

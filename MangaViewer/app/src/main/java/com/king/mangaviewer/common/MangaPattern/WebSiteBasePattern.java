@@ -213,8 +213,7 @@ public class WebSiteBasePattern {
      */
     public List<TitleAndUrl> getLatestMangaList(HashMap<String, Object> state) {
         String html = getHtml(getLatestMangaUrl());
-        if (html == null || html.isEmpty())
-        {
+        if (html == null || html.isEmpty()) {
             return null;
         }
         return getLatestMangaList(html);
@@ -243,21 +242,13 @@ public class WebSiteBasePattern {
                 e.printStackTrace();
             }
             int pageNum = 1;
-            int totalNum = 0;
+            int totalNum = state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY) ? (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY) : 0;
             String html = "";
             //no total num means first time
-            if (!state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
-
-                String turl = getSearchUrl(queryText, pageNum);
-                Log.v(LOG_TAG, "Search: " + turl);
-                html = getHtml(turl);
-                totalNum = getSearchTotalNum(html);
-                state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalNum);
-            } else {
+            if (state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
                 if (state.containsKey(STATE_PAGE_NUM_NOW)) {
                     pageNum = (int) state.get(STATE_PAGE_NUM_NOW);
                 }
-                totalNum = (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY);
                 if (pageNum + 1 <= totalNum) {
                     pageNum++;
                     state.put(STATE_PAGE_NUM_NOW, pageNum);
@@ -265,10 +256,18 @@ public class WebSiteBasePattern {
                     state.put(STATE_NO_MORE, true);
                     return null;
                 }
-                String turl = getSearchUrl(queryText, pageNum);
-                Log.v(LOG_TAG, "Search: " + turl);
-                html = getHtml(turl);
             }
+
+            String turl = getSearchUrl(queryText, pageNum);
+            Log.v(LOG_TAG, "Search: " + turl);
+            html = getHtml(turl);
+            if (html.isEmpty()) {
+                return null;
+            }
+            if (totalNum == 0) {
+                totalNum = getSearchTotalNum(html);
+            }
+            state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalNum);
             return getSearchList(html);
         } else {
             return null;
@@ -297,21 +296,13 @@ public class WebSiteBasePattern {
 
         if (!noMore) {
             int pageNum = 1;
-            int totalNum = 0;
+            int totalNum = state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY) ? (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY) : 0;
             String html = "";
             //no total num means first time
-            if (!state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
-
-                String turl = getAllMangaUrl(pageNum);
-                Log.v(LOG_TAG, "Search: " + turl);
-                html = getHtml(turl);
-                totalNum = getAllMangaTotalNum(html);
-                state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalNum);
-            } else {
+            if (state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
                 if (state.containsKey(STATE_PAGE_NUM_NOW)) {
                     pageNum = (int) state.get(STATE_PAGE_NUM_NOW);
                 }
-                totalNum = (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY);
                 if (pageNum + 1 <= totalNum) {
                     pageNum++;
                     state.put(STATE_PAGE_NUM_NOW, pageNum);
@@ -319,10 +310,18 @@ public class WebSiteBasePattern {
                     state.put(STATE_NO_MORE, true);
                     return null;
                 }
-                String turl = getAllMangaUrl(pageNum);
-                Log.v(LOG_TAG, "Search: " + turl);
-                html = getHtml(turl);
             }
+
+            String turl = getAllMangaUrl(pageNum);
+            Log.v(LOG_TAG, "Search: " + turl);
+            html = getHtml(turl);
+            if (html.isEmpty()) {
+                return null;
+            }
+            if (totalNum == 0) {
+                totalNum = getAllMangaTotalNum(html);
+            }
+            state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalNum);
             return getAllMangaList(html);
         } else {
             return null;

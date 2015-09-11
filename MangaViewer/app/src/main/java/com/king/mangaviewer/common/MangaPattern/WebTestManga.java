@@ -9,6 +9,7 @@ import com.king.mangaviewer.model.TitleAndUrl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by KinG on 12/24/2014.
@@ -46,7 +47,8 @@ public class WebTestManga extends WebSiteBasePattern {
 
         List<TitleAndUrl> chapterList = new ArrayList<TitleAndUrl>();
 
-        for (int i = 0; i < 10; i++) {
+        int num = new Random().nextInt(100);
+        for (int i = 0; i < num; i++) {
             String url = "url-" + i;
             String title = "chapterchapterchapterchapterchapterchapterchapterchapterchapterchapterchapter-" + i;
             chapterList.add(new TitleAndUrl(title, url));

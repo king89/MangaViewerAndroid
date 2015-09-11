@@ -2,4 +2,5 @@
 <resources>
     <integer name="gridvivew_column_num">3</integer>
     <integer name="max_text_size">24</integer>
+    <integer name="auto_update_service_interval">15000</integer>
 </resources>
