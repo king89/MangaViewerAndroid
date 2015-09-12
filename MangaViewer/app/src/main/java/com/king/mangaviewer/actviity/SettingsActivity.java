@@ -3,6 +3,7 @@ package com.king.mangaviewer.actviity;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -218,7 +219,6 @@ public class SettingsActivity extends PreferenceActivity {
                         index >= 0
                                 ? listPreference.getEntries()[index]
                                 : null);
-
             } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
@@ -288,23 +288,45 @@ public class SettingsActivity extends PreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_manga_sources)));
 
 
+
+
+            //auto update hour
+            final ListPreference autoUpdateHour = (ListPreference)findPreference(getString(R.string.pref_key_auto_update_hours));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_auto_update_hours)));
+            autoUpdateHour.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    Intent intent = new Intent(getActivity(), AutoNotifyUpdatedService.class);
+                    getActivity().stopService(intent);
+                    getActivity().startService(intent);
+                    int index = autoUpdateHour.findIndexOfValue(newValue.toString());
+                    autoUpdateHour.setSummary(autoUpdateHour.getEntries()[index]);
+                    return true;
+                }
+            });
             //auto update service
             final SwitchPreference autoUpdateServicePref = (SwitchPreference) findPreference(getString(R.string.pref_key_auto_update_service));
             autoUpdateServicePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     Intent intent = new Intent(getActivity(), AutoNotifyUpdatedService.class);
-                    if ((boolean)newValue){
+                    if ((boolean) newValue) {
                         getActivity().startService(intent);
                         Toast.makeText(getActivity(), getString(R.string.msg_start_auto_update_service), Toast.LENGTH_SHORT).show();
-
-                    }else {
+                        autoUpdateHour.setEnabled(true);
+                    } else {
                         getActivity().stopService(intent);
                         Toast.makeText(getActivity(), getString(R.string.msg_stop_auto_update_service), Toast.LENGTH_SHORT).show();
+                        autoUpdateHour.setEnabled(false);
                     }
                     return true;
                 }
             });
+
+            //set auto update hour enable
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            boolean isEnable = sp.getBoolean(getString(R.string.pref_key_auto_update_service),true);
+            autoUpdateHour.setEnabled(isEnable);
         }
     }
 

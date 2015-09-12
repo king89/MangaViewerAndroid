@@ -5,9 +5,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
@@ -48,6 +50,7 @@ public class AutoNotifyUpdatedService extends Service {
     };
 
     private boolean checkManga() {
+        Log.i("AutoNotify","checkManga");
         FavouriteMangaDataSource dataSource = new FavouriteMangaDataSource(this);
         SettingViewModel svm = SettingViewModel.loadSetting(this);
         List<MangaWebSource> sources = svm.getMangaWebSources();
@@ -118,11 +121,14 @@ public class AutoNotifyUpdatedService extends Service {
         long t = getResources().getInteger(R.integer.auto_update_service_interval);
         //use for debug,if it -1, then use for release
         if (t < 0) {
-            t = ALERT_POLL_INTERVAL;
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+            int hour = Integer.parseInt(sp.getString(getResources().getString(R.string.pref_key_auto_update_hours), "6"));
+            t = ALERT_POLL_INTERVAL * hour;
         }
         timer = new Timer();
         timer.schedule(task, 5000, t);
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Log.i("AutoNotify","Schedule Time: " + t);
     }
 
     @Override

@@ -28,8 +28,6 @@
         <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
         <ListPreference
             android:defaultValue="0"
-            android:entries="@array/pref_manga_sources_titles"
-            android:entryValues="@array/pref_manga_sources_values"
             android:key="@string/pref_key_manga_sources"
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
@@ -50,6 +48,14 @@
             android:summary="@string/pref_summary_auto_update_service"
             android:title="@string/pref_title_auto_update_service"
             ></SwitchPreference>
+        <ListPreference
+            android:defaultValue="6"
+            android:entries="@array/pref_entries_update_hour"
+            android:entryValues="@array/pref_entryValues_update_hour"
+            android:key="@string/pref_key_auto_update_hours"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:title="@string/pref_title_auto_update_hours"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_catagory_system">
