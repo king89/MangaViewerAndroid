@@ -27,6 +27,7 @@ import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.NavDrawerListAdapter;
 import com.king.mangaviewer.common.util.NavDrawerItem;
 import com.king.mangaviewer.model.MangaWebSource;
+import com.king.mangaviewer.service.AutoNotifyUpdatedService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         initDrawer(savedInstanceState);
-
     }
 
     private void initDrawer(Bundle savedInstanceState) {
@@ -119,7 +119,11 @@ public class MainActivity extends BaseActivity {
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
-            displayView(0);
+            if (getIntent().getBooleanExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false)) {
+                displayView(getResources().getInteger(R.integer.menu_favourite_pos));
+            } else {
+                displayView(0);
+            }
 
         }
     }

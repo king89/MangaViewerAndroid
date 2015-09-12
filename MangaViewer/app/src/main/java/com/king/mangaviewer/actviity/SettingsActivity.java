@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.preference.MangaViewerDialogPreference;
+import com.king.mangaviewer.service.AutoNotifyUpdatedService;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 import static android.widget.Toast.*;
@@ -286,6 +287,24 @@ public class SettingsActivity extends PreferenceActivity {
             mangaSourcesPref.setEntryValues(csValues);
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_manga_sources)));
 
+
+            //auto update service
+            final SwitchPreference autoUpdateServicePref = (SwitchPreference) findPreference(getString(R.string.pref_key_auto_update_service));
+            autoUpdateServicePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    Intent intent = new Intent(getActivity(), AutoNotifyUpdatedService.class);
+                    if ((boolean)newValue){
+                        getActivity().startService(intent);
+                        Toast.makeText(getActivity(), getString(R.string.msg_start_auto_update_service), Toast.LENGTH_SHORT).show();
+
+                    }else {
+                        getActivity().stopService(intent);
+                        Toast.makeText(getActivity(), getString(R.string.msg_stop_auto_update_service), Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
+                }
+            });
         }
     }
 

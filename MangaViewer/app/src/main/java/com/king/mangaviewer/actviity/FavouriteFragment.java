@@ -91,7 +91,7 @@ public class FavouriteFragment extends BaseFragment {
     private void getFavouriteMangaList() {
         MainActivity copy = (MainActivity) getActivity();
 
-        List<FavouriteMangaMenuItem> list = new ArrayList(copy.getAppViewModel().Setting.getFavouriteMangaList());
+        List<FavouriteMangaMenuItem> list = copy.getAppViewModel().Setting.getFavouriteMangaList();
 
         Collections.sort(list);
         Collections.reverse(list);

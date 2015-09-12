@@ -19,7 +19,13 @@ public class FavouriteMangaMenuItem extends MangaMenuItem implements Comparable<
         mUpdatedDate = mFavouriteDate;
         this.mChapterCount = chapterCount;
     }
-
+    public FavouriteMangaMenuItem(final MangaMenuItem menu) {
+        super(menu.id, menu.title, menu.description, menu.imagePath, menu.url, menu.getMangaWebSource());
+        // TODO Auto-generated constructor stub
+        mFavouriteDate = DateTime.now().toString("yyyy-MM-dd hh:mm:ss");
+        mUpdatedDate = mFavouriteDate;
+        this.mChapterCount = 0;
+    }
     public static FavouriteMangaMenuItem createFavouriteMangaMenuItem(MangaMenuItem menu, String favouriteDate,
                                                                       String updatedDate, int chapterCount,int updateCount){
         FavouriteMangaMenuItem item = new FavouriteMangaMenuItem(menu,chapterCount);

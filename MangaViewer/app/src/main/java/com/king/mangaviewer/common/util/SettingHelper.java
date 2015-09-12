@@ -22,40 +22,40 @@ public class SettingHelper {
     WebSiteEnum webType;
     private WebSiteEnum mTest = WebSiteEnum.HHComic;
 
-    public static boolean saveSetting(Context context, SettingViewModel setting) {
-        String folderName = getSettingFolder(context);
-        String fileName = SETTINGFILE;
-        String ss = new Gson().toJson(setting);
+//    public static boolean saveSetting(Context context, SettingViewModel setting) {
+//        String folderName = getSettingFolder(context);
+//        String fileName = SETTINGFILE;
+//        String ss = new Gson().toJson(setting);
+//
+//        InputStream inputStream = new ByteArrayInputStream(ss.getBytes());
+//        FileHelper.saveFile(folderName, fileName, inputStream);
+//        return true;
+//    }
 
-        InputStream inputStream = new ByteArrayInputStream(ss.getBytes());
-        FileHelper.saveFile(folderName, fileName, inputStream);
-        return true;
-    }
-
-    public static SettingViewModel loadSetting(Context context) {
-        String folderName = getSettingFolder(context);
-        String fileName = SETTINGFILE;
-
-        byte[] data = FileHelper.loadFile(folderName, fileName);
-        SettingViewModel tmp = null;
-        if (data != null) {
-            String ss = new String(data);
-            try {
-                tmp = new Gson().fromJson(ss, SettingViewModel.class);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            if (tmp == null)
-            {
-                tmp = new SettingViewModel();
-            }
-        } else {
-            tmp = new SettingViewModel();
-        }
-
-        return tmp;
-    }
+//    public static SettingViewModel loadSetting(Context context) {
+//        String folderName = getSettingFolder(context);
+//        String fileName = SETTINGFILE;
+//
+//        byte[] data = FileHelper.loadFile(folderName, fileName);
+//        SettingViewModel tmp = null;
+//        if (data != null) {
+//            String ss = new String(data);
+//            try {
+//                tmp = new Gson().fromJson(ss, SettingViewModel.class);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            if (tmp == null)
+//            {
+//                tmp = new SettingViewModel();
+//            }
+//        } else {
+//            tmp = new SettingViewModel();
+//        }
+//
+//        return tmp;
+//    }
 
 
     public static String getSettingFolder(Context context) {

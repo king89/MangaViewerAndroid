@@ -56,28 +56,26 @@ public class LocalFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        String defalutPaht = ((MainActivity) this.getActivity()).getAppViewModel().Setting.getDefaultLocalMangaPath();
+        String defalutPaht = ((MainActivity) this.getActivity()).getAppViewModel().Setting.getDefaultLocalMangaPath(getActivity());
         //TODO
         path = new File(Environment.getExternalStorageDirectory() + defalutPaht);
         extraPath = defalutPaht;
         String[] childFolders = extraPath.split("/");
-        for (String s : childFolders)
-        {
+        for (String s : childFolders) {
             if (!s.isEmpty()) {
                 str.add(s);
             }
         }
         View rootView = inflater.inflate(R.layout.fragment_local, container, false);
         final TextView tv = (TextView) rootView.findViewById(R.id.textView);
-        Button bt = (Button)rootView.findViewById(R.id.button);
+        Button bt = (Button) rootView.findViewById(R.id.button);
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 BaseActivity activity = ((BaseActivity) getActivity());
-                if (activity != null)
-                {
-                    activity.getAppViewModel().Setting.setDefaultLocalMangaPath(extraPath);
-                    Toast.makeText(getActivity(),getString(R.string.local_set_default_path_successed),Toast.LENGTH_SHORT).show();
+                if (activity != null) {
+                    activity.getAppViewModel().Setting.setDefaultLocalMangaPath(getActivity(), extraPath);
+                    Toast.makeText(getActivity(), getString(R.string.local_set_default_path_successed), Toast.LENGTH_SHORT).show();
                 }
             }
         });

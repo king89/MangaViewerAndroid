@@ -11,6 +11,7 @@ import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaWebSource;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class FavouriteMangaDataSource extends MangaDataSourceBase {
         StringBuilder builder = new StringBuilder();
         builder.append("CREATE TABLE " + FAVOURITE_MANGA_TABLE);
         //builder.append(" ( " + ID + " integer, ");
-        builder.append(" ( " +HASH + " text  primary key, ");
+        builder.append(" ( " + HASH + " text  primary key, ");
         builder.append(TITLE + " text, ");
         builder.append(DESCRIPTION + " text, ");
         builder.append(IMAGEPATH + " text, ");
@@ -69,9 +70,9 @@ public class FavouriteMangaDataSource extends MangaDataSourceBase {
         super(context);
     }
 
-    public HashMap<String, FavouriteMangaMenuItem> getAllFavouriteMangaMenu(List<MangaWebSource> mangaWebSources) {
+    public List<FavouriteMangaMenuItem> getAllFavouriteMangaMenu(List<MangaWebSource> mangaWebSources) {
 
-        HashMap<String, FavouriteMangaMenuItem> list = new HashMap<>();
+        List<FavouriteMangaMenuItem> list = new ArrayList<>();
         Cursor cursor = null;
         try {
             open();
@@ -82,7 +83,9 @@ public class FavouriteMangaDataSource extends MangaDataSourceBase {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             FavouriteMangaMenuItem item = cursorToItem(cursor, mangaWebSources);
-            list.put(item.getHash(), item);
+            if (item != null) {
+                list.add(item);
+            }
             cursor.moveToNext();
         }
         return list;
@@ -136,6 +139,21 @@ public class FavouriteMangaDataSource extends MangaDataSourceBase {
         }
     }
 
+    public boolean checkIsexsit(FavouriteMangaMenuItem menu) {
+        String where = HASH + " = ? ";
+        Cursor cursor = null;
+        try {
+            cursor = mDataBase.query(FAVOURITE_MANGA_TABLE, All_COLUMN, where, new String[]{menu.getHash()}, null, null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (cursor != null) {
+            return cursor.getCount() > 0 ? true : false;
+        } else {
+            return false;
+        }
+    }
+
     private FavouriteMangaMenuItem cursorToItem(Cursor cursor, List<MangaWebSource> mangaWebSources) {
         //when reload, use hash for
         String hash = cursor.getString(cursor.getColumnIndex(HASH));
@@ -155,9 +173,11 @@ public class FavouriteMangaDataSource extends MangaDataSourceBase {
                 break;
             }
         }
+        if (mangaWebSource == null) {
+            return null;
+        }
 
         MangaMenuItem menu = new MangaMenuItem(hash, title, description, imagePath, url, mangaWebSource);
-
         return FavouriteMangaMenuItem.createFavouriteMangaMenuItem(menu, favouriteDate, updateDate, chapterCount, updateCount);
     }
 

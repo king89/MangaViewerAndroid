@@ -95,5 +95,9 @@ public class SettingMouldeTest extends ActivityInstrumentationTestCase2<MainActi
         assertEquals(2, item.getUpdateCount());
 
         assertEquals(2, hash.get(item.getHash()).getUpdateCount());
+
+        assertEquals(true, dataSource.checkIsexsit(item));
+
+        assertEquals(false, dataSource.checkIsexsit(list.get(1)));
     }
 }

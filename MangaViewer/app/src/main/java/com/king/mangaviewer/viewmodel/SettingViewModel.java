@@ -18,6 +18,7 @@ import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.common.util.FileHelper;
 import com.king.mangaviewer.common.util.MangaHelper;
 import com.king.mangaviewer.common.util.SettingHelper;
+import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaWebSource;
@@ -33,39 +34,39 @@ import java.util.List;
 public class SettingViewModel extends ViewModelBase {
 
     private MangaWebSource mSelectedWebSource;
-    private String mDefaultLocalMangaPath;
     private List<MangaWebSource> mMangaWebSources;
     private HashMap<String, FavouriteMangaMenuItem> mFavouriteMangaList;
-
+    private FavouriteMangaDataSource mFavouriteMangaDataSource;
     private boolean mIsFromLeftToRight = true;
     private boolean mIsSplitPage = true;
 
     private int mUpdatedFavouriteMangaCount;
 
+    public SettingViewModel(Context context) {
+        mContext = context;
+    }
+
     public static SettingViewModel loadSetting(Context context) {
-        SettingViewModel svm = SettingHelper.loadSetting(context);
+        SettingViewModel svm = new SettingViewModel(context);
         //Manga Sources
         svm.setMangaWebSources(loadMangaSource(context));
-        //Favourite mangas
-        if (svm.mFavouriteMangaList == null) {
-            svm.mFavouriteMangaList = new HashMap<>();
-        }
 
         if (svm.mSelectedWebSource == null) {
             svm.mSelectedWebSource = svm.mMangaWebSources.get(0);
         } else {
             //ensure get the latest manga source
             int id = svm.mSelectedWebSource.getId();
-            svm.setSelectedWebSource(id,context);
+            svm.setSelectedWebSource(id, context);
         }
-
-        if (svm.mDefaultLocalMangaPath == null) {
-            svm.mDefaultLocalMangaPath = "";
-        }
-
         return svm;
     }
 
+    private FavouriteMangaDataSource getFavouriteMangaDataSource(){
+        if (mFavouriteMangaDataSource == null){
+            mFavouriteMangaDataSource = new FavouriteMangaDataSource(mContext);
+        }
+        return mFavouriteMangaDataSource;
+    };
 
     public void setIsSplitPage(Context context, boolean mIsSplitPage) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -138,44 +139,34 @@ public class SettingViewModel extends ViewModelBase {
     }
 
     public boolean checkIsFavourited(MangaMenuItem manga) {
-        if (mFavouriteMangaList.containsKey(manga.getHash())) {
-            return true;
-        } else {
-            return false;
-        }
+        return getFavouriteMangaDataSource().checkIsexsit(new FavouriteMangaMenuItem(manga));
     }
 
     public boolean addFavouriteManga(MangaMenuItem manga, int chapterCount) {
-        if (mFavouriteMangaList.containsKey(manga.getHash())) {
+        if (checkIsFavourited(manga)) {
             return false;
         } else {
-            mFavouriteMangaList.put(manga.getHash(), new FavouriteMangaMenuItem(manga, chapterCount));
+            getFavouriteMangaDataSource().addToFavourite(new FavouriteMangaMenuItem(manga, chapterCount));
             return true;
         }
 
     }
 
     public boolean addFavouriteManga(FavouriteMangaMenuItem manga) {
-        if (mFavouriteMangaList.containsKey(manga.getHash())) {
-            return false;
-        } else {
-            mFavouriteMangaList.put(manga.getHash(), manga);
-            return true;
-        }
-
+       return addFavouriteManga(manga,0);
     }
 
     public boolean removeFavouriteManga(MangaMenuItem manga) {
-        if (mFavouriteMangaList.containsKey(manga.getHash())) {
-            mFavouriteMangaList.remove(manga.getHash());
+        if (checkIsFavourited(manga)) {
+            getFavouriteMangaDataSource().removeFromFavourite(new FavouriteMangaMenuItem(manga));
             return true;
         } else {
             return false;
         }
     }
 
-    public Collection<FavouriteMangaMenuItem> getFavouriteMangaList() {
-        return this.mFavouriteMangaList.values();
+    public List<FavouriteMangaMenuItem> getFavouriteMangaList() {
+        return getFavouriteMangaDataSource().getAllFavouriteMangaMenu(getMangaWebSources());
     }
 
     public MangaWebSource getSelectedWebSource(Context context) {
@@ -214,16 +205,19 @@ public class SettingViewModel extends ViewModelBase {
 
     }
 
-    public String getDefaultLocalMangaPath() {
-        return mDefaultLocalMangaPath;
+    public String getDefaultLocalMangaPath(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString(context.getString(R.string.pref_key_default_path), "");
     }
 
-    public void setDefaultLocalMangaPath(String path) {
-        mDefaultLocalMangaPath = path;
+    public void setDefaultLocalMangaPath(Context context, String path) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(context.getString(R.string.pref_key_default_path), path);
     }
 
     public void saveSetting(Context context) {
-        SettingHelper.saveSetting(context, this);
+        //SettingHelper.saveSetting(context, this);
     }
 
     public int getUpdatedFavouriteMangaCount() {

@@ -9,13 +9,17 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.actviity.MainActivity;
 import com.king.mangaviewer.common.util.MangaHelper;
+import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.model.MangaMenuItem;
+import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 import java.util.ArrayList;
@@ -27,6 +31,7 @@ import java.util.TimerTask;
  * Created by KinG on 9/6/2015.
  */
 public class AutoNotifyUpdatedService extends Service {
+    public static final String AUTO_UPDATE_SERVICE = "AUTO_UPDATE_SERVICE";
     Timer timer;
     //once an hour
     private static final long ALERT_POLL_INTERVAL = 1 * 60 * 3600 * 1000;
@@ -43,9 +48,12 @@ public class AutoNotifyUpdatedService extends Service {
     };
 
     private boolean checkManga() {
-        SettingViewModel sv = SettingViewModel.loadSetting(this);
-        List<FavouriteMangaMenuItem> flist = new ArrayList<>(sv.getFavouriteMangaList());
-        MangaHelper helper = new MangaHelper(this);
+        FavouriteMangaDataSource dataSource = new FavouriteMangaDataSource(this);
+        SettingViewModel svm = SettingViewModel.loadSetting(this);
+        List<MangaWebSource> sources = svm.getMangaWebSources();
+        List<FavouriteMangaMenuItem> flist = dataSource.getAllFavouriteMangaMenu(sources);
+
+        MangaHelper helper = new MangaHelper(this.getApplicationContext());
         boolean isHaveUpdated = false;
         for (int i = 0; i < flist.size(); i++) {
             int chapterCount = flist.get(i).getChapterCount();
@@ -54,19 +62,17 @@ public class AutoNotifyUpdatedService extends Service {
             List<MangaChapterItem> chlist = helper.getChapterList(flist.get(i));
             //have updated manga
             if (chlist.size() > chapterCount) {
-                updatedCount = updatedCount + (chlist.size() - chapterCount);
+                updatedCount = updatedCount + Math.max(0, chlist.size() - chapterCount);
                 flist.get(i).setChapterCount(chlist.size());
                 flist.get(i).setUpdateCount(updatedCount);
-                sv.addFavouriteManga(flist.get(i));
+                dataSource.updateToFavourite(flist.get(i));
                 isHaveUpdated = true;
             }
         }
 
         if (isHaveUpdated) {
-            sv.saveSetting(this);
             return true;
-        }
-        else {
+        } else {
             return false;
         }
 
@@ -80,8 +86,12 @@ public class AutoNotifyUpdatedService extends Service {
     };
 
     private void notifyFromHandler() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(AUTO_UPDATE_SERVICE, true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                Intent.FLAG_ACTIVITY_NEW_TASK, new Intent(this, MainActivity.class),
+                Intent.FLAG_ACTIVITY_NEW_TASK, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Notification.Builder builder = new Notification.Builder(this)
@@ -97,16 +107,17 @@ public class AutoNotifyUpdatedService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.i("AutoNotify", "Stop Service");
         timer.cancel();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.i("AutoNotify","Start Service");
         long t = getResources().getInteger(R.integer.auto_update_service_interval);
         //use for debug,if it -1, then use for release
-        if (t == -1)
-        {
+        if (t < 0) {
             t = ALERT_POLL_INTERVAL;
         }
         timer = new Timer();

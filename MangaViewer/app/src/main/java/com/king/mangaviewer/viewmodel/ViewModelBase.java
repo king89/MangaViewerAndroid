@@ -1,5 +1,7 @@
 package com.king.mangaviewer.viewmodel;
 
-public class ViewModelBase {
+import android.content.Context;
 
+public class ViewModelBase {
+    protected Context mContext;
 }

@@ -74,7 +74,6 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        getAppViewModel().Setting.saveSetting(this);
     }
 
     @Override

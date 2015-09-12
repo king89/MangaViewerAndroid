@@ -43,6 +43,13 @@
             >
 
         </SwitchPreference>
+
+        <SwitchPreference
+            android:key="@string/pref_key_auto_update_service"
+            android:defaultValue="true"
+            android:summary="@string/pref_summary_auto_update_service"
+            android:title="@string/pref_title_auto_update_service"
+            ></SwitchPreference>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_catagory_system">

@@ -64,6 +64,7 @@
     <string name="pref_key_rate">pref_key_rate</string>
     <string name="pref_key_manga_sources">pref_key_manga_sources</string>
     <string name="pref_key_split_page">pref_key_split_page</string>
+    <string name="pref_key_auto_update_service">pref_key_auto_update_service</string>
 
     <string name="pref_catagory_general">General</string>
     <string name="pref_catagory_reading">Reading</string>
@@ -90,5 +91,11 @@
     <string name="msg_page_no_page">No Page In This Chapter, Please Try Again.</string>
     <string name="msg_notify_updated_service_title">The Mangas You Favourited Has Updated</string>
     <string name="msg_notify_updated_service_text">Check The Updated Manga</string>
+    <string name="pref_summary_auto_update_service">Notify When Favourite Manga Updated</string>
+    <string name="pref_title_auto_update_service">Manga Updated Notification</string>
+    <string name="msg_start_auto_update_service">Start Notify Service</string>
+    <string name="msg_stop_auto_update_service">Stop Notify Service</string>
+    <string name="pref_key_default_path">pref_key_default_path</string>
+
 
 </resources>
