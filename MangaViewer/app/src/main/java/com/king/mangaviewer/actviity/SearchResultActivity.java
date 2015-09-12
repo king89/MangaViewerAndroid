@@ -26,7 +26,7 @@ public class SearchResultActivity extends BaseActivity {
     public MangaGridView gv;
     private ProgressDialog progressDialog;
     HashMap<String, Object> state = new HashMap<String, Object>();
-
+    private SearchView searchView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class SearchResultActivity extends BaseActivity {
         // Associate searchable configuration with the SearchView
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
+        searchView =
                 (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
@@ -61,6 +61,9 @@ public class SearchResultActivity extends BaseActivity {
             //use the query to search
             this.getSupportActionBar().setTitle(query);
             getQueryResult(query);
+        }
+        if (searchView != null){
+            searchView.onActionViewCollapsed();
         }
     }
 

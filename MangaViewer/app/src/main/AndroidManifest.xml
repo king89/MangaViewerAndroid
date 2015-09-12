@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".actviity.MainActivity"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,7 +40,8 @@
             android:label="@string/title_activity_manga_page" >
         </activity>
         <activity android:name=".actviity.LocalReadActivity" />
-        <activity android:name=".actviity.SearchResultActivity" >
+        <activity android:name=".actviity.SearchResultActivity"
+                  android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
 

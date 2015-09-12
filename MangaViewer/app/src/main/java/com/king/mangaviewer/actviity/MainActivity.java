@@ -41,6 +41,7 @@ public class MainActivity extends BaseActivity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private SearchView searchView;
     // slide menu items
     private String[] navMenuTitles;
     private TypedArray navMenuIcons;
@@ -54,6 +55,25 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         initDrawer(savedInstanceState);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.i("MainActivity", "OnNewIntent");
+        if (intent.getBooleanExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false)) {
+            intent.putExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false);
+            displayView(getResources().getInteger(R.integer.menu_favourite_pos));
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("MainActivity", "onResume");
+        if (searchView != null) {
+            searchView.onActionViewCollapsed();
+        }
     }
 
     private void initDrawer(Bundle savedInstanceState) {
@@ -120,6 +140,7 @@ public class MainActivity extends BaseActivity {
         if (savedInstanceState == null) {
             // on first time display view for first nav item
             if (getIntent().getBooleanExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false)) {
+                getIntent().putExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false);
                 displayView(getResources().getInteger(R.integer.menu_favourite_pos));
             } else {
                 displayView(0);
@@ -189,7 +210,7 @@ public class MainActivity extends BaseActivity {
         // Associate searchable configuration with the SearchView
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
+        searchView =
                 (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));

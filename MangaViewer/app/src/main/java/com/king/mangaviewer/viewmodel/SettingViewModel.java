@@ -61,12 +61,14 @@ public class SettingViewModel extends ViewModelBase {
         return svm;
     }
 
-    private FavouriteMangaDataSource getFavouriteMangaDataSource(){
-        if (mFavouriteMangaDataSource == null){
+    private FavouriteMangaDataSource getFavouriteMangaDataSource() {
+        if (mFavouriteMangaDataSource == null) {
             mFavouriteMangaDataSource = new FavouriteMangaDataSource(mContext);
         }
         return mFavouriteMangaDataSource;
-    };
+    }
+
+    ;
 
     public void setIsSplitPage(Context context, boolean mIsSplitPage) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -153,7 +155,7 @@ public class SettingViewModel extends ViewModelBase {
     }
 
     public boolean addFavouriteManga(FavouriteMangaMenuItem manga) {
-       return addFavouriteManga(manga,0);
+        return addFavouriteManga(manga, 0);
     }
 
     public boolean removeFavouriteManga(MangaMenuItem manga) {
@@ -218,6 +220,10 @@ public class SettingViewModel extends ViewModelBase {
 
     public void saveSetting(Context context) {
         //SettingHelper.saveSetting(context, this);
+        if (mFavouriteMangaDataSource != null) {
+            mFavouriteMangaDataSource.close();
+            mFavouriteMangaDataSource = null;
+        }
     }
 
     public int getUpdatedFavouriteMangaCount() {

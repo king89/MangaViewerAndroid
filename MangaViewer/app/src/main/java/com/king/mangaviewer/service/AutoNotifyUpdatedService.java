@@ -69,7 +69,7 @@ public class AutoNotifyUpdatedService extends Service {
                 isHaveUpdated = true;
             }
         }
-
+        svm.saveSetting(this);
         if (isHaveUpdated) {
             return true;
         } else {
@@ -88,8 +88,8 @@ public class AutoNotifyUpdatedService extends Service {
     private void notifyFromHandler() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(AUTO_UPDATE_SERVICE, true);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 Intent.FLAG_ACTIVITY_NEW_TASK, intent,
                 PendingIntent.FLAG_ONE_SHOT);
