@@ -140,7 +140,7 @@ public class WebHHComic extends WebSiteBasePattern {
                     .compile("<div id=\"inhh\">[\\s\\S]+?<img src=\"(.+?)\" .+?>[\\s\\S]+?<a href=\"(.+?)\".+?>(.+?)</a>");
             Matcher m = rGetUl.matcher(html);
             while (m.find()) {
-                String url = WEBSITEURL + m.group(2);
+                String url = checkUrl(m.group(2));
                 String title = m.group(3);
                 String imageUrl = m.group(1);
                 topMangaList.add(new TitleAndUrl(title, url, imageUrl));
@@ -162,12 +162,9 @@ public class WebHHComic extends WebSiteBasePattern {
         Element el = doc.select(".dSHtm").get(0);
         for (int i = 0; i < el.children().size(); i++) {
             String title = el.child(i).select("a").first().text();
-            String url = el.child(i).select("a").first().attr("href");
+            String url = checkUrl(el.child(i).select("a").first().attr("href"));
             String imageUrl = el.child(i).select("a").first().select("img").attr("src");
 
-            if (url.startsWith("/")) {
-                url = WEBSITEURL + url;
-            }
             mangaList.add(new TitleAndUrl(title, url, imageUrl));
         }
         return mangaList;
@@ -229,12 +226,9 @@ public class WebHHComic extends WebSiteBasePattern {
                     el = doc.select(".list").get(0);
                     for (int i = 0; i < el.children().size(); i++) {
                         String title = el.child(i).select("a").text();
-                        String url = el.child(i).select("a").attr("href");
+                        String url = checkUrl(el.child(i).select("a").attr("href"));
                         String imageUrl = el.child(i).select("img").attr("src");
 
-                        if (url.startsWith("/")) {
-                            url = WEBSITEURL + url;
-                        }
                         mangaList.add(new TitleAndUrl(title, url, imageUrl));
                     }
 

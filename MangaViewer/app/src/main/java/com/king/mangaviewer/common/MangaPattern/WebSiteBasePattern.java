@@ -107,6 +107,10 @@ public class WebSiteBasePattern {
         if (url.startsWith("/")) {
             url = WEBSITEURL + url.substring(1);
         }
+        //remove last "/"
+        if (url.endsWith("/") && url.length() > 1) {
+            url = url.substring(0, url.length() - 1);
+        }
         return url;
     }
 

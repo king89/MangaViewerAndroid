@@ -5,7 +5,8 @@
         <!--Contact Us-->
         <Preference
             android:key="@string/pref_key_contact_us"
-            android:title="@string/pref_title_contact_us">
+            android:title="@string/pref_title_contact_us"
+            android:summary="@string/pref_summary_contact_us">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="@string/pref_data_contact_us">
@@ -15,13 +16,13 @@
             </intent>
         </Preference>
         <!--Rate-->
-        <Preference
-            android:key="@string/pref_key_rate"
-            android:title="@string/pref_title_rate">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/pref_data_rate_me"></intent>
-        </Preference>
+        <!--<Preference-->
+            <!--android:key="@string/pref_key_rate"-->
+            <!--android:title="@string/pref_title_rate">-->
+            <!--<intent-->
+                <!--android:action="android.intent.action.VIEW"-->
+                <!--android:data="@string/pref_data_rate_me"></intent>-->
+        <!--</Preference>-->
 
         <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
              dismiss it. -->

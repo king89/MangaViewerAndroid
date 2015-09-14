@@ -126,7 +126,7 @@ public class AutoNotifyUpdatedService extends Service {
             t = ALERT_POLL_INTERVAL * hour;
         }
         timer = new Timer();
-        timer.schedule(task, 5000, t);
+        timer.schedule(task, t, t);
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Log.i("AutoNotify","Schedule Time: " + t);
     }

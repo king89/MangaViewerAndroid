@@ -260,6 +260,8 @@ public class SettingsActivity extends PreferenceActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
             addPreferencesFromResource(R.xml.pref_general);
             mSettingViewMdoel = ((SettingsActivity) getActivity()).getSettingViewModel();
             //Cache Size
@@ -292,7 +294,8 @@ public class SettingsActivity extends PreferenceActivity {
 
             //auto update hour
             final ListPreference autoUpdateHour = (ListPreference)findPreference(getString(R.string.pref_key_auto_update_hours));
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_auto_update_hours)));
+            int index = autoUpdateHour.findIndexOfValue(sp.getString(getString(R.string.pref_key_auto_update_hours),"6"));
+            autoUpdateHour.setSummary(autoUpdateHour.getEntries()[index]);
             autoUpdateHour.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -324,7 +327,6 @@ public class SettingsActivity extends PreferenceActivity {
             });
 
             //set auto update hour enable
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             boolean isEnable = sp.getBoolean(getString(R.string.pref_key_auto_update_service),true);
             autoUpdateHour.setEnabled(isEnable);
         }
