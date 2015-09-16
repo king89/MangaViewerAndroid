@@ -24,6 +24,8 @@ import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -68,6 +70,7 @@ public class AutoNotifyUpdatedService extends Service {
                 updatedCount = updatedCount + Math.max(0, chlist.size() - chapterCount);
                 flist.get(i).setChapterCount(chlist.size());
                 flist.get(i).setUpdateCount(updatedCount);
+                flist.get(i).setUpdatedDate(DateTime.now().toString(FavouriteMangaMenuItem.DATE_FORMAT));
                 dataSource.updateToFavourite(flist.get(i));
                 isHaveUpdated = true;
             }
@@ -105,6 +108,12 @@ public class AutoNotifyUpdatedService extends Service {
                 .setAutoCancel(true);
         ;
         nm.notify(0, builder.build());
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("AutoNotify", "onStartCommand");
+        return START_STICKY;
     }
 
     @Override

@@ -194,7 +194,7 @@ public class FitXImageView extends ImageView {
         Matrix m = this.getImageMatrix();
         //dont use with loading image
 
-        if (bmH <= notZoomImageSize || bmW <= notZoomImageSize) {
+        if (bmH <= notZoomImageSize && bmW <= notZoomImageSize) {
             m.setTranslate((int) (0.5 * (getWidth() - w) + 0.5), (int) (0.5 * (getHeight() - h) + 0.5));
             this.setImageMatrix(m);
         } else {

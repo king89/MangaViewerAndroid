@@ -20,6 +20,7 @@ import com.king.mangaviewer.actviity.MangaChapterActivity;
 import com.king.mangaviewer.common.AsyncImageLoader;
 import com.king.mangaviewer.common.AsyncImageLoader.ImageCallback;
 import com.king.mangaviewer.common.util.MangaHelper;
+import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
@@ -34,9 +35,15 @@ public class MangaMenuItemAdapter extends BaseAdapter {
     private MangaViewModel viewModel;
     private AsyncImageLoader asyncImageLoader = null;
     private List<? extends MangaMenuItem> menu;
+    private boolean isFavouriteMangaMenu;
 
     public MangaMenuItemAdapter(Context context, MangaViewModel viewModel,
                                 List<? extends MangaMenuItem> menu) {
+        this(context, viewModel, menu, false);
+    }
+
+    public MangaMenuItemAdapter(Context context, MangaViewModel viewModel,
+                                List<? extends MangaMenuItem> menu, boolean isFavouriteMangaMenu) {
         super();
         this.mInflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
@@ -44,6 +51,7 @@ public class MangaMenuItemAdapter extends BaseAdapter {
         this.menu = menu;
 
         asyncImageLoader = new AsyncImageLoader();
+        this.isFavouriteMangaMenu = isFavouriteMangaMenu;
     }
 
     @Override
@@ -78,12 +86,27 @@ public class MangaMenuItemAdapter extends BaseAdapter {
         //alway new a ViewHolder
         holder = new ViewHolder();
 
-        convertView = mInflater.inflate(R.layout.list_manga_menu_item, null);
-        holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
-        holder.textView = (TextView) convertView.findViewById(R.id.textView);
+        if (isFavouriteMangaMenu) {
+            //Favourite Manga Menu
+            convertView = mInflater.inflate(R.layout.list_favourite_manga_menu_item, null);
+            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
+            holder.textView = (TextView) convertView.findViewById(R.id.textView);
+            holder.countTextView = (TextView) convertView.findViewById(R.id.countTextView);
+            int count = ((FavouriteMangaMenuItem) this.menu.get(position)).getUpdateCount();
+            if (count > 0 && count <= 99) {
+                holder.countTextView.setText(count + "");
+            }else if (count > 99){
+                holder.countTextView.setText("99+");
+            }else {
+                holder.countTextView.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            convertView = mInflater.inflate(R.layout.list_manga_menu_item, null);
+            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
+            holder.textView = (TextView) convertView.findViewById(R.id.textView);
+        }
         convertView.setTag(holder);
 
-        String imagePath = this.menu.get(position).getImagePath();
         Drawable cachedImage = asyncImageLoader.loadImageFromMenuItem(context, menu.get(position),
                 holder.imageView, new ImageCallback() {
 
@@ -107,6 +130,11 @@ public class MangaMenuItemAdapter extends BaseAdapter {
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
                 //Toast.makeText(context, "Item", Toast.LENGTH_SHORT).show();
+                if (isFavouriteMangaMenu){
+                    ((FavouriteMangaMenuItem)menu.get(menuPos)).setUpdateCount(0);
+                    FavouriteMangaDataSource dataSource = new FavouriteMangaDataSource(context);
+                    dataSource.updateToFavourite((FavouriteMangaMenuItem)menu.get(menuPos));
+                }
                 viewModel.setSelectedMangaMenuItem(menu.get(menuPos));
                 context.startActivity(new Intent(context, MangaChapterActivity.class));
                 ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
@@ -116,13 +144,12 @@ public class MangaMenuItemAdapter extends BaseAdapter {
 
     }
 
-    class LoadMenuCoverAsync extends AsyncTask<String , Void, Drawable>
-    {
+    class LoadMenuCoverAsync extends AsyncTask<String, Void, Drawable> {
         Context context;
         ImageView iv;
         MangaMenuItem menu;
-        public LoadMenuCoverAsync(Context context, ImageView iv, MangaMenuItem menu)
-        {
+
+        public LoadMenuCoverAsync(Context context, ImageView iv, MangaMenuItem menu) {
             this.context = context;
             this.iv = iv;
             this.menu = menu;
@@ -132,7 +159,7 @@ public class MangaMenuItemAdapter extends BaseAdapter {
         protected Drawable doInBackground(String... params) {
             final String imageUrl = new MangaHelper(context).getMenuCover(menu);
             Drawable drawable = AsyncImageLoader.loadImageFromUrl(imageUrl);
-         return drawable;
+            return drawable;
         }
 
         @Override
@@ -140,9 +167,11 @@ public class MangaMenuItemAdapter extends BaseAdapter {
             iv.setImageDrawable(drawable);
         }
     }
+
     class ViewHolder {
         public ImageView imageView;
         public TextView textView;
+        public TextView countTextView;
     }
 
 }

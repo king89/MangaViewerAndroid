@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
         android:name=".actviity.MyApplication"
         android:allowBackup="true"
@@ -68,7 +68,7 @@
             android:label="@string/title_activity_settings" >
         </activity>
 
-        <service android:name=".service.AutoNotifyUpdatedService"></service>
+        <receiver android:name=".service.AutoUpdateAlarmReceiver"></receiver>
     </application>
 
 </manifest>

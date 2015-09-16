@@ -95,9 +95,7 @@ public class FavouriteFragment extends BaseFragment {
 
         Collections.sort(list);
         Collections.reverse(list);
-        MangaMenuItemAdapter adapter = new MangaMenuItemAdapter(copy,
-                copy.getAppViewModel().Manga,
-                list);
+        MangaMenuItemAdapter adapter = new MangaMenuItemAdapter(copy, copy.getAppViewModel().Manga, list, true);
         gv.setAdapter(adapter);
         tv.setVisibility(View.GONE);
         if (list.size() == 0) {

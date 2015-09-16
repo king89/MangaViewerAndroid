@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -18,7 +19,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,9 +26,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.preference.MangaViewerDialogPreference;
 import com.king.mangaviewer.service.AutoNotifyUpdatedService;
+import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 import static android.widget.Toast.*;
@@ -299,9 +299,9 @@ public class SettingsActivity extends PreferenceActivity {
             autoUpdateHour.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    Intent intent = new Intent(getActivity(), AutoNotifyUpdatedService.class);
-                    getActivity().stopService(intent);
-                    getActivity().startService(intent);
+                    AutoUpdateAlarmReceiver receiver = new AutoUpdateAlarmReceiver();
+                    receiver.cancelAlarm(getActivity());
+                    receiver.setAlarm(getActivity());
                     int index = autoUpdateHour.findIndexOfValue(newValue.toString());
                     autoUpdateHour.setSummary(autoUpdateHour.getEntries()[index]);
                     return true;
@@ -312,13 +312,13 @@ public class SettingsActivity extends PreferenceActivity {
             autoUpdateServicePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    Intent intent = new Intent(getActivity(), AutoNotifyUpdatedService.class);
+                    AutoUpdateAlarmReceiver receiver = new AutoUpdateAlarmReceiver();
                     if ((boolean) newValue) {
-                        getActivity().startService(intent);
+                        receiver.setAlarm(getActivity());
                         Toast.makeText(getActivity(), getString(R.string.msg_start_auto_update_service), Toast.LENGTH_SHORT).show();
                         autoUpdateHour.setEnabled(true);
                     } else {
-                        getActivity().stopService(intent);
+                        receiver.cancelAlarm(getActivity());
                         Toast.makeText(getActivity(), getString(R.string.msg_stop_auto_update_service), Toast.LENGTH_SHORT).show();
                         autoUpdateHour.setEnabled(false);
                     }

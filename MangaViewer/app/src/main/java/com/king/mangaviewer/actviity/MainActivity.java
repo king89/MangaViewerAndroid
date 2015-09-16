@@ -60,7 +60,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.i("MainActivity", "OnNewIntent");
+        //Log.i("MainActivity", "OnNewIntent");
         if (intent.getBooleanExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false)) {
             intent.putExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false);
             displayView(getResources().getInteger(R.integer.menu_favourite_pos));
@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("MainActivity", "onResume");
+        //Log.i("MainActivity", "onResume");
         if (searchView != null) {
             searchView.onActionViewCollapsed();
         }
