@@ -114,11 +114,16 @@ public class WebMangaReader extends WebSiteBasePattern {
 
     @Override
     protected int getSearchTotalNum(String html) {
-        Document doc = Jsoup.parse(html);
-        String t = doc.select("#sp a").last().attr("href");
-        t = t.substring(t.lastIndexOf("=") + 1);
-        int num = (int) Math.ceil(Integer.parseInt(t) / (SEARCH_LIST_PAGE_SIZE * 1.0f)) + 1;
-        return num;
+        try {
+            Document doc = Jsoup.parse(html);
+            String t = doc.select("#sp a").last().attr("href");
+            t = t.substring(t.lastIndexOf("=") + 1);
+            int num = (int) Math.ceil(Integer.parseInt(t) / (SEARCH_LIST_PAGE_SIZE * 1.0f)) + 1;
+            return num;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     @Override
@@ -139,11 +144,17 @@ public class WebMangaReader extends WebSiteBasePattern {
 
     @Override
     protected int getAllMangaTotalNum(String html) {
-        Document doc = Jsoup.parse(html);
-        String t = doc.select("#sp a").last().attr("href");
-        t = t.substring(t.lastIndexOf("/") + 1);
-        int num = (int) Math.ceil(Integer.parseInt(t) / (SEARCH_LIST_PAGE_SIZE * 1.0f)) + 1;
-        return num;
+        try {
+            Document doc = Jsoup.parse(html);
+            String t = doc.select("#sp a").last().attr("href");
+            t = t.substring(t.lastIndexOf("/") + 1);
+            int num = (int) Math.ceil(Integer.parseInt(t) / (SEARCH_LIST_PAGE_SIZE * 1.0f)) + 1;
+            return num;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return  0;
     }
 
     @Override
