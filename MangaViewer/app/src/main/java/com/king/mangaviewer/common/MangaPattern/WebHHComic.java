@@ -82,20 +82,27 @@ public class WebHHComic extends WebSiteBasePattern {
 
     @Override
     public List<String> GetPageList(String firstPageUrl) {
-        if (firstPageHtml == null) {
-            firstPageHtml = getHtml(firstPageUrl);
-        }
-        //Get code
-        Pattern codeRe = Pattern.compile("(?<=PicListUrl = \")(.+?)(?=\")");
-        Matcher m = codeRe.matcher(firstPageHtml);
-        if (m.find()) {
-            code = m.group(1);
-            key = "tahfcioewrm";
-        }
-        String server = GetServer(firstPageUrl);
-        List<String> pageList = Decode(code, key, server);
+        try {
+            if (firstPageHtml == null) {
+                firstPageHtml = getHtml(firstPageUrl);
+            }
+            //Get code
+            Pattern codeRe = Pattern.compile("(?<=PicListUrl = \")(.+?)(?=\")");
+            Matcher m = codeRe.matcher(firstPageHtml);
+            if (m.find()) {
+                code = m.group(1);
+                key = "tahfcioewrm";
+            }
+            String server = GetServer(firstPageUrl);
+            List<String> pageList = Decode(code, key, server);
 
-        return pageList;
+            return pageList;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Log.e("GetPageList",e.getMessage());
+            return null;
+        }
     }
 
     @Override

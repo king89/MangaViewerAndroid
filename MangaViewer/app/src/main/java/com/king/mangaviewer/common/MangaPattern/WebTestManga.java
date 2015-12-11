@@ -61,15 +61,18 @@ public class WebTestManga extends WebSiteBasePattern {
     @Override
     public List<TitleAndUrl> getLatestMangaList(HashMap<String, Object> state) {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
+        try {
+            for (int i = 0; i < 10; i++) {
+                String url = WEBSITEURL + i;
+                String title = "Test MenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenu " + i;
+                String imageUrl = "";
+                topMangaList.add(new TitleAndUrl(title, url, imageUrl));
 
-        for (int i = 0; i < 10; i++) {
-            String url = WEBSITEURL + i;
-            String title = "Test MenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenu " + i;
-            String imageUrl = "";
-            topMangaList.add(new TitleAndUrl(title, url, imageUrl));
-
+            }
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-
         return topMangaList;
     }
 

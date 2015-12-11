@@ -77,6 +77,7 @@ public class MangaViewModel extends ViewModelBase {
     public void setSelectedMangaChapterItem(
             MangaChapterItem selectedMangaChapterItem) {
         this.selectedMangaChapterItem = selectedMangaChapterItem;
+        this.setMangaPageList(null);
         this.nowPagePosition = 0;
     }
     public void setSelectedMangaChapterItem(int index){

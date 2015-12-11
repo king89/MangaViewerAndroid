@@ -5,10 +5,12 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
@@ -42,6 +44,18 @@ public class HomeFragment extends BaseFragment {
 
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_refresh:
+                this.getMangaViewModel().setMangaMenuList(null);
+                loadMenuList();
+                return true;
+            default:
+                return getActivity().onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -50,6 +64,12 @@ public class HomeFragment extends BaseFragment {
         String selectedMangaSourceName = getSettingViewModel().getSelectedWebSource(getActivity()).getDisplayName();
         tv.setText(selectedMangaSourceName);
         gv = (GridView) rootView.findViewById(R.id.gridView);
+        loadMenuList();
+
+        return rootView;
+    }
+
+    private void loadMenuList() {
         progressDialog = ProgressDialog.show(this.getActivity(), getString(R.string.title_loading),
                 getString(R.string.msg_loading));
 
@@ -58,15 +78,15 @@ public class HomeFragment extends BaseFragment {
             public void run() {
                 // TODO Auto-generated method stub
                 MainActivity copy = (MainActivity) getActivity();
-                List<MangaMenuItem> mList = copy.getMangaHelper()
-                        .getLatestMangeList();
-                copy.getAppViewModel().Manga
-                        .setMangaMenuList(mList);
 
+                List<MangaMenuItem> mList = copy.getAppViewModel().Manga.getMangaMenuList();
+                if (mList == null) {
+                    mList = copy.getMangaHelper().getLatestMangeList();
+                    copy.getAppViewModel().Manga
+                            .setMangaMenuList(mList);
+                }
                 handler.sendEmptyMessage(0);
             }
         }.start();
-
-        return rootView;
     }
 }

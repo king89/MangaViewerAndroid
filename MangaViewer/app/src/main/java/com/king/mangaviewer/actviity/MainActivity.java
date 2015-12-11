@@ -8,6 +8,7 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PersistableBundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -36,12 +37,14 @@ import java.util.Random;
 public class MainActivity extends BaseActivity {
 
     private static final long DELAYTIME = 5000;
+    private static final String STATE_KEY_POSITION = "state_key_position";
     CharSequence mTitle;
     CharSequence mDrawerTitle;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private SearchView searchView;
+    private BaseFragment fragment = null;
     // slide menu items
     private String[] navMenuTitles;
     private TypedArray navMenuIcons;
@@ -74,6 +77,12 @@ public class MainActivity extends BaseActivity {
         if (searchView != null) {
             searchView.onActionViewCollapsed();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(STATE_KEY_POSITION,mSelectedPosition);
+        super.onSaveInstanceState(outState);
     }
 
     private void initDrawer(Bundle savedInstanceState) {
@@ -145,21 +154,13 @@ public class MainActivity extends BaseActivity {
             } else {
                 displayView(0);
             }
-
         }
     }
-
-    @Override
-    public void update(Message msg) {
-        // TODO Auto-generated method stub
-
-    }
-
 
     private void displayView(int position) {
         // update the main content by replacing fragments
 
-        BaseFragment fragment = null;
+
         String select = navMenuTitles[position];
         if (select.equalsIgnoreCase(getString(R.string.nav_latest_update))) {
             fragment = new HomeFragment();
@@ -228,7 +229,18 @@ public class MainActivity extends BaseActivity {
                 displayMangaSource(v);
                 return true;
             case R.id.menu_refresh:
-                displayView(mDrawerList.getCheckedItemPosition());
+                //handle by the fragment
+                if (fragment == null && getSupportFragmentManager().getFragments().size() > 0){
+                    fragment = (BaseFragment)getSupportFragmentManager().getFragments().get(0);
+                }
+                if (fragment != null){
+                    //Not handled
+                    if (!fragment.onOptionsItemSelected(item))
+                    {
+                        displayView(mDrawerList.getCheckedItemPosition());
+                    }
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
