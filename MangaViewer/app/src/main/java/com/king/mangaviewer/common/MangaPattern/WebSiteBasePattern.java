@@ -122,6 +122,7 @@ public class WebSiteBasePattern {
             url = new URL(Url);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(HTTP_TIMEOUT_NUM);
+            conn.setReadTimeout(HTTP_TIMEOUT_NUM);
             conn.setDoInput(true);
             conn.connect();
             InputStream inputStream = conn.getInputStream();

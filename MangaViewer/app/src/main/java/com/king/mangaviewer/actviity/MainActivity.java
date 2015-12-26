@@ -178,6 +178,8 @@ public class MainActivity extends BaseActivity {
             mDrawerLayout.closeDrawer(mDrawerList);
             startActivityForResult(new Intent(this, SettingsActivity.class), 1);
             this.overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
+            //did not go to the frame fragment, thus should return
+            return;
         }
         if (fragment != null) {
 
@@ -271,6 +273,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 getAppViewModel().Setting.setSelectedWebSource(mws.get(position), MainActivity.this);
+                getAppViewModel().Manga.setMangaMenuList(null);
                 displayView(mSelectedPosition);
                 popup.dismiss();
             }
