@@ -42,47 +42,47 @@
                       android:layout_height="wrap_content"
                       android:layout_gravity="center_horizontal|bottom"
                       android:background="@color/gray_over_lay"
-                      android:orientation="vertical"
+                      android:orientation="horizontal"
                       tools:ignore="UselessParent"
-                      android:paddingBottom="15dp"
                       android:paddingLeft="5dp"
                       android:paddingRight="5dp">
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="-/-"
-                android:id="@+id/textView_pageNum"
-                android:textStyle="bold"
-                android:layout_gravity="center|bottom"
-                android:textColor="@color/text_color_blue"/>
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:id="@+id/frButton"
+                android:background="@mipmap/ic_fast_rewind_white"/>
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_weight="0.8">
 
-                <ImageButton
-                    android:layout_width="30dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/frButton"
-                    android:background="@mipmap/ic_fast_rewind_white"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-/-"
+                    android:id="@+id/textView_pageNum"
+                    android:textStyle="bold"
+                    android:layout_gravity="center|bottom"
+                    android:textColor="@color/text_color_blue"/>
 
                 <SeekBar
-                    android:layout_width="0dp"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/seekBar"
-                    android:layout_weight="1"
                     android:splitTrack="false"
                     android:mirrorForRtl="false"/>
 
-                <ImageButton
-                    android:layout_width="30dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/ffButton"
-                    android:background="@mipmap/ic_fast_forward_white"/>
             </LinearLayout>
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:id="@+id/ffButton"
+                android:background="@mipmap/ic_fast_forward_white"/>
         </LinearLayout>
 
 

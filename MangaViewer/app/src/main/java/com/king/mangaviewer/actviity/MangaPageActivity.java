@@ -2,6 +2,7 @@ package com.king.mangaviewer.actviity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,7 +40,14 @@ public class MangaPageActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         initViewModels();
         super.onCreate(savedInstanceState);
-
+        //ad
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+              InitAd();
+            }
+        }, 5000);
 
     }
 
@@ -100,8 +108,6 @@ public class MangaPageActivity extends BaseActivity {
 
             }
         });
-        //ad
-        InitAd();
 
         //seekbar
         final TextView tv = (TextView) findViewById(R.id.textView_pageNum);
@@ -159,6 +165,7 @@ public class MangaPageActivity extends BaseActivity {
         });
         //start
         vFlipper.initial(mMangaViewModel, mSettingViewModel, handler);
+
     }
 
     protected void InitAd() {
