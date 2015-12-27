@@ -1,11 +1,8 @@
 package com.king.mangaviewer;
 
-import android.app.Application;
 import android.test.ApplicationTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
 
-import com.king.mangaviewer.actviity.MainActivity;
-import com.king.mangaviewer.actviity.MyApplication;
+import com.king.mangaviewer.activity.MyApplication;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>

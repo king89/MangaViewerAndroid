@@ -1,6 +1,5 @@
-package com.king.mangaviewer.actviity;
+package com.king.mangaviewer.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.common.component.MyViewFlipper;

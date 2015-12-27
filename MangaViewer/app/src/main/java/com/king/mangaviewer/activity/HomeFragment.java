@@ -1,4 +1,4 @@
-package com.king.mangaviewer.actviity;
+package com.king.mangaviewer.activity;
 
 
 import android.app.ProgressDialog;
@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter;

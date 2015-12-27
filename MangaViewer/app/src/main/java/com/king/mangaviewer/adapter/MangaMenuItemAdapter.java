@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.actviity.MangaChapterActivity;
+import com.king.mangaviewer.activity.MangaChapterActivity;
 import com.king.mangaviewer.common.AsyncImageLoader;
 import com.king.mangaviewer.common.AsyncImageLoader.ImageCallback;
 import com.king.mangaviewer.common.util.MangaHelper;
@@ -25,8 +23,6 @@ import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
-import java.lang.ref.SoftReference;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MangaMenuItemAdapter extends BaseAdapter {
@@ -142,30 +138,6 @@ public class MangaMenuItemAdapter extends BaseAdapter {
         });
         return convertView;
 
-    }
-
-    class LoadMenuCoverAsync extends AsyncTask<String, Void, Drawable> {
-        Context context;
-        ImageView iv;
-        MangaMenuItem menu;
-
-        public LoadMenuCoverAsync(Context context, ImageView iv, MangaMenuItem menu) {
-            this.context = context;
-            this.iv = iv;
-            this.menu = menu;
-        }
-
-        @Override
-        protected Drawable doInBackground(String... params) {
-            final String imageUrl = new MangaHelper(context).getMenuCover(menu);
-            Drawable drawable = AsyncImageLoader.loadImageFromUrl(imageUrl);
-            return drawable;
-        }
-
-        @Override
-        protected void onPostExecute(Drawable drawable) {
-            iv.setImageDrawable(drawable);
-        }
     }
 
     class ViewHolder {

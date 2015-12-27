@@ -1,4 +1,4 @@
-package com.king.mangaviewer.actviity;
+package com.king.mangaviewer.activity;
 
 import android.app.ProgressDialog;
 import android.app.SearchManager;

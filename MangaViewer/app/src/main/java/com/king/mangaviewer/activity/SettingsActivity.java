@@ -1,4 +1,4 @@
-package com.king.mangaviewer.actviity;
+package com.king.mangaviewer.activity;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.preference.MangaViewerDialogPreference;
-import com.king.mangaviewer.service.AutoNotifyUpdatedService;
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 

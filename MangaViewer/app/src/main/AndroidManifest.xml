@@ -13,13 +13,13 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
-        android:name=".actviity.MyApplication"
+        android:name=".activity.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".actviity.MainActivity"
+            android:name=".activity.MainActivity"
             android:launchMode="singleTask"
             android:label="@string/app_name" >
             <intent-filter>
@@ -32,15 +32,15 @@
                 android:value=".actviity.SearchResultActivity" />
         </activity>
         <activity
-            android:name=".actviity.MangaChapterActivity"
+            android:name=".activity.MangaChapterActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".actviity.MangaPageActivity"
+            android:name=".activity.MangaPageActivity"
             android:label="@string/title_activity_manga_page" >
         </activity>
-        <activity android:name=".actviity.LocalReadActivity" />
-        <activity android:name=".actviity.SearchResultActivity"
+        <activity android:name=".activity.LocalReadActivity" />
+        <activity android:name=".activity.SearchResultActivity"
                   android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -64,7 +64,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />
         <activity
-            android:name=".actviity.SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
 

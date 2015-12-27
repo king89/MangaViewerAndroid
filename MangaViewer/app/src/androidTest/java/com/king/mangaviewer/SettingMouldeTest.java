@@ -2,20 +2,14 @@ package com.king.mangaviewer;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.MediumTest;
-import android.util.Log;
 
-import com.king.mangaviewer.actviity.MainActivity;
-import com.king.mangaviewer.common.Constants;
-import com.king.mangaviewer.common.util.FileHelper;
-import com.king.mangaviewer.common.util.SettingHelper;
+import com.king.mangaviewer.activity.MainActivity;
 import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
-import com.king.mangaviewer.datasource.MangaDataSourceBase;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

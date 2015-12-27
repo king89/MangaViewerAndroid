@@ -3,18 +3,10 @@ package com.king.mangaviewer.common.util;
 import android.content.Context;
 import android.os.Environment;
 
-import com.google.gson.Gson;
-import com.king.mangaviewer.actviity.MyApplication;
 import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.common.Constants.WebSiteEnum;
-import com.king.mangaviewer.model.MangaWebSource;
-import com.king.mangaviewer.viewmodel.SettingViewModel;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SettingHelper {
 

@@ -10,23 +10,19 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.actviity.MainActivity;
+import com.king.mangaviewer.activity.MainActivity;
 import com.king.mangaviewer.common.util.MangaHelper;
 import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.MangaChapterItem;
-import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;

@@ -1,29 +1,20 @@
-package com.king.mangaviewer.actviity;
+package com.king.mangaviewer.activity;
 
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
-import com.king.mangaviewer.model.MangaMenuItem;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

@@ -19,7 +19,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.actviity.BaseActivity;
+import com.king.mangaviewer.activity.BaseActivity;
 import com.king.mangaviewer.common.util.MangaHelper;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
@@ -158,7 +158,7 @@ public class MyViewFlipper extends ViewFlipper {
     protected Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (pageList.size() > 0) {
+            if (pageList != null && pageList.size() > 0) {
                 setView(getCurrPos(), getCurrPos());
                 updateHandler.sendEmptyMessage(0);
             }else{
@@ -484,7 +484,7 @@ public class MyViewFlipper extends ViewFlipper {
         public boolean onDown(MotionEvent e) {
             // TODO Auto-generated method stub
             Log.i("TEST", "onDown");
-            if (pageList.size() == 0) {
+            if (pageList != null && pageList.size() == 0) {
                 return true;
             } else {
                 return false;
@@ -495,7 +495,7 @@ public class MyViewFlipper extends ViewFlipper {
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
             //no page, just dont handle the fling
-            if (pageList.size() == 0) {
+            if (pageList != null && pageList.size() == 0) {
                 return true;
             }
             Log.i("TEST", "onFling:velocityX = " + velocityX + " velocityY"

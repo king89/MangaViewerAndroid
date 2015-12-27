@@ -11,14 +11,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.actviity.MainActivity;
+import com.king.mangaviewer.activity.MainActivity;
 import com.king.mangaviewer.common.util.MangaHelper;
 import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;

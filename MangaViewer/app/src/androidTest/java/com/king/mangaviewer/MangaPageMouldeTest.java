@@ -1,18 +1,8 @@
 package com.king.mangaviewer;
 
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.suitebuilder.annotation.MediumTest;
-import android.util.Log;
 
-import com.king.mangaviewer.actviity.MainActivity;
-import com.king.mangaviewer.common.MangaPattern.WebHHComic;
-import com.king.mangaviewer.common.util.MangaHelper;
-import com.king.mangaviewer.model.MangaMenuItem;
-import com.king.mangaviewer.viewmodel.SettingViewModel;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.king.mangaviewer.activity.MainActivity;
 
 /**
  * Created by KinG on 7/31/2015.

@@ -23,6 +23,7 @@
     <string name="nav_all_manga">All Manga</string>
     <string name="nav_local">Local</string>
     <string name="nav_favourite">Favourite</string>
+    <string name="nav_history">Histroy</string>
     <string name="nav_setting">Settings</string>
 
     <!-- Nav Drawer Menu Items -->
@@ -30,6 +31,7 @@
         <item>@string/nav_latest_update</item>
         <item>@string/nav_all_manga</item>
         <item>@string/nav_favourite</item>
+        <item>@string/nav_history</item>
         <item>@string/nav_local</item>
         <item>@string/nav_setting</item>
     </string-array>
@@ -39,6 +41,7 @@
     <array name="nav_drawer_icons">
         <item>@mipmap/ic_alarm_on_white</item>
         <item>@mipmap/ic_storage_white</item>
+        <item>@mipmap/ic_star_white</item>
         <item>@mipmap/ic_star_white</item>
         <item>@mipmap/ic_folder_open_white</item>
         <item>@mipmap/ic_settings</item>
@@ -56,6 +59,7 @@
     <string name="no_more_prev_chapter">No Previous Chapter</string>
     <string name="no_more_next_chapter">No Next Chapter</string>
     <string name="favourite_no_favourite_manga">No Favourite Manga</string>
+    <string name="history_no_history_manga">No History</string>
     <string name="setting_msg_cache_cleared">Cache Files Cleared</string>
 
     <!--Preference-->
@@ -101,6 +105,7 @@
     <string name="msg_start_auto_update_service">Started Notify Service</string>
     <string name="msg_stop_auto_update_service">Stopped Notify Service</string>
     <string name="pref_summary_contact_us">Tell Us What You Want</string>
+
 
 
 </resources>

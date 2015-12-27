@@ -9,7 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.ImageView;
 
-import com.king.mangaviewer.actviity.MyApplication;
+import com.king.mangaviewer.activity.MyApplication;
 import com.king.mangaviewer.common.Constants.SaveType;
 import com.king.mangaviewer.common.MangaPattern.LocalManga;
 import com.king.mangaviewer.common.MangaPattern.PatternFactory;

@@ -1,4 +1,4 @@
-package com.king.mangaviewer.actviity;
+package com.king.mangaviewer.activity;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -7,8 +7,6 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.os.PersistableBundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -32,7 +30,6 @@ import com.king.mangaviewer.service.AutoNotifyUpdatedService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends BaseActivity {
 
@@ -170,6 +167,8 @@ public class MainActivity extends BaseActivity {
             fragment = new LocalFragment();
         } else if (select.equalsIgnoreCase(getString(R.string.nav_favourite))) {
             fragment = new FavouriteFragment();
+        } else if (select.equalsIgnoreCase(getString(R.string.nav_history))) {
+            fragment = new HistoryFragment();
         } else if (select.equalsIgnoreCase(getString(R.string.nav_setting))) {
             mDrawerList.setItemChecked(mSelectedPosition, true);
             mDrawerList.setSelection(mSelectedPosition);
@@ -178,7 +177,7 @@ public class MainActivity extends BaseActivity {
             mDrawerLayout.closeDrawer(mDrawerList);
             startActivityForResult(new Intent(this, SettingsActivity.class), 1);
             this.overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
-            //did not go to the frame fragment, thus should return
+            //do not go to the frame fragment, thus should return
             return;
         }
         if (fragment != null) {

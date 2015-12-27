@@ -43,7 +43,7 @@ public class SettingViewModel extends ViewModelBase {
     private int mUpdatedFavouriteMangaCount;
 
     public SettingViewModel(Context context) {
-        mContext = context;
+        super(context);
     }
 
     public static SettingViewModel loadSetting(Context context) {
