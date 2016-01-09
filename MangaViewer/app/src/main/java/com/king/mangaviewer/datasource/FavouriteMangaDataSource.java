@@ -23,18 +23,18 @@ public class FavouriteMangaDataSource extends MangaDataSourceBase {
 
     //column
     //public static String ID = "id"; //different from the favourite manga item's id, this is the auto increment id
-    public static String HASH = "hash";
-    public static String TITLE = "title";
-    public static String DESCRIPTION = "description";
-    public static String IMAGEPATH = "imagePath";
-    public static String URL = "url";
-    public static String MANGAWEBSOURCE_ID = "manga_websource_id";
-    public static String FAVOURITE_DATE = "favourite_date";
-    public static String UPDATED_DATE = "updated_date";
-    public static String UPDATE_COUNT = "update_count";
-    public static String CHAPTER_COUNT = "chapter_count";
+    public final static String HASH = "hash";
+    public final static String TITLE = "title";
+    public final static String DESCRIPTION = "description";
+    public final static String IMAGEPATH = "imagePath";
+    public final static String URL = "url";
+    public final static String MANGAWEBSOURCE_ID = "manga_websource_id";
+    public final static String FAVOURITE_DATE = "favourite_date";
+    public final static String UPDATED_DATE = "updated_date";
+    public final static String UPDATE_COUNT = "update_count";
+    public final static String CHAPTER_COUNT = "chapter_count";
 
-    public static String[] All_COLUMN = {
+    public final static String[] All_COLUMN = {
             //ID,
             HASH,
             TITLE,

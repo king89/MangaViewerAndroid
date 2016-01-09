@@ -14,4 +14,8 @@ public class HistoryMangaChapterItem extends MangaChapterItem {
         mLastReadDate = DateTime.now().toString(DATE_FORMAT);
     }
 
+    public String getLastReadDate(){
+        return mLastReadDate;
+    }
+
 }

@@ -23,6 +23,7 @@ public class MangaDataSourceBase {
 
     static private class MangaDataSQLHelper extends SQLiteOpenHelper {
         private static final String CREATE_FAVOURITE_MANGA_TABLE = FavouriteMangaDataSource.getCreateTableString();
+        private static final String CREATE_HISTORY_MANGA_TABLE = HistoryMangaDataSource.getCreateTableString();
         private static final String DROP_FAVOURITE_MANGA_TABLE =
                 "DROP TABLE IF EXISTS " + FavouriteMangaDataSource.FAVOURITE_MANGA_TABLE;
         public MangaDataSQLHelper(Context context) {
@@ -33,6 +34,7 @@ public class MangaDataSourceBase {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_FAVOURITE_MANGA_TABLE);
+            db.execSQL(CREATE_HISTORY_MANGA_TABLE);
             Log.i("MangaDataSourceBase", "onCreate");
         }
 

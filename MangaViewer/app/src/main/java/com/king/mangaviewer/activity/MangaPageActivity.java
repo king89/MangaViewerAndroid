@@ -46,7 +46,8 @@ public class MangaPageActivity extends BaseActivity {
               InitAd();
             }
         }, 5000);
-
+        //add to history
+        this.getAppViewModel().HistoryManga.addChapterItemToHistory(mMangaViewModel.getSelectedMangaChapterItem());
     }
 
     protected void initViewModels() {

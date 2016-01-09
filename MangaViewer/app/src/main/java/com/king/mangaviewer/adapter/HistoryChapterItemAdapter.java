@@ -14,27 +14,27 @@ import android.widget.TextView;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.MangaPageActivity;
 import com.king.mangaviewer.common.AsyncImageLoader;
+import com.king.mangaviewer.model.HistoryMangaChapterItem;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
 import java.util.List;
 
-public class MangaChapterItemAdapter extends BaseAdapter {
+public class HistoryChapterItemAdapter extends BaseAdapter {
 
-    int MAX_TITLE_LENGTH = 20;
     protected Context context;
     protected LayoutInflater mInflater = null;
     protected MangaViewModel viewModel;
     protected AsyncImageLoader asyncImageLoader = null;
-    protected List<MangaChapterItem> chapter;
+    protected List<HistoryMangaChapterItem> list;
 
-    public MangaChapterItemAdapter(Context context, MangaViewModel viewModel,
-                                   List<MangaChapterItem> chapter) {
+    public HistoryChapterItemAdapter(Context context, MangaViewModel viewModel,
+                                     List<HistoryMangaChapterItem> list) {
         super();
         this.mInflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
         this.context = context;
-        this.chapter = chapter;
+        this.list = list;
 
         asyncImageLoader = new AsyncImageLoader();
     }
@@ -42,13 +42,13 @@ public class MangaChapterItemAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return chapter.size();
+        return list.size();
     }
 
     @Override
     public Object getItem(int position) {
         // TODO Auto-generated method stub
-        return chapter.get(position);
+        return list.get(position);
     }
 
     @Override
@@ -75,23 +75,9 @@ public class MangaChapterItemAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        String chapterTitle = chapter.get(position).getTitle();
-        if (chapter.get(position).getMenu().getTitle().length() > MAX_TITLE_LENGTH)
-        {
-            chapterTitle = chapterTitle.replace(chapter.get(position).getMenu().getTitle(),context.getString(R.string.prefix_chapter_title));
-        }
+        String chapterTitle = list.get(position).getTitle();
         holder.textView.setText(chapterTitle);
-        convertView.setOnClickListener(new OnClickListener() {
 
-            @Override
-            public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                viewModel.setSelectedMangaChapterItem(chapter.get(position));
-                context.startActivity(new Intent(context, MangaPageActivity.class));
-                ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
-
-            }
-        });
         return convertView;
 
     }

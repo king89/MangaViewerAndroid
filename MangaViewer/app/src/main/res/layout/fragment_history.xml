@@ -6,23 +6,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:showDividers="none">
 
-        <GridView
-            android:id="@+id/gridView"
+        <ListView
+            android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:horizontalSpacing="5dp"
             android:verticalSpacing="10dp"
             android:clipToPadding="false"
-            android:numColumns="@integer/gridvivew_column_num"
             android:scrollingCache="true"
             android:smoothScrollbar="true"
             android:scrollbarStyle="outsideOverlay"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingLeft="20dp"
-            android:paddingRight="20dp"/>
+            android:paddingRight="20dp"
+            android:dividerHeight="0dp"
+            android:divider="@null"/>
 
     </LinearLayout>
 

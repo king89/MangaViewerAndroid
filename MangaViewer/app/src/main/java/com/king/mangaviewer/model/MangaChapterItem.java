@@ -1,5 +1,7 @@
 package com.king.mangaviewer.model;
 
+import com.king.mangaviewer.common.util.StringUtils;
+
 public class MangaChapterItem extends BaseItem {
     MangaMenuItem menu = null;
 
@@ -25,5 +27,11 @@ public class MangaChapterItem extends BaseItem {
 
     public void setMenu(MangaMenuItem menu) {
         this.menu = menu;
+    }
+
+    public String getHash() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(menu.getHash() + "|" + this.getUrl());
+        return StringUtils.getHash(sb.toString());
     }
 }

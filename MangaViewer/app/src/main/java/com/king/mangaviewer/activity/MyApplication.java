@@ -22,6 +22,7 @@ public class MyApplication extends Application {
         // TODO Auto-generated constructor stub
         AppViewModel = new AppViewModel(this);
         MangaHelper = new MangaHelper(this);
+
     }
 
     @Override
