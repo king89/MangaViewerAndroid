@@ -6,10 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.google.gson.Gson;
-import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.HistoryMangaChapterItem;
-import com.king.mangaviewer.model.MangaMenuItem;
-import com.king.mangaviewer.model.MangaWebSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +47,10 @@ public class HistoryMangaDataSource extends MangaDataSourceBase {
 
         List<HistoryMangaChapterItem> list = new ArrayList<>();
         Cursor cursor = null;
+        String orderby = UPDATED_DATE + " desc";
         try {
             open();
-            cursor = mDataBase.query(TABLE_NAME, All_COLUMN, null, null, null, null, null);
+            cursor = mDataBase.query(TABLE_NAME, All_COLUMN, null, null, null, null, orderby);
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 HistoryMangaChapterItem item = cursorToItem(cursor);
@@ -74,20 +72,19 @@ public class HistoryMangaDataSource extends MangaDataSourceBase {
         String resultJson = new Gson().toJson(item, HistoryMangaChapterItem.class);
         ContentValues values = new ContentValues();
         try {
-            open();
             //check over 100
-            //TODO
-
+            checkIfOver100();
             //update or add
-            if (checkIsexsit(item)){
+            if (checkIsExsit(item)) {
+                open();
                 String where = HASH + " = ? ";
-                values.put(UPDATED_DATE,item.getLastReadDate());
+                values.put(UPDATED_DATE, item.getLastReadDate());
                 mDataBase.update(TABLE_NAME, values, where, new String[]{item.getHash()});
-            }
-            else {
-                values.put(HASH,item.getHash());
+            } else {
+                open();
+                values.put(HASH, item.getHash());
                 values.put(VALUE, resultJson);
-                values.put(UPDATED_DATE,item.getLastReadDate());
+                values.put(UPDATED_DATE, item.getLastReadDate());
                 mDataBase.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
             }
         } catch (Exception e) {
@@ -98,7 +95,19 @@ public class HistoryMangaDataSource extends MangaDataSourceBase {
 
     }
 
-    public boolean checkIsexsit(HistoryMangaChapterItem item) {
+    private void deleteHistoryOver100(String date) {
+        try {
+            open();
+            String where = UPDATED_DATE + " < ?";
+            mDataBase.delete(TABLE_NAME, where, new String[]{date});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+    }
+
+    public boolean checkIsExsit(HistoryMangaChapterItem item) {
         String where = HASH + " = ? ";
         Cursor cursor = null;
         try {
@@ -115,6 +124,16 @@ public class HistoryMangaDataSource extends MangaDataSourceBase {
             close();
         }
         return true;
+    }
+
+    private void checkIfOver100() {
+
+        List<HistoryMangaChapterItem> list = getAllHistoryMangaItem();
+        if (list != null && list.size() > 100){
+            String date = list.get(99).getLastReadDate();
+            deleteHistoryOver100(date);
+        }
+
     }
 
     private HistoryMangaChapterItem cursorToItem(Cursor cursor) {

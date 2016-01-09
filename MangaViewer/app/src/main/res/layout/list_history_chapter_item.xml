@@ -10,12 +10,39 @@
               android:paddingTop="5dp"
               android:paddingBottom="5dp">
 
-    <me.grantland.widget.AutofitTextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="Medium Text"
-        />
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="90dp"
+        android:id="@+id/imageView"
+        android:src="#000000"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:layout_gravity="right">
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textSize="18dp"
+            android:singleLine="true"/>
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/chapterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Chapter"
+            android:paddingTop="2dp"
+            android:singleLine="true"/>
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/dateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:layout_gravity="right"/>
+    </LinearLayout>
 
 </LinearLayout>

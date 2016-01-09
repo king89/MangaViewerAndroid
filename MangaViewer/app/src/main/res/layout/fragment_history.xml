@@ -21,8 +21,8 @@
             android:scrollbarStyle="outsideOverlay"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:dividerHeight="0dp"
             android:divider="@null"/>
 

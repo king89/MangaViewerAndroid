@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.activity.BaseActivity;
 import com.king.mangaviewer.activity.MangaPageActivity;
 import com.king.mangaviewer.common.AsyncImageLoader;
 import com.king.mangaviewer.model.HistoryMangaChapterItem;
@@ -65,26 +66,36 @@ public class HistoryChapterItemAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
 
-            convertView = mInflater
-                    .inflate(R.layout.list_manga_chapter_item, null);
-            holder.imageView = (ImageView) convertView
-                    .findViewById(R.id.imageView);
-            holder.textView = (TextView) convertView
-                    .findViewById(R.id.textView);
+            convertView = mInflater.inflate(R.layout.list_history_chapter_item, null);
+            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
+            holder.titleTextView = (TextView) convertView.findViewById(R.id.titleTextView);
+            holder.chapterTextView = (TextView) convertView.findViewById(R.id.chapterTextView);
+            holder.dateTextView = (TextView) convertView.findViewById(R.id.dateTextView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        String chapterTitle = list.get(position).getTitle();
-        holder.textView.setText(chapterTitle);
+        holder.titleTextView.setText(list.get(position).getMenu().getTitle());
+        holder.chapterTextView.setText(list.get(position).getTitle());
+        holder.dateTextView.setText(list.get(position).getLastReadDate());
 
+        convertView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.setMangaChapterList(((BaseActivity)context).getMangaHelper().getChapterList(list.get(position).getMenu()));
+                viewModel.setSelectedMangaChapterItem(list.get(position));
+                context.startActivity(new Intent(context, MangaPageActivity.class));
+                ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
+            }
+        });
         return convertView;
-
     }
 
     class ViewHolder {
         public ImageView imageView;
-        public TextView textView;
+        public TextView titleTextView;
+        public TextView chapterTextView;
+        public TextView dateTextView;
     }
 
 

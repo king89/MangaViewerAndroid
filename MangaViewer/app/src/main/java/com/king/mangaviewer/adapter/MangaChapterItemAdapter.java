@@ -79,6 +79,7 @@ public class MangaChapterItemAdapter extends BaseAdapter {
         if (chapter.get(position).getMenu().getTitle().length() > MAX_TITLE_LENGTH)
         {
             chapterTitle = chapterTitle.replace(chapter.get(position).getMenu().getTitle(),context.getString(R.string.prefix_chapter_title));
+            chapter.get(position).setTitle(chapterTitle);
         }
         holder.textView.setText(chapterTitle);
         convertView.setOnClickListener(new OnClickListener() {
