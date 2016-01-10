@@ -29,7 +29,7 @@
 
             <meta-data
                 android:name="android.app.default_searchable"
-                android:value=".actviity.SearchResultActivity" />
+                android:value=".activity.SearchResultActivity" />
         </activity>
         <activity
             android:name=".activity.MangaChapterActivity"
