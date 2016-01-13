@@ -71,6 +71,7 @@ public class HistoryChapterItemAdapter extends BaseAdapter {
             holder.titleTextView = (TextView) convertView.findViewById(R.id.titleTextView);
             holder.chapterTextView = (TextView) convertView.findViewById(R.id.chapterTextView);
             holder.dateTextView = (TextView) convertView.findViewById(R.id.dateTextView);
+            holder.sourceTextView = (TextView) convertView.findViewById(R.id.sourceTextView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -78,6 +79,7 @@ public class HistoryChapterItemAdapter extends BaseAdapter {
         holder.titleTextView.setText(list.get(position).getMenu().getTitle());
         holder.chapterTextView.setText(list.get(position).getTitle());
         holder.dateTextView.setText(list.get(position).getLastReadDate());
+        holder.sourceTextView.setText(list.get(position).getMangaWebSource().getDisplayName());
 
         convertView.setOnClickListener(new OnClickListener() {
             @Override
@@ -96,6 +98,7 @@ public class HistoryChapterItemAdapter extends BaseAdapter {
         public TextView titleTextView;
         public TextView chapterTextView;
         public TextView dateTextView;
+        public TextView sourceTextView;
     }
 
 

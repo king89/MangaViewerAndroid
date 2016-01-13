@@ -43,12 +43,10 @@ public class MangaPageActivity extends BaseActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-              InitAd();
+                InitAd();
             }
         }, 5000);
-        //add to history
-        this.getAppViewModel().HistoryManga.addChapterItemToHistory(mMangaViewModel.getSelectedMangaChapterItem());
-    }
+       }
 
     protected void initViewModels() {
         mMangaViewModel = getAppViewModel().Manga;
@@ -185,6 +183,9 @@ public class MangaPageActivity extends BaseActivity {
     @Override
     protected void update(Message msg) {
         this.getSupportActionBar().setTitle(getActionBarTitle());
+        //add to history
+        this.getAppViewModel().HistoryManga.addChapterItemToHistory(mMangaViewModel.getSelectedMangaChapterItem());
+
     }
 
     @Override

@@ -16,33 +16,65 @@
         android:id="@+id/imageView"
         android:src="#000000"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
         android:layout_gravity="right">
-        <me.grantland.widget.AutofitTextView
+        <TextView
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Title"
-            android:textSize="18dp"
-            android:singleLine="true"/>
-        <me.grantland.widget.AutofitTextView
+            android:textSize="14dp"
+            android:singleLine="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignLeft="@+id/chapterTextView"
+            android:layout_alignStart="@+id/chapterTextView"/>
+        <TextView
             android:id="@+id/chapterTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="Chapter"
-            android:paddingTop="2dp"
-            android:singleLine="true"/>
-        <me.grantland.widget.AutofitTextView
-            android:id="@+id/dateTextView"
+            android:singleLine="true"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textSize="20dp"/>
+
+        <RelativeLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date"
-            android:layout_gravity="right"/>
-    </LinearLayout>
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true">
+            <me.grantland.widget.AutofitTextView
+                android:id="@+id/sourceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Source"
+                android:singleLine="true"
+                android:layout_gravity="left"
+                android:textSize="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"/>
+
+            <me.grantland.widget.AutofitTextView
+                android:id="@+id/dateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:singleLine="true"
+                android:textSize="10dp"
+                android:layout_alignTop="@+id/sourceTextView"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

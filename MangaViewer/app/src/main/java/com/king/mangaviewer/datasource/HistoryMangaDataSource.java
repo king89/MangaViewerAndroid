@@ -78,6 +78,7 @@ public class HistoryMangaDataSource extends MangaDataSourceBase {
             if (checkIsExsit(item)) {
                 open();
                 String where = HASH + " = ? ";
+                values.put(VALUE, resultJson);
                 values.put(UPDATED_DATE, item.getLastReadDate());
                 mDataBase.update(TABLE_NAME, values, where, new String[]{item.getHash()});
             } else {
