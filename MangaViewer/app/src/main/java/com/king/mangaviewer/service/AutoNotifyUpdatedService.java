@@ -30,6 +30,7 @@ import java.util.TimerTask;
 /**
  * Created by KinG on 9/6/2015.
  */
+@Deprecated
 public class AutoNotifyUpdatedService extends Service {
     public static final String AUTO_UPDATE_SERVICE = "AUTO_UPDATE_SERVICE";
     Timer timer;

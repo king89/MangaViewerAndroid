@@ -41,7 +41,7 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
     public static final String AUTO_UPDATE_SERVICE = "AUTO_UPDATE_SERVICE";
     private NotificationManager nm;
     private Handler handler;
-
+    private String updatedNames;
     @Override
     public void onReceive(final Context context, Intent intent) {
         handler = new Handler();
@@ -84,7 +84,7 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
         SettingViewModel svm = SettingViewModel.loadSetting(context);
         List<MangaWebSource> sources = svm.getMangaWebSources();
         List<FavouriteMangaMenuItem> flist = dataSource.getAllFavouriteMangaMenu(sources);
-
+        StringBuilder sb = new StringBuilder();
         MangaHelper helper = new MangaHelper(context);
         boolean isHaveUpdated = false;
         try {
@@ -100,6 +100,7 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
                     flist.get(i).setUpdateCount(updatedCount);
                     flist.get(i).setUpdatedDate(DateTime.now().toString(FavouriteMangaMenuItem.DATE_FORMAT));
                     dataSource.updateToFavourite(flist.get(i));
+                    sb.append(flist.get(i).getTitle() + ", ");
                     isHaveUpdated = true;
                 }
             }
@@ -108,8 +109,10 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
         }
         svm.saveSetting(context);
         if (isHaveUpdated) {
+            updatedNames = sb.toString();
             return true;
         } else {
+            updatedNames = "";
             return false;
         }
 
@@ -125,9 +128,11 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
                 Intent.FLAG_ACTIVITY_NEW_TASK, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
+
+        String updatedContentText = updatedNames;
         Notification.Builder builder = new Notification.Builder(context)
                 .setContentTitle(context.getString(R.string.msg_notify_updated_service_title))
-                .setContentText(context.getString(R.string.msg_notify_updated_service_text))
+                .setContentText(updatedContentText)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.mipmap.ic_icon_pure)
                 .setAutoCancel(true);
