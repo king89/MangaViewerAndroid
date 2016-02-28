@@ -43,6 +43,7 @@ public class HistoryFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
+        inflater.inflate(R.menu.history_menu,menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

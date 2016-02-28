@@ -3,6 +3,7 @@ package com.king.mangaviewer.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -76,6 +77,22 @@ public class HistoryChapterItemAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
+        Drawable cachedImage = asyncImageLoader.loadImageFromMenuItem(context, list.get(position).getMenu(),
+                holder.imageView, new AsyncImageLoader.ImageCallback() {
+
+                    public void imageLoaded(Drawable imageDrawable,
+                                            ImageView imageView, String imageUrl) {
+                        // TODO Auto-generated method stub
+                        if (imageDrawable != null) {
+                            imageView.setImageDrawable(imageDrawable);
+                        }
+                    }
+                });
+        if (cachedImage != null) {
+            holder.imageView.setImageDrawable(cachedImage);
+        }
+
         holder.titleTextView.setText(list.get(position).getMenu().getTitle());
         holder.chapterTextView.setText(list.get(position).getTitle());
         holder.dateTextView.setText(list.get(position).getLastReadDate());
