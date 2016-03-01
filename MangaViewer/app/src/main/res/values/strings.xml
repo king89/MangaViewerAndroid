@@ -53,6 +53,7 @@
     <string name="do_you_want_to_delete">Are you Sure You Want To Delete This Item ?</string>
     <string name="deleting_dialog_title">Deleting Item</string>
     <string name="yes">YES</string>
+    <string name="no">NO</string>
     <string name="local_current_path">Current Path</string>
     <string name="local_set_default_path">Set Default</string>
     <string name="local_set_default_path_successed">Set Default Path Successed</string>
@@ -106,6 +107,8 @@
     <string name="msg_stop_auto_update_service">Stopped Notify Service</string>
     <string name="pref_summary_contact_us">Tell Us What You Want</string>
     <string name="menu_title_clear">Clear</string>
+    <string name="msg_history_dialog_title">Clear</string>
+    <string name="msg_history_dialog_message">Are you sure you want to clear all the histories?</string>
 
 
 </resources>

@@ -1,7 +1,9 @@
 package com.king.mangaviewer.activity;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,12 +45,28 @@ public class HistoryFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.history_menu,menu);
+        inflater.inflate(R.menu.history_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_delete){
+            new AlertDialog.Builder(this.getActivity())
+                    .setTitle(getString(R.string.msg_history_dialog_title))
+                    .setMessage(getString(R.string.msg_history_dialog_message))
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            getHistoryViewModel().clearHistory();
+                            onResume();
+                        }
+
+                    })
+                    .setNegativeButton(getString(R.string.no), null)
+                    .show();
+        }
         return super.onOptionsItemSelected(item);
     }
 

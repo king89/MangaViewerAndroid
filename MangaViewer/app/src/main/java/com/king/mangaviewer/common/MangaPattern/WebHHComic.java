@@ -44,10 +44,10 @@ public class WebHHComic extends WebSiteBasePattern {
     public WebHHComic(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
-        WEBSITEURL = "http://www.hhxiee.cc/";
+        WEBSITEURL = "http://www.hanhan8.com/";
         WEBSEARCHURL = "http://somanhua.com/?key=%s&pageIndex=%d";
-        WEBLATESTMANGABASEURL = "http://www.hhxiee.cc/";
-        WEBALLMANGABASEURL = "http://www.hhxiee.cc/hhabc/";
+        WEBLATESTMANGABASEURL = "http://www.hanhan8.com/";
+        WEBALLMANGABASEURL = "http://www.hanhan8.com/hhabc/";
         CHARSET = "gb2312";
     }
 

@@ -130,7 +130,7 @@ public class HistoryMangaDataSource extends MangaDataSourceBase {
     private void checkIfOver100() {
 
         List<HistoryMangaChapterItem> list = getAllHistoryMangaItem();
-        if (list != null && list.size() > 100){
+        if (list != null && list.size() > 100) {
             String date = list.get(99).getLastReadDate();
             deleteHistoryOver100(date);
         }
@@ -144,4 +144,14 @@ public class HistoryMangaDataSource extends MangaDataSourceBase {
         return item;
     }
 
+    public void clearAll() {
+        try {
+            open();
+            mDataBase.delete(TABLE_NAME, null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+    }
 }

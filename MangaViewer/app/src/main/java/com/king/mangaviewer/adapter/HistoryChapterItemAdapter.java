@@ -101,7 +101,15 @@ public class HistoryChapterItemAdapter extends BaseAdapter {
         convertView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.setMangaChapterList(((BaseActivity)context).getMangaHelper().getChapterList(list.get(position).getMenu()));
+                //use a new thread to load chapter list, this has to
+                //TODO change to use thread pool
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewModel.setMangaChapterList(((BaseActivity)context).getMangaHelper().getChapterList(list.get(position).getMenu()));
+                    }
+                }).start();
+
                 viewModel.setSelectedMangaChapterItem(list.get(position));
                 context.startActivity(new Intent(context, MangaPageActivity.class));
                 ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);

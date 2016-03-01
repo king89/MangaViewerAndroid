@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.viewmodel.HistoryViewModel;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
@@ -30,6 +31,9 @@ public class BaseFragment extends Fragment {
 
     protected MangaViewModel getMangaViewModel(){
         return ((BaseActivity)this.getActivity()).getAppViewModel().Manga;
+    }
+    protected HistoryViewModel getHistoryViewModel(){
+        return ((BaseActivity)this.getActivity()).getAppViewModel().HistoryManga;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

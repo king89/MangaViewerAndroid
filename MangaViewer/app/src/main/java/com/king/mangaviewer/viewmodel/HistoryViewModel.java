@@ -28,4 +28,8 @@ public class HistoryViewModel extends ViewModelBase {
         mHistoryMangaDataSource.addToHistory(historyItem);
         return true;
     }
+
+    public void clearHistory() {
+        mHistoryMangaDataSource.clearAll();
+    }
 }
