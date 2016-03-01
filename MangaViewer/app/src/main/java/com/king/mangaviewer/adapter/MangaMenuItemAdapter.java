@@ -46,7 +46,7 @@ public class MangaMenuItemAdapter extends BaseAdapter {
         this.context = context;
         this.menu = menu;
 
-        asyncImageLoader = new AsyncImageLoader();
+        asyncImageLoader = AsyncImageLoader.getInstance();
         this.isFavouriteMangaMenu = isFavouriteMangaMenu;
     }
 

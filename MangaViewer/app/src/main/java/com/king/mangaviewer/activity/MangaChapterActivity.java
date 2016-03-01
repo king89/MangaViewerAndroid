@@ -39,7 +39,7 @@ public class MangaChapterActivity extends BaseActivity {
         textView = (AutofitTextView) this.findViewById(R.id.textView);
         textView.setText(this.getAppViewModel().Manga.getSelectedMangaMenuItem().getTitle());
         String imagePath = this.getAppViewModel().Manga.getSelectedMangaMenuItem().getImagePath();
-        Drawable cachedImage = new AsyncImageLoader().loadDrawable(imagePath,
+        Drawable cachedImage = AsyncImageLoader.getInstance().loadDrawable(imagePath,
                 imageView, new AsyncImageLoader.ImageCallback() {
 
                     public void imageLoaded(Drawable imageDrawable,

@@ -38,7 +38,7 @@ public class HistoryChapterItemAdapter extends BaseAdapter {
         this.context = context;
         this.list = list;
 
-        asyncImageLoader = new AsyncImageLoader();
+        asyncImageLoader = AsyncImageLoader.getInstance();
     }
 
     @Override

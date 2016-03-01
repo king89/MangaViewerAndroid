@@ -36,7 +36,7 @@ public class MangaChapterItemAdapter extends BaseAdapter {
         this.context = context;
         this.chapter = chapter;
 
-        asyncImageLoader = new AsyncImageLoader();
+        asyncImageLoader = AsyncImageLoader.getInstance();
     }
 
     @Override

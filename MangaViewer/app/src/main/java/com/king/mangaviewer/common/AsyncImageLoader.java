@@ -20,8 +20,14 @@ import java.util.HashMap;
 public class AsyncImageLoader {
     //SoftReference是软引用，是为了更好的为了系统回收变量
     private HashMap<String, SoftReference<Drawable>> imageCache;
-
-    public AsyncImageLoader() {
+    private static AsyncImageLoader mInstance = null;
+    static {
+        mInstance = new AsyncImageLoader();
+    }
+    public static AsyncImageLoader getInstance(){
+        return mInstance;
+    }
+    private AsyncImageLoader() {
         imageCache = new HashMap<String, SoftReference<Drawable>>();
     }
 
