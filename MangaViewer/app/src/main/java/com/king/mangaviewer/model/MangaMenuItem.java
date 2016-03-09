@@ -1,10 +1,6 @@
 package com.king.mangaviewer.model;
 
-import com.king.mangaviewer.common.util.StringUtils;
-
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import com.king.mangaviewer.util.StringUtils;
 
 public class MangaMenuItem extends BaseItem {
 

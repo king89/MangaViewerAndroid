@@ -1,8 +1,8 @@
 package com.king.mangaviewer.common;
 
-import com.king.mangaviewer.common.MangaPattern.WebHHComic;
-import com.king.mangaviewer.common.MangaPattern.WebIManhua;
-import com.king.mangaviewer.common.MangaPattern.WebTestManga;
+import com.king.mangaviewer.MangaPattern.WebHHComic;
+import com.king.mangaviewer.MangaPattern.WebIManhua;
+import com.king.mangaviewer.MangaPattern.WebTestManga;
 
 public class Constants {
     public final static String MANGAFOLDER = "Manga";

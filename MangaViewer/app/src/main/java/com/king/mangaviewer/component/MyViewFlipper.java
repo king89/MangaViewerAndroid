@@ -1,4 +1,4 @@
-package com.king.mangaviewer.common.component;
+package com.king.mangaviewer.component;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,7 +20,7 @@ import android.widget.ViewFlipper;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.BaseActivity;
-import com.king.mangaviewer.common.util.MangaHelper;
+import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;

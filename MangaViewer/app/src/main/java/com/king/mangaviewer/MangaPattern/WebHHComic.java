@@ -1,4 +1,4 @@
-package com.king.mangaviewer.common.MangaPattern;
+package com.king.mangaviewer.MangaPattern;
 
 import android.content.Context;
 import android.util.Log;

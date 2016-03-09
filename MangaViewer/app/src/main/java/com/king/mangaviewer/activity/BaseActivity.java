@@ -7,8 +7,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.common.util.MangaHelper;
-import com.king.mangaviewer.common.util.SettingHelper;
+import com.king.mangaviewer.util.MangaHelper;
+import com.king.mangaviewer.util.SettingHelper;
 import com.king.mangaviewer.viewmodel.AppViewModel;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;

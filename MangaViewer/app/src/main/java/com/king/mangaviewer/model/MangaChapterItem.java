@@ -1,6 +1,6 @@
 package com.king.mangaviewer.model;
 
-import com.king.mangaviewer.common.util.StringUtils;
+import com.king.mangaviewer.util.StringUtils;
 
 public class MangaChapterItem extends BaseItem {
     MangaMenuItem menu = null;

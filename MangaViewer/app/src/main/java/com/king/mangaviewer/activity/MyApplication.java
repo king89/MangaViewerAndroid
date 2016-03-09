@@ -7,15 +7,15 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.common.util.MangaHelper;
+import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
 import com.king.mangaviewer.viewmodel.AppViewModel;
 
 public class MyApplication extends Application {
     public com.king.mangaviewer.viewmodel.AppViewModel AppViewModel;
 
-    public com.king.mangaviewer.common.util.SettingHelper SettingHelper;
-    public com.king.mangaviewer.common.util.MangaHelper MangaHelper;
+    public com.king.mangaviewer.util.SettingHelper SettingHelper;
+    public com.king.mangaviewer.util.MangaHelper MangaHelper;
 
     public MyApplication() {
         super();

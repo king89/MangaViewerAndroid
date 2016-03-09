@@ -1,13 +1,11 @@
-package com.king.mangaviewer.common;
+package com.king.mangaviewer.util;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.ImageView;
 
-import com.king.mangaviewer.common.util.MangaHelper;
 import com.king.mangaviewer.model.MangaMenuItem;
 
 import java.io.IOException;

@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.MainActivity;
-import com.king.mangaviewer.common.util.MangaHelper;
+import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.MangaChapterItem;

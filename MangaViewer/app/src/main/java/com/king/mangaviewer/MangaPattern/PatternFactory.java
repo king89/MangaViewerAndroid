@@ -1,8 +1,7 @@
-package com.king.mangaviewer.common.MangaPattern;
+package com.king.mangaviewer.MangaPattern;
 
 import android.content.Context;
 
-import com.king.mangaviewer.common.Constants.WebSiteEnum;
 import com.king.mangaviewer.model.MangaWebSource;
 
 public class PatternFactory {

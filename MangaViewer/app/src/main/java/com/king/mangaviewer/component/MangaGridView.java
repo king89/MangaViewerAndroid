@@ -1,4 +1,4 @@
-package com.king.mangaviewer.common.component;
+package com.king.mangaviewer.component;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
@@ -14,7 +13,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
-import com.king.mangaviewer.common.MangaPattern.WebSiteBasePattern;
+import com.king.mangaviewer.MangaPattern.WebSiteBasePattern;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 

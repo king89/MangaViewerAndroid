@@ -14,10 +14,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.common.Constants;
-import com.king.mangaviewer.common.util.FileHelper;
-import com.king.mangaviewer.common.util.MangaHelper;
-import com.king.mangaviewer.common.util.SettingHelper;
+import com.king.mangaviewer.util.FileHelper;
+import com.king.mangaviewer.util.SettingHelper;
 import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.MangaMenuItem;
@@ -26,7 +24,6 @@ import com.king.mangaviewer.model.MangaWebSource;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -127,7 +124,7 @@ public class SettingViewModel extends ViewModelBase {
             e.printStackTrace();
         }
 
-        // mws.add(new MangaWebSource(3, "manga3", "manga3", "com.king.mangaviewer.common.MangaPattern.WebHHComic", 2, "manga", 1));
+        // mws.add(new MangaWebSource(3, "manga3", "manga3", "WebHHComic", 2, "manga", 1));
         Collections.sort(mws);
         return mws;
     }

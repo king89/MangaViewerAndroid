@@ -3,7 +3,7 @@
     <Source id="0">
         <Name>HHComic</Name>
         <DisplayName>HHComic</DisplayName>
-        <ClassName>com.king.mangaviewer.common.MangaPattern.WebHHComic</ClassName>
+        <ClassName>com.king.mangaviewer.MangaPattern.WebHHComic</ClassName>
         <Order>2</Order>
         <Language></Language>
         <Enable>1</Enable>
@@ -11,7 +11,7 @@
     <Source id="1">
         <Name>MangaFox</Name>
         <DisplayName>MangaFox</DisplayName>
-        <ClassName>com.king.mangaviewer.common.MangaPattern.WebMangaFox</ClassName>
+        <ClassName>com.king.mangaviewer.MangaPattern.WebMangaFox</ClassName>
         <Order>0</Order>
         <Language></Language>
         <Enable>1</Enable>
@@ -20,7 +20,7 @@
     <Source id="2">
         <Name>MangaReader</Name>
         <DisplayName>MangaReader</DisplayName>
-        <ClassName>com.king.mangaviewer.common.MangaPattern.WebMangaReader</ClassName>
+        <ClassName>com.king.mangaviewer.MangaPattern.WebMangaReader</ClassName>
         <Order>1</Order>
         <Language></Language>
         <Enable>1</Enable>
@@ -29,7 +29,7 @@
     <Source id="999">
         <Name>TestManga</Name>
         <DisplayName>TestManga</DisplayName>
-        <ClassName>com.king.mangaviewer.common.MangaPattern.WebTestManga</ClassName>
+        <ClassName>com.king.mangaviewer.MangaPattern.WebTestManga</ClassName>
         <Order>999</Order>
         <Language></Language>
         <Enable>1</Enable>

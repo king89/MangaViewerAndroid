@@ -1,4 +1,4 @@
-package com.king.mangaviewer.common.util;
+package com.king.mangaviewer.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,9 +11,9 @@ import android.widget.ImageView;
 
 import com.king.mangaviewer.activity.MyApplication;
 import com.king.mangaviewer.common.Constants.SaveType;
-import com.king.mangaviewer.common.MangaPattern.LocalManga;
-import com.king.mangaviewer.common.MangaPattern.PatternFactory;
-import com.king.mangaviewer.common.MangaPattern.WebSiteBasePattern;
+import com.king.mangaviewer.MangaPattern.LocalManga;
+import com.king.mangaviewer.MangaPattern.PatternFactory;
+import com.king.mangaviewer.MangaPattern.WebSiteBasePattern;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaPageItem;

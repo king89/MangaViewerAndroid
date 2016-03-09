@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.common.component.MangaGridView;
-import com.king.mangaviewer.common.util.MangaHelper;
+import com.king.mangaviewer.component.MangaGridView;
+import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.model.MangaMenuItem;
 
 import java.util.HashMap;

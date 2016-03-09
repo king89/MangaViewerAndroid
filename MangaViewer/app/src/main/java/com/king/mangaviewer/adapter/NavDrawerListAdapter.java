@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.common.util.NavDrawerItem;
+import com.king.mangaviewer.model.NavDrawerItem;
 
 import java.util.ArrayList;
 

@@ -1,7 +1,6 @@
 package com.king.mangaviewer.viewmodel;
 
-import com.king.mangaviewer.common.MangaPattern.LocalManga;
-import com.king.mangaviewer.common.util.MangaHelper;
+import com.king.mangaviewer.MangaPattern.LocalManga;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaWebSource;

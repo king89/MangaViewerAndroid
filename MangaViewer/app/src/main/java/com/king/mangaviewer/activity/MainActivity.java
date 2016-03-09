@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.NavDrawerListAdapter;
-import com.king.mangaviewer.common.util.NavDrawerItem;
+import com.king.mangaviewer.model.NavDrawerItem;
 import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.service.AutoNotifyUpdatedService;
 

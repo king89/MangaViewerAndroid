@@ -5,11 +5,11 @@
               android:clickable="true"
               android:orientation="vertical">
 
-    <com.king.mangaviewer.common.component.MangaImageSwitcher
+    <com.king.mangaviewer.component.MangaImageSwitcher
         android:id="@+id/mangaImageSwitcher"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true">
 
-    </com.king.mangaviewer.common.component.MangaImageSwitcher>
+    </com.king.mangaviewer.component.MangaImageSwitcher>
 </LinearLayout>

@@ -12,13 +12,13 @@
         android:background="@android:color/background_dark"
         android:orientation="vertical">
 
-        <com.king.mangaviewer.common.component.MyViewFlipper
+        <com.king.mangaviewer.component.MyViewFlipper
             android:id="@+id/viewFlipper"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center">
-        </com.king.mangaviewer.common.component.MyViewFlipper>
+        </com.king.mangaviewer.component.MyViewFlipper>
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"

@@ -1,4 +1,4 @@
-package com.king.mangaviewer.common.MangaPattern;
+package com.king.mangaviewer.MangaPattern;
 
 import android.content.Context;
 import android.os.Environment;
@@ -6,8 +6,8 @@ import android.util.Log;
 
 import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.common.Constants.SaveType;
-import com.king.mangaviewer.common.util.FileHelper;
-import com.king.mangaviewer.common.util.StringUtils;
+import com.king.mangaviewer.util.FileHelper;
+import com.king.mangaviewer.util.StringUtils;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.model.TitleAndUrl;

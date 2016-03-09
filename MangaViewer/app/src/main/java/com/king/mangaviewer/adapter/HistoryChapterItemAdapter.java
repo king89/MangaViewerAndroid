@@ -15,9 +15,8 @@ import android.widget.TextView;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.BaseActivity;
 import com.king.mangaviewer.activity.MangaPageActivity;
-import com.king.mangaviewer.common.AsyncImageLoader;
+import com.king.mangaviewer.util.AsyncImageLoader;
 import com.king.mangaviewer.model.HistoryMangaChapterItem;
-import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
 import java.util.List;

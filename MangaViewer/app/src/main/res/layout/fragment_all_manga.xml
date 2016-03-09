@@ -15,7 +15,7 @@
         android:paddingBottom="2dp"
         android:textColor="#ffffff"
         android:background="@color/red_over_lay"/>
-    <com.king.mangaviewer.common.component.MangaGridView
+    <com.king.mangaviewer.component.MangaGridView
         android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,7 +31,7 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:layout_weight="1"
-       ></com.king.mangaviewer.common.component.MangaGridView>
+       ></com.king.mangaviewer.component.MangaGridView>
 
     <RelativeLayout
         android:orientation="horizontal"

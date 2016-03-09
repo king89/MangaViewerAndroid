@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,14 +14,17 @@ import android.widget.TextView;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.MangaChapterActivity;
-import com.king.mangaviewer.common.AsyncImageLoader;
-import com.king.mangaviewer.common.AsyncImageLoader.ImageCallback;
-import com.king.mangaviewer.common.util.MangaHelper;
+import com.king.mangaviewer.component.MyImageView;
+import com.king.mangaviewer.util.AsyncImageLoader;
+import com.king.mangaviewer.util.AsyncImageLoader.ImageCallback;
 import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.MangaMenuItem;
+import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 public class MangaMenuItemAdapter extends BaseAdapter {
@@ -85,7 +87,7 @@ public class MangaMenuItemAdapter extends BaseAdapter {
         if (isFavouriteMangaMenu) {
             //Favourite Manga Menu
             convertView = mInflater.inflate(R.layout.list_favourite_manga_menu_item, null);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
+            holder.imageView = (MyImageView) convertView.findViewById(R.id.imageView);
             holder.textView = (TextView) convertView.findViewById(R.id.textView);
             holder.countTextView = (TextView) convertView.findViewById(R.id.countTextView);
             int count = ((FavouriteMangaMenuItem) this.menu.get(position)).getUpdateCount();
@@ -98,25 +100,19 @@ public class MangaMenuItemAdapter extends BaseAdapter {
             }
         } else {
             convertView = mInflater.inflate(R.layout.list_manga_menu_item, null);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
+            holder.imageView = (MyImageView) convertView.findViewById(R.id.imageView);
             holder.textView = (TextView) convertView.findViewById(R.id.textView);
         }
         convertView.setTag(holder);
-
-        Drawable cachedImage = asyncImageLoader.loadImageFromMenuItem(context, menu.get(position),
-                holder.imageView, new ImageCallback() {
-
-                    public void imageLoaded(Drawable imageDrawable,
-                                            ImageView imageView, String imageUrl) {
-                        // TODO Auto-generated method stub
-                        if (imageDrawable != null) {
-                            imageView.setImageDrawable(imageDrawable);
-                        }
-                    }
-                });
-        if (cachedImage != null) {
-            holder.imageView.setImageDrawable(cachedImage);
+        URL url = null;
+        try {
+            String coverUrl = new MangaHelper(context).getMenuCover(this.menu.get(position));
+            url = new URL(coverUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
+
+        holder.imageView.setImageURL(url, true, context.getResources().getDrawable(R.color.black));
         String title = this.menu.get(position).getTitle();
         holder.textView.setText(title);
         final int menuPos = position;
@@ -141,7 +137,7 @@ public class MangaMenuItemAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
-        public ImageView imageView;
+        public MyImageView imageView;
         public TextView textView;
         public TextView countTextView;
     }

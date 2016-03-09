@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter;
-import com.king.mangaviewer.common.AsyncImageLoader;
+import com.king.mangaviewer.util.AsyncImageLoader;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
