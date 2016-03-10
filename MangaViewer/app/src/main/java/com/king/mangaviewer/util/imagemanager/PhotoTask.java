@@ -12,7 +12,7 @@ import java.net.URL;
 /**
  * Created by KinG on 3/8/2016.
  */
-public class PhotoTask implements PhotoDownloadRunnable.TaskRunnableDownloadMethods{
+public class PhotoTask implements PhotoDownloadRunnable.TaskRunnableDownloadMethods {
 
     /*
      * Fields containing references to the two runnable objects that handle downloading and
@@ -29,8 +29,7 @@ public class PhotoTask implements PhotoDownloadRunnable.TaskRunnableDownloadMeth
     private static ImageManager sPhotoManager;
 
     private WeakReference<MyImageView> mImageWeakRef;
-    private URL mImageURL;
-    public MangaMenuItem mMangaMenuItem;
+    private MangaMenuItem mMangaMenuItem;
     private boolean mCacheEnabled;
     private Drawable mDrawable;
 
@@ -51,9 +50,6 @@ public class PhotoTask implements PhotoDownloadRunnable.TaskRunnableDownloadMeth
         // Sets this object's ThreadPool field to be the input argument
         sPhotoManager = photoManager;
 
-        // Gets the URL for the View
-        mImageURL = imageView.getLocation();
-
         // Instantiates the weak reference to the incoming view
         mImageWeakRef = new WeakReference<MyImageView>(imageView);
 
@@ -62,7 +58,7 @@ public class PhotoTask implements PhotoDownloadRunnable.TaskRunnableDownloadMeth
     }
 
     @Override
-    public void setDrawable(Drawable d){
+    public void setDrawable(Drawable d) {
         mDrawable = d;
     }
 
@@ -76,7 +72,7 @@ public class PhotoTask implements PhotoDownloadRunnable.TaskRunnableDownloadMeth
         int outState;
 
         // Converts the download state to the overall state
-        switch(state) {
+        switch (state) {
             case PhotoDownloadRunnable.HTTP_STATE_COMPLETED:
                 outState = ImageManager.DOWNLOAD_COMPLETE;
                 break;
@@ -104,23 +100,23 @@ public class PhotoTask implements PhotoDownloadRunnable.TaskRunnableDownloadMeth
      */
     @Override
     public void setDownloadThread(Thread currentThread) {
-        synchronized(sPhotoManager) {
+        synchronized (sPhotoManager) {
             mCurrentThread = currentThread;
         }
     }
-    @Override
-    public Drawable getDrawable(){
-        return mDrawable;
-    }
 
     @Override
-    public URL getImageURL() {
-        return mImageURL;
+    public Drawable getDrawable() {
+        return mDrawable;
     }
 
     @Override
     public MangaMenuItem getMangaMenuItem() {
         return mMangaMenuItem;
+    }
+
+    public void setMangaMenuItem(MangaMenuItem menu) {
+        mMangaMenuItem = menu;
     }
 
     public Runnable getHTTPDownloadRunnable() {
@@ -133,5 +129,22 @@ public class PhotoTask implements PhotoDownloadRunnable.TaskRunnableDownloadMeth
 
     public Thread getCurrentThread() {
         return mCurrentThread;
+    }
+
+    /**
+     * Recycles an PhotoTask object before it's put back into the pool. One reason to do
+     * this is to avoid memory leaks.
+     */
+    void recycle() {
+
+        // Deletes the weak reference to the imageView
+        if ( null != mImageWeakRef ) {
+            mImageWeakRef.clear();
+            mImageWeakRef = null;
+        }
+
+        // Releases references to the byte buffer and the BitMap
+        mDrawable = null;
+        mMangaMenuItem = null;
     }
 }

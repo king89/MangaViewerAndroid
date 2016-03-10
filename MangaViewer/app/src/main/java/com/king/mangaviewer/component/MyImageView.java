@@ -18,7 +18,7 @@ public class MyImageView extends ImageView {
     private boolean mCacheEnabled;
     // The URL that points to the source of the image for this ImageView
     private URL mImageURL;
-    public MangaMenuItem mMangaMenuItem;
+    private MangaMenuItem mMangaMenuItem;
     // The Thread that will be used to download the image for this ImageView
     private PhotoTask mDownloadThread;
     private boolean mCacheFlag;
@@ -42,23 +42,24 @@ public class MyImageView extends ImageView {
 
     /**
      * Attempts to set the picture URL for this ImageView and then download the picture.
-     * <p>
+     * <p/>
      * If the picture URL for this view is already set, and the input URL is not the same as the
      * stored URL, then the picture has moved and any existing downloads are stopped.
-     * <p>
+     * <p/>
      * If the input URL is the same as the stored URL, then nothing needs to be done.
-     * <p>
+     * <p/>
      * If the stored URL is null, then this method starts a download and decode of the picture
-     * @param pictureURL An incoming URL for a Picasa picture
-     * @param cacheFlag Whether to use caching when doing downloading and decoding
+     *
+     * @param pictureURL    An incoming URL for a Picasa picture
+     * @param cacheFlag     Whether to use caching when doing downloading and decoding
      * @param imageDrawable The Drawable to use for this ImageView
      */
     public void setImageURL(MangaMenuItem menu, URL pictureURL, boolean cacheFlag, Drawable imageDrawable) {
         // If the picture URL for this ImageView is already set
-        if (mImageURL != null) {
+        if (mMangaMenuItem != null) {
 
             // If the stored URL doesn't match the incoming URL, then the picture has changed.
-            if (!mImageURL.equals(pictureURL)) {
+            if (!mMangaMenuItem.getHash().equals(menu.getHash())) {
 
                 // Stops any ongoing downloads for this ImageView
                 ImageManager.removeDownload(mDownloadThread, menu);
@@ -72,11 +73,9 @@ public class MyImageView extends ImageView {
         // Sets the Drawable for this ImageView
         setImageDrawable(imageDrawable);
 
-        // Stores the picture URL for this ImageView
-        mImageURL = pictureURL;
         mMangaMenuItem = menu;
         // If the draw operation for this ImageVIew has completed, and the picture URL isn't empty
-        if (pictureURL != null) {
+        if (menu != null) {
 
             // Sets the cache flag
             mCacheFlag = cacheFlag;
@@ -89,18 +88,8 @@ public class MyImageView extends ImageView {
         }
     }
 
-    /**
-     * Returns the URL of the picture associated with this ImageView
-     * @return a URL
-     */
-    public final URL getLocation() {
-        return mImageURL;
-    }
 
-    @Override
-    protected void finalize() throws Throwable {
-
-        ImageManager.removeDownload(mDownloadThread, mMangaMenuItem);
-        super.finalize();
+    public MangaMenuItem getMangaMenuItem() {
+        return mMangaMenuItem;
     }
 }

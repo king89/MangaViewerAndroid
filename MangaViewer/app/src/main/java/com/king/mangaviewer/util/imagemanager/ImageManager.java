@@ -105,15 +105,15 @@ public class ImageManager {
                      * ImageView. The weak reference won't have changed, even if
                      * the input ImageView has.
                      */
-                    URL localURL = localView.getLocation();
 
+                    MangaMenuItem localMenuItem = localView.getMangaMenuItem();
                     /*
                      * Compares the URL of the input ImageView to the URL of the
                      * weak reference. Only updates the bitmap in the ImageView
                      * if this particular Thread is supposed to be serving the
                      * ImageView.
                      */
-                    if (photoTask.getImageURL() == localURL)
+                    if (photoTask.getMangaMenuItem().getHash().equals(localMenuItem.getHash()))
 
                         /*
                          * Chooses the action to take, based on the incoming message
@@ -133,6 +133,7 @@ public class ImageManager {
                                 // Sets background color to golden yellow
                                 //localView.setStatusResource(R.drawable.decodequeued);
                                 localView.setImageDrawable(photoTask.getDrawable());
+                                recycleTask(photoTask);
                                 break;
                             // If the decode has started, sets background color to orange
                             case DECODE_STARTED:
@@ -152,7 +153,7 @@ public class ImageManager {
 //                                localView.setStatusResource(R.drawable.imagedownloadfailed);
 //
 //                                // Attempts to re-use the Task object
-//                                recycleTask(photoTask);
+                                recycleTask(photoTask);
                                 break;
                             default:
                                 // Otherwise, calls the super method
@@ -202,12 +203,12 @@ public class ImageManager {
 
         // Initializes the task
         downloadTask.initializeDownloaderTask(ImageManager.sInstance, imageView, cacheFlag);
-        downloadTask.mMangaMenuItem = imageView.mMangaMenuItem;
+        downloadTask.setMangaMenuItem(imageView.getMangaMenuItem());
         /*
          * Provides the download task with the cache buffer corresponding to the URL to be
          * downloaded.
          */
-        downloadTask.setDrawable(sInstance.mPhotoCache.get(downloadTask.mMangaMenuItem.getHash()));
+        downloadTask.setDrawable(sInstance.mPhotoCache.get(downloadTask.getMangaMenuItem().getHash()));
 
         // If the byte buffer was empty, the image wasn't cached
         if (null == downloadTask.getDrawable()) {
@@ -246,7 +247,7 @@ public class ImageManager {
                     // If the task is set to cache the results, put the buffer
                     // that was
                     // successfully decoded into the cache
-                    mPhotoCache.put(photoTask.mMangaMenuItem.getHash(), photoTask.getDrawable());
+                    mPhotoCache.put(photoTask.getMangaMenuItem().getHash(), photoTask.getDrawable());
                 }
 
                 // Gets a Message object, stores the state in it, and sends it to the Handler
@@ -258,5 +259,19 @@ public class ImageManager {
                 mHandler.obtainMessage(state, photoTask).sendToTarget();
                 break;
         }
+    }
+
+    /**
+     * Recycles tasks by calling their internal recycle() method and then putting them back into
+     * the task queue.
+     * @param downloadTask The task to recycle
+     */
+    void recycleTask(PhotoTask downloadTask) {
+
+        // Frees up memory in the task
+        downloadTask.recycle();
+
+        // Puts the task object back into the queue for re-use.
+        mPhotoTaskWorkQueue.offer(downloadTask);
     }
 }

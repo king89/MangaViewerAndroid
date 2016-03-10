@@ -1,6 +1,7 @@
 package com.king.mangaviewer.util.imagemanager;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.king.mangaviewer.activity.MyApplication;
 import com.king.mangaviewer.model.MangaMenuItem;
@@ -8,6 +9,7 @@ import com.king.mangaviewer.util.MangaHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -59,19 +61,18 @@ public class PhotoDownloadRunnable implements Runnable {
         InputStream i = null;
         try {
             if (Thread.interrupted()) {
-
-                throw new InterruptedException();
+                Log.i("PhotoDownloadRunnable", "Thread interrupted");
+                //throw new InterruptedException();
             }
-
             try {
 
                 m = new URL(new MangaHelper(MyApplication.getContext()).getMenuCover(mPhotoTask.getMangaMenuItem()));
-                i = (InputStream) m.openStream();
 
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
                 }
 
+                i = (InputStream) m.openStream();
                 byteBuffer = Drawable.createFromStream(i, "src");
                 if (null == byteBuffer) {
                     throw new IOException();
@@ -88,13 +89,14 @@ public class PhotoDownloadRunnable implements Runnable {
              */
                 mPhotoTask.handleDownloadState(HTTP_STATE_COMPLETED);
             } catch (MalformedURLException e1) {
-
                 e1.printStackTrace();
+            } catch (InterruptedException e) {
+                Log.i("PhotoDownloadRunnable", "Thread interrupted");
+            } catch (InterruptedIOException e) {
+                Log.i("PhotoDownloadRunnable", "InterruptedIOException");
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-
         } finally {
 
             // If the byteBuffer is null, reports that the download failed.
@@ -154,12 +156,6 @@ public class PhotoDownloadRunnable implements Runnable {
          */
         void handleDownloadState(int state);
 
-        /**
-         * Gets the URL for the image being downloaded
-         *
-         * @return The image URL
-         */
-        URL getImageURL();
 
         MangaMenuItem getMangaMenuItem();
     }
