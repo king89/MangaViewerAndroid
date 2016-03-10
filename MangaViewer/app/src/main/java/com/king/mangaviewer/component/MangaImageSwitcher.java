@@ -26,6 +26,7 @@ import java.util.zip.ZipFile;
 /**
  * Created by KinG on 7/16/2015.
  */
+@Deprecated
 public class MangaImageSwitcher extends ImageSwitcher implements ViewSwitcher.ViewFactory, View.OnTouchListener {
 
     GestureDetector gestureDetector = null;

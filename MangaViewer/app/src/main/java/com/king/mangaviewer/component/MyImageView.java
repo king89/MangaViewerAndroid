@@ -96,5 +96,10 @@ public class MyImageView extends ImageView {
         return mImageURL;
     }
 
+    @Override
+    protected void finalize() throws Throwable {
 
+        ImageManager.removeDownload(mDownloadThread, mImageURL);
+        super.finalize();
+    }
 }

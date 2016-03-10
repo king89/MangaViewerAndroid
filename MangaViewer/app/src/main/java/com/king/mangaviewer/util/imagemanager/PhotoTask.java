@@ -102,7 +102,9 @@ public class PhotoTask implements PhotoDownloadRunnable.TaskRunnableDownloadMeth
      */
     @Override
     public void setDownloadThread(Thread currentThread) {
-
+        synchronized(sPhotoManager) {
+            mCurrentThread = currentThread;
+        }
     }
     @Override
     public Drawable getDrawable(){
@@ -120,5 +122,9 @@ public class PhotoTask implements PhotoDownloadRunnable.TaskRunnableDownloadMeth
 
     public boolean isCacheEnabled() {
         return mCacheEnabled;
+    }
+
+    public Thread getCurrentThread() {
+        return mCurrentThread;
     }
 }

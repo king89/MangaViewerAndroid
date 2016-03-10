@@ -11,16 +11,20 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.king.mangaviewer.MangaPattern.WebSiteBasePattern;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
+import com.king.mangaviewer.component.MangaGridView;
 import com.king.mangaviewer.model.MangaMenuItem;
+import com.king.mangaviewer.util.MangaHelper;
 
+import java.util.HashMap;
 import java.util.List;
 
 
 public class HomeFragment extends BaseFragment {
 
-    public GridView gv;
+    public MangaGridView gv;
     ProgressDialog progressDialog;
     public Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -47,7 +51,7 @@ public class HomeFragment extends BaseFragment {
         switch (item.getItemId()) {
             case R.id.menu_refresh:
                 this.getMangaViewModel().setMangaMenuList(null);
-                loadMenuList();
+                gv.refresh();
                 return true;
             default:
                 return getActivity().onOptionsItemSelected(item);
@@ -58,34 +62,24 @@ public class HomeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        TextView tv = (TextView) rootView.findViewById(R.id.manga_source_textView);
-        String selectedMangaSourceName = getSettingViewModel().getSelectedWebSource(getActivity()).getDisplayName();
-        tv.setText(selectedMangaSourceName);
-        gv = (GridView) rootView.findViewById(R.id.gridView);
-        loadMenuList();
+        View rootView = inflater.inflate(R.layout.fragment_all_manga, container, false);
 
+        TextView mangaSourceTv = (TextView) rootView.findViewById(R.id.manga_source_textView);
+        String selectedMangaSourceName = getSettingViewModel().getSelectedWebSource(getActivity()).getDisplayName();
+        mangaSourceTv.setText(selectedMangaSourceName);
+
+        TextView tv = (TextView) rootView.findViewById(R.id.textView);
+        gv = (MangaGridView) rootView.findViewById(R.id.gridView);
+        gv.setLoadingFooter(tv);
+        //reset all manga list
+        getMangaViewModel().resetAllMangaList();
+        gv.Initial(getMangaViewModel(), new MangaGridView.IGetMore() {
+            @Override
+            public void getMoreManga(List<MangaMenuItem> mMangaList, HashMap<String, Object> state) {
+                new MangaHelper(getActivity()).getLatestMangeList(mMangaList, state);
+            }
+        });
         return rootView;
     }
 
-    private void loadMenuList() {
-        progressDialog = ProgressDialog.show(this.getActivity(), getString(R.string.title_loading),
-                getString(R.string.msg_loading));
-
-        new Thread() {
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                MainActivity copy = (MainActivity) getActivity();
-
-                List<MangaMenuItem> mList = copy.getAppViewModel().Manga.getMangaMenuList();
-                if (mList == null) {
-                    mList = copy.getMangaHelper().getLatestMangeList();
-                    copy.getAppViewModel().Manga
-                            .setMangaMenuList(mList);
-                }
-                handler.sendEmptyMessage(0);
-            }
-        }.start();
-    }
 }

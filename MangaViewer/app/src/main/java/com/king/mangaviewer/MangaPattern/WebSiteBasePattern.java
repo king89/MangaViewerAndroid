@@ -221,6 +221,7 @@ public class WebSiteBasePattern {
         if (html == null || html.isEmpty()) {
             return null;
         }
+        state.put(this.STATE_NO_MORE,true);
         return getLatestMangaList(html);
     }
 

@@ -164,7 +164,28 @@ public class ImageManager {
     }
 
 
-    public static void removeDownload(PhotoTask mDownloadThread, URL mImageURL) {
+    public static void removeDownload(PhotoTask downloaderTask, URL pictureURL) {
+        // If the Thread object still exists and the download matches the specified URL
+        if (downloaderTask != null && downloaderTask.getImageURL().equals(pictureURL)) {
+
+            /*
+             * Locks on this class to ensure that other processes aren't mutating Threads.
+             */
+            synchronized (sInstance) {
+
+                // Gets the Thread that the downloader task is running on
+                Thread thread = downloaderTask.getCurrentThread();
+
+                // If the Thread exists, posts an interrupt to it
+                if (null != thread)
+                    thread.interrupt();
+            }
+            /*
+             * Removes the download Runnable from the ThreadPool. This opens a Thread in the
+             * ThreadPool's work queue, allowing a task in the queue to start.
+             */
+            sInstance.mDownloadThreadPool.remove(downloaderTask.getHTTPDownloadRunnable());
+        }
     }
 
     public static PhotoTask startDownload(MyImageView imageView, boolean cacheFlag) {

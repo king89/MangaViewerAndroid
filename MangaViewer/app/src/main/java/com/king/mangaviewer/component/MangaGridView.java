@@ -88,6 +88,11 @@ public class MangaGridView extends GridView {
         mLoadingFooter = new TextView(getContext());
     }
 
+    public void refresh(){
+        mMangaList.clear();
+        mStateHash.clear();
+        getMoreManga();
+    }
     public void setLoadingFooter(View view) {
         mLoadingFooter = view;
     }
