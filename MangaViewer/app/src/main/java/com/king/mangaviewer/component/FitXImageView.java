@@ -27,6 +27,7 @@ public class FitXImageView extends ImageView {
     private static final float MAX_ZOOM = 3;
     private static final float MIN_ZOOM = 1;
     public static final double ZOOM_EXP = 1e-3;
+    public static final float DEFAULT_ZOOM_SIZE = 1.5f;
     private GestureDetectorCompat gestureDetector;
     private ScaleGestureDetector mScaleGestureDetector;
     private OverScroller overScroller;
@@ -322,6 +323,41 @@ public class FitXImageView extends ImageView {
         this.postInvalidate();
     }
 
+
+    private void zoomDoubleSize(MotionEvent e) {
+        overScroller.forceFinished(true);
+        mFocusPoint.set(e.getX(), e.getY());
+        actualZoomFactor = fitZoomFactor * DEFAULT_ZOOM_SIZE;
+        matrixZoomFactor = 1;
+        matrix = new Matrix();
+        zoom(matrix, actualZoomFactor);
+        zoom(matrix, matrixZoomFactor);
+        this.setImageMatrix(matrix);
+        tposX = overScroller.getCurrX();
+        tposY = overScroller.getCurrY();
+        positionX = (int) ((tposX + mFocusPoint.x) * matrixZoomFactor * DEFAULT_ZOOM_SIZE - mFocusPoint.x);
+        positionY = (int) ((tposY + mFocusPoint.y) * matrixZoomFactor * DEFAULT_ZOOM_SIZE - mFocusPoint.y);
+        int maxY = (int) (getMaxVertical());
+        int maxX = (int) (getMaxHorizontal());
+
+        if (positionX > maxX) {
+            positionX = maxX;
+        } else if (positionX < 0) {
+            positionX = 0;
+        }
+
+        if (positionY > maxY) {
+            positionY = maxY;
+        } else if (positionY < 0) {
+            positionY = 0;
+        }
+
+        toReset = false;
+        scrollTo(positionX, positionY);
+
+        this.postInvalidate();
+    }
+
     private int tposX, tposY;
     private ScaleGestureDetector.SimpleOnScaleGestureListener scaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
@@ -354,7 +390,7 @@ public class FitXImageView extends ImageView {
         public boolean onScale(ScaleGestureDetector detector) {
             isZooming = true;
             overScroller.forceFinished(true);
-            StringBuilder sb = new StringBuilder();
+            //StringBuilder sb = new StringBuilder();
             matrixZoomFactor = detector.getScaleFactor();
             if (matrixZoomFactor * actualZoomFactor < MIN_ZOOM * fitZoomFactor) {
                 matrixZoomFactor = MIN_ZOOM / actualZoomFactor * fitZoomFactor;
@@ -380,7 +416,11 @@ public class FitXImageView extends ImageView {
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            resetImage();
+            if (isZoomed()) {
+                resetImage();
+            }else{
+                zoomDoubleSize(e);
+            }
             return super.onDoubleTap(e);
         }
 
@@ -433,6 +473,7 @@ public class FitXImageView extends ImageView {
 
 
     };
+
 
 
 }
