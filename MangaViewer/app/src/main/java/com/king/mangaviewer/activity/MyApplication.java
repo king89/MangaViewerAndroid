@@ -2,6 +2,7 @@ package com.king.mangaviewer.activity;
 
 import android.app.Application;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -25,6 +26,12 @@ public class MyApplication extends Application {
 
     }
 
+    private static Context context;
+
+    public static Context getContext() {
+        return MyApplication.context;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -36,7 +43,7 @@ public class MyApplication extends Application {
             AutoUpdateAlarmReceiver receiver = new AutoUpdateAlarmReceiver();
             receiver.setAlarm(this);
         }
-
+        MyApplication.context = getApplicationContext();
     }
 
     public boolean isMyAlamRunning() {

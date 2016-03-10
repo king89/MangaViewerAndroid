@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.king.mangaviewer.component.MyImageView;
+import com.king.mangaviewer.model.MangaMenuItem;
 
 import java.lang.ref.WeakReference;
 import java.net.URL;
@@ -29,6 +30,7 @@ public class PhotoTask implements PhotoDownloadRunnable.TaskRunnableDownloadMeth
 
     private WeakReference<MyImageView> mImageWeakRef;
     private URL mImageURL;
+    public MangaMenuItem mMangaMenuItem;
     private boolean mCacheEnabled;
     private Drawable mDrawable;
 
@@ -114,6 +116,11 @@ public class PhotoTask implements PhotoDownloadRunnable.TaskRunnableDownloadMeth
     @Override
     public URL getImageURL() {
         return mImageURL;
+    }
+
+    @Override
+    public MangaMenuItem getMangaMenuItem() {
+        return mMangaMenuItem;
     }
 
     public Runnable getHTTPDownloadRunnable() {

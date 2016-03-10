@@ -8,6 +8,7 @@ import android.support.v4.util.LruCache;
 import android.widget.ImageView;
 
 import com.king.mangaviewer.component.MyImageView;
+import com.king.mangaviewer.model.MangaMenuItem;
 
 import java.net.URL;
 import java.util.Queue;
@@ -46,7 +47,7 @@ public class ImageManager {
    * Creates a cache of byte arrays indexed by image URLs. As new items are added to the
    * cache, the oldest items are ejected and subject to garbage collection.
    */
-    private final LruCache<URL, Drawable> mPhotoCache;
+    private final LruCache<String, Drawable> mPhotoCache;
 
     // A queue of Runnables for the image download pool
     private final BlockingQueue<Runnable> mDownloadWorkQueue;
@@ -86,7 +87,7 @@ public class ImageManager {
         mPhotoTaskWorkQueue = new LinkedBlockingQueue<>();;
         mDownloadThreadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
                 KEEP_ALIVE_TIME, KEEP_ALIVE_TIME_UNIT, mDownloadWorkQueue);
-        mPhotoCache = new LruCache<URL, Drawable>(IMAGE_CACHE_SIZE);
+        mPhotoCache = new LruCache<>(IMAGE_CACHE_SIZE);
 
         mHandler = new Handler(Looper.getMainLooper()){
             @Override
@@ -164,9 +165,9 @@ public class ImageManager {
     }
 
 
-    public static void removeDownload(PhotoTask downloaderTask, URL pictureURL) {
+    public static void removeDownload(PhotoTask downloaderTask, MangaMenuItem menu) {
         // If the Thread object still exists and the download matches the specified URL
-        if (downloaderTask != null && downloaderTask.getImageURL().equals(pictureURL)) {
+        if (downloaderTask != null && downloaderTask.getMangaMenuItem().getHash().equals(menu.getHash())) {
 
             /*
              * Locks on this class to ensure that other processes aren't mutating Threads.
@@ -201,12 +202,12 @@ public class ImageManager {
 
         // Initializes the task
         downloadTask.initializeDownloaderTask(ImageManager.sInstance, imageView, cacheFlag);
-
+        downloadTask.mMangaMenuItem = imageView.mMangaMenuItem;
         /*
          * Provides the download task with the cache buffer corresponding to the URL to be
          * downloaded.
          */
-        downloadTask.setDrawable(sInstance.mPhotoCache.get(downloadTask.getImageURL()));
+        downloadTask.setDrawable(sInstance.mPhotoCache.get(downloadTask.mMangaMenuItem.getHash()));
 
         // If the byte buffer was empty, the image wasn't cached
         if (null == downloadTask.getDrawable()) {
@@ -245,7 +246,7 @@ public class ImageManager {
                     // If the task is set to cache the results, put the buffer
                     // that was
                     // successfully decoded into the cache
-                    mPhotoCache.put(photoTask.getImageURL(), photoTask.getDrawable());
+                    mPhotoCache.put(photoTask.mMangaMenuItem.getHash(), photoTask.getDrawable());
                 }
 
                 // Gets a Message object, stores the state in it, and sends it to the Handler

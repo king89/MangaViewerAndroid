@@ -106,13 +106,13 @@ public class MangaMenuItemAdapter extends BaseAdapter {
         convertView.setTag(holder);
         URL url = null;
         try {
-            String coverUrl = new MangaHelper(context).getMenuCover(this.menu.get(position));
-            url = new URL(coverUrl);
+            //String coverUrl = new MangaHelper(context).getMenuCover(this.menu.get(position));
+            url = new URL("https://i.stack.imgur.com/RIZKi.png?s=32&g=1");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
-        holder.imageView.setImageURL(url, true, context.getResources().getDrawable(R.color.black));
+        holder.imageView.setImageURL(this.menu.get(position),url, true, context.getResources().getDrawable(R.color.black));
         String title = this.menu.get(position).getTitle();
         holder.textView.setText(title);
         final int menuPos = position;

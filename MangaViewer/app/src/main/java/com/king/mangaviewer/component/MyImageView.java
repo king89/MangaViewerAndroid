@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.util.imagemanager.ImageManager;
 import com.king.mangaviewer.util.imagemanager.PhotoTask;
 
@@ -17,7 +18,7 @@ public class MyImageView extends ImageView {
     private boolean mCacheEnabled;
     // The URL that points to the source of the image for this ImageView
     private URL mImageURL;
-
+    public MangaMenuItem mMangaMenuItem;
     // The Thread that will be used to download the image for this ImageView
     private PhotoTask mDownloadThread;
     private boolean mCacheFlag;
@@ -52,7 +53,7 @@ public class MyImageView extends ImageView {
      * @param cacheFlag Whether to use caching when doing downloading and decoding
      * @param imageDrawable The Drawable to use for this ImageView
      */
-    public void setImageURL(URL pictureURL, boolean cacheFlag, Drawable imageDrawable) {
+    public void setImageURL(MangaMenuItem menu, URL pictureURL, boolean cacheFlag, Drawable imageDrawable) {
         // If the picture URL for this ImageView is already set
         if (mImageURL != null) {
 
@@ -60,7 +61,7 @@ public class MyImageView extends ImageView {
             if (!mImageURL.equals(pictureURL)) {
 
                 // Stops any ongoing downloads for this ImageView
-                ImageManager.removeDownload(mDownloadThread, mImageURL);
+                ImageManager.removeDownload(mDownloadThread, menu);
             } else {
 
                 // The stored URL matches the incoming URL. Returns without doing any work.
@@ -73,7 +74,7 @@ public class MyImageView extends ImageView {
 
         // Stores the picture URL for this ImageView
         mImageURL = pictureURL;
-
+        mMangaMenuItem = menu;
         // If the draw operation for this ImageVIew has completed, and the picture URL isn't empty
         if (pictureURL != null) {
 
@@ -99,7 +100,7 @@ public class MyImageView extends ImageView {
     @Override
     protected void finalize() throws Throwable {
 
-        ImageManager.removeDownload(mDownloadThread, mImageURL);
+        ImageManager.removeDownload(mDownloadThread, mMangaMenuItem);
         super.finalize();
     }
 }
