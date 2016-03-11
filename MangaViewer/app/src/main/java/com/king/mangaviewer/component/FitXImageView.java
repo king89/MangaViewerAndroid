@@ -36,13 +36,21 @@ public class FitXImageView extends ImageView {
     private static int maxBitmapSize;
     private static final int notZoomImageSize = 300;
     private PointF mFocusPoint = new PointF();
+    //fix screen size zoom factor
     private float fitZoomFactor = 1;
+    //use in zooming gesture
     private float matrixZoomFactor = 1;
+    //actual zoom size now
     private float actualZoomFactor = 1;
-    private int positionX = 0;
-    private int positionY = 0;
+    //use in srollTo function
+    private int scrollBarNowPositionX = 0;
+    private int scrollBarNowPositionY = 0;
+    //overScroller pos
+    private int overScrollerPosX, overScrollerPosY;
 
+    //use in zoome gesture
     private boolean isZooming = false;
+    //reset to (0,0) pos, fit zoom size flag
     private boolean toReset = false;
     boolean isFirstLoadedFinished = false;
 
@@ -245,36 +253,36 @@ public class FitXImageView extends ImageView {
         if (overScroller.computeScrollOffset()) {
 
             if (!isZooming) {
-                tposX = overScroller.getCurrX();
-                tposY = overScroller.getCurrY();
+                overScrollerPosX = overScroller.getCurrX();
+                overScrollerPosY = overScroller.getCurrY();
                 if (toReset) {
-                    tposX = 0;
-                    tposY = 0;
+                    overScrollerPosX = 0;
+                    overScrollerPosY = 0;
                     toReset = false;
                 }
             }
-            positionX = (int) ((tposX + mFocusPoint.x) * matrixZoomFactor - mFocusPoint.x);
-            positionY = (int) ((tposY + mFocusPoint.y) * matrixZoomFactor - mFocusPoint.y);
+            scrollBarNowPositionX = (int) ((overScrollerPosX + mFocusPoint.x) * matrixZoomFactor - mFocusPoint.x);
+            scrollBarNowPositionY = (int) ((overScrollerPosY + mFocusPoint.y) * matrixZoomFactor - mFocusPoint.y);
             int maxY = (int) (getMaxVertical());
             int maxX = (int) (getMaxHorizontal());
 
-            if (positionX > maxX) {
-                positionX = maxX;
-            } else if (positionX < 0) {
-                positionX = 0;
+            if (scrollBarNowPositionX > maxX) {
+                scrollBarNowPositionX = maxX;
+            } else if (scrollBarNowPositionX < 0) {
+                scrollBarNowPositionX = 0;
             }
 
-            if (positionY > maxY) {
-                positionY = maxY;
-            } else if (positionY < 0) {
-                positionY = 0;
+            if (scrollBarNowPositionY > maxY) {
+                scrollBarNowPositionY = maxY;
+            } else if (scrollBarNowPositionY < 0) {
+                scrollBarNowPositionY = 0;
             }
 
-            scrollTo(positionX, positionY);
+            scrollTo(scrollBarNowPositionX, scrollBarNowPositionY);
 //            Log.i("computeScroll", "overScroller.getCurrX(): " + overScroller.getCurrX() + " overScroller.getCurrY():" + overScroller.getCurrY());
-//            Log.i("computeScroll", "positionX: " + positionX + " positionY:" + positionY);
+//            Log.i("computeScroll", "scrollBarNowPositionX: " + scrollBarNowPositionX + " scrollBarNowPositionY:" + scrollBarNowPositionY);
         } else {
-            //Log.i("computeScroll / else", "positionX: " + positionX + " positionY:" + positionY);
+            //Log.i("computeScroll / else", "scrollBarNowPositionX: " + scrollBarNowPositionX + " scrollBarNowPositionY:" + scrollBarNowPositionY);
             overScroller.springBack(this.getScrollX(), this.getScrollY(), 0, getMaxHorizontal(), 0, getMaxVertical());
 
         }
@@ -333,32 +341,32 @@ public class FitXImageView extends ImageView {
         zoom(matrix, actualZoomFactor);
         zoom(matrix, matrixZoomFactor);
         this.setImageMatrix(matrix);
-        tposX = overScroller.getCurrX();
-        tposY = overScroller.getCurrY();
-        positionX = (int) ((tposX + mFocusPoint.x) * matrixZoomFactor * DEFAULT_ZOOM_SIZE - mFocusPoint.x);
-        positionY = (int) ((tposY + mFocusPoint.y) * matrixZoomFactor * DEFAULT_ZOOM_SIZE - mFocusPoint.y);
+        overScrollerPosX = overScroller.getCurrX();
+        overScrollerPosY = overScroller.getCurrY();
+        scrollBarNowPositionX = (int) ((overScrollerPosX + mFocusPoint.x) *  DEFAULT_ZOOM_SIZE - mFocusPoint.x);
+        scrollBarNowPositionY = (int) ((overScrollerPosY + mFocusPoint.y) *  DEFAULT_ZOOM_SIZE - mFocusPoint.y);
         int maxY = (int) (getMaxVertical());
         int maxX = (int) (getMaxHorizontal());
 
-        if (positionX > maxX) {
-            positionX = maxX;
-        } else if (positionX < 0) {
-            positionX = 0;
+        if (scrollBarNowPositionX > maxX) {
+            scrollBarNowPositionX = maxX;
+        } else if (scrollBarNowPositionX < 0) {
+            scrollBarNowPositionX = 0;
         }
 
-        if (positionY > maxY) {
-            positionY = maxY;
-        } else if (positionY < 0) {
-            positionY = 0;
+        if (scrollBarNowPositionY > maxY) {
+            scrollBarNowPositionY = maxY;
+        } else if (scrollBarNowPositionY < 0) {
+            scrollBarNowPositionY = 0;
         }
 
         toReset = false;
-        scrollTo(positionX, positionY);
+        scrollTo(scrollBarNowPositionX, scrollBarNowPositionY);
 
         this.postInvalidate();
     }
 
-    private int tposX, tposY;
+
     private ScaleGestureDetector.SimpleOnScaleGestureListener scaleGestureListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
         @Override
@@ -367,8 +375,8 @@ public class FitXImageView extends ImageView {
             mFocusPoint.set(detector.getFocusX(), detector.getFocusY());
             isZooming = false;
             matrixZoomFactor = 1;
-            tposX = overScroller.getCurrX();
-            tposY = overScroller.getCurrY();
+            overScrollerPosX = overScroller.getCurrX();
+            overScrollerPosY = overScroller.getCurrY();
 
             Log.i("onScaleBegin", " focusX:" + detector.getFocusX() + " focusY:" + detector.getFocusY());
             return super.onScaleBegin(detector);
@@ -402,7 +410,7 @@ public class FitXImageView extends ImageView {
 //
 //            sb.append(" dx:" + dx + " dy:" + dy);
 //            sb.append(" tx:" + tx + " ty:" + ty);
-//            sb.append(" positionX:" + positionX + " positionY:" + positionY);
+//            sb.append(" scrollBarNowPositionX:" + scrollBarNowPositionX + " scrollBarNowPositionY:" + scrollBarNowPositionY);
 //            sb.append(" focusX:" + detector.getFocusX() + " focusY:" + detector.getFocusY());
 
 //            Log.i("onScale", sb.toString());
@@ -436,7 +444,7 @@ public class FitXImageView extends ImageView {
                                float velocityY) {
             //overScroller.forceFinished(true);
             int max = (int) ((getDrawable().getBounds().height() * actualZoomFactor));
-            overScroller.fling(positionX, positionY, (int) -velocityX,
+            overScroller.fling(scrollBarNowPositionX, scrollBarNowPositionY, (int) -velocityX,
                     (int) -velocityY, 0, getMaxHorizontal(), 0,
                     max);
 
@@ -453,8 +461,8 @@ public class FitXImageView extends ImageView {
             // normalize scrolling distances to not overscroll the image
             int dx = (int) distanceX;
             int dy = (int) distanceY;
-            int newPositionX = positionX + dx;
-            int newPositionY = positionY + dy;
+            int newPositionX = scrollBarNowPositionX + dx;
+            int newPositionY = scrollBarNowPositionY + dy;
             if (newPositionX < 0) {
                 dx -= newPositionX;
             } else if (newPositionX > getMaxHorizontal()) {
@@ -465,8 +473,8 @@ public class FitXImageView extends ImageView {
             } else if (newPositionY > getMaxVertical()) {
                 dy -= (newPositionY - getMaxVertical());
             }
-            Log.i("onScroll", "positionX: " + positionX + " positionY:" + positionY);
-            overScroller.startScroll(positionX, positionY, dx, dy, 0);
+            Log.i("onScroll", "scrollBarNowPositionX: " + scrollBarNowPositionX + " scrollBarNowPositionY:" + scrollBarNowPositionY);
+            overScroller.startScroll(scrollBarNowPositionX, scrollBarNowPositionY, dx, dy, 0);
             ViewCompat.postInvalidateOnAnimation(FitXImageView.this);
             return true;
         }

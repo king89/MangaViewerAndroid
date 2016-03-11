@@ -27,7 +27,7 @@
 *;
 }
 
--keep class com.king.mangaviewer.common.MangaPattern.** {
+-keep class com.king.mangaviewer.MangaPattern.** {
 public *;
 }
 
