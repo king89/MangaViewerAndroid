@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'mangaviewer'
+            keyPassword 'mangaviewer'
+            storeFile file('E:/OneDrive/ApplicationData/Android/mangaviewer.jks')
+            storePassword 'mangaviewer'
+
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
     defaultConfig {
@@ -8,19 +17,21 @@ android {
         minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0"
+        versionName "0.1.0"
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            lintOptions {
+                disable 'MissingTranslation'
+            }
         }
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    productFlavors {
     }
 }
 

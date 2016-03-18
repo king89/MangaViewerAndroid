@@ -82,16 +82,6 @@ public class SettingMouldeTest extends ActivityInstrumentationTestCase2<MainActi
         item.setUpdateCount(2);
         dataSource.updateToFavourite(item);
 
-        HashMap<String, FavouriteMangaMenuItem> hash = dataSource.getAllFavouriteMangaMenu(svm.getMangaWebSources());
 
-        assertEquals(3, hash.values().size());
-
-        assertEquals(2, item.getUpdateCount());
-
-        assertEquals(2, hash.get(item.getHash()).getUpdateCount());
-
-        assertEquals(true, dataSource.checkIsexsit(item));
-
-        assertEquals(false, dataSource.checkIsexsit(list.get(1)));
     }
 }

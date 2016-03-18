@@ -49,11 +49,16 @@ public class SettingViewModel extends ViewModelBase {
         svm.setMangaWebSources(loadMangaSource(context));
 
         if (svm.mSelectedWebSource == null) {
-            svm.mSelectedWebSource = svm.mMangaWebSources.get(0);
+            svm.setSelectedWebSource(svm.mMangaWebSources.get(0).getId(),context);
         } else {
             //ensure get the latest manga source
             int id = svm.mSelectedWebSource.getId();
             svm.setSelectedWebSource(id, context);
+            //if the previous web source deleted, get the first one
+            if (svm.mSelectedWebSource == null)
+            {
+                svm.setSelectedWebSource(svm.mMangaWebSources.get(0).getId(),context);
+            }
         }
         return svm;
     }
@@ -115,8 +120,10 @@ public class SettingViewModel extends ViewModelBase {
                     int order = Integer.parseInt(eElement.getElementsByTagName("Order").item(0).getTextContent());
                     String language = eElement.getElementsByTagName("Language").item(0).getTextContent();
                     int enable = Integer.parseInt(eElement.getElementsByTagName("Enable").item(0).getTextContent());
-
-                    mws.add(new MangaWebSource(id, name, displayName, className, order, language, enable));
+                    //dont need the disable source
+                    if (enable > 0) {
+                        mws.add(new MangaWebSource(id, name, displayName, className, order, language, enable));
+                    }
                 }
             }
 
@@ -201,7 +208,6 @@ public class SettingViewModel extends ViewModelBase {
                 setSelectedWebSource(m, context);
             }
         }
-
     }
 
     public String getDefaultLocalMangaPath(Context context) {
