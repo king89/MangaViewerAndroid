@@ -74,7 +74,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/seekBar"
                     android:splitTrack="false"
-                    android:mirrorForRtl="false"/>
+                    android:mirrorForRtl="false"
+                    android:theme="@style/AppTheme"/>
 
             </LinearLayout>
 

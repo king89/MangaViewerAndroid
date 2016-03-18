@@ -3,6 +3,7 @@ package com.king.mangaviewer.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -234,8 +235,8 @@ public class MangaPageActivity extends BaseActivity {
         View layout = getLayoutInflater().inflate(R.layout.menu_page_setting, null);
 
         //Init Switch
-        Switch isFTRSwitch = (Switch) layout.findViewById(R.id.LTRSwitch);
-        Switch splitPageSwitch = (Switch) layout.findViewById(R.id.splitPageSwitch);
+        SwitchCompat isFTRSwitch = (SwitchCompat) layout.findViewById(R.id.LTRSwitch);
+        SwitchCompat splitPageSwitch = (SwitchCompat) layout.findViewById(R.id.splitPageSwitch);
 
         isFTRSwitch.setChecked(mSettingViewModel.getIsFromLeftToRight());
         isFTRSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
