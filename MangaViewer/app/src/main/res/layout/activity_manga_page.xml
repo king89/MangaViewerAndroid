@@ -39,7 +39,7 @@
 
         <LinearLayout android:id="@+id/fullscreen_content_controls"
                       android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
+                      android:layout_height="50dp"
                       android:layout_gravity="center_horizontal|bottom"
                       android:background="@color/gray_over_lay"
                       android:orientation="horizontal"

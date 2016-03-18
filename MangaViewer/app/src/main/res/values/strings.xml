@@ -87,7 +87,7 @@
     <string name="pref_title_auto_update_hours">Check Update Period</string>
 
 
-    <string name="pref_title_auto_update_service">Manga Updated Notification</string>
+    <string name="pref_title_auto_update_service">Notification</string>
     <string name="pref_dialog_message_clear_cache">Are You Sure You Want To Clear The Cache Files ?</string>
     <string name="pref_data_rate_me">http://google.com</string>
     <string name="pref_data_contact_us">mailto:mangaviewer2015@gmail.com?subject=About Suggestion</string>

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter;
+import com.king.mangaviewer.component.MyImageView;
 import com.king.mangaviewer.util.AsyncImageLoader;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
@@ -26,7 +27,7 @@ public class MangaChapterActivity extends BaseActivity {
     protected ProgressDialog progressDialog;
 
     ListView listView = null;
-    ImageView imageView = null;
+    MyImageView imageView = null;
     AutofitTextView textView = null;
 
     @Override
@@ -35,24 +36,10 @@ public class MangaChapterActivity extends BaseActivity {
         setContentView(R.layout.activity_manga_chapter);
 
         listView = (ListView) this.findViewById(R.id.listView);
-        imageView = (ImageView) this.findViewById(R.id.imageView);
+        imageView = (MyImageView) this.findViewById(R.id.imageView);
         textView = (AutofitTextView) this.findViewById(R.id.textView);
         textView.setText(this.getAppViewModel().Manga.getSelectedMangaMenuItem().getTitle());
-        String imagePath = this.getAppViewModel().Manga.getSelectedMangaMenuItem().getImagePath();
-        Drawable cachedImage = AsyncImageLoader.getInstance().loadDrawable(imagePath,
-                imageView, new AsyncImageLoader.ImageCallback() {
-
-                    public void imageLoaded(Drawable imageDrawable,
-                                            ImageView imageView, String imageUrl) {
-                        // TODO Auto-generated method stub
-                        if (imageDrawable != null) {
-                            imageView.setImageDrawable(imageDrawable);
-                        }
-                    }
-                });
-        if (cachedImage != null) {
-            imageView.setImageDrawable(cachedImage);
-        }
+        imageView.setImageURL(this.getAppViewModel().Manga.getSelectedMangaMenuItem(),true,getResources().getDrawable(R.color.black));
         new Thread() {
 
             @Override
