@@ -91,6 +91,7 @@ public class MangaPageActivity extends BaseActivity {
                     controlsView.animate()
                             .translationY(0)
                             .setDuration(mShortAnimTime);
+                    controlsView.setVisibility(View.VISIBLE);
 
                 } else {
                     // TODO: The system bars are NOT visible. Make any desired
@@ -98,9 +99,11 @@ public class MangaPageActivity extends BaseActivity {
                     // other navigational controls.
 //                    isFullScreen = true;
                     vFlipper.setFullScreen(true);
+
                     controlsView.animate()
                             .translationY(mControlsHeight)
                             .setDuration(mShortAnimTime);
+                    controlsView.setVisibility(View.GONE);
                 }
 
 
