@@ -50,11 +50,11 @@ public class MyImageView extends ImageView {
      * <p/>
      * If the stored URL is null, then this method starts a download and decode of the picture
      *
-     * @param pictureURL    An incoming URL for a Picasa picture
+     * @param menu    An incoming URL for a Picasa picture
      * @param cacheFlag     Whether to use caching when doing downloading and decoding
      * @param imageDrawable The Drawable to use for this ImageView
      */
-    public void setImageURL(MangaMenuItem menu, URL pictureURL, boolean cacheFlag, Drawable imageDrawable) {
+    public void setImageURL(MangaMenuItem menu, boolean cacheFlag, Drawable imageDrawable) {
         // If the picture URL for this ImageView is already set
         if (mMangaMenuItem != null) {
 

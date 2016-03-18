@@ -13,7 +13,7 @@
         android:paddingBottom="15dp"
         android:background="#dddddd">
 
-        <ImageView
+        <com.king.mangaviewer.component.MyImageView
             android:id="@+id/imageView"
             android:layout_width="80dp"
             android:layout_height="100dp"
