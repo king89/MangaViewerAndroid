@@ -502,14 +502,17 @@ public class MyViewFlipper extends ViewFlipper {
                     + velocityY + " Tangle :" + Math.toDegrees(Math.atan(velocityY / velocityX)));
 
             FitXImageView fiv = (FitXImageView) getCurrentView().findViewById(R.id.imageView);
-            ;
-            if (fiv.isZoomed()) {
+
+            int x = (int) (e2.getX() - e1.getX());
+            double maxDegree = 30;
+
+            if ( !( (x > 0 && fiv.canFlingFromLeftToRight()) ||
+                    (x < 0 && fiv.canFlingFromRightToLeft()) ) ) {
                 return false;
             }
 
-            double maxDegree = 30;
             if (Math.abs(velocityX) > Math.abs(velocityY) && Math.abs(Math.toDegrees(Math.atan(velocityY / velocityX))) < maxDegree) {
-                int x = (int) (e2.getX() - e1.getX());
+
                 if (getIsFromLeftToRight()) {
                     x = -x;
                 }

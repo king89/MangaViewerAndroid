@@ -103,6 +103,25 @@ public class FitXImageView extends ImageView {
         }
     }
 
+    public boolean canFlingFromLeftToRight(){
+        if (!isZoomed())
+            return true;
+        //when zoomed, scroll = 0
+        if(overScroller.getCurrX() == 0)
+            return true;
+        else
+            return false;
+    }
+    public boolean canFlingFromRightToLeft(){
+        //when zoomed, scroll = max
+        if (!isZoomed())
+            return true;
+        //when zoomed, scroll = 0
+        if(overScroller.getCurrX() == getMaxHorizontal())
+            return true;
+        else
+            return false;
+    }
     @Override
     public void setImageDrawable(Drawable drawable) {
         setIsFirstLoadedFinished(false);
