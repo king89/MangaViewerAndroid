@@ -48,17 +48,13 @@ public class SettingViewModel extends ViewModelBase {
         //Manga Sources
         svm.setMangaWebSources(loadMangaSource(context));
 
-        if (svm.mSelectedWebSource == null) {
+        //ensure get the latest manga source
+        int id = svm.getSelectedWebSource(context).getId();
+        svm.setSelectedWebSource(id, context);
+        //if the previous web source deleted, get the first one
+        if (svm.mSelectedWebSource == null)
+        {
             svm.setSelectedWebSource(svm.mMangaWebSources.get(0).getId(),context);
-        } else {
-            //ensure get the latest manga source
-            int id = svm.mSelectedWebSource.getId();
-            svm.setSelectedWebSource(id, context);
-            //if the previous web source deleted, get the first one
-            if (svm.mSelectedWebSource == null)
-            {
-                svm.setSelectedWebSource(svm.mMangaWebSources.get(0).getId(),context);
-            }
         }
         return svm;
     }
