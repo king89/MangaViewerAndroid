@@ -3,7 +3,10 @@ package com.king.mangaviewer.activity;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
+
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.king.mangaviewer.R;
@@ -24,19 +27,22 @@ public class BaseActivity extends ActionBarActivity {
 
         ;
     };
+    protected Toolbar mToolbar;
 
     protected void onCreate(android.os.Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initControl();
         initActionBar();
-    }
 
+    }
 
     protected void initActionBar() {
         // TODO Auto-generated method stub
-        ActionBar actionBar = this.getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(IsCanBack());
-        actionBar.setTitle(getActionBarTitle());
+        mToolbar = (Toolbar) findViewById(R.id.app_bar);
+        //final View toolbarContainerView = findViewById(R.id.toolbar_container);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(IsCanBack());
+        mToolbar.setTitle(getActionBarTitle());
     }
 
     protected void initControl() {

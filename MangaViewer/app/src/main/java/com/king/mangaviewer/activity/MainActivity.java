@@ -7,6 +7,10 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -38,6 +42,7 @@ public class MainActivity extends BaseActivity {
     CharSequence mTitle;
     CharSequence mDrawerTitle;
     private DrawerLayout mDrawerLayout;
+    private TabLayout mTabLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private SearchView searchView;
@@ -47,6 +52,7 @@ public class MainActivity extends BaseActivity {
     private TypedArray navMenuIcons;
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
+    private ViewPager mViewPager;
     private int mSelectedPosition;
     private int mTwoTapToExit;
 
@@ -63,7 +69,7 @@ public class MainActivity extends BaseActivity {
         //Log.i("MainActivity", "OnNewIntent");
         if (intent.getBooleanExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false)) {
             intent.putExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false);
-            displayView(getResources().getInteger(R.integer.menu_favourite_pos));
+//            displayView(getResources().getInteger(R.integer.menu_favourite_pos));
         }
     }
 
@@ -92,7 +98,7 @@ public class MainActivity extends BaseActivity {
         navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
+//        mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
 
         navDrawerItems = new ArrayList<NavDrawerItem>();
 
@@ -106,16 +112,16 @@ public class MainActivity extends BaseActivity {
         // Recycle the typed array
         navMenuIcons.recycle();
 
-        // setting the nav drawer list adapter
-        adapter = new NavDrawerListAdapter(getApplicationContext(),
-                navDrawerItems);
-        mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                displayView(position);
-            }
-        });
+//        // setting the nav drawer list adapter
+//        adapter = new NavDrawerListAdapter(getApplicationContext(),
+//                navDrawerItems);
+//        mDrawerList.setAdapter(adapter);
+//        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                displayView(position);
+//            }
+//        });
         // enabling action bar app icon and behaving it as toggle buttongetSupportActionBar()().setDisplayHomeAsUpEnabled(true);getSupportActionBar()().setHomeButtonEnabled(true);
 
 
@@ -138,15 +144,15 @@ public class MainActivity extends BaseActivity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        if (savedInstanceState == null) {
-            // on first time display view for first nav item
-            if (getIntent().getBooleanExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false)) {
-                getIntent().putExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false);
-                displayView(getResources().getInteger(R.integer.menu_favourite_pos));
-            } else {
-                displayView(0);
-            }
-        }
+//        if (savedInstanceState == null) {
+//            // on first time display view for first nav item
+//            if (getIntent().getBooleanExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false)) {
+//                getIntent().putExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false);
+//                displayView(getResources().getInteger(R.integer.menu_favourite_pos));
+//            } else {
+//                displayView(0);
+//            }
+//        }
     }
 
     private void displayView(int position) {
@@ -179,8 +185,8 @@ public class MainActivity extends BaseActivity {
 
             //set fragment
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.frame_container, fragment).commit();
+//            fragmentManager.beginTransaction()
+//                    .replace(R.id.frame_container, fragment).commit();
 
             // update selected item and title, then close the drawer
             mSelectedPosition = position;
@@ -306,7 +312,20 @@ public class MainActivity extends BaseActivity {
     protected void initControl() {
         // TODO Auto-generated method stub
         setContentView(R.layout.activity_main_menu);
+        mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        setupViewPager(mViewPager);
+        mTabLayout.setupWithViewPager(mViewPager);
         mTwoTapToExit = 0;
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+        adapter.addFragment(new HomeFragment(), getString(R.string.nav_latest_update));
+        adapter.addFragment(new AllMangaFragment(), getString(R.string.nav_all_manga));
+        adapter.addFragment(new FavouriteFragment(), getString(R.string.nav_favourite));
+        viewPager.setAdapter(adapter);
     }
 
     @Override
@@ -334,4 +353,33 @@ public class MainActivity extends BaseActivity {
             mTwoTapToExit = 0;
         }
     };
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
 }
