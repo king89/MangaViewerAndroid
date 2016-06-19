@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,50 +26,45 @@ import com.king.mangaviewer.viewmodel.MangaViewModel;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 
-public class MangaMenuItemAdapter extends BaseAdapter {
+public class MangaMenuItemAdapter extends RecyclerView.Adapter<MangaMenuItemAdapter.RecyclerViewHolders> {
     private Context context;
-    private LayoutInflater mInflater = null;
     private MangaViewModel viewModel;
-    private AsyncImageLoader asyncImageLoader = null;
     private List<? extends MangaMenuItem> menu;
+    private HashMap<String,Object> mStateHash;
     private boolean isFavouriteMangaMenu;
+    EndlessScrollListener endlessScrollListener;
 
     public MangaMenuItemAdapter(Context context, MangaViewModel viewModel,
                                 List<? extends MangaMenuItem> menu) {
-        this(context, viewModel, menu, false);
-    }
-
-    public MangaMenuItemAdapter(Context context, MangaViewModel viewModel,
-                                List<? extends MangaMenuItem> menu, boolean isFavouriteMangaMenu) {
-        super();
-        this.mInflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
         this.context = context;
         this.menu = menu;
 
-        asyncImageLoader = AsyncImageLoader.getInstance();
-        this.isFavouriteMangaMenu = isFavouriteMangaMenu;
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
         // TODO Auto-generated method stub
         return menu.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        // TODO Auto-generated method stub
-        Object result = null;
-        try {
-            result = menu.get(position);
-        } catch (Exception e) {
-            // TODO: handle exception
-            result = null;
-        }
-        return result;
+    public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_manga_menu_item, null);
+        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
+        return rcv;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerViewHolders holder, int position) {
+
+        holder.imageView.setImageURL(this.menu.get(position), true, context.getResources().getDrawable(R.color.black));
+        String title = this.menu.get(position).getTitle();
+        holder.textView.setText(title);
+
     }
 
     @Override
@@ -77,62 +73,43 @@ public class MangaMenuItemAdapter extends BaseAdapter {
         return position;
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
-        ViewHolder holder = null;
-        //alway new a ViewHolder
-        holder = new ViewHolder();
-
-        if (isFavouriteMangaMenu) {
-            //Favourite Manga Menu
-            convertView = mInflater.inflate(R.layout.list_favourite_manga_menu_item, null);
-            holder.imageView = (MyImageView) convertView.findViewById(R.id.imageView);
-            holder.textView = (TextView) convertView.findViewById(R.id.textView);
-            holder.countTextView = (TextView) convertView.findViewById(R.id.countTextView);
-            int count = ((FavouriteMangaMenuItem) this.menu.get(position)).getUpdateCount();
-            if (count > 0 && count <= 99) {
-                holder.countTextView.setText(count + "");
-            }else if (count > 99){
-                holder.countTextView.setText("99+");
-            }else {
-                holder.countTextView.setVisibility(View.INVISIBLE);
-            }
-        } else {
-            convertView = mInflater.inflate(R.layout.list_manga_menu_item, null);
-            holder.imageView = (MyImageView) convertView.findViewById(R.id.imageView);
-            holder.textView = (TextView) convertView.findViewById(R.id.textView);
-        }
-        convertView.setTag(holder);
-
-        holder.imageView.setImageURL(this.menu.get(position), true, context.getResources().getDrawable(R.color.black));
-        String title = this.menu.get(position).getTitle();
-        holder.textView.setText(title);
-        final int menuPos = position;
-        convertView.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                //Toast.makeText(context, "Item", Toast.LENGTH_SHORT).show();
-                if (isFavouriteMangaMenu){
-                    ((FavouriteMangaMenuItem)menu.get(menuPos)).setUpdateCount(0);
-                    FavouriteMangaDataSource dataSource = new FavouriteMangaDataSource(context);
-                    dataSource.updateToFavourite((FavouriteMangaMenuItem)menu.get(menuPos));
-                }
-                viewModel.setSelectedMangaMenuItem(menu.get(menuPos));
-                context.startActivity(new Intent(context, MangaChapterActivity.class));
-                ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
-            }
-        });
-        return convertView;
-
+    public void setEndlessScrollListener(EndlessScrollListener endlessScrollListener) {
+        this.endlessScrollListener = endlessScrollListener;
     }
 
-    class ViewHolder {
+    public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public TextView textView, countTextView;
         public MyImageView imageView;
-        public TextView textView;
-        public TextView countTextView;
+
+        public RecyclerViewHolders(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+
+            imageView = (MyImageView) itemView.findViewById(R.id.imageView);
+            textView = (TextView) itemView.findViewById(R.id.textView);
+            countTextView = (TextView) itemView.findViewById(R.id.countTextView);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int menuPos = getPosition();
+            viewModel.setSelectedMangaMenuItem(menu.get(menuPos));
+            context.startActivity(new Intent(context, MangaChapterActivity.class));
+            ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
+
+        }
     }
+
+    public interface EndlessScrollListener {
+        /**
+         * Loads more data.
+         *
+         * @param position
+         * @return true loads data actually, false otherwise.
+         */
+        public void onLoadMore(List<MangaMenuItem> menuList, HashMap<String, Object> state);
+    }
+
 
 }
