@@ -231,10 +231,6 @@ public class MainActivity extends BaseActivity {
                 View v = findViewById(R.id.menu_setting);
                 displayMangaSource(v);
                 return true;
-            case R.id.menu_refresh:
-                //handle by the fragment
-                mViewPagerAdapter.getItem(mViewPager.getCurrentItem()).onOptionsItemSelected(item);
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

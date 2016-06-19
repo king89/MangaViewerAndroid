@@ -4,10 +4,12 @@ import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -31,6 +33,7 @@ public class MangaChapterActivity extends BaseActivity {
     RecyclerView listView = null;
     MyImageView imageView = null;
     AutofitTextView textView = null;
+    private FloatingActionButton floatingActionButton;
 
     @Override
     protected void initControl() {
@@ -40,6 +43,11 @@ public class MangaChapterActivity extends BaseActivity {
         listView = (RecyclerView) this.findViewById(R.id.recyclerView);
         imageView = (MyImageView) this.findViewById(R.id.imageView);
         textView = (AutofitTextView) this.findViewById(R.id.textView);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+
+        initFAB();
+
+
         textView.setText(this.getAppViewModel().Manga.getSelectedMangaMenuItem().getTitle());
         imageView.setImageURL(this.getAppViewModel().Manga.getSelectedMangaMenuItem(), true, getResources().getDrawable(R.color.black));
         new Thread() {
@@ -59,6 +67,31 @@ public class MangaChapterActivity extends BaseActivity {
 
             }
         }.start();
+    }
+
+    private void initFAB() {
+        if (getAppViewModel().Setting.checkIsFavourited(getAppViewModel().Manga.getSelectedMangaMenuItem())) {
+            floatingActionButton.setImageResource(R.mipmap.ic_star_white);
+        } else {
+            floatingActionButton.setImageResource(R.mipmap.ic_star_border_white);
+        }
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //try to add, if yes, set favourited, if not, remove it from favourite list
+                int chapterCount = getMangaViewModel().getMangaChapterList() == null ? 0 : getMangaViewModel().getMangaChapterList().size();
+                if (getAppViewModel().Setting.addFavouriteManga(getAppViewModel().Manga.getSelectedMangaMenuItem(),
+                        chapterCount)) {
+                    floatingActionButton.setImageResource(R.mipmap.ic_star_white);
+                    Toast.makeText(MangaChapterActivity.this, getString(R.string.favourited), Toast.LENGTH_SHORT).show();
+                } else {
+                    getAppViewModel().Setting.removeFavouriteManga(getAppViewModel().Manga.getSelectedMangaMenuItem());
+                    floatingActionButton.setImageResource(R.mipmap.ic_star_border_white);
+                    Toast.makeText(MangaChapterActivity.this, getString(R.string.unfavourited), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -98,30 +131,8 @@ public class MangaChapterActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.chapter_menu, menu);
 
-        if (getAppViewModel().Setting.checkIsFavourited(getAppViewModel().Manga.getSelectedMangaMenuItem())) {
-            menu.getItem(0).setIcon(R.mipmap.ic_star_white);
-        } else {
-            menu.getItem(0).setIcon(R.mipmap.ic_star_border_white);
-        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_favourite) {
-            //try to add, if yes, set favourited, if not, remove it from favourite list
-            int chapterCount = getMangaViewModel().getMangaChapterList() == null ? 0 : getMangaViewModel().getMangaChapterList().size();
-            if (getAppViewModel().Setting.addFavouriteManga(getAppViewModel().Manga.getSelectedMangaMenuItem(),
-                    chapterCount)) {
-                item.setIcon(R.mipmap.ic_star_white);
-                Toast.makeText(this, getString(R.string.favourited), Toast.LENGTH_SHORT).show();
-            } else {
-                getAppViewModel().Setting.removeFavouriteManga(getAppViewModel().Manga.getSelectedMangaMenuItem());
-                item.setIcon(R.mipmap.ic_star_border_white);
-                Toast.makeText(this, getString(R.string.unfavourited), Toast.LENGTH_SHORT).show();
-            }
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

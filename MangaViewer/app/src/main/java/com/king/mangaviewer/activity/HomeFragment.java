@@ -43,9 +43,6 @@ public class HomeFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_refresh:
-                refresh();
-                return true;
             default:
                 return getActivity().onOptionsItemSelected(item);
         }
