@@ -6,14 +6,16 @@
              android:layout_height="match_parent"
              tools:context="${relativePackage}.${activityClass}">
 
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="10dp"
         android:background="?attr/colorPrimaryDark"
-        app:layout_scrollFlags="enterAlways|scroll"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:translationZ="10dp"/>
+        app:layout_scrollFlags="enterAlways|scroll"
+        android:elevation="10dp"/>
 
     <LinearLayout
         android:id="@+id/linearLayout"
