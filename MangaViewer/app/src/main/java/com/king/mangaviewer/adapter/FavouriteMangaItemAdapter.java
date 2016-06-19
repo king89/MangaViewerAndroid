@@ -96,6 +96,7 @@ public class FavouriteMangaItemAdapter extends RecyclerView.Adapter<FavouriteMan
             viewModel.setSelectedMangaMenuItem(menu.get(menuPos));
             context.startActivity(new Intent(context, MangaChapterActivity.class));
             ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
+
         }
     }
 }

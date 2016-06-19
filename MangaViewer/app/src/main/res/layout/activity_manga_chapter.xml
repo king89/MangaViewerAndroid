@@ -1,48 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
 
-    <RelativeLayout
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/overview_coordinator_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingTop="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="15dp"
-        android:background="#dddddd">
+        android:elevation="8dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <com.king.mangaviewer.component.MyImageView
-            android:id="@+id/imageView"
-            android:layout_width="80dp"
-            android:layout_height="100dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:src="#000000"/>
 
-        <me.grantland.widget.AutofitTextView
-            android:id="@+id/textView"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimaryDark"
+            app:layout_scrollFlags="enterAlways|scroll"/>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/imageView"
-            android:text="TextView"
-            android:textColor="#000000"
-            android:maxLines="3"
-            android:textSize="24sp"/>
+            android:background="#dddddd"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp">
+
+            <com.king.mangaviewer.component.MyImageView
+                android:id="@+id/imageView"
+                android:layout_width="80dp"
+                android:layout_height="100dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:src="#000000"/>
+
+            <me.grantland.widget.AutofitTextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/imageView"
+                android:maxLines="3"
+                android:text="TextView"
+                android:textColor="#000000"
+                android:textSize="24sp"/>
 
 
-    </RelativeLayout>
+        </RelativeLayout>
+    </android.support.design.widget.AppBarLayout>
 
-    <ListView
-        android:id="@+id/listView"
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:choiceMode="singleChoice"
-        android:dividerHeight="0px"
-        android:divider="@null">
-    </ListView>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+    </android.support.v7.widget.RecyclerView>
 
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:src="@mipmap/ic_star_white"/>
+</android.support.design.widget.CoordinatorLayout>

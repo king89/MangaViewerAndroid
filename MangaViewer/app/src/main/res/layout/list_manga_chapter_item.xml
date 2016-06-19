@@ -2,19 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@drawable/chapterlist_selector"
-              android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+              android:background="?android:attr/selectableItemBackground"
+              android:clickable="true"
+              android:focusable="true"
+              android:minHeight="?android:attr/listPreferredItemHeightSmall"
+              android:orientation="horizontal"
+              android:paddingBottom="5dp"
               android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
               android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
               android:paddingRight="?android:attr/listPreferredItemPaddingRight"
-              android:minHeight="?android:attr/listPreferredItemHeightSmall"
-              android:orientation="horizontal"
+              android:paddingStart="?android:attr/listPreferredItemPaddingStart"
               android:paddingTop="5dp"
-              android:paddingBottom="5dp">
+    >
 
     <me.grantland.widget.AutofitTextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:text="Medium Text"

@@ -42,7 +42,7 @@ public class BaseActivity extends ActionBarActivity {
         //final View toolbarContainerView = findViewById(R.id.toolbar_container);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(IsCanBack());
-        mToolbar.setTitle(getActionBarTitle());
+        getSupportActionBar().setTitle(getActionBarTitle());
     }
 
     protected void initControl() {
@@ -56,8 +56,7 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     protected void setActionBarTitle(String title){
-        ActionBar actionBar = this.getSupportActionBar();
-        actionBar.setTitle(title);
+        this.getSupportActionBar().setTitle(title);
     }
 
     protected boolean IsCanBack() {

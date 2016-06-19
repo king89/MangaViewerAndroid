@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -26,7 +28,7 @@ public class MangaChapterActivity extends BaseActivity {
 
     protected ProgressDialog progressDialog;
 
-    ListView listView = null;
+    RecyclerView listView = null;
     MyImageView imageView = null;
     AutofitTextView textView = null;
 
@@ -35,11 +37,11 @@ public class MangaChapterActivity extends BaseActivity {
         // TODO Auto-generated method stub
         setContentView(R.layout.activity_manga_chapter);
 
-        listView = (ListView) this.findViewById(R.id.listView);
+        listView = (RecyclerView) this.findViewById(R.id.recyclerView);
         imageView = (MyImageView) this.findViewById(R.id.imageView);
         textView = (AutofitTextView) this.findViewById(R.id.textView);
         textView.setText(this.getAppViewModel().Manga.getSelectedMangaMenuItem().getTitle());
-        imageView.setImageURL(this.getAppViewModel().Manga.getSelectedMangaMenuItem(),true,getResources().getDrawable(R.color.black));
+        imageView.setImageURL(this.getAppViewModel().Manga.getSelectedMangaMenuItem(), true, getResources().getDrawable(R.color.black));
         new Thread() {
 
             @Override
@@ -66,10 +68,11 @@ public class MangaChapterActivity extends BaseActivity {
             progressDialog.dismiss();
         }
 
-        ListAdapter adapter = new MangaChapterItemAdapter(this,
+        MangaChapterItemAdapter adapter = new MangaChapterItemAdapter(this,
                 this.getAppViewModel().Manga,
                 this.getAppViewModel().Manga.getMangaChapterList());
 
+        listView.setLayoutManager(new LinearLayoutManager(this));
         listView.setAdapter(adapter);
     }
 
