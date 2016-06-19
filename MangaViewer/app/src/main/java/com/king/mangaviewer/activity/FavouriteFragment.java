@@ -37,7 +37,7 @@ public class FavouriteFragment extends BaseFragment {
     @Override
     public void onResume() {
         //Toast.makeText(getActivity(),"OnResume",Toast.LENGTH_SHORT);
-        getFavouriteMangaList();
+//        getFavouriteMangaList();
         super.onResume();
     }
 

@@ -92,6 +92,7 @@ public class MangaGridView extends RecyclerView {
     public void refresh() {
         mMangaList.clear();
         mStateHash.clear();
+        this.scrollToPosition(0);
         getMoreManga();
     }
 

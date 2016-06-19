@@ -45,6 +45,7 @@ public class MainActivity extends BaseActivity {
     private TabLayout mTabLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private ViewPagerAdapter mViewPagerAdapter;
     private SearchView searchView;
     private BaseFragment fragment = null;
     // slide menu items
@@ -204,7 +205,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        displayView(mSelectedPosition);
+//        displayView(mSelectedPosition);
     }
 
     @Override
@@ -232,16 +233,7 @@ public class MainActivity extends BaseActivity {
                 return true;
             case R.id.menu_refresh:
                 //handle by the fragment
-                if (fragment == null && getSupportFragmentManager().getFragments().size() > 0){
-                    fragment = (BaseFragment)getSupportFragmentManager().getFragments().get(0);
-                }
-                if (fragment != null){
-                    //Not handled
-                    if (!fragment.onOptionsItemSelected(item))
-                    {
-                        displayView(mDrawerList.getCheckedItemPosition());
-                    }
-                }
+                mViewPagerAdapter.getItem(mViewPager.getCurrentItem()).onOptionsItemSelected(item);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -274,7 +266,10 @@ public class MainActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 getAppViewModel().Setting.setSelectedWebSource(mws.get(position), MainActivity.this);
                 getAppViewModel().Manga.setMangaMenuList(null);
-                displayView(mSelectedPosition);
+                int currPos = mViewPager.getCurrentItem();
+                mViewPager.setAdapter(mViewPagerAdapter);
+                mViewPager.setCurrentItem(currPos);
+//                ((BaseFragment)mViewPagerAdapter.getItem(mViewPager.getCurrentItem())).refresh();
                 popup.dismiss();
             }
         });
@@ -320,12 +315,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        adapter.addFragment(new HomeFragment(), getString(R.string.nav_latest_update));
-        adapter.addFragment(new AllMangaFragment(), getString(R.string.nav_all_manga));
-        adapter.addFragment(new FavouriteFragment(), getString(R.string.nav_favourite));
-        viewPager.setAdapter(adapter);
+        mViewPagerAdapter.addFragment(new HomeFragment(), getString(R.string.nav_latest_update));
+        mViewPagerAdapter.addFragment(new AllMangaFragment(), getString(R.string.nav_all_manga));
+        mViewPagerAdapter.addFragment(new FavouriteFragment(), getString(R.string.nav_favourite));
+        viewPager.setAdapter(mViewPagerAdapter);
     }
 
     @Override

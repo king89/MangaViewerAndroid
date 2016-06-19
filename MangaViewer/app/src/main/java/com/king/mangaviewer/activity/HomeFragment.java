@@ -4,6 +4,7 @@ package com.king.mangaviewer.activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,33 +26,25 @@ import java.util.List;
 public class HomeFragment extends BaseFragment {
 
     public MangaGridView gv;
-    ProgressDialog progressDialog;
-    public Handler handler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            if (progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
-            MainActivity copy = (MainActivity) getActivity();
-            MangaMenuItemAdapter adapter = new MangaMenuItemAdapter(copy,
-                    copy.getAppViewModel().Manga,
-                    copy.getAppViewModel().Manga.getMangaMenuList());
-            gv.setAdapter(adapter);
-        }
-
-        ;
-
-    };
+    TextView mangaSourceTv;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     public HomeFragment() {
     }
 
+    @Override
+    public void refresh() {
+        this.getMangaViewModel().setMangaMenuList(null);
+        mangaSourceTv.setText(getSettingViewModel().getSelectedWebSource(getActivity()).getDisplayName());
+        gv.refresh();
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_refresh:
-                this.getMangaViewModel().setMangaMenuList(null);
-                gv.refresh();
+                refresh();
                 return true;
             default:
                 return getActivity().onOptionsItemSelected(item);
@@ -62,24 +55,38 @@ public class HomeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_all_manga, container, false);
+        View rootView = setContentView(inflater, container);
 
-        TextView mangaSourceTv = (TextView) rootView.findViewById(R.id.manga_source_textView);
+        mangaSourceTv = (TextView) rootView.findViewById(R.id.manga_source_textView);
         String selectedMangaSourceName = getSettingViewModel().getSelectedWebSource(getActivity()).getDisplayName();
         mangaSourceTv.setText(selectedMangaSourceName);
-
         TextView tv = (TextView) rootView.findViewById(R.id.textView);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
         gv = (MangaGridView) rootView.findViewById(R.id.gridView);
         gv.setLoadingFooter(tv);
         //reset all manga list
         getMangaViewModel().resetAllMangaList();
+        setLoadMangaFunction();
+        return rootView;
+    }
+
+    protected View setContentView(LayoutInflater inflater, ViewGroup container) {
+        return inflater.inflate(R.layout.fragment_manga_gridview, container, false);
+    }
+
+    protected void setLoadMangaFunction() {
         gv.Initial(getMangaViewModel(), new MangaGridView.IGetMore() {
             @Override
             public void getMoreManga(List<MangaMenuItem> mMangaList, HashMap<String, Object> state) {
                 new MangaHelper(getActivity()).getLatestMangeList(mMangaList, state);
             }
         });
-        return rootView;
     }
 
 }

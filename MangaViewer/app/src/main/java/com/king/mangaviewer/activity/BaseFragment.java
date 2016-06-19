@@ -44,4 +44,5 @@ public class BaseFragment extends Fragment {
     }
 
 
+    public void refresh(){}
 }
