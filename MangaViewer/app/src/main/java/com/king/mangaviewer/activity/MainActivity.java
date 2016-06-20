@@ -7,6 +7,8 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.internal.NavigationMenuView;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -52,7 +54,7 @@ public class MainActivity extends BaseActivity {
     private String[] navMenuTitles;
     private TypedArray navMenuIcons;
     private ArrayList<NavDrawerItem> navDrawerItems;
-    private NavDrawerListAdapter adapter;
+    private NavigationView navigationView;
     private ViewPager mViewPager;
     private int mSelectedPosition;
     private int mTwoTapToExit;
@@ -85,47 +87,37 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(STATE_KEY_POSITION,mSelectedPosition);
+        outState.putInt(STATE_KEY_POSITION, mSelectedPosition);
         super.onSaveInstanceState(outState);
     }
 
     private void initDrawer(Bundle savedInstanceState) {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // load slide menu items
-        navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                }
 
-        // nav drawer icons from resources
-        navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
+                switch (item.getItemId()) {
+                    case R.id.menu_history:
+                        return true;
+                    case R.id.menu_local:
+                        return true;
+                    case R.id.menu_all_settings:
+                        return true;
+                    default:
+                        return true;
+                }
+            }
+        });
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
-
-        navDrawerItems = new ArrayList<NavDrawerItem>();
-
-        // adding nav drawer items to array
-        // Home
-        for (int i = 0; i < navMenuTitles.length; i++) {
-            navDrawerItems.add(new NavDrawerItem(navMenuTitles[i], navMenuIcons.getResourceId(i, -1)));
-        }
-
-
-        // Recycle the typed array
-        navMenuIcons.recycle();
-
-//        // setting the nav drawer list adapter
-//        adapter = new NavDrawerListAdapter(getApplicationContext(),
-//                navDrawerItems);
-//        mDrawerList.setAdapter(adapter);
-//        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                displayView(position);
-//            }
-//        });
-        // enabling action bar app icon and behaving it as toggle buttongetSupportActionBar()().setDisplayHomeAsUpEnabled(true);getSupportActionBar()().setHomeButtonEnabled(true);
-
-
         mTitle = mDrawerTitle = getTitle();
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.app_name, // nav drawer open - description for accessibility
@@ -231,6 +223,7 @@ public class MainActivity extends BaseActivity {
                 View v = findViewById(R.id.menu_setting);
                 displayMangaSource(v);
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

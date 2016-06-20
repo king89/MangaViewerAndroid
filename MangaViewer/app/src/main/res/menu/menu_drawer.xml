@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_history"
+            android:checked="false"
+            android:icon="@mipmap/ic_history_white"
+            android:title="@string/nav_history"/>
+
+        <item
+            android:id="@+id/menu_local"
+            android:checked="false"
+            android:icon="@mipmap/ic_folder_open_white"
+            android:title="@string/nav_local"/>
+
+        <item
+            android:id="@+id/menu_all_settings"
+            android:checked="false"
+            android:icon="@mipmap/ic_settings"
+            android:title="@string/nav_setting"/>
+
+
+    </group>
+</menu>

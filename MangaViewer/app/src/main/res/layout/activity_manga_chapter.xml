@@ -69,5 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
+        app:layout_behavior="com.king.mangaviewer.behavior.ScrollAwareFABBehavior"
         android:src="@mipmap/ic_star_white"/>
+
 </android.support.design.widget.CoordinatorLayout>
