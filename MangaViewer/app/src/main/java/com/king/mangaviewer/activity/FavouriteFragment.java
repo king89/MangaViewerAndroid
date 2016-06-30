@@ -11,12 +11,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.FavouriteMangaItemAdapter;
-import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 
 import java.util.Collections;
@@ -29,6 +27,7 @@ public class FavouriteFragment extends BaseFragment {
     private GridLayoutManager gridLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView tv;
+    private List<FavouriteMangaMenuItem> dateList = null;
 
     public FavouriteFragment() {
         this.setHasOptionsMenu(true);
@@ -63,37 +62,49 @@ public class FavouriteFragment extends BaseFragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getFavouriteMangaList();
+                getInitContentAsycExcutor().execute();
             }
         });
 
-        getFavouriteMangaList();
+        getInitContentAsycExcutor().execute();
         return rootView;
     }
 
-    private void getFavouriteMangaList() {
+    @Override
+    protected Void getContentBackground() {
+        getFavouriteMangaList();
+        return super.getContentBackground();
+    }
+
+    @Override
+    protected void updateContent() {
+        super.updateContent();
         MainActivity copy = (MainActivity) getActivity();
-
-        List<FavouriteMangaMenuItem> list = copy.getAppViewModel().Setting.getFavouriteMangaList();
-
-        Collections.sort(list);
-        Collections.reverse(list);
 
         gridLayoutManager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.gridvivew_column_num));
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
-        FavouriteMangaItemAdapter rcAdapter = new FavouriteMangaItemAdapter(copy, copy.getAppViewModel().Manga, list);
+        FavouriteMangaItemAdapter rcAdapter = new FavouriteMangaItemAdapter(copy, copy.getAppViewModel().Manga, dateList);
         mRecyclerView.setAdapter(rcAdapter);
 
         tv.setVisibility(View.GONE);
-        if (list.size() == 0) {
+        if (dateList != null && dateList.size() == 0) {
             tv.setText(getString(R.string.favourite_no_favourite_manga));
             tv.setVisibility(View.VISIBLE);
         }
 
         mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void getFavouriteMangaList() {
+        MainActivity copy = (MainActivity) getActivity();
+        dateList = copy.getAppViewModel().Setting.getFavouriteMangaList();
+        Collections.sort(dateList);
+        Collections.reverse(dateList);
+
+
 
     }
 }

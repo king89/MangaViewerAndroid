@@ -1,6 +1,7 @@
 package com.king.mangaviewer.activity;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -19,12 +20,15 @@ import com.king.mangaviewer.viewmodel.SettingViewModel;
  */
 public class BaseFragment extends Fragment {
 
-    private SettingViewModel mSettingViewModel;
-    private MangaViewModel mMangaViewModel;
+    protected SettingViewModel mSettingViewModel;
+    protected MangaViewModel mMangaViewModel;
+    private InitContentAsyc mInitContentAsyc;
     public BaseFragment() {
         // Required empty public constructor
     }
-
+    protected InitContentAsyc getInitContentAsycExcutor(){
+        return new InitContentAsyc();
+    }
     protected SettingViewModel getSettingViewModel(){
         return ((BaseActivity)this.getActivity()).getAppViewModel().Setting;
     }
@@ -40,9 +44,30 @@ public class BaseFragment extends Fragment {
                              Bundle savedInstanceState) {
         TextView textView = new TextView(getActivity());
         textView.setText(R.string.hello_blank_fragment);
+
         return textView;
     }
 
 
     public void refresh(){}
+
+    protected class InitContentAsyc extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            return getContentBackground();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            updateContent();
+        }
+    }
+
+    protected void updateContent() {
+    }
+
+    protected Void getContentBackground() {
+        return null;
+    }
 }

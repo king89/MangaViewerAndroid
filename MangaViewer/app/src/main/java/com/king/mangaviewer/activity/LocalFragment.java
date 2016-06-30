@@ -40,6 +40,7 @@ public class LocalFragment extends BaseFragment {
     private File path;
     private String chosenFile;
     private String extraPath;
+    TextView tv;
 
     public LocalFragment() {
         this.setHasOptionsMenu(true);
@@ -66,7 +67,7 @@ public class LocalFragment extends BaseFragment {
             }
         }
         View rootView = inflater.inflate(R.layout.fragment_local, container, false);
-        final TextView tv = (TextView) rootView.findViewById(R.id.textView);
+        tv = (TextView) rootView.findViewById(R.id.textView);
         Button bt = (Button) rootView.findViewById(R.id.button);
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,8 +81,24 @@ public class LocalFragment extends BaseFragment {
         });
         lv = (ListView) rootView.findViewById(R.id.listView);
         tv.setText(extraPath);
+        getInitContentAsycExcutor().execute();
+        //showDialog(DIALOG_LOAD_FILE);
+        Log.d(TAG, path.getAbsolutePath());
+
+        return rootView;
+    }
+
+    @Override
+    protected Void getContentBackground() {
 
         loadFileList();
+
+        return super.getContentBackground();
+    }
+
+    @Override
+    protected void updateContent() {
+        super.updateContent();
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -136,13 +153,10 @@ public class LocalFragment extends BaseFragment {
                     getActivity().overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
                 }
 
-                tv.setText(extraPath);
+
             }
         });
-        //showDialog(DIALOG_LOAD_FILE);
-        Log.d(TAG, path.getAbsolutePath());
-
-        return rootView;
+        tv.setText(extraPath);
     }
 
     private void getFolderPath() {

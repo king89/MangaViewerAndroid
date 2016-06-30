@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.BaseActivity;
 import com.king.mangaviewer.activity.MangaPageActivity;
+import com.king.mangaviewer.component.MyImageView;
 import com.king.mangaviewer.util.AsyncImageLoader;
 import com.king.mangaviewer.model.HistoryMangaChapterItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
@@ -67,7 +68,7 @@ public class HistoryChapterItemAdapter extends BaseAdapter {
             holder = new ViewHolder();
 
             convertView = mInflater.inflate(R.layout.list_history_chapter_item, null);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
+            holder.imageView = (MyImageView) convertView.findViewById(R.id.imageView);
             holder.titleTextView = (TextView) convertView.findViewById(R.id.titleTextView);
             holder.chapterTextView = (TextView) convertView.findViewById(R.id.chapterTextView);
             holder.dateTextView = (TextView) convertView.findViewById(R.id.dateTextView);
@@ -76,22 +77,7 @@ public class HistoryChapterItemAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
-        Drawable cachedImage = asyncImageLoader.loadImageFromMenuItem(context, list.get(position).getMenu(),
-                holder.imageView, new AsyncImageLoader.ImageCallback() {
-
-                    public void imageLoaded(Drawable imageDrawable,
-                                            ImageView imageView, String imageUrl) {
-                        // TODO Auto-generated method stub
-                        if (imageDrawable != null) {
-                            imageView.setImageDrawable(imageDrawable);
-                        }
-                    }
-                });
-        if (cachedImage != null) {
-            holder.imageView.setImageDrawable(cachedImage);
-        }
-
+        holder.imageView.setImageURL(list.get(position).getMenu(), true, context.getResources().getDrawable(R.color.black));
         holder.titleTextView.setText(list.get(position).getMenu().getTitle());
         holder.chapterTextView.setText(list.get(position).getTitle());
         holder.dateTextView.setText(list.get(position).getLastReadDate());
@@ -118,7 +104,7 @@ public class HistoryChapterItemAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
-        public ImageView imageView;
+        public MyImageView imageView;
         public TextView titleTextView;
         public TextView chapterTextView;
         public TextView dateTextView;

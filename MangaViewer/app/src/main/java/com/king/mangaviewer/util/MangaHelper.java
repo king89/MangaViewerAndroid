@@ -145,7 +145,7 @@ public class MangaHelper {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                 getSettingViewModel().getSelectedWebSource(context));
         List<TitleAndUrl> pageUrlList = mPattern.getLatestMangaList(state);
-        if (mangaList == null){
+        if (mangaList == null) {
             mangaList = new ArrayList<>();
         }
         if (pageUrlList != null) {
@@ -191,7 +191,7 @@ public class MangaHelper {
     public String getMenuCover(MangaMenuItem menu) {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                 menu.getMangaWebSource());
-        if (menu.getImagePath().isEmpty()) {
+        if (menu != null && menu.getImagePath() != null && menu.getImagePath().isEmpty()) {
             menu.setImagePath(mPattern.getMenuCover(menu));
         }
         return menu.getImagePath();

@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_latest_manga"
+            android:checked="true"
+            android:icon="@mipmap/ic_alarm_on_white"
+            android:title="@string/nav_latest_update"/>
+        <item
+            android:id="@+id/menu_all_manga"
+            android:checked="true"
+            android:icon="@mipmap/ic_storage_white"
+            android:title="@string/nav_all_manga"/>
+        <item
+            android:id="@+id/menu_favorite"
+            android:checked="true"
+            android:icon="@mipmap/ic_star_white"
+            android:title="@string/nav_favourite"/>
         <item
             android:id="@+id/menu_history"
             android:checked="false"
@@ -14,12 +31,16 @@
             android:icon="@mipmap/ic_folder_open_white"
             android:title="@string/nav_local"/>
 
+    </group>
+
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="single">
+
         <item
             android:id="@+id/menu_all_settings"
             android:checked="false"
             android:icon="@mipmap/ic_settings"
             android:title="@string/nav_setting"/>
-
-
     </group>
 </menu>

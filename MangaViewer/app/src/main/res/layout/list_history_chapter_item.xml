@@ -3,78 +3,81 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@drawable/chapterlist_selector"
-              android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+              android:minHeight="?android:attr/listPreferredItemHeightSmall"
+              android:orientation="horizontal"
+              android:paddingBottom="5dp"
               android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
               android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
               android:paddingRight="?android:attr/listPreferredItemPaddingRight"
-              android:minHeight="?android:attr/listPreferredItemHeightSmall"
-              android:orientation="horizontal"
-              android:paddingTop="5dp"
-              android:paddingBottom="5dp">
+              android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+              android:paddingTop="5dp">
 
-    <ImageView
+    <com.king.mangaviewer.component.MyImageView
+        android:id="@+id/imageView"
         android:layout_width="60dp"
         android:layout_height="90dp"
-        android:id="@+id/imageView"
         android:src="#000000"/>
 
     <RelativeLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"
-        android:layout_gravity="right">
+        android:layout_gravity="right"
+        android:orientation="vertical"
+        android:padding="10dp">
+
         <TextView
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title"
-            android:textSize="14dp"
-            android:singleLine="true"
-            android:layout_alignParentTop="true"
             android:layout_alignLeft="@+id/chapterTextView"
-            android:layout_alignStart="@+id/chapterTextView"/>
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/chapterTextView"
+            android:singleLine="true"
+            android:text="Title"
+            android:textSize="14dp"/>
+
         <TextView
             android:id="@+id/chapterTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="Chapter"
-            android:singleLine="true"
-            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:singleLine="true"
+            android:text="Chapter"
             android:textSize="20dp"/>
 
         <RelativeLayout
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true">
+            android:orientation="horizontal">
+
             <me.grantland.widget.AutofitTextView
                 android:id="@+id/sourceTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Source"
-                android:singleLine="true"
-                android:layout_gravity="left"
-                android:textSize="10dp"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"/>
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="left"
+                android:singleLine="true"
+                android:text="Source"
+                android:textSize="10dp"/>
 
             <me.grantland.widget.AutofitTextView
                 android:id="@+id/dateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date"
-                android:singleLine="true"
-                android:textSize="10dp"
-                android:layout_alignTop="@+id/sourceTextView"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"/>
+                android:layout_alignTop="@+id/sourceTextView"
+                android:singleLine="true"
+                android:text="Date"
+                android:textSize="10dp"/>
         </RelativeLayout>
 
     </RelativeLayout>

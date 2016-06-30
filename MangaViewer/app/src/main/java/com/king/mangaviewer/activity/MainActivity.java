@@ -98,22 +98,31 @@ public class MainActivity extends BaseActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                if (item.isChecked()) {
-                    item.setChecked(false);
-                } else {
-                    item.setChecked(true);
-                }
 
                 switch (item.getItemId()) {
+                    case R.id.menu_latest_manga:
+                        mViewPager.setCurrentItem(0);
+                        break;
+                    case R.id.menu_all_manga:
+                        mViewPager.setCurrentItem(1);
+                        break;
+                    case R.id.menu_favorite:
+                        mViewPager.setCurrentItem(2);
+                        break;
                     case R.id.menu_history:
-                        return true;
+                        mViewPager.setCurrentItem(3);
+                        break;
                     case R.id.menu_local:
-                        return true;
+                        mViewPager.setCurrentItem(4);
+                        break;
                     case R.id.menu_all_settings:
-                        return true;
+                        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                        break;
                     default:
-                        return true;
+                        break;
                 }
+                mDrawerLayout.closeDrawers();
+                return true;
             }
         });
 
@@ -309,6 +318,8 @@ public class MainActivity extends BaseActivity {
         mViewPagerAdapter.addFragment(new HomeFragment(), getString(R.string.nav_latest_update));
         mViewPagerAdapter.addFragment(new AllMangaFragment(), getString(R.string.nav_all_manga));
         mViewPagerAdapter.addFragment(new FavouriteFragment(), getString(R.string.nav_favourite));
+        mViewPagerAdapter.addFragment(new HistoryFragment(), getString(R.string.nav_history));
+        mViewPagerAdapter.addFragment(new LocalFragment(), getString(R.string.nav_local));
         viewPager.setAdapter(mViewPagerAdapter);
     }
 

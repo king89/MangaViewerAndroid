@@ -11,17 +11,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.HistoryChapterItemAdapter;
-import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
-import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.HistoryMangaChapterItem;
 
-import java.util.Collections;
 import java.util.List;
 
 
@@ -29,6 +25,7 @@ public class HistoryFragment extends BaseFragment {
 
     private ListView lv;
     private TextView tv;
+    private List<HistoryMangaChapterItem> dateList = null;
 
     public HistoryFragment() {
         this.setHasOptionsMenu(true);
@@ -37,8 +34,7 @@ public class HistoryFragment extends BaseFragment {
     @Override
     public void onResume() {
         //Toast.makeText(getActivity(),"OnResume",Toast.LENGTH_SHORT);
-        getHistoryMangaList();
-        lv.invalidate();
+        getInitContentAsycExcutor().execute();
         super.onResume();
     }
 
@@ -51,12 +47,11 @@ public class HistoryFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_delete){
+        if (item.getItemId() == R.id.menu_delete) {
             new AlertDialog.Builder(this.getActivity())
                     .setTitle(getString(R.string.msg_history_dialog_title))
                     .setMessage(getString(R.string.msg_history_dialog_message))
-                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener()
-                    {
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             getHistoryViewModel().clearHistory();
@@ -77,21 +72,34 @@ public class HistoryFragment extends BaseFragment {
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
         lv = (ListView) rootView.findViewById(R.id.listView);
         tv = (TextView) rootView.findViewById(R.id.textView);
-        getHistoryMangaList();
+
+        getInitContentAsycExcutor().execute();
         return rootView;
     }
 
-    private void getHistoryMangaList() {
-        MainActivity copy = (MainActivity) getActivity();
-        List<HistoryMangaChapterItem> list = copy.getAppViewModel().HistoryManga.getHistoryChapterList();
+    @Override
+    protected Void getContentBackground() {
+        getHistoryMangaList();
+        return null;
+    }
 
-        BaseAdapter adapter = new HistoryChapterItemAdapter(copy, copy.getAppViewModel().Manga, list);
+    @Override
+    protected void updateContent() {
+        super.updateContent();
+        MainActivity activity = (MainActivity) getActivity();
+        BaseAdapter adapter = new HistoryChapterItemAdapter(activity, activity.getAppViewModel().Manga, dateList);
         lv.setAdapter(adapter);
         tv.setVisibility(View.GONE);
-        if (list.size() == 0) {
+        if (dateList != null && dateList.size() == 0) {
             tv.setText(getString(R.string.history_no_history_manga));
             tv.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void getHistoryMangaList() {
+        MainActivity activity = (MainActivity) getActivity();
+        dateList = activity.getAppViewModel().HistoryManga.getHistoryChapterList();
+
 
     }
 }

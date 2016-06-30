@@ -29,7 +29,7 @@
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:tabMode="fixed"
+                app:tabMode="scrollable"
                 >
 
             </android.support.design.widget.TabLayout>
@@ -64,6 +64,18 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/menu_drawer"
         app:itemBackground="?attr/selectableItemBackground"
-        />
+        >
+        <!--<LinearLayout-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="bottom">-->
+
+            <!--<android.support.v7.widget.SwitchCompat-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="night_mode"/>-->
+        <!--</LinearLayout>-->
+        </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>
