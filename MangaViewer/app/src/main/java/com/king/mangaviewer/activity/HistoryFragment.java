@@ -4,6 +4,8 @@ package com.king.mangaviewer.activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class HistoryFragment extends BaseFragment {
 
-    private ListView lv;
+    private RecyclerView recyclerView;
     private TextView tv;
     private List<HistoryMangaChapterItem> dateList = null;
 
@@ -70,7 +71,7 @@ public class HistoryFragment extends BaseFragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
-        lv = (ListView) rootView.findViewById(R.id.listView);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.listView);
         tv = (TextView) rootView.findViewById(R.id.textView);
 
         getInitContentAsycExcutor().execute();
@@ -87,8 +88,9 @@ public class HistoryFragment extends BaseFragment {
     protected void updateContent() {
         super.updateContent();
         MainActivity activity = (MainActivity) getActivity();
-        BaseAdapter adapter = new HistoryChapterItemAdapter(activity, activity.getAppViewModel().Manga, dateList);
-        lv.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        RecyclerView.Adapter adapter = new HistoryChapterItemAdapter(activity, activity.getAppViewModel().Manga, dateList);
+        recyclerView.setAdapter(adapter);
         tv.setVisibility(View.GONE);
         if (dateList != null && dateList.size() == 0) {
             tv.setText(getString(R.string.history_no_history_manga));

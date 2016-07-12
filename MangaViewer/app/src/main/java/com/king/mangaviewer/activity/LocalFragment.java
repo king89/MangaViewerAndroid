@@ -4,6 +4,8 @@ package com.king.mangaviewer.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,13 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.adapter.LocalFileItemAdapter;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -32,14 +35,15 @@ public class LocalFragment extends BaseFragment {
     private static final String TAG = "F_PATH";
     // Stores names of traversed directories
     ArrayList<String> str = new ArrayList<String>();
-    ListAdapter adapter;
+    LocalFileItemAdapter adapter;
     // Check if the first level of the directory structure is the one showing
     private Boolean firstLvl = true;
-    private ListView lv;
+    private RecyclerView recyclerView;
     private List<Item> fileList;
     private File path;
     private String chosenFile;
     private String extraPath;
+    LocalFileItemAdapter.OnLocalFileItemClickListener listener;
     TextView tv;
 
     public LocalFragment() {
@@ -79,7 +83,7 @@ public class LocalFragment extends BaseFragment {
                 }
             }
         });
-        lv = (ListView) rootView.findViewById(R.id.listView);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.listView);
         tv.setText(extraPath);
         getInitContentAsycExcutor().execute();
         //showDialog(DIALOG_LOAD_FILE);
@@ -99,11 +103,12 @@ public class LocalFragment extends BaseFragment {
     @Override
     protected void updateContent() {
         super.updateContent();
-        lv.setAdapter(adapter);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        listener = new LocalFileItemAdapter.OnLocalFileItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                chosenFile = fileList.get(position).file;
+            public void onClick(View view, int pos) {
+                chosenFile = fileList.get(pos).file;
                 File sel = new File(path + "/" + chosenFile);
                 if (sel.isDirectory()) {
                     firstLvl = false;
@@ -115,7 +120,7 @@ public class LocalFragment extends BaseFragment {
                     getFolderPath();
                     loadFileList();
 
-                    lv.setAdapter(adapter);
+                    recyclerView.setAdapter(adapter);
 
                     Log.d(TAG, path.getAbsolutePath());
 
@@ -140,7 +145,7 @@ public class LocalFragment extends BaseFragment {
                     }
                     getFolderPath();
                     loadFileList();
-                    lv.setAdapter(adapter);
+                    recyclerView.setAdapter(adapter);
                     Log.d(TAG, path.getAbsolutePath());
 
                 }
@@ -152,11 +157,13 @@ public class LocalFragment extends BaseFragment {
                     getActivity().startActivity(new Intent(getActivity(), LocalReadActivity.class));
                     getActivity().overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
                 }
-
-
             }
-        });
-        tv.setText(extraPath);
+
+        };
+
+        adapter.setOnClickListener(listener);
+        recyclerView.setAdapter(adapter);
+
     }
 
     private void getFolderPath() {
@@ -213,33 +220,20 @@ public class LocalFragment extends BaseFragment {
         }
 
         if (fileList != null) {
-            adapter = new ArrayAdapter<Item>(this.getActivity(),
-                    android.R.layout.simple_list_item_1, android.R.id.text1,
-                    fileList) {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    // creates view
-                    View view = super.getView(position, convertView, parent);
-                    TextView textView = (TextView) view
-                            .findViewById(android.R.id.text1);
-
-                    // put the image on the text view
-                    textView.setCompoundDrawablesWithIntrinsicBounds(
-                            fileList.get(position).icon, 0, 0, 0);
-
-                    // add margin between image and text (support various screen
-                    // densities)
-                    int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
-                    textView.setCompoundDrawablePadding(dp5);
-
-                    return view;
-                }
-            };
+            adapter = new LocalFileItemAdapter(getContext(), fileList, listener);
         }
+
+        getActivity().runOnUiThread(new Runnable(){
+            @Override
+            public void run() {
+                tv.setText(extraPath);
+            }
+        });
+
 
     }
 
-    private class Item implements Comparable<Item> {
+    public class Item implements Comparable<Item> {
         public String file;
         public int icon;
         public int fileType; // 0 folder, 1 file
