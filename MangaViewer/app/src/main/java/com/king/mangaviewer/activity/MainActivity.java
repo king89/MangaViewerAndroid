@@ -157,52 +157,6 @@ public class MainActivity extends BaseActivity {
 //        }
     }
 
-    private void displayView(int position) {
-        // update the main content by replacing fragments
-
-
-        String select = navMenuTitles[position];
-        if (select.equalsIgnoreCase(getString(R.string.nav_latest_update))) {
-            fragment = new HomeFragment();
-        } else if (select.equalsIgnoreCase(getString(R.string.nav_all_manga))) {
-            fragment = new AllMangaFragment();
-        } else if (select.equalsIgnoreCase(getString(R.string.nav_local))) {
-            fragment = new LocalFragment();
-        } else if (select.equalsIgnoreCase(getString(R.string.nav_favourite))) {
-            fragment = new FavouriteFragment();
-        } else if (select.equalsIgnoreCase(getString(R.string.nav_history))) {
-            fragment = new HistoryFragment();
-        } else if (select.equalsIgnoreCase(getString(R.string.nav_setting))) {
-            mDrawerList.setItemChecked(mSelectedPosition, true);
-            mDrawerList.setSelection(mSelectedPosition);
-            mTitle = navMenuTitles[mSelectedPosition];
-            this.setActionBarTitle(navMenuTitles[mSelectedPosition]);
-            mDrawerLayout.closeDrawer(mDrawerList);
-            startActivityForResult(new Intent(this, SettingsActivity.class), 1);
-            this.overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
-            //do not go to the frame fragment, thus should return
-            return;
-        }
-        if (fragment != null) {
-
-            //set fragment
-            FragmentManager fragmentManager = getSupportFragmentManager();
-//            fragmentManager.beginTransaction()
-//                    .replace(R.id.frame_container, fragment).commit();
-
-            // update selected item and title, then close the drawer
-            mSelectedPosition = position;
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
-            mTitle = navMenuTitles[position];
-            this.setActionBarTitle(navMenuTitles[position]);
-            mDrawerLayout.closeDrawer(mDrawerList);
-        } else {
-            // error in creating fragment
-            Log.e("MainActivity", "Error in creating fragment");
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -326,10 +280,10 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         if (mTwoTapToExit < 1) {
-            if (!mDrawerLayout.isDrawerOpen(mDrawerList)) {
-                mDrawerLayout.openDrawer(mDrawerList);
+            if (!mDrawerLayout.isDrawerOpen(navigationView)) {
+                mDrawerLayout.openDrawer(navigationView);
             } else {
-                mDrawerLayout.closeDrawer(mDrawerList);
+                mDrawerLayout.closeDrawer(navigationView);
             }
             mTwoTapToExit++;
             exitAppHandler.removeCallbacks(exitAppRunable);
