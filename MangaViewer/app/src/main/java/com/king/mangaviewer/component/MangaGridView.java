@@ -2,6 +2,7 @@ package com.king.mangaviewer.component;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +21,7 @@ import com.king.mangaviewer.MangaPattern.WebSiteBasePattern;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,25 +40,6 @@ public class MangaGridView extends RecyclerView {
     private IGetMore mIGetMoreManga;
     private boolean mNoMore = false;
     private GridLayoutManager mGridLayoutManager;
-
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-
-            if (MangaGridView.this.getAdapter() != null) {
-                MangaGridView.this.getAdapter().notifyDataSetChanged();
-            }
-            if (mLoadingFooter != null) {
-                mLoadingFooter.setVisibility(GONE);
-            }
-            if (mStateHash.containsKey(WebSiteBasePattern.STATE_NO_MORE)) {
-                mNoMore = (boolean) mStateHash.get(WebSiteBasePattern.STATE_NO_MORE);
-            }
-            setFlagLoading(false);
-            super.handleMessage(msg);
-        }
-    };
 
     public MangaGridView(Context context) {
         super(context);
@@ -103,16 +86,7 @@ public class MangaGridView extends RecyclerView {
     protected void getMoreManga() {
         setFlagLoading(true);
         mLoadingFooter.setVisibility(VISIBLE);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (mIGetMoreManga != null) {
-                    mIGetMoreManga.getMoreManga(mMangaList, mStateHash);
-                }
-
-                handler.sendEmptyMessage(0);
-            }
-        }).start();
+        new GetMoreMangaTask().execute();
 
     }
 
@@ -136,19 +110,6 @@ public class MangaGridView extends RecyclerView {
             }
         }
     };
-//        @Override
-//        public void onScrollStateChanged(AbsListView view, int scrollState) {
-//            //Log.i(LOG, "" + scrollState);
-//        }
-//
-//        @Override
-//        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//            if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
-//                if (getFlagLoading() == false && !mNoMore) {
-//                    getMoreManga();
-//                }
-//            }
-//        }
 
     public void setFlagLoading(boolean flagLoading) {
         synchronized (flagLock) {
@@ -168,5 +129,35 @@ public class MangaGridView extends RecyclerView {
 
     public void setIGetMoreMangaFunciton(IGetMore func) {
         this.mIGetMoreManga = func;
+    }
+
+    class GetMoreMangaTask extends AsyncTask<Void, Void, List<MangaMenuItem>> {
+
+        @Override
+        protected List<MangaMenuItem> doInBackground(Void... params) {
+            List<MangaMenuItem> list = new ArrayList<>();
+            if (mIGetMoreManga != null) {
+                mIGetMoreManga.getMoreManga(list, mStateHash);
+            }
+            return list;
+        }
+
+        @Override
+        protected void onPostExecute(List<MangaMenuItem> list) {
+
+            if (MangaGridView.this.getAdapter() != null) {
+                int before = mMangaList.size();
+                mMangaList.addAll(list);
+                int after = mMangaList.size();
+                MangaGridView.this.getAdapter().notifyItemRangeInserted(before, after);
+            }
+            if (mLoadingFooter != null) {
+                mLoadingFooter.setVisibility(GONE);
+            }
+            if (mStateHash.containsKey(WebSiteBasePattern.STATE_NO_MORE)) {
+                mNoMore = (boolean) mStateHash.get(WebSiteBasePattern.STATE_NO_MORE);
+            }
+            setFlagLoading(false);
+        }
     }
 }
