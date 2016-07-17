@@ -15,7 +15,8 @@
         android:background="?attr/colorPrimaryDark"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_scrollFlags="enterAlways|scroll"
-        android:elevation="10dp"/>
+        android:elevation="10dp"
+        android:translationZ="10dp"/>
 
     <LinearLayout
         android:id="@+id/linearLayout"

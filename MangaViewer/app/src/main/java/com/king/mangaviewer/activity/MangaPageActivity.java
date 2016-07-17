@@ -92,7 +92,7 @@ public class MangaPageActivity extends BaseActivity {
                             .translationY(0)
                             .setDuration(mShortAnimTime);
                     controlsView.setVisibility(View.VISIBLE);
-                    getSupportActionBar().setElevation(10);
+                    getSupportActionBar().show();
 
                 } else {
                     // TODO: The system bars are NOT visible. Make any desired
@@ -105,7 +105,7 @@ public class MangaPageActivity extends BaseActivity {
                             .translationY(mControlsHeight)
                             .setDuration(mShortAnimTime);
                     controlsView.setVisibility(View.GONE);
-                    getSupportActionBar().setElevation(0);
+                    getSupportActionBar().hide();
                 }
 
 
