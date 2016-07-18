@@ -2,17 +2,19 @@ package com.king.mangaviewer.activity;
 
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
+import com.king.mangaviewer.adapter.FavouriteMangaItemAdapter;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 
 import java.util.Collections;
@@ -21,8 +23,11 @@ import java.util.List;
 
 public class FavouriteFragment extends BaseFragment {
 
-    private GridView gv;
+    private RecyclerView mRecyclerView;
+    private GridLayoutManager gridLayoutManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView tv;
+    private List<FavouriteMangaMenuItem> dateList = null;
 
     public FavouriteFragment() {
         this.setHasOptionsMenu(true);
@@ -31,8 +36,7 @@ public class FavouriteFragment extends BaseFragment {
     @Override
     public void onResume() {
         //Toast.makeText(getActivity(),"OnResume",Toast.LENGTH_SHORT);
-        getFavouriteMangaList();
-        gv.invalidate();
+//        getFavouriteMangaList();
         super.onResume();
     }
 
@@ -52,47 +56,55 @@ public class FavouriteFragment extends BaseFragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_favourite, container, false);
-        gv = (GridView) rootView.findViewById(R.id.gridView);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         tv = (TextView) rootView.findViewById(R.id.textView);
-//        gv.setClickable(true);
-//        gv.setLongClickable(true);
-//        gv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                new AlertDialog.Builder(getActivity())
-//                        .setIcon(android.R.drawable.ic_dialog_alert)
-//                        .setTitle(getString(R.string.deleting_dialog_title))
-//                        .setMessage(getString(R.string.do_you_want_to_delete))
-//                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                //finish();
-//                            }
-//
-//                        })
-//                        .setNegativeButton("No", null)
-//                        .show();
-//                return false;
-//            }
-//        });
-        getFavouriteMangaList();
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getInitContentAsycExcutor().execute();
+            }
+        });
+
+        getInitContentAsycExcutor().execute();
         return rootView;
+    }
+
+    @Override
+    protected Void getContentBackground() {
+        getFavouriteMangaList();
+        return super.getContentBackground();
+    }
+
+    @Override
+    protected void updateContent() {
+        super.updateContent();
+        MainActivity copy = (MainActivity) getActivity();
+
+        gridLayoutManager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.gridvivew_column_num));
+
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
+
+        FavouriteMangaItemAdapter rcAdapter = new FavouriteMangaItemAdapter(copy, copy.getAppViewModel().Manga, dateList);
+        mRecyclerView.setAdapter(rcAdapter);
+
+        tv.setVisibility(View.GONE);
+        if (dateList != null && dateList.size() == 0) {
+            tv.setText(getString(R.string.favourite_no_favourite_manga));
+            tv.setVisibility(View.VISIBLE);
+        }
+
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private void getFavouriteMangaList() {
         MainActivity copy = (MainActivity) getActivity();
+        dateList = copy.getAppViewModel().Setting.getFavouriteMangaList();
+        Collections.sort(dateList);
+        Collections.reverse(dateList);
 
-        List<FavouriteMangaMenuItem> list = copy.getAppViewModel().Setting.getFavouriteMangaList();
 
-        Collections.sort(list);
-        Collections.reverse(list);
-        MangaMenuItemAdapter adapter = new MangaMenuItemAdapter(copy, copy.getAppViewModel().Manga, list, true);
-        gv.setAdapter(adapter);
-        tv.setVisibility(View.GONE);
-        if (list.size() == 0) {
-            tv.setText(getString(R.string.favourite_no_favourite_manga));
-            tv.setVisibility(View.VISIBLE);
-        }
 
     }
 }

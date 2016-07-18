@@ -76,6 +76,7 @@ public class ImageManager {
 
     /**
      * Returns the PhotoManager object
+     *
      * @return The global PhotoManager object
      */
     public static ImageManager getInstance() {
@@ -83,13 +84,15 @@ public class ImageManager {
     }
 
     private ImageManager() {
-        mDownloadWorkQueue = new LinkedBlockingQueue<>();;
-        mPhotoTaskWorkQueue = new LinkedBlockingQueue<>();;
+        mDownloadWorkQueue = new LinkedBlockingQueue<>();
+        ;
+        mPhotoTaskWorkQueue = new LinkedBlockingQueue<>();
+        ;
         mDownloadThreadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
                 KEEP_ALIVE_TIME, KEEP_ALIVE_TIME_UNIT, mDownloadWorkQueue);
         mPhotoCache = new LruCache<>(IMAGE_CACHE_SIZE);
 
-        mHandler = new Handler(Looper.getMainLooper()){
+        mHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message inputMessage) {
                 // Gets the image task from the incoming Message object.
@@ -99,7 +102,7 @@ public class ImageManager {
                 // input ImageView
                 MyImageView localView = photoTask.getPhotoView();
 
-                if (localView != null){
+                if (localView != null) {
 /*
                      * Gets the URL of the *weak reference* to the input
                      * ImageView. The weak reference won't have changed, even if
@@ -117,7 +120,7 @@ public class ImageManager {
 
                         /*
                          * Chooses the action to take, based on the incoming message
-                         */
+                         */ {
                         switch (inputMessage.what) {
 
                             // If the download has started, sets background color to dark green
@@ -159,6 +162,7 @@ public class ImageManager {
                                 // Otherwise, calls the super method
                                 super.handleMessage(inputMessage);
                         }
+                    }
                 }
             }
         };
@@ -168,7 +172,7 @@ public class ImageManager {
 
     public static void removeDownload(PhotoTask downloaderTask, MangaMenuItem menu) {
         // If the Thread object still exists and the download matches the specified URL
-        if (downloaderTask != null && downloaderTask.getMangaMenuItem().getHash().equals(menu.getHash())) {
+        if (downloaderTask != null && downloaderTask.getMangaMenuItem() != null && downloaderTask.getMangaMenuItem().getHash().equals(menu.getHash())) {
 
             /*
              * Locks on this class to ensure that other processes aren't mutating Threads.
@@ -179,8 +183,9 @@ public class ImageManager {
                 Thread thread = downloaderTask.getCurrentThread();
 
                 // If the Thread exists, posts an interrupt to it
-                if (null != thread)
+                if (null != thread) {
                     thread.interrupt();
+                }
             }
             /*
              * Removes the download Runnable from the ThreadPool. This opens a Thread in the
@@ -264,6 +269,7 @@ public class ImageManager {
     /**
      * Recycles tasks by calling their internal recycle() method and then putting them back into
      * the task queue.
+     *
      * @param downloadTask The task to recycle
      */
     void recycleTask(PhotoTask downloadTask) {

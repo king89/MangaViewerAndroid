@@ -21,33 +21,33 @@ import java.util.regex.Pattern;
 public class WebHHComic extends WebSiteBasePattern {
     String LOG_TAG = "WebHHComic";
     String[] ServerList = new String[]{
-            "http://104.237.55.70:9393/dm01/",
-            "http://64.185.235.244:9393/dm02/",
-            "http://64.185.235.244:9393/dm03/",
-            "http://104.237.55.70:9393/dm04/",
-            "http://104.237.55.70:9393/dm05/",
-            "http://104.237.55.70:9393/dm06/",
-            "http://104.237.55.70:9393/dm07/",
-            "http://104.237.55.70:9393/dm08/",
-            "http://64.185.235.244:9393/dm09/",
-            "http://104.237.55.70:9393/dm10/",
-            "http://64.185.235.244:9393/dm11/",
-            "http://64.185.235.244:9393/dm12/",
-            "http://104.237.55.70:9393/dm13/",
-            "http://104.237.55.70:9393/dm14/",
-            "http://104.237.55.70:9393/dm15/",
-            "http://104.237.55.70:9393/dm16/"};
+            "http://216.18.193.164:9393/dm01/",
+            "http://216.18.193.164:9393/dm02/",
+            "http://216.18.193.164:9393/dm03/",
+            "http://216.18.193.164:9393/dm04/",
+            "http://216.18.193.164:9393/dm05/",
+            "http://216.18.193.164:9393/dm06/",
+            "http://216.18.193.164:9393/dm07/",
+            "http://216.18.193.164:9393/dm08/",
+            "http://216.18.193.164:9393/dm09/",
+            "http://216.18.193.164:9393/dm10/",
+            "http://216.18.193.164:9393/dm11/",
+            "http://216.18.193.164:9393/dm12/",
+            "http://216.18.193.164:9393/dm13/",
+            "http://8.8.8.8:99/dm14/",
+            "http://216.18.193.164:9393/dm15/",
+            "http://216.18.193.164:9393/dm16/"};
     String code = "";
-    String key = "tazsicoewrm";
+    String key = "tahfcioewrm";
 
 
     public WebHHComic(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
-        WEBSITEURL = "http://www.hanhan8.com/";
+        WEBSITEURL = "http://www.hhxiee.cc/";
         WEBSEARCHURL = "http://somanhua.com/?key=%s&pageIndex=%d";
-        WEBLATESTMANGABASEURL = "http://www.hanhan8.com/";
-        WEBALLMANGABASEURL = "http://www.hanhan8.com/hhabc/";
+        WEBLATESTMANGABASEURL = "http://www.hhxiee.cc/";
+        WEBALLMANGABASEURL = "http://www.hhxiee.cc/hhabc/";
         CHARSET = "gb2312";
     }
 
@@ -97,10 +97,9 @@ public class WebHHComic extends WebSiteBasePattern {
             List<String> pageList = Decode(code, key, server);
 
             return pageList;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Log.e("GetPageList",e.getMessage());
+            Log.e("GetPageList", e.getMessage());
             return null;
         }
     }

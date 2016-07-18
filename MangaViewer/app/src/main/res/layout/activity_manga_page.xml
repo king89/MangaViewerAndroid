@@ -1,23 +1,37 @@
 <FrameLayout xmlns:ads="http://schemas.android.com/apk/res-auto"
              xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="${relativePackage}.${activityClass}">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="10dp"
+        android:background="?attr/colorPrimaryDark"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_scrollFlags="enterAlways|scroll"
+        android:elevation="10dp"
+        android:translationZ="10dp"/>
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/background_dark"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <com.king.mangaviewer.component.MyViewFlipper
             android:id="@+id/viewFlipper"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:layout_weight="1">
         </com.king.mangaviewer.component.MyViewFlipper>
 
         <com.google.android.gms.ads.AdView
@@ -27,63 +41,66 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal|bottom"
+            android:layout_weight="0"
             android:fitsSystemWindows="false"
             ads:adSize="SMART_BANNER"
             ads:adUnitId="@string/banner_ad_unit_id"
-            android:layout_weight="0"
             />
     </LinearLayout>
-    <FrameLayout android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:fitsSystemWindows="true"
-                 android:layout_gravity="bottom">
 
-        <LinearLayout android:id="@+id/fullscreen_content_controls"
-                      android:layout_width="match_parent"
-                      android:layout_height="50dp"
-                      android:layout_gravity="center_horizontal|bottom"
-                      android:background="@color/gray_over_lay"
-                      android:orientation="horizontal"
-                      tools:ignore="UselessParent"
-                      android:paddingLeft="5dp"
-                      android:paddingRight="5dp">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:background="@color/gray_over_lay"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            tools:ignore="UselessParent">
 
 
             <ImageButton
+                android:id="@+id/frButton"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:id="@+id/frButton"
                 android:background="@mipmap/ic_fast_rewind_white"/>
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.8">
+                android:layout_weight="0.8"
+                android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/textView_pageNum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="-/-"
-                    android:id="@+id/textView_pageNum"
-                    android:textStyle="bold"
                     android:layout_gravity="center|bottom"
-                    android:textColor="@color/text_color_blue"/>
+                    android:text="-/-"
+                    android:textColor="@color/text_color_blue"
+                    android:textStyle="bold"/>
 
                 <SeekBar
+                    android:id="@+id/seekBar"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/seekBar"
-                    android:splitTrack="false"
                     android:mirrorForRtl="false"
+                    android:splitTrack="false"
                     android:theme="@style/AppTheme"/>
 
             </LinearLayout>
 
             <ImageButton
+                android:id="@+id/ffButton"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:id="@+id/ffButton"
                 android:background="@mipmap/ic_fast_forward_white"/>
         </LinearLayout>
 

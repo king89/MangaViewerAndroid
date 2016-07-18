@@ -215,6 +215,7 @@ public class SettingViewModel extends ViewModelBase {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(context.getString(R.string.pref_key_default_path), path);
+        editor.commit();
     }
 
     public void saveSetting(Context context) {

@@ -4,7 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
-import android.preference.DialogPreference;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.preference.DialogPreference;
 import android.util.AttributeSet;
 
 /**
@@ -29,15 +30,21 @@ public class MangaViewerDialogPreference extends DialogPreference {
     public MangaViewerDialogPreference(Context context) {
         super(context);
     }
-
     @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if  (which == DialogInterface.BUTTON_POSITIVE)
-        {
-            if (mOnDialogClickListener != null) {
-                this.mOnDialogClickListener.onClick();
-            }
-        }
+    protected void onClick() {
+        new AlertDialog.Builder(this.getContext())
+                .setTitle(this.getDialogTitle())
+                .setMessage(this.getDialogMessage())
+                .setPositiveButton(this.getPositiveButtonText(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mOnDialogClickListener != null) {
+                            mOnDialogClickListener.onClick();
+                        }
+                    }
+                })
+                .setNegativeButton(this.getNegativeButtonText(),null)
+                .show();
     }
 
     public void setOnDialogClickListener(OnDialogClickListener l)

@@ -72,10 +72,10 @@
         </HorizontalScrollView>
     </LinearLayout>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        style="@style/MangaGridView"
+        />
 </LinearLayout>

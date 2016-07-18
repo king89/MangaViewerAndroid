@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,14 +15,18 @@ import android.widget.TextView;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.BaseActivity;
+import com.king.mangaviewer.activity.MangaChapterActivity;
 import com.king.mangaviewer.activity.MangaPageActivity;
+import com.king.mangaviewer.component.MyImageView;
+import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
+import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.util.AsyncImageLoader;
 import com.king.mangaviewer.model.HistoryMangaChapterItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
 import java.util.List;
 
-public class HistoryChapterItemAdapter extends BaseAdapter {
+public class HistoryChapterItemAdapter extends RecyclerView.Adapter<HistoryChapterItemAdapter.RecyclerViewHolders> {
 
     protected Context context;
     protected LayoutInflater mInflater = null;
@@ -40,17 +45,6 @@ public class HistoryChapterItemAdapter extends BaseAdapter {
         asyncImageLoader = AsyncImageLoader.getInstance();
     }
 
-    @Override
-    public int getCount() {
-        // TODO Auto-generated method stub
-        return list.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        // TODO Auto-generated method stub
-        return list.get(position);
-    }
 
     @Override
     public long getItemId(int position) {
@@ -59,71 +53,61 @@ public class HistoryChapterItemAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
-        ViewHolder holder = null;
+    public int getItemCount() {
+        return list.size();
+    }
 
-        if (convertView == null) {
-            holder = new ViewHolder();
+    @Override
+    public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_history_chapter_item, null);
+        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
+        return rcv;
+    }
 
-            convertView = mInflater.inflate(R.layout.list_history_chapter_item, null);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
-            holder.titleTextView = (TextView) convertView.findViewById(R.id.titleTextView);
-            holder.chapterTextView = (TextView) convertView.findViewById(R.id.chapterTextView);
-            holder.dateTextView = (TextView) convertView.findViewById(R.id.dateTextView);
-            holder.sourceTextView = (TextView) convertView.findViewById(R.id.sourceTextView);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        Drawable cachedImage = asyncImageLoader.loadImageFromMenuItem(context, list.get(position).getMenu(),
-                holder.imageView, new AsyncImageLoader.ImageCallback() {
-
-                    public void imageLoaded(Drawable imageDrawable,
-                                            ImageView imageView, String imageUrl) {
-                        // TODO Auto-generated method stub
-                        if (imageDrawable != null) {
-                            imageView.setImageDrawable(imageDrawable);
-                        }
-                    }
-                });
-        if (cachedImage != null) {
-            holder.imageView.setImageDrawable(cachedImage);
-        }
-
+    @Override
+    public void onBindViewHolder(RecyclerViewHolders holder, int position) {
+        holder.imageView.setImageURL(list.get(position).getMenu(), true, context.getResources().getDrawable(R.color.black));
         holder.titleTextView.setText(list.get(position).getMenu().getTitle());
         holder.chapterTextView.setText(list.get(position).getTitle());
         holder.dateTextView.setText(list.get(position).getLastReadDate());
         holder.sourceTextView.setText(list.get(position).getMangaWebSource().getDisplayName());
-
-        convertView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //use a new thread to load chapter list, this has to
-                //TODO change to use thread pool
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        viewModel.setMangaChapterList(((BaseActivity)context).getMangaHelper().getChapterList(list.get(position).getMenu()));
-                    }
-                }).start();
-
-                viewModel.setSelectedMangaChapterItem(list.get(position));
-                context.startActivity(new Intent(context, MangaPageActivity.class));
-                ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
-            }
-        });
-        return convertView;
     }
 
-    class ViewHolder {
-        public ImageView imageView;
+    public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public MyImageView imageView;
         public TextView titleTextView;
         public TextView chapterTextView;
         public TextView dateTextView;
         public TextView sourceTextView;
+
+        public RecyclerViewHolders(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+
+            imageView = (MyImageView) itemView.findViewById(R.id.imageView);
+            titleTextView = (TextView) itemView.findViewById(R.id.titleTextView);
+            chapterTextView = (TextView) itemView.findViewById(R.id.chapterTextView);
+            dateTextView = (TextView) itemView.findViewById(R.id.dateTextView);
+            sourceTextView = (TextView) itemView.findViewById(R.id.sourceTextView);
+        }
+
+        @Override
+        public void onClick(View view) {
+            final int menuPos = getPosition();
+            //use a new thread to load chapter list, this has to
+            //TODO change to use thread pool
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    viewModel.setMangaChapterList(((BaseActivity) context).getMangaHelper().getChapterList(list.get(menuPos).getMenu()));
+                }
+            }).start();
+
+            viewModel.setSelectedMangaChapterItem(list.get(menuPos));
+            context.startActivity(new Intent(context, MangaPageActivity.class));
+            ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
+
+        }
     }
-
-
 }

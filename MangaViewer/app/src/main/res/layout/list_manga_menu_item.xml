@@ -1,35 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="170dp"
-              android:baselineAligned="false"
-              android:orientation="vertical"
-              android:weightSum="1"
-              android:background="@drawable/background_with_shadow"
-              android:paddingBottom="1dp"
+<android.support.v7.widget.CardView
+    android:id="@+id/card_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="80dp"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:clickable="true"
+    android:elevation="2dp"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardCornerRadius="2dp"
+    app:cardUseCompatPadding="true"
     >
 
-    <com.king.mangaviewer.component.MyImageView
-        android:id="@+id/imageView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:adjustViewBounds="false"
-        android:scaleType="centerCrop"
-        android:src="@android:color/background_dark"
-        />
+        android:layout_height="match_parent">
 
-    <me.grantland.widget.AutofitTextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:autoText="false"
-        android:background="#dfdfdf"
-        android:ellipsize="end"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="Medium Text"
-        android:singleLine="true"
-        android:textColor="#000000"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"/>
+        <com.king.mangaviewer.component.MyImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:adjustViewBounds="false"
+            android:scaleType="centerCrop"
+            android:src="@android:color/background_dark"/>
 
-</LinearLayout>
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/imageView"
+            android:autoText="false"
+            android:background="#dfdfdf"
+            android:ellipsize="end"
+            android:gravity="center_vertical|center_horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:singleLine="true"
+            android:text="Medium Text"
+            android:textColor="#000000"/>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

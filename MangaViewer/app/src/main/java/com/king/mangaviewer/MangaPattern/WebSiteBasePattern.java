@@ -12,9 +12,6 @@ import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -181,16 +178,19 @@ public class WebSiteBasePattern {
         String folderName = getMangaFolder() + File.separator
                 + pageItem.getFolderPath();
         String fileName = FileHelper.getFileName(imgUrl);
+        URL url = null;
         try {
 
             String UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
-            DefaultHttpClient client = new DefaultHttpClient();
-            HttpGet httpMethod = new HttpGet(imgUrl);
-            httpMethod.addHeader("Referer", refer);
-            httpMethod.addHeader("User-Agent", UserAgent);
-            HttpEntity entity = client.execute(httpMethod).getEntity();
-
-            InputStream inputStream = entity.getContent();
+            url = new URL(imgUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(HTTP_TIMEOUT_NUM);
+            conn.setReadTimeout(HTTP_TIMEOUT_NUM);
+            conn.setDoInput(true);
+            conn.setRequestProperty("Referer", refer);
+            conn.setRequestProperty("User-Agent", UserAgent);
+            conn.connect();
+            InputStream inputStream = conn.getInputStream();
 
             return FileHelper.saveFile(folderName, fileName, inputStream);
 
@@ -221,7 +221,7 @@ public class WebSiteBasePattern {
         if (html == null || html.isEmpty()) {
             return null;
         }
-        state.put(this.STATE_NO_MORE,true);
+        state.put(this.STATE_NO_MORE, true);
         return getLatestMangaList(html);
     }
 
