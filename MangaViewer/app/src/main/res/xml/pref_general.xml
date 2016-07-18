@@ -33,21 +33,21 @@
             android:positiveButtonText="@null"
             android:title="@string/pref_title_manga_sources"/>
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/pref_key_split_page"
             android:defaultValue="true"
             android:summary="@string/pref_summary_split_page"
             android:title="@string/split_page"
             >
 
-        </SwitchPreference>
+        </SwitchPreferenceCompat>
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/pref_key_auto_update_service"
             android:defaultValue="true"
             android:summary="@string/pref_summary_auto_update_service"
             android:title="@string/pref_title_auto_update_service"
-            ></SwitchPreference>
+            ></SwitchPreferenceCompat>
         <ListPreference
             android:defaultValue="6"
             android:entries="@array/pref_entries_update_hour"

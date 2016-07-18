@@ -4,7 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
-import android.preference.DialogPreference;
+import android.support.v7.preference.DialogPreference;
 import android.util.AttributeSet;
 
 /**
@@ -30,7 +30,6 @@ public class MangaViewerDialogPreference extends DialogPreference {
         super(context);
     }
 
-    @Override
     public void onClick(DialogInterface dialog, int which) {
         if  (which == DialogInterface.BUTTON_POSITIVE)
         {

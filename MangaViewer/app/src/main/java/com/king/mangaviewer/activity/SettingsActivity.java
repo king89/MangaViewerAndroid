@@ -7,16 +7,15 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceManager;
+import android.support.v7.preference.SwitchPreferenceCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -45,13 +44,12 @@ import static android.widget.Toast.*;
  */
 public class SettingsActivity extends BaseActivity {
 
-    private AppCompatDelegate mDelegate;
     private static final String LOG_TAG = "SettingsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getFragmentManager().beginTransaction().replace(R.id.content_frame, new GeneralPreferenceFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new GeneralPreferenceFragment()).commit();
 
     }
 
@@ -81,97 +79,6 @@ public class SettingsActivity extends BaseActivity {
         finishSetting();
         super.onBackPressed();
     }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        getDelegate().onPostCreate(savedInstanceState);
-    }
-
-    public ActionBar getSupportActionBar() {
-        return getDelegate().getSupportActionBar();
-    }
-
-    public void setSupportActionBar(@Nullable Toolbar toolbar) {
-        getDelegate().setSupportActionBar(toolbar);
-    }
-
-    @Override
-    public MenuInflater getMenuInflater() {
-        return getDelegate().getMenuInflater();
-    }
-
-    @Override
-    public void setContentView(@LayoutRes int layoutResID) {
-        getDelegate().setContentView(layoutResID);
-    }
-
-    @Override
-    public void setContentView(View view) {
-        getDelegate().setContentView(view);
-    }
-
-    @Override
-    public void setContentView(View view, ViewGroup.LayoutParams params) {
-        getDelegate().setContentView(view, params);
-    }
-
-    @Override
-    public void addContentView(View view, ViewGroup.LayoutParams params) {
-        getDelegate().addContentView(view, params);
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        getDelegate().onPostResume();
-    }
-
-    @Override
-    protected void onTitleChanged(CharSequence title, int color) {
-        super.onTitleChanged(title, color);
-        getDelegate().setTitle(title);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        getDelegate().onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        getDelegate().onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        getDelegate().onDestroy();
-    }
-
-    public void invalidateOptionsMenu() {
-        getDelegate().invalidateOptionsMenu();
-    }
-
-    public AppCompatDelegate getDelegate() {
-        if (mDelegate == null) {
-            mDelegate = AppCompatDelegate.create(this, null);
-        }
-        return mDelegate;
-    }
-
-    /**
-     * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extra-large.
-     */
-    private static boolean isXLargeTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-    }
-
-
 //    /**
 //     * {@inheritDoc}
 //     */
@@ -236,13 +143,14 @@ public class SettingsActivity extends BaseActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
+    public static class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         SettingViewModel mSettingViewMdoel = null;
 
         @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        public void onCreatePreferences(Bundle bundle, String s) {
+            final Context ctx = getPreferenceManager().getContext();
+
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
 
             addPreferencesFromResource(R.xml.pref_general);
             mSettingViewMdoel = ((SettingsActivity) getActivity()).getSettingViewModel();
@@ -251,16 +159,16 @@ public class SettingsActivity extends BaseActivity {
             p.setOnDialogClickListener(new MangaViewerDialogPreference.OnDialogClickListener() {
                 @Override
                 public void onClick() {
-                    mSettingViewMdoel.resetMangaFolder(getActivity());
-                    p.setSummary(mSettingViewMdoel.getMangaFolderSize(getActivity()));
-                    makeText(getActivity(), getString(R.string.setting_msg_cache_cleared), LENGTH_SHORT).show();
+                    mSettingViewMdoel.resetMangaFolder(ctx);
+                    p.setSummary(mSettingViewMdoel.getMangaFolderSize(ctx));
+                    makeText(ctx, getString(R.string.setting_msg_cache_cleared), LENGTH_SHORT).show();
                 }
             });
-            p.setSummary(mSettingViewMdoel.getMangaFolderSize(getActivity()));
+            p.setSummary(mSettingViewMdoel.getMangaFolderSize(ctx));
 
             //Manga Sources
             final ListPreference mangaSourcesPref = (ListPreference) findPreference(getString(R.string.pref_key_manga_sources));
-            String value = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(mangaSourcesPref.getKey(), "");
+            String value = PreferenceManager.getDefaultSharedPreferences(ctx).getString(mangaSourcesPref.getKey(), "");
             CharSequence[] csEntries = new CharSequence[mSettingViewMdoel.getMangaWebSources().size()];
             CharSequence[] csValues = new CharSequence[mSettingViewMdoel.getMangaWebSources().size()];
             for (int i = 0; i < mSettingViewMdoel.getMangaWebSources().size(); i++) {
@@ -282,26 +190,26 @@ public class SettingsActivity extends BaseActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     AutoUpdateAlarmReceiver receiver = new AutoUpdateAlarmReceiver();
-                    receiver.cancelAlarm(getActivity());
-                    receiver.setAlarm(getActivity());
+                    receiver.cancelAlarm(ctx);
+                    receiver.setAlarm(ctx);
                     int index = autoUpdateHour.findIndexOfValue(newValue.toString());
                     autoUpdateHour.setSummary(autoUpdateHour.getEntries()[index]);
                     return true;
                 }
             });
             //auto update service
-            final SwitchPreference autoUpdateServicePref = (SwitchPreference) findPreference(getString(R.string.pref_key_auto_update_service));
+            final SwitchPreferenceCompat autoUpdateServicePref = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_key_auto_update_service));
             autoUpdateServicePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     AutoUpdateAlarmReceiver receiver = new AutoUpdateAlarmReceiver();
                     if ((boolean) newValue) {
-                        receiver.setAlarm(getActivity());
-                        Toast.makeText(getActivity(), getString(R.string.msg_start_auto_update_service), Toast.LENGTH_SHORT).show();
+                        receiver.setAlarm(ctx);
+                        Toast.makeText(ctx, getString(R.string.msg_start_auto_update_service), Toast.LENGTH_SHORT).show();
                         autoUpdateHour.setEnabled(true);
                     } else {
-                        receiver.cancelAlarm(getActivity());
-                        Toast.makeText(getActivity(), getString(R.string.msg_stop_auto_update_service), Toast.LENGTH_SHORT).show();
+                        receiver.cancelAlarm(ctx);
+                        Toast.makeText(ctx, getString(R.string.msg_stop_auto_update_service), Toast.LENGTH_SHORT).show();
                         autoUpdateHour.setEnabled(false);
                     }
                     return true;
