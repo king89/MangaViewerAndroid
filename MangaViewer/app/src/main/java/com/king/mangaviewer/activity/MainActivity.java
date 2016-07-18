@@ -98,7 +98,6 @@ public class MainActivity extends BaseActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-
                 switch (item.getItemId()) {
                     case R.id.menu_latest_manga:
                         mViewPager.setCurrentItem(0);
@@ -121,6 +120,7 @@ public class MainActivity extends BaseActivity {
                     default:
                         break;
                 }
+
                 mDrawerLayout.closeDrawers();
                 return true;
             }
