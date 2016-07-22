@@ -33,6 +33,7 @@ import com.king.mangaviewer.adapter.NavDrawerListAdapter;
 import com.king.mangaviewer.model.NavDrawerItem;
 import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.service.AutoNotifyUpdatedService;
+import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,9 +71,10 @@ public class MainActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         //Log.i("MainActivity", "OnNewIntent");
-        if (intent.getBooleanExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false)) {
-            intent.putExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false);
+        if (intent.getBooleanExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false)) {
+            intent.putExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false);
 //            displayView(getResources().getInteger(R.integer.menu_favourite_pos));
+            mViewPager.setCurrentItem(2);
         }
     }
 
@@ -146,15 +148,15 @@ public class MainActivity extends BaseActivity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-//        if (savedInstanceState == null) {
-//            // on first time display view for first nav item
-//            if (getIntent().getBooleanExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false)) {
-//                getIntent().putExtra(AutoNotifyUpdatedService.AUTO_UPDATE_SERVICE, false);
-//                displayView(getResources().getInteger(R.integer.menu_favourite_pos));
-//            } else {
-//                displayView(0);
-//            }
-//        }
+        if (savedInstanceState == null) {
+            // on first time display view for first nav item
+            if (getIntent().getBooleanExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false)) {
+                getIntent().putExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false);
+                mViewPager.setCurrentItem(2);
+            } else {
+                //
+            }
+        }
     }
 
     @Override
