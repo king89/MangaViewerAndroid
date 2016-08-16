@@ -195,22 +195,23 @@ public class LocalFragment extends BaseFragment {
 
             String[] fList = path.list(filter);
             fileList = new ArrayList<>();
-            for (int i = 0; i < fList.length; i++) {
-                fileList.add(new Item(fList[i], R.mipmap.ic_collections_black));
+            if (fList != null) {
+                for (int i = 0; i < fList.length; i++) {
+                    fileList.add(new Item(fList[i], R.mipmap.ic_collections_black));
 
-                // Convert into file path
-                File sel = new File(path, fList[i]);
+                    // Convert into file path
+                    File sel = new File(path, fList[i]);
 
-                // Set drawables
-                if (sel.isDirectory()) {
-                    fileList.get(i).icon = R.mipmap.ic_folder_open_black;
-                    fileList.get(i).fileType = 0;
-                    Log.d("DIRECTORY", fileList.get(i).file);
-                } else {
-                    Log.d("FILE", fileList.get(i).file);
+                    // Set drawables
+                    if (sel.isDirectory()) {
+                        fileList.get(i).icon = R.mipmap.ic_folder_open_black;
+                        fileList.get(i).fileType = 0;
+                        Log.d("DIRECTORY", fileList.get(i).file);
+                    } else {
+                        Log.d("FILE", fileList.get(i).file);
+                    }
                 }
             }
-
             Collections.sort(fileList);
             if (extraPath != "") {
                 fileList.add(0, new Item("Up", R.mipmap.ic_publish_black));

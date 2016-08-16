@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -40,6 +41,7 @@ public class MangaGridView extends RecyclerView {
     private IGetMore mIGetMoreManga;
     private boolean mNoMore = false;
     private GridLayoutManager mGridLayoutManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public MangaGridView(Context context) {
         super(context);
@@ -81,6 +83,10 @@ public class MangaGridView extends RecyclerView {
 
     public void setLoadingFooter(View view) {
         mLoadingFooter = view;
+    }
+
+    public void setSwipeRefreshLayout(SwipeRefreshLayout layout) {
+        mSwipeRefreshLayout = layout;
     }
 
     protected void getMoreManga() {
@@ -134,6 +140,19 @@ public class MangaGridView extends RecyclerView {
     class GetMoreMangaTask extends AsyncTask<Void, Void, List<MangaMenuItem>> {
 
         @Override
+        protected void onPreExecute() {
+            if (mSwipeRefreshLayout != null){
+                mSwipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
+            }
+            super.onPreExecute();
+        }
+
+        @Override
         protected List<MangaMenuItem> doInBackground(Void... params) {
             List<MangaMenuItem> list = new ArrayList<>();
             if (mIGetMoreManga != null) {
@@ -158,6 +177,9 @@ public class MangaGridView extends RecyclerView {
                 mNoMore = (boolean) mStateHash.get(WebSiteBasePattern.STATE_NO_MORE);
             }
             setFlagLoading(false);
+            if(mSwipeRefreshLayout != null){
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
         }
     }
 }

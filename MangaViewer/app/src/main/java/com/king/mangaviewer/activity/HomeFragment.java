@@ -37,7 +37,6 @@ public class HomeFragment extends BaseFragment {
         this.getMangaViewModel().setMangaMenuList(null);
         mangaSourceTv.setText(getSettingViewModel().getSelectedWebSource(getActivity()).getDisplayName());
         gv.refresh();
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -67,6 +66,7 @@ public class HomeFragment extends BaseFragment {
         });
         gv = (MangaGridView) rootView.findViewById(R.id.gridView);
         gv.setLoadingFooter(tv);
+        gv.setSwipeRefreshLayout(mSwipeRefreshLayout);
         //reset all manga list
         getMangaViewModel().resetAllMangaList();
         setLoadMangaFunction();
