@@ -1,5 +1,7 @@
 package com.king.mangaviewer.util;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -31,13 +33,16 @@ public class NetworkHelper {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            Log.e("NetworkHelper", fileUrl);
             throw e;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            Log.e("NetworkHelper", fileUrl);
             throw e;
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e("NetworkHelper", fileUrl);
             throw e;
         }
 
