@@ -61,7 +61,7 @@ public class WebMangaReader extends WebSiteBasePattern {
     //Chapter
 
     @Override
-    public List<TitleAndUrl> GetChapterList(String chapterUrl) {
+    public List<TitleAndUrl> getChapterList(String chapterUrl) {
         String html = getHtml(chapterUrl);
         List<TitleAndUrl> list = new ArrayList<>();
 
@@ -82,10 +82,10 @@ public class WebMangaReader extends WebSiteBasePattern {
     //Page
 
     @Override
-    public List<String> GetPageList(String firstPageUrl) {
+    public List<String> getPageList(String firstPageUrl) {
         List<String> pageList = new ArrayList<>();
         String html = getHtml(firstPageUrl);
-        int total = GetTotalNum(html);
+        int total = getTotalNum(html);
 
         for (int i = 1; i <= total; i++) {
             pageList.add(firstPageUrl + "/" + i);
@@ -94,13 +94,13 @@ public class WebMangaReader extends WebSiteBasePattern {
     }
 
     @Override
-    public int GetTotalNum(String html) {
+    public int getTotalNum(String html) {
         Document doc = Jsoup.parse(html);
         return doc.select("#pageMenu option").size();
     }
 
     @Override
-    public String GetImageUrl(String pageUrl, int nowPage) {
+    public String getImageUrl(String pageUrl, int nowPage) {
         String html = getHtml(pageUrl);
         Document doc = Jsoup.parse(html);
         return doc.select("#img").attr("src");

@@ -31,7 +31,7 @@ public class LocalManga extends WebSiteBasePattern {
 
 
     @Override
-    public List<String> GetPageList(String firstPageUrl) {
+    public List<String> getPageList(String firstPageUrl) {
 
         List<String> fileList = new ArrayList<String>();
         try {
@@ -53,13 +53,13 @@ public class LocalManga extends WebSiteBasePattern {
 
 
     @Override
-    public String GetImageUrl(String pageUrl, int nowNum) {
+    public String getImageUrl(String pageUrl, int nowNum) {
         return pageUrl;
     }
 
 
     @Override
-    public List<TitleAndUrl> GetChapterList(String chapterUrl) {
+    public List<TitleAndUrl> getChapterList(String chapterUrl) {
         File path = new File(chapterUrl);
         List<String> fileList = null;
         List<TitleAndUrl> chapterList = new ArrayList<TitleAndUrl>();

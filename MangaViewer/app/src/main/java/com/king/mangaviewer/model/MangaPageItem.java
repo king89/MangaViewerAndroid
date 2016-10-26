@@ -12,7 +12,7 @@ public class MangaPageItem extends BaseItem {
     Boolean isLoaded = false;
     int nowNum = 0;
     int totalNum = 0;
-
+    String referUrl = "";
     /**
      * @param id
      * @param title
@@ -63,4 +63,10 @@ public class MangaPageItem extends BaseItem {
         return totalNum;
     }
 
+    public String getReferUrl(){
+        return referUrl;
+    }
+    public void setReferUrl(String referUrl) {
+        this.referUrl = referUrl;
+    }
 }

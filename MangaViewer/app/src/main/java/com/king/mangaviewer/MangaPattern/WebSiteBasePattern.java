@@ -7,6 +7,7 @@ import android.util.Log;
 import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.common.Constants.SaveType;
 import com.king.mangaviewer.util.FileHelper;
+import com.king.mangaviewer.util.NetworkHelper;
 import com.king.mangaviewer.util.StringUtils;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaPageItem;
@@ -50,7 +51,7 @@ public class WebSiteBasePattern {
         this.context = context;
     }
 
-    public List<String> GetPageList(String firstPageUrl) {
+    public List<String> getPageList(String firstPageUrl) {
         List<String> list = new ArrayList<String>();
         String prefix = "http://www.imanhua.com/comic/1067/list_104097.html?p=";
         for (int i = 0; i < 10; i++) {
@@ -59,7 +60,7 @@ public class WebSiteBasePattern {
         return list;
     }
 
-    public int GetTotalNum(String html) {
+    public int getTotalNum(String html) {
         Pattern r = Pattern.compile("value=\"[0-9]+\"");
         Matcher m = r.matcher(html);
 
@@ -86,11 +87,11 @@ public class WebSiteBasePattern {
 
     }
 
-    public String GetImageUrl(String pageUrl) {
+    public String getImageUrl(String pageUrl) {
         return null;
     }
 
-    public String GetImageUrl(String pageUrl, int nowPage) {
+    public String getImageUrl(String pageUrl, int nowPage) {
         return pageUrl;
     }
 
@@ -103,6 +104,8 @@ public class WebSiteBasePattern {
     protected String checkUrl(String url) {
         if (url.startsWith("/")) {
             url = WEBSITEURL + url.substring(1);
+        }else if (!url.startsWith("http")){
+            url = WEBSITEURL + url;
         }
         //remove last "/"
         if (url.endsWith("/") && url.length() > 1) {
@@ -178,22 +181,9 @@ public class WebSiteBasePattern {
         String folderName = getMangaFolder() + File.separator
                 + pageItem.getFolderPath();
         String fileName = FileHelper.getFileName(imgUrl);
-        URL url = null;
         try {
-
-            String UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
-            url = new URL(imgUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(HTTP_TIMEOUT_NUM);
-            conn.setReadTimeout(HTTP_TIMEOUT_NUM);
-            conn.setDoInput(true);
-            conn.setRequestProperty("Referer", refer);
-            conn.setRequestProperty("User-Agent", UserAgent);
-            conn.connect();
-            InputStream inputStream = conn.getInputStream();
-
+            InputStream inputStream = NetworkHelper.downLoadFromUrl(imgUrl,refer);
             return FileHelper.saveFile(folderName, fileName, inputStream);
-
         } catch (MalformedURLException e1) {
             e1.printStackTrace();
         } catch (IOException e) {
@@ -209,7 +199,7 @@ public class WebSiteBasePattern {
     /*
      * // // Chapter //
      */
-    public List<TitleAndUrl> GetChapterList(String chapterUrl) {
+    public List<TitleAndUrl> getChapterList(String chapterUrl) {
         return null;
     }
 

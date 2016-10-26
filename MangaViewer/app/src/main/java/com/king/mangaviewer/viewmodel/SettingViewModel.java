@@ -52,9 +52,8 @@ public class SettingViewModel extends ViewModelBase {
         int id = svm.getSelectedWebSource(context).getId();
         svm.setSelectedWebSource(id, context);
         //if the previous web source deleted, get the first one
-        if (svm.mSelectedWebSource == null)
-        {
-            svm.setSelectedWebSource(svm.mMangaWebSources.get(0).getId(),context);
+        if (svm.mSelectedWebSource == null) {
+            svm.setSelectedWebSource(svm.mMangaWebSources.get(0).getId(), context);
         }
         return svm;
     }
@@ -173,7 +172,10 @@ public class SettingViewModel extends ViewModelBase {
 
     public MangaWebSource getSelectedWebSource(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        String id = sp.getString(context.getString(R.string.pref_key_manga_sources), "0");
+        String id = sp.getString(context.getString(R.string.pref_key_manga_sources), null);
+        if (id == null) {
+            id = getMangaWebSources().get(0).getId() + "";
+        }
         setSelectedWebSource(Integer.parseInt(id), context);
         return mSelectedWebSource;
     }

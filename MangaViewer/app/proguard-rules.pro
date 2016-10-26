@@ -35,3 +35,4 @@ public *;
 -keep class org.jsoup.**{*;}
 -keep class com.google.**{*;}
 -keep class me.grantland.widget.**{*;}
+-keep class com.squareup.okhttp3.**{*;}

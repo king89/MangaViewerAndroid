@@ -110,7 +110,7 @@ public class WebMangaFox extends WebSiteBasePattern {
     //Chapter
 
     @Override
-    public List<TitleAndUrl> GetChapterList(String chapterUrl) {
+    public List<TitleAndUrl> getChapterList(String chapterUrl) {
         List<TitleAndUrl> chapterList = new ArrayList<>();
 
         String html = getHtml(chapterUrl);
@@ -148,10 +148,10 @@ public class WebMangaFox extends WebSiteBasePattern {
 
     //Page
     @Override
-    public List<String> GetPageList(String firstPageUrl) {
+    public List<String> getPageList(String firstPageUrl) {
         List<String> pageList = new ArrayList<>();
         String html = getHtml(firstPageUrl);
-        int total = GetTotalNum(html);
+        int total = getTotalNum(html);
 
         String fileName = firstPageUrl.substring(firstPageUrl.lastIndexOf("/"));
         String preFileName = firstPageUrl.substring(0, firstPageUrl.lastIndexOf("/"));
@@ -169,7 +169,7 @@ public class WebMangaFox extends WebSiteBasePattern {
     }
 
     @Override
-    public String GetImageUrl(String pageUrl, int nowPage) {
+    public String getImageUrl(String pageUrl, int nowPage) {
         String html = getHtml(pageUrl);
         Document doc = Jsoup.parse(html);
         return doc.select("#image").attr("src");

@@ -26,7 +26,7 @@ public class WebIManhua extends WebSiteBasePattern {
     public WebIManhua(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
-        WEBSITEURL = "http://www.imanhua.com";
+        WEBSITEURL = "http://www.imanhua.com/";
         CHARSET = "gb2312";
     }
 
@@ -85,7 +85,7 @@ public class WebIManhua extends WebSiteBasePattern {
     }
 
     @Override
-    public List<TitleAndUrl> GetChapterList(String chapterUrl) {
+    public List<TitleAndUrl> getChapterList(String chapterUrl) {
         // TODO Auto-generated method stub
         // http://comic.131.com/content/shaonian/2104.html
         String html = getHtml(chapterUrl);
@@ -112,14 +112,14 @@ public class WebIManhua extends WebSiteBasePattern {
     }
 
     @Override
-    public List<String> GetPageList(String firstPageUrl) {
+    public List<String> getPageList(String firstPageUrl) {
         List<String> pageList = null;
         try {
             // TODO Auto-generated method stub
             if (firstPageHtml == null) {
                 firstPageHtml = getHtml(firstPageUrl);
             }
-            totalNum = GetTotalNum(firstPageHtml);
+            totalNum = getTotalNum(firstPageHtml);
             pageList = new ArrayList<String>();
             for (int i = startNum; i <= totalNum; i++) {
                 pageList.add(firstPageUrl + "?" + param + "=" + i + "");
@@ -177,7 +177,7 @@ public class WebIManhua extends WebSiteBasePattern {
         return pageList;
     }
 
-    public String GetImageUrl(String pageUrl, int nowNum) {
+    public String getImageUrl(String pageUrl, int nowNum) {
 
         return imageUrl + '/' + deserializedProduct.bid + '/' + deserializedProduct.cid + '/' + deserializedProduct.files[nowNum];
     }

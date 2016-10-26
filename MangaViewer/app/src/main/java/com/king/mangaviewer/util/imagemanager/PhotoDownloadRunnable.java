@@ -6,6 +6,7 @@ import android.util.Log;
 import com.king.mangaviewer.activity.MyApplication;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.util.MangaHelper;
+import com.king.mangaviewer.util.NetworkHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,7 +58,6 @@ public class PhotoDownloadRunnable implements Runnable {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
 
         Drawable byteBuffer = mPhotoTask.getDrawable();
-        URL m;
         InputStream i = null;
         try {
             if (Thread.interrupted()) {
@@ -66,13 +66,13 @@ public class PhotoDownloadRunnable implements Runnable {
             }
             try {
 
-                m = new URL(new MangaHelper(MyApplication.getContext()).getMenuCover(mPhotoTask.getMangaMenuItem()));
+                String url = new MangaHelper(MyApplication.getContext()).getMenuCover(mPhotoTask.getMangaMenuItem());
 
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
                 }
 
-                i = (InputStream) m.openStream();
+                i = NetworkHelper.downLoadFromUrl(url,mPhotoTask.getMangaMenuItem().getUrl());
                 byteBuffer = Drawable.createFromStream(i, "src");
                 if (null == byteBuffer) {
                     throw new IOException();

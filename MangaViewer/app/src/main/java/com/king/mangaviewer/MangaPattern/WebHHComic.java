@@ -81,7 +81,7 @@ public class WebHHComic extends WebSiteBasePattern {
     }
 
     @Override
-    public List<String> GetPageList(String firstPageUrl) {
+    public List<String> getPageList(String firstPageUrl) {
         try {
             if (firstPageHtml == null) {
                 firstPageHtml = getHtml(firstPageUrl);
@@ -99,19 +99,19 @@ public class WebHHComic extends WebSiteBasePattern {
             return pageList;
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("GetPageList", e.getMessage());
+            Log.e("getPageList", e.getMessage());
             return null;
         }
     }
 
     @Override
-    public String GetImageUrl(String pageUrl, int nowNum) {
+    public String getImageUrl(String pageUrl, int nowNum) {
         return pageUrl;
     }
 
 
     @Override
-    public List<TitleAndUrl> GetChapterList(String chapterUrl) {
+    public List<TitleAndUrl> getChapterList(String chapterUrl) {
         String html = getHtml(chapterUrl);
         //Rex1  = <ul class="mh_fj" .+<li>.+</li></ul>
         Pattern rGetUl = Pattern.compile("<ul class=\"bi\"[\\s\\S]+?</ul>");

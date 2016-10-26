@@ -59,14 +59,14 @@ public class MangaHelper {
     public List<MangaPageItem> GetPageList(MangaChapterItem chapter) {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                 chapter.getMangaWebSource());
-        List<String> pageUrlList = mPattern.GetPageList(chapter.getUrl());
+        List<String> pageUrlList = mPattern.getPageList(chapter.getUrl());
         List<MangaPageItem> mangaPageList = new ArrayList<MangaPageItem>();
         if (pageUrlList != null) {
             for (int i = 0; i < pageUrlList.size(); i++) {
                 MangaPageItem item = new MangaPageItem("page-" + i, null, null,
                         null, pageUrlList.get(i), chapter, i,
                         pageUrlList.size());
-
+                item.setReferUrl(chapter.getUrl());
                 mangaPageList.add(item);
             }
         }
@@ -109,10 +109,10 @@ public class MangaHelper {
                 @Override
                 public void run() {
                     if (page.getWebImageUrl().isEmpty()) {
-                        page.setWebImageUrl(mPattern.GetImageUrl(page.getUrl(),
+                        page.setWebImageUrl(mPattern.getImageUrl(page.getUrl(),
                                 page.getNowNum()));
                     }
-                    String tmpPath = mPattern.DownloadImgPage(page.getWebImageUrl(), page, SaveType.Temp, page.getUrl());
+                    String tmpPath = mPattern.DownloadImgPage(page.getWebImageUrl(), page, SaveType.Temp, page.getReferUrl());
                     page.setImagePath(tmpPath);
                     Drawable drawable = Drawable.createFromPath(tmpPath);
                     Message message = handler.obtainMessage(0, drawable);
@@ -128,7 +128,7 @@ public class MangaHelper {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                 menu.getMangaWebSource());
 
-        List<TitleAndUrl> tauList = mPattern.GetChapterList(menu.getUrl());
+        List<TitleAndUrl> tauList = mPattern.getChapterList(menu.getUrl());
         List<MangaChapterItem> list = new ArrayList<MangaChapterItem>();
         if (tauList != null) {
             for (int i = 0; i < tauList.size(); i++) {

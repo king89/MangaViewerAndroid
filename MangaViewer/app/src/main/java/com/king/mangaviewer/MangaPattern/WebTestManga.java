@@ -27,7 +27,7 @@ public class WebTestManga extends WebSiteBasePattern {
 
 
     @Override
-    public List<String> GetPageList(String firstPageUrl) {
+    public List<String> getPageList(String firstPageUrl) {
 
         List<String> pageList = new ArrayList<String>();
         for (int i = 0; i < 10; i++) {
@@ -37,13 +37,13 @@ public class WebTestManga extends WebSiteBasePattern {
     }
 
     @Override
-    public String GetImageUrl(String pageUrl, int nowNum) {
+    public String getImageUrl(String pageUrl, int nowNum) {
         return pageUrl;
     }
 
 
     @Override
-    public List<TitleAndUrl> GetChapterList(String chapterUrl) {
+    public List<TitleAndUrl> getChapterList(String chapterUrl) {
 
         List<TitleAndUrl> chapterList = new ArrayList<TitleAndUrl>();
 

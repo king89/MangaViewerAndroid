@@ -21,7 +21,7 @@ public class LocalMangaViewModel extends MangaViewModel {
     public void setSelectedFilePath(File path, String fileName) {
         //selectedFilePath = path;
         LocalManga tLocalManga = new LocalManga(null);
-        List<TitleAndUrl> chapterList = tLocalManga.GetChapterList(path.getAbsolutePath());
+        List<TitleAndUrl> chapterList = tLocalManga.getChapterList(path.getAbsolutePath());
 
         MangaChapterItem tSelectedChapter = null;
 
