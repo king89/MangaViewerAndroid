@@ -4,6 +4,8 @@ This is an Android app that use for reading manga.
 MangaSources are from the websites  
 This app just fetched those resources and show them
 
+[demo](https://appetize.io/embed/732fja1zm6dymznx6batthhxpr?device=nexus5&scale=75&orientation=portrait&osVersion=6.0)
+
 ## Screenshots
 
 **Main Menu, Menu, Chapter, Page and Page Setting**  
