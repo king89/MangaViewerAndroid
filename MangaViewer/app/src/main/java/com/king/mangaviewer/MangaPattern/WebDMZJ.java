@@ -40,9 +40,9 @@ public class WebDMZJ extends WebSiteBasePattern {
     public WebDMZJ(Context context) {
         super(context);
         WEBSITEURL = "http://manhua.dmzj.com/";
-        WEBSEARCHURL = "http://s.acg.178.com/comicsum/search.php?s=%s&p=%s";
+        WEBSEARCHURL = "http://s.acg.dmzj.com/comicsum/search.php?s=%s&p=%s";
         WEBLATESTMANGABASEURL = "http://manhua.dmzj.com/update_1.shtml";
-        WEBALLMANGABASEURL = "http://s.acg.178.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=0&p=%s&callback=search.renderResult";
+        WEBALLMANGABASEURL = "http://s.acg.dmzj.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=0&p=%s&callback=search.renderResult";
         CHARSET = "utf-8";
     }
 

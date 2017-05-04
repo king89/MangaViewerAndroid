@@ -1,17 +1,23 @@
 apply plugin: 'com.android.application'
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def jks_path = properties.getProperty('jks_path')
+def sdk_version = Integer.parseInt(properties.getProperty('sdk_version'))
+def build_tools_version = properties.getProperty('build_tools_version')
+
 android {
     signingConfigs {
         release {
             keyAlias 'mangaviewer'
             keyPassword 'mangaviewer'
-            storeFile file('D:/OneDrive/ApplicationData/Android/mangaviewer.jks')
+            storeFile file(jks_path)
             storePassword 'mangaviewer'
 
         }
     }
-    compileSdkVersion 23
-    buildToolsVersion "22.0.1"
+    compileSdkVersion sdk_version
+    buildToolsVersion build_tools_version
     defaultConfig {
         applicationId 'com.king.mangaviewer'
         minSdkVersion 17
