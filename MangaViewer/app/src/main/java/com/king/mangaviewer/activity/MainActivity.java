@@ -1,6 +1,7 @@
 package com.king.mangaviewer.activity;
 
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -174,7 +175,7 @@ public class MainActivity extends BaseActivity {
         searchView =
                 (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
+                searchManager.getSearchableInfo(new ComponentName(this, SearchResultActivity.class)));
         return super.onCreateOptionsMenu(menu);
     }
 

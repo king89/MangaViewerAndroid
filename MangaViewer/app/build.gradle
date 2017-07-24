@@ -51,7 +51,6 @@ android {
             versionNameSuffix = "-debug"
             applicationIdSuffix = ".debug"
             minifyEnabled false
-            ext.enableCrashlytics = false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -72,6 +71,11 @@ dependencies {
     compile "joda-time:joda-time:2.8.2"
     compile "com.squareup.okhttp3:okhttp:3.3.1"
     compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    // Because RxAndroid releases are few and far between, it is recommended you also
+    // explicitly depend on RxJava's latest version for bug fixes and new features.
+    compile 'io.reactivex.rxjava2:rxjava:2.1.0'
 
     // Required -- JUnit 4 framework
     testCompile "junit:junit:4.12"
@@ -95,6 +99,9 @@ dependencies {
 
 def appendVersionNameVersionCode(variant, defaultConfig) {
     variant.outputs.each { output ->
+        if (variant.name == "debug") {
+            return
+        }
         def file = output.packageApplication.outputFile
         def fileName = file.name.replace(".apk", "-" + defaultConfig.versionName + ".apk")
         print(fileName + "\n")
