@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <PreferenceCategory android:title="@string/pref_catagory_general">
+    <PreferenceCategory android:title="@string/pref_category_general">
         <!--Contact Us-->
         <Preference
             android:key="@string/pref_key_contact_us"
@@ -47,7 +47,7 @@
             android:defaultValue="true"
             android:summary="@string/pref_summary_auto_update_service"
             android:title="@string/pref_title_auto_update_service"
-            ></SwitchPreferenceCompat>
+            />
         <ListPreference
             android:defaultValue="6"
             android:entries="@array/pref_entries_update_hour"
@@ -58,9 +58,11 @@
             android:title="@string/pref_title_auto_update_hours"/>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/pref_catagory_system">
+    <PreferenceCategory android:title="@string/pref_category_system">
 
-        <Preference android:title="@string/pref_title_version"/>
+        <Preference
+            android:key="@string/pref_key_version_name"
+            android:title="@string/pref_title_version"/>
 
         <com.king.mangaviewer.preference.MangaViewerDialogPreference
             android:key="@string/pref_key_setting_storage_size"

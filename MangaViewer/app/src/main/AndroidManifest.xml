@@ -69,6 +69,9 @@
         </activity>
 
         <receiver android:name=".service.AutoUpdateAlarmReceiver"></receiver>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="3c7a7b02cfa59702e07dd9d0991a158fd95aa784" />
     </application>
 
 </manifest>

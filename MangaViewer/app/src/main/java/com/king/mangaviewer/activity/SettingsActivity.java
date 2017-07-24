@@ -4,35 +4,26 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.SwitchPreferenceCompat;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.preference.MangaViewerDialogPreference;
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
+import com.king.mangaviewer.util.Util;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 import static android.widget.Toast.*;
 
 
 /**
- * A {@link PreferenceActivity} that presents a set of application settings. On
+ * A {@link SettingsActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
  * settings are split by category, with category headers shown to the left of
  * the list of settings.
@@ -144,7 +135,7 @@ public class SettingsActivity extends BaseActivity {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragmentCompat {
-        SettingViewModel mSettingViewMdoel = null;
+        SettingViewModel mSettingViewModel = null;
 
         @Override
         public void onCreatePreferences(Bundle bundle, String s) {
@@ -153,27 +144,27 @@ public class SettingsActivity extends BaseActivity {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
 
             addPreferencesFromResource(R.xml.pref_general);
-            mSettingViewMdoel = ((SettingsActivity) getActivity()).getSettingViewModel();
+            mSettingViewModel = ((SettingsActivity) getActivity()).getSettingViewModel();
             //Cache Size
             final MangaViewerDialogPreference p = (MangaViewerDialogPreference) findPreference(getString(R.string.pref_key_setting_storage_size));
             p.setOnDialogClickListener(new MangaViewerDialogPreference.OnDialogClickListener() {
                 @Override
                 public void onClick() {
-                    mSettingViewMdoel.resetMangaFolder(ctx);
-                    p.setSummary(mSettingViewMdoel.getMangaFolderSize(ctx));
+                    mSettingViewModel.resetMangaFolder(ctx);
+                    p.setSummary(mSettingViewModel.getMangaFolderSize(ctx));
                     makeText(ctx, getString(R.string.setting_msg_cache_cleared), LENGTH_SHORT).show();
                 }
             });
-            p.setSummary(mSettingViewMdoel.getMangaFolderSize(ctx));
+            p.setSummary(mSettingViewModel.getMangaFolderSize(ctx));
 
             //Manga Sources
             final ListPreference mangaSourcesPref = (ListPreference) findPreference(getString(R.string.pref_key_manga_sources));
             String value = PreferenceManager.getDefaultSharedPreferences(ctx).getString(mangaSourcesPref.getKey(), "");
-            CharSequence[] csEntries = new CharSequence[mSettingViewMdoel.getMangaWebSources().size()];
-            CharSequence[] csValues = new CharSequence[mSettingViewMdoel.getMangaWebSources().size()];
-            for (int i = 0; i < mSettingViewMdoel.getMangaWebSources().size(); i++) {
-                csEntries[i] = mSettingViewMdoel.getMangaWebSources().get(i).getDisplayName();
-                csValues[i] = "" + mSettingViewMdoel.getMangaWebSources().get(i).getId();
+            CharSequence[] csEntries = new CharSequence[mSettingViewModel.getMangaWebSources().size()];
+            CharSequence[] csValues = new CharSequence[mSettingViewModel.getMangaWebSources().size()];
+            for (int i = 0; i < mSettingViewModel.getMangaWebSources().size(); i++) {
+                csEntries[i] = mSettingViewModel.getMangaWebSources().get(i).getDisplayName();
+                csValues[i] = "" + mSettingViewModel.getMangaWebSources().get(i).getId();
             }
             mangaSourcesPref.setEntries(csEntries);
             mangaSourcesPref.setEntryValues(csValues);
@@ -215,6 +206,9 @@ public class SettingsActivity extends BaseActivity {
                     return true;
                 }
             });
+
+            final Preference versionPref = findPreference(getString(R.string.pref_key_version_name));
+            versionPref.setSummary(Util.getVersionName(ctx));
 
             //set auto update hour enable
             boolean isEnable = sp.getBoolean(getString(R.string.pref_key_auto_update_service),true);

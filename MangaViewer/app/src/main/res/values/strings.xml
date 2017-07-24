@@ -56,7 +56,7 @@
     <string name="no">NO</string>
     <string name="local_current_path">Current Path</string>
     <string name="local_set_default_path">Set Default</string>
-    <string name="local_set_default_path_successed">Set Default Path Successed</string>
+    <string name="local_set_default_path_successed">Set Default Path Success</string>
     <string name="no_more_prev_chapter">No Previous Chapter</string>
     <string name="no_more_next_chapter">No Next Chapter</string>
     <string name="favourite_no_favourite_manga">No Favourite Manga</string>
@@ -64,6 +64,7 @@
     <string name="setting_msg_cache_cleared">Cache Files Cleared</string>
 
     <!--Preference-->
+    <string name="pref_key_version_name">pref_key_version_name</string>
     <string name="pref_key_setting_storage_size">pref_key_setting_storage_size</string>
     <string name="pref_key_contact_us">pref_key_contact_us</string>
     <string name="pref_key_rate">pref_key_rate</string>
@@ -73,9 +74,9 @@
     <string name="pref_key_default_path">pref_key_default_path</string>
     <string name="pref_key_auto_update_hours">pref_key_auto_update_hours</string>
 
-    <string name="pref_catagory_general">General</string>
-    <string name="pref_catagory_reading">Reading</string>
-    <string name="pref_catagory_system">System</string>
+    <string name="pref_category_general">General</string>
+    <string name="pref_category_reading">Reading</string>
+    <string name="pref_category_system">System</string>
 
     <string name="pref_summary_split_page">Auto Split Page Into Two Part</string>
     <string name="pref_summary_auto_update_service">Notify When Favourite Manga Updated</string>
@@ -93,7 +94,7 @@
     <string name="pref_data_contact_us">mailto:mangaviewer2015@gmail.com?subject=About Suggestion</string>
     <string name="pref_data_contact_us_email_text">About MangaViewer</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="msg_loading">Loading...</string>
     <string name="title_loading">Loading</string>
