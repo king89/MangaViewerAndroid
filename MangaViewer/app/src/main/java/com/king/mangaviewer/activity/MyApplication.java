@@ -8,11 +8,13 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.king.mangaviewer.BuildConfig;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
 import com.king.mangaviewer.viewmodel.AppViewModel;
+
 import io.fabric.sdk.android.Fabric;
 
 public class MyApplication extends Application {
@@ -38,9 +40,9 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
-        }
+        CrashlyticsCore core = new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build();
+        Fabric.with(this, new Crashlytics.Builder().core(core).build());
+
         AppViewModel.Setting = AppViewModel.Setting.loadSetting(this);
         //notify service
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);

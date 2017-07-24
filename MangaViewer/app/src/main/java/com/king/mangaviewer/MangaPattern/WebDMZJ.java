@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
  */
 
 public class WebDMZJ extends WebSiteBasePattern {
+    private static final String TAG = WebDMZJ.class.getSimpleName();
     String IMAGEURL = "http://images.dmzj.com/";
 
     public WebDMZJ(Context context) {
@@ -76,7 +77,7 @@ public class WebDMZJ extends WebSiteBasePattern {
             jsonList = new JSONObject(json);
             int total = jsonList.getInt("page_count");
             return total;
-        }catch (Exception e){
+        } catch (Exception e) {
             return 0;
         }
     }
@@ -145,16 +146,23 @@ public class WebDMZJ extends WebSiteBasePattern {
             for (int i = 0; i < list.size(); i++) {
                 String tmp = list.get(i).replace("\"", "").replace("\\\\", "");
                 StringBuilder sb = new StringBuilder();
-                for (int index = 0; index < tmp.length(); index++) {
+                for (int index = 0; index < tmp.length(); ) {
+                    String toConvString = "";
                     if (pattern.contains(tmp.charAt(index) + "")) {
-                        int replaceNum = GetInt(tmp.charAt(index) + "", num1, num2);
+                        // collect all the character
+                        while (index < tmp.length() && (pattern.contains(tmp.charAt(index) + ""))) {
+                            toConvString += tmp.charAt(index);
+                            index++;
+                        }
+                        int replaceNum = GetInt(toConvString, num1, num2);
                         String replace = names[replaceNum];
                         if (replace.equals("")) {
-                            replace = tmp.charAt(index) + "";
+                            replace = toConvString;
                         }
                         sb.append(replace);
                     } else {
                         sb.append(tmp.charAt(index));
+                        index++;
                     }
                 }
                 list.set(i, IMAGEURL + sb.toString());
@@ -162,6 +170,7 @@ public class WebDMZJ extends WebSiteBasePattern {
             return list;
 
         } catch (Exception e) {
+            Log.e(TAG, "getPageList", e);
             return null;
         }
     }
@@ -172,23 +181,19 @@ public class WebDMZJ extends WebSiteBasePattern {
     }
 
     private int GetInt(String s, int num1, int num2) {
-        char[] aList = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-        Map<String, Integer> aDict = new HashMap<String, Integer>();
-        for (int i = 0; i < aList.length; i++) {
-            aDict.put(aList[i] + "", i);
-        }
-        if (num2 < num1) {
-            return 0;
-        } else {
-            char[] sArrary = s.toCharArray();
-            double total = 0;
-            int index = 0;
-            for (int i = s.length() - 1; i >= 0; i--) {
-                total = total + (Math.pow(num1, index) * aDict.get(sArrary[i] + ""));
-                index += 1;
+        int result = 0;
+        try {
+            for (Character c : s.toCharArray()) {
+                result = Integer.parseInt(c.toString(), 36) + result * num1;
+                if (Character.isUpperCase(c)) {
+                    result += 26;
+                }
             }
-            return (int) total;
+            return result;
+        } catch (Exception e) {
+            Log.d(TAG, "", e);
         }
+        return result;
     }
 
     class DMZJMangaItem {

@@ -51,6 +51,7 @@ android {
             versionNameSuffix = "-debug"
             applicationIdSuffix = ".debug"
             minifyEnabled false
+            ext.enableCrashlytics = false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -15,12 +16,17 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.crashlytics.android.Crashlytics;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.BaseActivity;
 import com.king.mangaviewer.model.MangaPageItem;
@@ -34,6 +40,7 @@ import java.util.List;
  */
 public class MyViewFlipper extends ViewFlipper {
 
+    private static final String TAG = MyViewFlipper.class.getSimpleName();
     GestureDetector gestureDetector = null;
     List<MangaPageItem> pageList = null;
     LayoutInflater mInflater = null;
@@ -257,8 +264,9 @@ public class MyViewFlipper extends ViewFlipper {
     }
 
     protected void setView(final int curr, int next) {
-        View v = (View) mInflater.inflate(R.layout.list_manga_page_item, null);
+        final View v = (View) mInflater.inflate(R.layout.list_manga_page_item, null);
         final FitXImageView iv = (FitXImageView) v.findViewById(R.id.imageView);
+        final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
         // iv.setScaleType(ImageView.ScaleType.FIT_XY);
         if (curr < next && next > pageList.size() - 1) {
             next = 0;
@@ -275,15 +283,16 @@ public class MyViewFlipper extends ViewFlipper {
         Drawable cachedImage = null;
 
         //GlideImageHelper.getImageWithHeader(iv, pageList.get(next).getWebImageUrl(), null);
-        final int finalNext = next;
+        final MangaPageItem pageItem = pageList.get(next);
         new Thread(new Runnable() {
             @Override
             public void run() {
-               final String webImageUrl = getBaseActivty().getMangaHelper().getWebImageUrl(pageList.get(finalNext));
+                final String webImageUrl = getBaseActivty().getMangaHelper().getWebImageUrl(pageItem);
+                Log.d(TAG, "Download Image Url: " + webImageUrl + "\n Referrer Url: " + pageItem.getReferUrl());
 
                 String UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
                 LazyHeaders.Builder builder = new LazyHeaders.Builder();
-                builder.addHeader("Referer",pageList.get(finalNext).getReferUrl());
+                builder.addHeader("Referer", pageItem.getReferUrl());
                 builder.addHeader("User-Agent", UserAgent);
                 final GlideUrl url = new GlideUrl(webImageUrl, builder.build());
                 post(new Runnable() {
@@ -291,7 +300,30 @@ public class MyViewFlipper extends ViewFlipper {
                     public void run() {
                         Glide.with(getContext())
                                 .load(url)
-                                .placeholder(R.mipmap.ic_preloader_background)
+                                .listener(new RequestListener<GlideUrl, GlideDrawable>() {
+                                    @Override
+                                    public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                        progressBar.setVisibility(View.GONE);
+                                        Log.d(TAG, "Glide", e);
+                                        Crashlytics.logException(e);
+                                        Snackbar.make(v, "Image Load Failed.", Snackbar.LENGTH_INDEFINITE)
+                                                .setAction("Try Again", new OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+
+                                                    }
+                                                })
+                                                .show();
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                        progressBar.setVisibility(View.GONE);
+                                        return false;
+                                    }
+
+                                })
                                 .into(iv);
                     }
                 });
