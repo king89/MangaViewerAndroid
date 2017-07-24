@@ -13,6 +13,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.SwitchPreferenceCompat;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.preference.MangaViewerDialogPreference;
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
@@ -151,6 +152,8 @@ public class SettingsActivity extends BaseActivity {
                 @Override
                 public void onClick() {
                     mSettingViewModel.resetMangaFolder(ctx);
+                    Glide.get(ctx).clearDiskCache();
+                    Glide.get(ctx).clearMemory();
                     p.setSummary(mSettingViewModel.getMangaFolderSize(ctx));
                     makeText(ctx, getString(R.string.setting_msg_cache_cleared), LENGTH_SHORT).show();
                 }

@@ -18,9 +18,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.BaseActivity;
-import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
@@ -161,7 +163,7 @@ public class MyViewFlipper extends ViewFlipper {
             if (pageList != null && pageList.size() > 0) {
                 setView(getCurrPos(), getCurrPos());
                 updateHandler.sendEmptyMessage(0);
-            }else{
+            } else {
                 Toast.makeText(getContext(), getContext().getString(R.string.msg_page_no_page), Toast.LENGTH_SHORT).show();
             }
 
@@ -256,7 +258,7 @@ public class MyViewFlipper extends ViewFlipper {
 
     protected void setView(final int curr, int next) {
         View v = (View) mInflater.inflate(R.layout.list_manga_page_item, null);
-        FitXImageView iv = (FitXImageView) v.findViewById(R.id.imageView);
+        final FitXImageView iv = (FitXImageView) v.findViewById(R.id.imageView);
         // iv.setScaleType(ImageView.ScaleType.FIT_XY);
         if (curr < next && next > pageList.size() - 1) {
             next = 0;
@@ -271,28 +273,32 @@ public class MyViewFlipper extends ViewFlipper {
             setCurrPos(next);
         }
         Drawable cachedImage = null;
-        if (pageList.size() > next) {
-            cachedImage = getBaseActivty().getMangaHelper().getPageImage(
-                    pageList.get(next), iv, new MangaHelper.GetImageCallback() {
 
-                        public void imageLoaded(Drawable imageDrawable,
-                                                ImageView imageView, String imageUrl) {
-                            // TODO Auto-generated method stub
-                            if (imageDrawable != null && imageView != null) {
-                                //imageView.setImageDrawable(imageDrawable);
-                                showImage(imageView, imageDrawable, curr, fnext);
-                            }
+        //GlideImageHelper.getImageWithHeader(iv, pageList.get(next).getWebImageUrl(), null);
+        final int finalNext = next;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+               final String webImageUrl = getBaseActivty().getMangaHelper().getWebImageUrl(pageList.get(finalNext));
 
-                        }
-                    });
-        }
-        if (cachedImage != null) {
-            showImage(iv, cachedImage, curr, next);
-        } else {
-            Drawable tImage = getResources()
-                    .getDrawable(R.mipmap.ic_preloader_background);
-            iv.setImageDrawable(tImage);
-        }
+                String UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
+                LazyHeaders.Builder builder = new LazyHeaders.Builder();
+                builder.addHeader("Referer",pageList.get(finalNext).getReferUrl());
+                builder.addHeader("User-Agent", UserAgent);
+                final GlideUrl url = new GlideUrl(webImageUrl, builder.build());
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(getContext())
+                                .load(url)
+                                .placeholder(R.mipmap.ic_preloader_background)
+                                .into(iv);
+                    }
+                });
+
+            }
+        }).start();
+
 
         if (this.getChildCount() > 1) {
             this.removeViewAt(0);
@@ -506,8 +512,8 @@ public class MyViewFlipper extends ViewFlipper {
             int x = (int) (e2.getX() - e1.getX());
             double maxDegree = 30;
 
-            if ( !( (x > 0 && fiv.canFlingFromLeftToRight()) ||
-                    (x < 0 && fiv.canFlingFromRightToLeft()) ) ) {
+            if (!((x > 0 && fiv.canFlingFromLeftToRight()) ||
+                    (x < 0 && fiv.canFlingFromRightToLeft()))) {
                 return false;
             }
 

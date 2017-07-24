@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
+import com.king.mangaviewer.BuildConfig;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
@@ -37,7 +38,9 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+        }
         AppViewModel.Setting = AppViewModel.Setting.loadSetting(this);
         //notify service
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);

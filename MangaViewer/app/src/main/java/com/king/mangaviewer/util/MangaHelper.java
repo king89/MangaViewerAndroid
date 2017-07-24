@@ -51,8 +51,12 @@ public class MangaHelper {
     }
 
     /* Page */
-    public String GetImageByImageUrl(MangaPageItem page) {
-        return null;
+    public String getWebImageUrl(MangaPageItem page) {
+        WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
+                page.getMangaWebSource());
+        page.setWebImageUrl(mPattern.getImageUrl(page.getUrl(),
+                page.getNowNum()));
+        return page.getWebImageUrl();
 
     }
 

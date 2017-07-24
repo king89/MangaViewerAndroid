@@ -95,7 +95,7 @@ public class WebSiteBasePattern {
         return pageUrl;
     }
 
-    // public void GetImageByImageUrl(MangaPageItem page,SaveType saveType) {
+    // public void getWebImageUrl(MangaPageItem page,SaveType saveType) {
     // return ; }
     public int InitSomeArgs(String firstPageUrl) {
         return 0;

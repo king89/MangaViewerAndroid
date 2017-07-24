@@ -10,20 +10,22 @@ import android.graphics.drawable.Drawable;
 import android.opengl.GLES10;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.widget.ImageView;
 import android.widget.OverScroller;
+
+import com.king.mangaviewer.util.Util;
 
 import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Created by KinG on 8/1/2015.
  */
-public class FitXImageView extends ImageView {
+public class FitXImageView extends AppCompatImageView {
     private static final float MAX_ZOOM = 3;
     private static final float MIN_ZOOM = 1;
     public static final double ZOOM_EXP = 1e-3;
@@ -103,48 +105,58 @@ public class FitXImageView extends ImageView {
         }
     }
 
-    public boolean canFlingFromLeftToRight(){
+    public boolean canFlingFromLeftToRight() {
         if (!isZoomed())
             return true;
         //when zoomed, scroll = 0
-        if(overScroller.getCurrX() == 0)
+        if (overScroller.getCurrX() == 0)
             return true;
         else
             return false;
     }
-    public boolean canFlingFromRightToLeft(){
+
+    public boolean canFlingFromRightToLeft() {
         //when zoomed, scroll = max
         if (!isZoomed())
             return true;
         //when zoomed, scroll = 0
-        if(overScroller.getCurrX() == getMaxHorizontal())
+        if (overScroller.getCurrX() == getMaxHorizontal())
             return true;
         else
             return false;
     }
+
     @Override
     public void setImageDrawable(Drawable drawable) {
         setIsFirstLoadedFinished(false);
         super.setImageDrawable(drawable);
     }
 
+    private Bitmap getBitmap(){
+        Bitmap bitmap = Util.drawableToBitmap(getDrawable());
+        return bitmap;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         Drawable drawable = this.getDrawable();
-
+        if (drawable == null) {
+            super.onDraw(canvas);
+            return;
+        }
         if (!isFirstLoadedFinished) {
-            int h = ((BitmapDrawable) drawable).getBitmap().getHeight();
-            int w = ((BitmapDrawable) drawable).getBitmap().getWidth();
+            Bitmap bitmap = getBitmap();
+            int h = bitmap.getHeight();
+            int w = bitmap.getWidth();
 
             float hwFactor = h / (w * 1.0f);
             float whFactor = w / (h * 1.0f);
             if (w > maxBitmapSize || h > maxBitmapSize) {
-                Bitmap bm = ((BitmapDrawable) drawable).getBitmap();
 
                 if (w > h) {
                     int tHeigth = (int) (this.getWidth() * hwFactor);
                     int tWidth = this.getWidth();
-                    bm = Bitmap.createScaledBitmap(bm, tWidth, tHeigth, false);
+                    bitmap = Bitmap.createScaledBitmap(bitmap, tWidth, tHeigth, false);
                     //set it center if image height < view height
                     if (tHeigth < getHeight()) {
                         Matrix m = this.getImageMatrix();
@@ -156,17 +168,17 @@ public class FitXImageView extends ImageView {
                         // use matrix scale to fit width
                         int tHeigth = maxBitmapSize;
                         int tWidth = (int) (maxBitmapSize * whFactor);
-                        bm = Bitmap.createScaledBitmap(bm, tWidth, tHeigth, false);
+                        bitmap = Bitmap.createScaledBitmap(bitmap, tWidth, tHeigth, false);
                         Matrix m = this.getImageMatrix();
                         fitZoomFactor = (getWidth() / (tWidth * 1.0f));
                         m.setScale(fitZoomFactor, fitZoomFactor);
                         actualZoomFactor = fitZoomFactor;
                         this.setImageMatrix(m);
                     } else {
-                        bm = Bitmap.createScaledBitmap(bm, this.getWidth(), (int) (this.getWidth() * hwFactor), false);
+                        bitmap = Bitmap.createScaledBitmap(bitmap, this.getWidth(), (int) (this.getWidth() * hwFactor), false);
                     }
                 }
-                drawable = new BitmapDrawable(getResources(), bm);
+                drawable = new BitmapDrawable(getResources(), bitmap);
                 this.setScaleType(ScaleType.MATRIX);
             }
             this.setImageDrawable(drawable);
@@ -217,8 +229,9 @@ public class FitXImageView extends ImageView {
         int sh = this.getHeight();
         int sw = this.getWidth();
 
-        int bmH = ((BitmapDrawable) drawable).getBitmap().getHeight();
-        int bmW = ((BitmapDrawable) drawable).getBitmap().getWidth();
+        Bitmap bitmap = getBitmap();
+        int bmH = bitmap.getHeight();
+        int bmW = bitmap.getWidth();
         Matrix m = this.getImageMatrix();
         //dont use with loading image
 
@@ -240,14 +253,13 @@ public class FitXImageView extends ImageView {
     }
 
     private void setMid() {
+
         Matrix matrix = this.getImageMatrix();
         Drawable drawable = this.getDrawable();
 
         int h = (int) ((drawable).getBounds().height() * actualZoomFactor * matrixZoomFactor);
         int w = (int) ((drawable).getBounds().width() * actualZoomFactor * matrixZoomFactor);
 
-        int bmH = ((BitmapDrawable) drawable).getBitmap().getHeight();
-        int bmW = ((BitmapDrawable) drawable).getBitmap().getWidth();
         float[] values = new float[9];
         matrix.getValues(values);
         if (h <= this.getHeight()) {
@@ -328,10 +340,16 @@ public class FitXImageView extends ImageView {
 
 
     private int getMaxHorizontal() {
+        if (getDrawable() == null) {
+            return 0;
+        }
         return (Math.max(0, (int) (getDrawable().getBounds().width() * actualZoomFactor * matrixZoomFactor) - this.getWidth()));
     }
 
     private int getMaxVertical() {
+        if (getDrawable() == null) {
+            return 0;
+        }
         return Math.max(0, (int) ((getDrawable().getBounds().height() * actualZoomFactor * matrixZoomFactor) - this.getHeight()));
     }
 
@@ -362,8 +380,8 @@ public class FitXImageView extends ImageView {
         this.setImageMatrix(matrix);
         overScrollerPosX = overScroller.getCurrX();
         overScrollerPosY = overScroller.getCurrY();
-        scrollBarNowPositionX = (int) ((overScrollerPosX + mFocusPoint.x) *  DEFAULT_ZOOM_SIZE - mFocusPoint.x);
-        scrollBarNowPositionY = (int) ((overScrollerPosY + mFocusPoint.y) *  DEFAULT_ZOOM_SIZE - mFocusPoint.y);
+        scrollBarNowPositionX = (int) ((overScrollerPosX + mFocusPoint.x) * DEFAULT_ZOOM_SIZE - mFocusPoint.x);
+        scrollBarNowPositionY = (int) ((overScrollerPosY + mFocusPoint.y) * DEFAULT_ZOOM_SIZE - mFocusPoint.y);
         int maxY = (int) (getMaxVertical());
         int maxX = (int) (getMaxHorizontal());
 
@@ -445,7 +463,7 @@ public class FitXImageView extends ImageView {
         public boolean onDoubleTap(MotionEvent e) {
             if (isZoomed()) {
                 resetImage();
-            }else{
+            } else {
                 zoomDoubleSize(e);
             }
             return super.onDoubleTap(e);
@@ -500,7 +518,6 @@ public class FitXImageView extends ImageView {
 
 
     };
-
 
 
 }
