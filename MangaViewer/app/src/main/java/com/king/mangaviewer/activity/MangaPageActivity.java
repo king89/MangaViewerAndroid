@@ -29,6 +29,8 @@ import io.reactivex.functions.Consumer;
 
 public class MangaPageActivity extends BaseActivity {
 
+    public static final String INTENT_EXTRA_FROM_HISTORY = "intent_extra_from_history";
+
     public MyViewFlipper vFlipper = null;
     private View mDecorView;
     SeekBar sb = null;
@@ -37,6 +39,14 @@ public class MangaPageActivity extends BaseActivity {
     MangaViewModel mMangaViewModel;
     SettingViewModel mSettingViewModel;
     ImageButton mFRImageButton, mFFImageButton;
+    Boolean mIsLoadFromHistory = false;
+
+    Consumer<Object> mUpdateConsumer = new Consumer<Object>() {
+        @Override
+        public void accept(@NonNull Object o) throws Exception {
+            update(null);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +60,7 @@ public class MangaPageActivity extends BaseActivity {
                 InitAd();
             }
         }, 5000);
-       }
+    }
 
     protected void initViewModels() {
         mMangaViewModel = getAppViewModel().Manga;
@@ -66,7 +76,7 @@ public class MangaPageActivity extends BaseActivity {
     @Override
     protected void initControl() {
         // TODO Auto-generated method stub
-
+        mIsLoadFromHistory = getIntent().getBooleanExtra(INTENT_EXTRA_FROM_HISTORY, false);
         setContentView(R.layout.activity_manga_page);
         vFlipper = (MyViewFlipper) this.findViewById(R.id.viewFlipper);
 
@@ -169,13 +179,13 @@ public class MangaPageActivity extends BaseActivity {
                 vFlipper.goPrevChapter();
             }
         });
+
         //start
-        vFlipper.initial(mMangaViewModel, mSettingViewModel, new Consumer<Object>() {
-            @Override
-            public void accept(@NonNull Object o) throws Exception {
-                update(null);
-            }
-        });
+        if (mIsLoadFromHistory) {
+            vFlipper.initial(mMangaViewModel, mSettingViewModel, mUpdateConsumer);
+        } else {
+            vFlipper.initialFromHistory(mMangaViewModel, mSettingViewModel, mUpdateConsumer);
+        }
 
     }
 

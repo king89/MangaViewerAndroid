@@ -26,6 +26,8 @@ import com.king.mangaviewer.viewmodel.MangaViewModel;
 
 import java.util.List;
 
+import static com.king.mangaviewer.activity.MangaPageActivity.INTENT_EXTRA_FROM_HISTORY;
+
 public class HistoryChapterItemAdapter extends RecyclerView.Adapter<HistoryChapterItemAdapter.RecyclerViewHolders> {
 
     protected Context context;
@@ -105,7 +107,9 @@ public class HistoryChapterItemAdapter extends RecyclerView.Adapter<HistoryChapt
             }).start();
 
             viewModel.setSelectedMangaChapterItem(list.get(menuPos));
-            context.startActivity(new Intent(context, MangaPageActivity.class));
+            Intent intent = new Intent(context, MangaPageActivity.class);
+            intent.putExtra(INTENT_EXTRA_FROM_HISTORY, true);
+            context.startActivity(intent);
             ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
 
         }

@@ -38,8 +38,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -82,7 +84,7 @@ public class MyViewFlipper extends ViewFlipper {
 
     protected final Object lock = new Object();
     final ProgressDialog pd = new ProgressDialog(getContext());
-    Disposable disposable;
+    CompositeDisposable disposable = new CompositeDisposable();
 
 
     public MyViewFlipper(Context context) {
@@ -104,7 +106,7 @@ public class MyViewFlipper extends ViewFlipper {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (disposable != null) {
-            disposable.dispose();
+            disposable.clear();
         }
     }
 
@@ -134,6 +136,31 @@ public class MyViewFlipper extends ViewFlipper {
         initial(mangaViewModel, settingViewModel, updateConsumer);
     }
 
+    public void initialFromHistory(MangaViewModel mvm, SettingViewModel svm, Consumer<Object> consumer) {
+        initial(mvm, svm, consumer);
+        getChapterList();
+    }
+
+    private void getChapterList() {
+        disposable.add(Flowable.fromCallable(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                //use a new thread to load chapter list, this has to
+                mangaViewModel.setMangaChapterList(((BaseActivity) getContext()).getMangaHelper().getChapterList(mangaViewModel.getSelectedMangaPageItem().getChapter().getMenu()));
+                return null;
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(@NonNull Object o) throws Exception {
+                        Log.d(TAG, "Load chapter list success");
+                    }
+                }));
+
+    }
+
     public void initial(MangaViewModel mvm, SettingViewModel svm, Consumer<Object> consumer) {
         mangaViewModel = mvm;
         settingViewModel = svm;
@@ -143,7 +170,7 @@ public class MyViewFlipper extends ViewFlipper {
 
         pd.show();
         if (mangaViewModel.getMangaPageList() == null) {
-            disposable = Flowable.fromCallable(new Callable<Object>() {
+            disposable.add(Flowable.fromCallable(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
                     getPageList();
@@ -163,7 +190,7 @@ public class MyViewFlipper extends ViewFlipper {
                                 Toast.makeText(getContext(), getContext().getString(R.string.msg_page_no_page), Toast.LENGTH_SHORT).show();
                             }
                         }
-                    });
+                    }));
         } else {
             pageList = mangaViewModel.getMangaPageList();
             setView(getCurrPos(), getCurrPos());
@@ -283,7 +310,7 @@ public class MyViewFlipper extends ViewFlipper {
     }
 
     protected void setView(final int curr, int next) {
-        final View v = (View) mInflater.inflate(R.layout.list_manga_page_item, null);
+        final View v = mInflater.inflate(R.layout.list_manga_page_item, this, false);
         final FitXImageView iv = (FitXImageView) v.findViewById(R.id.imageView);
         final ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
         // iv.setScaleType(ImageView.ScaleType.FIT_XY);

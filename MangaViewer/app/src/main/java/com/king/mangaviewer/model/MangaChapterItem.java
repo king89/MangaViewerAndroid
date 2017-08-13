@@ -34,4 +34,12 @@ public class MangaChapterItem extends BaseItem {
         sb.append(menu.getHash() + "|" + this.getUrl());
         return StringUtils.getHash(sb.toString());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof MangaChapterItem) {
+            return this.getHash().equals(((MangaChapterItem) obj).getHash());
+        }
+        return super.equals(obj);
+    }
 }
