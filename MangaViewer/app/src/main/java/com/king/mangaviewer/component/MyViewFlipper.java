@@ -1,6 +1,7 @@
 package com.king.mangaviewer.component;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -34,6 +35,14 @@ import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by KinG on 8/10/2015.
@@ -62,7 +71,7 @@ public class MyViewFlipper extends ViewFlipper {
 
     boolean orderDesc = true;
 
-    Handler updateHandler;
+    Consumer<Object> updateConsumer;
     Handler mHideHandler;
     Runnable mHideRunnable;
 
@@ -72,6 +81,9 @@ public class MyViewFlipper extends ViewFlipper {
 
 
     protected final Object lock = new Object();
+    final ProgressDialog pd = new ProgressDialog(getContext());
+    Disposable disposable;
+
 
     public MyViewFlipper(Context context) {
         super(context);
@@ -88,12 +100,20 @@ public class MyViewFlipper extends ViewFlipper {
         fullScreen();
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (disposable != null) {
+            disposable.dispose();
+        }
+    }
+
     protected void initControl() {
 
         mInflater = LayoutInflater.from(getContext());
         gestureDetector = new GestureDetector(getContext(), new GestureListener());
         mDecorView = ((Activity) getContext()).getWindow().getDecorView();
-
+        pd.setMessage("Loading Page List...");
 
         mHideHandler = new Handler();
         mHideRunnable = new Runnable() {
@@ -111,25 +131,39 @@ public class MyViewFlipper extends ViewFlipper {
         halfMode = 0;
         this.removeAllViews();
         mangaViewModel.setMangaPageList(null);
-        initial(mangaViewModel, settingViewModel, updateHandler);
+        initial(mangaViewModel, settingViewModel, updateConsumer);
     }
 
-    public void initial(MangaViewModel mvm, SettingViewModel svm, Handler handler) {
+    public void initial(MangaViewModel mvm, SettingViewModel svm, Consumer<Object> consumer) {
         mangaViewModel = mvm;
         settingViewModel = svm;
-        updateHandler = handler;
+        updateConsumer = consumer;
         initPageAnimation();
         delayFullScreen();
 
+        pd.show();
         if (mangaViewModel.getMangaPageList() == null) {
-            new Thread() {
-
+            disposable = Flowable.fromCallable(new Callable<Object>() {
                 @Override
-                public void run() {
-                    // TODO Auto-generated method stub
+                public Object call() throws Exception {
                     getPageList();
+                    return 1;
                 }
-            }.start();
+            })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Object>() {
+                        @Override
+                        public void accept(@NonNull Object o) throws Exception {
+                            pd.dismiss();
+                            if (pageList != null && pageList.size() > 0) {
+                                setView(getCurrPos(), getCurrPos());
+                                updateConsumer.accept(o);
+                            } else {
+                                Toast.makeText(getContext(), getContext().getString(R.string.msg_page_no_page), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
         } else {
             pageList = mangaViewModel.getMangaPageList();
             setView(getCurrPos(), getCurrPos());
@@ -164,20 +198,6 @@ public class MyViewFlipper extends ViewFlipper {
         this.mCurrentPosChangedListener = l;
     }
 
-    protected Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (pageList != null && pageList.size() > 0) {
-                setView(getCurrPos(), getCurrPos());
-                updateHandler.sendEmptyMessage(0);
-            } else {
-                Toast.makeText(getContext(), getContext().getString(R.string.msg_page_no_page), Toast.LENGTH_SHORT).show();
-            }
-
-
-        }
-    };
-
     public void stopAutoFullscreen() {
         mHideHandler.removeCallbacks(mHideRunnable);
     }
@@ -195,7 +215,6 @@ public class MyViewFlipper extends ViewFlipper {
         pageList = getBaseActivty().getMangaHelper().GetPageList(
                 mangaViewModel.getSelectedMangaChapterItem());
         mangaViewModel.setMangaPageList(pageList);
-        handler.sendEmptyMessage(0);
     }
 
     public boolean getOrderDesc() {
@@ -599,5 +618,6 @@ public class MyViewFlipper extends ViewFlipper {
             }
             return super.onSingleTapConfirmed(e);
         }
+
     }
 }

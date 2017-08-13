@@ -24,6 +24,9 @@ import com.king.mangaviewer.component.MyViewFlipper;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+
 public class MangaPageActivity extends BaseActivity {
 
     public MyViewFlipper vFlipper = null;
@@ -167,7 +170,12 @@ public class MangaPageActivity extends BaseActivity {
             }
         });
         //start
-        vFlipper.initial(mMangaViewModel, mSettingViewModel, handler);
+        vFlipper.initial(mMangaViewModel, mSettingViewModel, new Consumer<Object>() {
+            @Override
+            public void accept(@NonNull Object o) throws Exception {
+                update(null);
+            }
+        });
 
     }
 

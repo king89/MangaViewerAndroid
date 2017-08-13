@@ -1,6 +1,7 @@
 package com.king.mangaviewer.activity;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
 
@@ -17,15 +18,13 @@ import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends AppCompatActivity {
 
 
-    public Handler handler = new Handler() {
+    public Handler handler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             update(msg);
         }
-
-        ;
     };
     protected Toolbar mToolbar;
 
@@ -41,8 +40,11 @@ public class BaseActivity extends ActionBarActivity {
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         //final View toolbarContainerView = findViewById(R.id.toolbar_container);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(IsCanBack());
-        getSupportActionBar().setTitle(getActionBarTitle());
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(IsCanBack());
+            actionBar.setTitle(getActionBarTitle());
+        }
     }
 
     protected void initControl() {
