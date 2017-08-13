@@ -146,8 +146,8 @@ public class MyViewFlipper extends ViewFlipper {
             @Override
             public Object call() throws Exception {
                 //use a new thread to load chapter list, this has to
-                mangaViewModel.setMangaChapterList(((BaseActivity) getContext()).getMangaHelper().getChapterList(mangaViewModel.getSelectedMangaPageItem().getChapter().getMenu()));
-                return null;
+                mangaViewModel.setMangaChapterList(((BaseActivity) getContext()).getMangaHelper().getChapterList(mangaViewModel.getSelectedMangaChapterItem().getMenu()));
+                return 1;
             }
         })
                 .subscribeOn(Schedulers.io())

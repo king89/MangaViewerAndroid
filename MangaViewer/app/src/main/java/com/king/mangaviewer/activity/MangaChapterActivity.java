@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
@@ -23,38 +24,50 @@ import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.reactivex.Flowable;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import me.grantland.widget.AutofitTextView;
 
 public class MangaChapterActivity extends BaseActivity {
 
-    protected ProgressDialog progressDialog;
+    @BindView(R.id.recyclerView)
+    RecyclerView listView;
 
-    RecyclerView listView = null;
-    MyImageView imageView = null;
-    AutofitTextView textView = null;
-    private FloatingActionButton floatingActionButton;
+    @BindView(R.id.imageView)
+    MyImageView imageView;
+
+    @BindView(R.id.textView)
+    AutofitTextView textView;
+
+    @BindView(R.id.progressBar)
+    ProgressBar progreeBar;
+
+    @BindView(R.id.fab)
+    FloatingActionButton floatingActionButton;
 
     @Override
     protected void initControl() {
         // TODO Auto-generated method stub
         setContentView(R.layout.activity_manga_chapter);
-
-        listView = (RecyclerView) this.findViewById(R.id.recyclerView);
-        imageView = (MyImageView) this.findViewById(R.id.imageView);
-        textView = (AutofitTextView) this.findViewById(R.id.textView);
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        ButterKnife.bind(this);
 
         initFAB();
 
-
         textView.setText(this.getAppViewModel().Manga.getSelectedMangaMenuItem().getTitle());
         imageView.setImageURL(this.getAppViewModel().Manga.getSelectedMangaMenuItem(), true, getResources().getDrawable(R.color.black));
-        new Thread() {
 
+        progreeBar.setVisibility(View.VISIBLE);
+        compositeDisposable.add(Flowable.fromCallable(new Callable<Object>() {
             @Override
-            public void run() {
-                // TODO Auto-generated method stub
+            public Object call() throws Exception {
                 MangaViewModel mangaViewModel = MangaChapterActivity.this
                         .getAppViewModel().Manga;
 
@@ -63,10 +76,16 @@ public class MangaChapterActivity extends BaseActivity {
                                 mangaViewModel.getSelectedMangaMenuItem());
                 mangaViewModel.setMangaChapterList(mList);
 
-                handler.sendEmptyMessage(0);
-
+                return 1;
             }
-        }.start();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(@NonNull Object o) throws Exception {
+                        update(null);
+                    }
+                }));
     }
 
     private void initFAB() {
@@ -97,9 +116,7 @@ public class MangaChapterActivity extends BaseActivity {
     @Override
     protected void update(Message msg) {
         // TODO Auto-generated method stub
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
+        progreeBar.setVisibility(View.GONE);
 
         MangaChapterItemAdapter adapter = new MangaChapterItemAdapter(this,
                 this.getAppViewModel().Manga,

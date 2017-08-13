@@ -181,7 +181,7 @@ public class MangaPageActivity extends BaseActivity {
         });
 
         //start
-        if (mIsLoadFromHistory) {
+        if (!mIsLoadFromHistory) {
             vFlipper.initial(mMangaViewModel, mSettingViewModel, mUpdateConsumer);
         } else {
             vFlipper.initialFromHistory(mMangaViewModel, mSettingViewModel, mUpdateConsumer);

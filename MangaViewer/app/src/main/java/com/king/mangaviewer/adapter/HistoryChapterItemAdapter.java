@@ -97,14 +97,6 @@ public class HistoryChapterItemAdapter extends RecyclerView.Adapter<HistoryChapt
         @Override
         public void onClick(View view) {
             final int menuPos = getPosition();
-            //use a new thread to load chapter list, this has to
-            //TODO change to use thread pool
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    viewModel.setMangaChapterList(((BaseActivity) context).getMangaHelper().getChapterList(list.get(menuPos).getMenu()));
-                }
-            }).start();
 
             viewModel.setSelectedMangaChapterItem(list.get(menuPos));
             Intent intent = new Intent(context, MangaPageActivity.class);

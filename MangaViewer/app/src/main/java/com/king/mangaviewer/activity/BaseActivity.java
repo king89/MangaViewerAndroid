@@ -17,6 +17,8 @@ import com.king.mangaviewer.viewmodel.AppViewModel;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -26,6 +28,7 @@ public class BaseActivity extends AppCompatActivity {
             update(msg);
         }
     };
+    public CompositeDisposable compositeDisposable = new CompositeDisposable();
     protected Toolbar mToolbar;
 
     protected void onCreate(android.os.Bundle savedInstanceState) {
@@ -57,7 +60,7 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    protected void setActionBarTitle(String title){
+    protected void setActionBarTitle(String title) {
         this.getSupportActionBar().setTitle(title);
     }
 
@@ -116,10 +119,17 @@ public class BaseActivity extends AppCompatActivity {
         return ((MyApplication) this.getApplication()).SettingHelper;
     }
 
-    public SettingViewModel getSettingViewModel(){
+    public SettingViewModel getSettingViewModel() {
         return getAppViewModel().Setting;
     }
-    public MangaViewModel getMangaViewModel(){
+
+    public MangaViewModel getMangaViewModel() {
         return getAppViewModel().Manga;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
     }
 }

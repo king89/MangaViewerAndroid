@@ -1,5 +1,7 @@
 package com.king.mangaviewer.model;
 
+import android.text.TextUtils;
+
 import com.king.mangaviewer.util.StringUtils;
 
 public class MangaChapterItem extends BaseItem {
@@ -33,6 +35,15 @@ public class MangaChapterItem extends BaseItem {
         StringBuilder sb = new StringBuilder();
         sb.append(menu.getHash() + "|" + this.getUrl());
         return StringUtils.getHash(sb.toString());
+    }
+
+    @Override
+    public String getTitle() {
+        String title = super.getTitle();
+        if (!TextUtils.isEmpty(title)) {
+            return title.replace(getMenu().getTitle(), "");
+        }
+        return super.getTitle();
     }
 
     @Override
