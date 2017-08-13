@@ -298,33 +298,7 @@ public class MyViewFlipper extends ViewFlipper {
                 post(new Runnable() {
                     @Override
                     public void run() {
-                        Glide.with(getContext())
-                                .load(url)
-                                .listener(new RequestListener<GlideUrl, GlideDrawable>() {
-                                    @Override
-                                    public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                        progressBar.setVisibility(View.GONE);
-                                        Log.d(TAG, "Glide", e);
-                                        Crashlytics.logException(e);
-                                        Snackbar.make(v, "Image Load Failed.", Snackbar.LENGTH_INDEFINITE)
-                                                .setAction("Try Again", new OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View v) {
-
-                                                    }
-                                                })
-                                                .show();
-                                        return false;
-                                    }
-
-                                    @Override
-                                    public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                        progressBar.setVisibility(View.GONE);
-                                        return false;
-                                    }
-
-                                })
-                                .into(iv);
+                        loadImage(url, progressBar, v, iv);
                     }
                 });
 
@@ -340,6 +314,36 @@ public class MyViewFlipper extends ViewFlipper {
 
         goPrevChapter = false;
         goNextChapter = false;
+    }
+
+    private void loadImage(final GlideUrl url, final ProgressBar progressBar, final View v, final FitXImageView iv) {
+        Glide.with(getContext())
+                .load(url)
+                .listener(new RequestListener<GlideUrl, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        progressBar.setVisibility(View.GONE);
+                        Log.d(TAG, "Glide", e);
+                        Crashlytics.logException(e);
+                        Snackbar.make(v, "Image Load Failed.", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("Try Again", new OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        loadImage(url, progressBar, v, iv);
+                                    }
+                                })
+                                .show();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        progressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                })
+                .into(iv);
     }
 
     protected void showImage(ImageView iv, Drawable d, int curr, int next) {

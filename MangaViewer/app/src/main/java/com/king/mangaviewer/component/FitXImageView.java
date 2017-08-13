@@ -132,7 +132,7 @@ public class FitXImageView extends AppCompatImageView {
         super.setImageDrawable(drawable);
     }
 
-    private Bitmap getBitmap(){
+    private Bitmap getBitmap() {
         Bitmap bitmap = Util.drawableToBitmap(getDrawable());
         return bitmap;
     }
@@ -480,13 +480,16 @@ public class FitXImageView extends AppCompatImageView {
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
             //overScroller.forceFinished(true);
-            int max = (int) ((getDrawable().getBounds().height() * actualZoomFactor));
-            overScroller.fling(scrollBarNowPositionX, scrollBarNowPositionY, (int) -velocityX,
-                    (int) -velocityY, 0, getMaxHorizontal(), 0,
-                    max);
+            Drawable drawable = getDrawable();
+            if (drawable != null) {
+                int max = (int) ((drawable.getBounds().height() * actualZoomFactor));
+                overScroller.fling(scrollBarNowPositionX, scrollBarNowPositionY, (int) -velocityX,
+                        (int) -velocityY, 0, getMaxHorizontal(), 0,
+                        max);
 
-            Log.i("onFling", "VelocityY: " + velocityY);
-            invalidate();
+                Log.i("onFling", "VelocityY: " + velocityY);
+                invalidate();
+            }
             return false;
         }
 
