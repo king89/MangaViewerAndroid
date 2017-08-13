@@ -1,5 +1,6 @@
 package com.king.mangaviewer.activity;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -8,9 +9,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.util.GsonHelper;
 import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.util.SettingHelper;
 import com.king.mangaviewer.viewmodel.AppViewModel;
@@ -23,6 +26,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public class BaseActivity extends AppCompatActivity {
 
 
+    private static final String KEY_MANGA_VIEW_MODEL = "key_manga_view_model";
     public Handler handler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             update(msg);
@@ -33,9 +37,21 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void onCreate(android.os.Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            String mangaViewModelJson = savedInstanceState.getString(KEY_MANGA_VIEW_MODEL, "");
+            if (!TextUtils.isEmpty(mangaViewModelJson)) {
+                getAppViewModel().Manga = GsonHelper.fromJson(mangaViewModelJson, MangaViewModel.class);
+            }
+        }
         initControl();
         initActionBar();
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(KEY_MANGA_VIEW_MODEL, GsonHelper.toJson(getMangaViewModel()));
+        super.onSaveInstanceState(outState);
     }
 
     protected void initActionBar() {
