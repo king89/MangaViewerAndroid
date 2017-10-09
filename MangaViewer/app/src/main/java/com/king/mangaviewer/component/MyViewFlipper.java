@@ -26,6 +26,8 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.crashlytics.android.Crashlytics;
 import com.king.mangaviewer.R;
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -330,26 +333,29 @@ public class MyViewFlipper extends ViewFlipper {
 
         //GlideImageHelper.getImageWithHeader(iv, pageList.get(next).getWebImageUrl(), null);
         final MangaPageItem pageItem = pageList.get(next);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String webImageUrl = getBaseActivty().getMangaHelper().getWebImageUrl(pageItem);
-                Log.d(TAG, "Download Image Url: " + webImageUrl + "\n Referrer Url: " + pageItem.getReferUrl());
-
-                String UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
-                LazyHeaders.Builder builder = new LazyHeaders.Builder();
-                builder.addHeader("Referer", pageItem.getReferUrl());
-                builder.addHeader("User-Agent", UserAgent);
-                final GlideUrl url = new GlideUrl(webImageUrl, builder.build());
-                post(new Runnable() {
+        final int finalNext = next;
+        Observable.fromCallable(
+                new Callable<GlideUrl>() {
                     @Override
-                    public void run() {
-                        loadImage(url, progressBar, v, iv);
+                    public GlideUrl call() throws Exception {
+                        final String webImageUrl = getBaseActivty().getMangaHelper().getWebImageUrl(pageItem);
+                        Log.d(TAG, "Download Image Url: " + webImageUrl + "\n Referrer Url: " + pageItem.getReferUrl());
+
+                        String UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
+                        LazyHeaders.Builder builder = new LazyHeaders.Builder();
+                        builder.addHeader("Referer", pageItem.getReferUrl());
+                        builder.addHeader("User-Agent", UserAgent);
+                        return new GlideUrl(webImageUrl, builder.build());
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<GlideUrl>() {
+                    @Override
+                    public void accept(@NonNull GlideUrl glideUrl) throws Exception {
+                        loadImage(glideUrl, progressBar, v, iv, curr, finalNext);
                     }
                 });
-
-            }
-        }).start();
 
 
         if (this.getChildCount() > 1) {
@@ -362,12 +368,13 @@ public class MyViewFlipper extends ViewFlipper {
         goNextChapter = false;
     }
 
-    private void loadImage(final GlideUrl url, final ProgressBar progressBar, final View v, final FitXImageView iv) {
+    private void loadImage(final GlideUrl url, final ProgressBar progressBar, final View v, final FitXImageView iv, final int curr, final int next) {
         Glide.with(getContext())
                 .load(url)
-                .listener(new RequestListener<GlideUrl, GlideDrawable>() {
+                .asBitmap()
+                .listener(new RequestListener<GlideUrl, Bitmap>() {
                     @Override
-                    public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    public boolean onException(Exception e, GlideUrl model, Target<Bitmap> target, boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
                         Log.d(TAG, "Glide", e);
                         Crashlytics.logException(e);
@@ -375,7 +382,7 @@ public class MyViewFlipper extends ViewFlipper {
                                 .setAction("Try Again", new OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        loadImage(url, progressBar, v, iv);
+                                        loadImage(url, progressBar, v, iv, curr, next);
                                     }
                                 })
                                 .show();
@@ -383,18 +390,24 @@ public class MyViewFlipper extends ViewFlipper {
                     }
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    public boolean onResourceReady(Bitmap resource, GlideUrl model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
                         return false;
                     }
 
                 })
-                .into(iv);
+
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        showImage(iv, resource, curr, next);
+                    }
+                });
     }
 
-    protected void showImage(ImageView iv, Drawable d, int curr, int next) {
+    protected void showImage(ImageView iv, Bitmap d, int curr, int next) {
         if (canSplitPage()) {
-            Bitmap img = ((BitmapDrawable) d).getBitmap();
+            Bitmap img = d;
             int w = img.getWidth();
             int h = img.getHeight();
             //ensure this image should be shown
@@ -431,7 +444,7 @@ public class MyViewFlipper extends ViewFlipper {
             }
             iv.setImageDrawable(new BitmapDrawable(img));
         } else {
-            iv.setImageDrawable(d);
+            iv.setImageDrawable(new BitmapDrawable(d));
         }
     }
 
