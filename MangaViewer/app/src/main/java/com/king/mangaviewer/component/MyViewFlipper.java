@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -30,14 +31,18 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.crashlytics.android.Crashlytics;
+import com.king.mangaviewer.MangaPattern.LocalManga;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.BaseActivity;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
@@ -334,29 +339,7 @@ public class MyViewFlipper extends ViewFlipper {
         //GlideImageHelper.getImageWithHeader(iv, pageList.get(next).getWebImageUrl(), null);
         final MangaPageItem pageItem = pageList.get(next);
         final int finalNext = next;
-        Observable.fromCallable(
-                new Callable<GlideUrl>() {
-                    @Override
-                    public GlideUrl call() throws Exception {
-                        final String webImageUrl = getBaseActivty().getMangaHelper().getWebImageUrl(pageItem);
-                        Log.d(TAG, "Download Image Url: " + webImageUrl + "\n Referrer Url: " + pageItem.getReferUrl());
-
-                        String UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
-                        LazyHeaders.Builder builder = new LazyHeaders.Builder();
-                        builder.addHeader("Referer", pageItem.getReferUrl());
-                        builder.addHeader("User-Agent", UserAgent);
-                        return new GlideUrl(webImageUrl, builder.build());
-                    }
-                })
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<GlideUrl>() {
-                    @Override
-                    public void accept(@NonNull GlideUrl glideUrl) throws Exception {
-                        loadImage(glideUrl, progressBar, v, iv, curr, finalNext);
-                    }
-                });
-
+        loadMangaPage(curr, v, iv, progressBar, pageItem, finalNext);
 
         if (this.getChildCount() > 1) {
             this.removeViewAt(0);
@@ -366,6 +349,47 @@ public class MyViewFlipper extends ViewFlipper {
 
         goPrevChapter = false;
         goNextChapter = false;
+    }
+
+    private void loadMangaPage(final int curr, final View v, final FitXImageView iv, final ProgressBar progressBar, final MangaPageItem pageItem, final int finalNext) {
+        if (pageItem.getMangaWebSource().getClassName().equalsIgnoreCase(LocalManga.class.getName())) {
+            Bitmap bitmap;
+            //load zip image
+            ZipFile zf;
+            try {
+                zf = new ZipFile(pageItem.getChapter().getUrl());
+                ZipEntry ze = zf.getEntry(pageItem.getUrl());
+                bitmap = BitmapFactory.decodeStream(zf.getInputStream(ze));
+                //show image
+                showImage(iv, bitmap, curr, finalNext);
+            } catch (IOException e) {
+                Log.e(TAG, "loadMangaPage error", e);
+
+            }
+        } else {
+            Observable.fromCallable(
+                    new Callable<GlideUrl>() {
+                        @Override
+                        public GlideUrl call() throws Exception {
+                            final String webImageUrl = getBaseActivty().getMangaHelper().getWebImageUrl(pageItem);
+                            Log.d(TAG, "Download Image Url: " + webImageUrl + "\n Referrer Url: " + pageItem.getReferUrl());
+
+                            String UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
+                            LazyHeaders.Builder builder = new LazyHeaders.Builder();
+                            builder.addHeader("Referer", pageItem.getReferUrl());
+                            builder.addHeader("User-Agent", UserAgent);
+                            return new GlideUrl(webImageUrl, builder.build());
+                        }
+                    })
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<GlideUrl>() {
+                        @Override
+                        public void accept(@NonNull GlideUrl glideUrl) throws Exception {
+                            loadImage(glideUrl, progressBar, v, iv, curr, finalNext);
+                        }
+                    });
+        }
     }
 
     private void loadImage(final GlideUrl url, final ProgressBar progressBar, final View v, final FitXImageView iv, final int curr, final int next) {

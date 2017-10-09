@@ -40,8 +40,8 @@ public class MangaChapterItem extends BaseItem {
     @Override
     public String getTitle() {
         String title = super.getTitle();
-        if (!TextUtils.isEmpty(title)) {
-            return title.replace(getMenu().getTitle(), "");
+        if (!TextUtils.isEmpty(title) && getMenu() != null) {
+            return title.replace(getMenu().getTitle() + "", "");
         }
         return super.getTitle();
     }
