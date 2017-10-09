@@ -102,9 +102,11 @@ public class WebSiteBasePattern {
     }
 
     protected String checkUrl(String url) {
-        if (url.startsWith("/")) {
+        if (url.startsWith("//")) {
+            url = "http:" + url;
+        } else if (url.startsWith("/")) {
             url = WEBSITEURL + url.substring(1);
-        }else if (!url.startsWith("http")){
+        } else if (!url.startsWith("http")) {
             url = WEBSITEURL + url;
         }
         //remove last "/"
@@ -182,7 +184,7 @@ public class WebSiteBasePattern {
                 + pageItem.getFolderPath();
         String fileName = FileHelper.getFileName(imgUrl);
         try {
-            InputStream inputStream = NetworkHelper.downLoadFromUrl(imgUrl,refer);
+            InputStream inputStream = NetworkHelper.downLoadFromUrl(imgUrl, refer);
             return FileHelper.saveFile(folderName, fileName, inputStream);
         } catch (MalformedURLException e1) {
             e1.printStackTrace();

@@ -39,9 +39,7 @@ public class WebMangaFox extends WebSiteBasePattern {
 
         Document doc = Jsoup.parse(html);
         Elements el = doc.select(".title");
-        Iterator i = el.iterator();
-        while (i.hasNext()) {
-            Element e = (Element) i.next();
+        for (Element e : el) {
             String url = checkUrl(e.select("a").attr("href"));
             String title = e.select("a").text();
             String imageUrl = "";
