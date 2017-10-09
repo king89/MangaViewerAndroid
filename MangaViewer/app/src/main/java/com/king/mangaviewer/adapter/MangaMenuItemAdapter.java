@@ -61,7 +61,7 @@ public class MangaMenuItemAdapter extends RecyclerView.Adapter<MangaMenuItemAdap
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
 
-        holder.imageView.setImageURL(this.menu.get(position), true, context.getResources().getDrawable(R.color.black));
+        holder.imageView.setImageURL(this.menu.get(position), true, context.getResources().getDrawable(R.color.lightGrey));
         String title = this.menu.get(position).getTitle();
         holder.textView.setText(title);
 
