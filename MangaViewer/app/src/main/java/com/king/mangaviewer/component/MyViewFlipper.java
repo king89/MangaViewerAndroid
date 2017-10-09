@@ -51,6 +51,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -176,29 +177,37 @@ public class MyViewFlipper extends ViewFlipper {
         initPageAnimation();
         delayFullScreen();
 
-        pd.show();
+
         if (mangaViewModel.getMangaPageList() == null) {
-            disposable.add(Flowable.fromCallable(new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    getPageList();
-                    return 1;
-                }
-            })
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Object>() {
+            pd.show();
+            disposable.add(
+                    Flowable.fromCallable(new Callable<Object>() {
                         @Override
-                        public void accept(@NonNull Object o) throws Exception {
-                            pd.dismiss();
-                            if (pageList != null && pageList.size() > 0) {
-                                setView(getCurrPos(), getCurrPos());
-                                updateConsumer.accept(o);
-                            } else {
-                                Toast.makeText(getContext(), getContext().getString(R.string.msg_page_no_page), Toast.LENGTH_SHORT).show();
-                            }
+                        public Object call() throws Exception {
+                            getPageList();
+                            return 1;
                         }
-                    }));
+                    })
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doFinally(new Action() {
+                                @Override
+                                public void run() throws Exception {
+                                    pd.hide();
+                                }
+                            })
+                            .subscribe(new Consumer<Object>() {
+                                @Override
+                                public void accept(@NonNull Object o) throws Exception {
+                                    if (pageList != null && pageList.size() > 0) {
+                                        setView(getCurrPos(), getCurrPos());
+                                        updateConsumer.accept(o);
+                                    } else {
+                                        Toast.makeText(getContext(), getContext().getString(R.string.msg_page_no_page), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+            );
         } else {
             pageList = mangaViewModel.getMangaPageList();
             setView(getCurrPos(), getCurrPos());
@@ -585,7 +594,6 @@ public class MyViewFlipper extends ViewFlipper {
         } else {
             mDecorView.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
 

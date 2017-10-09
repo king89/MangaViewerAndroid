@@ -1,5 +1,6 @@
 package com.king.mangaviewer.activity;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,7 +14,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
@@ -31,7 +31,7 @@ public class MangaPageActivity extends BaseActivity {
 
     public static final String INTENT_EXTRA_FROM_HISTORY = "intent_extra_from_history";
 
-    public MyViewFlipper vFlipper = null;
+    public MyViewFlipper mViewFlipper = null;
     private View mDecorView;
     SeekBar sb = null;
     AdView mAdView;
@@ -74,11 +74,19 @@ public class MangaPageActivity extends BaseActivity {
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (mViewFlipper != null) {
+            mViewFlipper.refresh();
+        }
+    }
+
+    @Override
     protected void initControl() {
         // TODO Auto-generated method stub
         mIsLoadFromHistory = getIntent().getBooleanExtra(INTENT_EXTRA_FROM_HISTORY, false);
         setContentView(R.layout.activity_manga_page);
-        vFlipper = (MyViewFlipper) this.findViewById(R.id.viewFlipper);
+        mViewFlipper = (MyViewFlipper) this.findViewById(R.id.viewFlipper);
 
         final View controlsView = findViewById(R.id.fullscreen_content_controls);
 
@@ -100,7 +108,7 @@ public class MangaPageActivity extends BaseActivity {
                     // adjustments to your UI, such as showing the action bar or
                     // other navigational controls.
 //                    isFullScreen = false;
-                    vFlipper.setFullScreen(false);
+                    mViewFlipper.setFullScreen(false);
                     controlsView.animate()
                             .translationY(0)
                             .setDuration(mShortAnimTime);
@@ -112,7 +120,7 @@ public class MangaPageActivity extends BaseActivity {
                     // adjustments to your UI, such as hiding the action bar or
                     // other navigational controls.
 //                    isFullScreen = true;
-                    vFlipper.setFullScreen(true);
+                    mViewFlipper.setFullScreen(true);
 
                     controlsView.animate()
                             .translationY(mControlsHeight)
@@ -131,7 +139,7 @@ public class MangaPageActivity extends BaseActivity {
         sb.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                vFlipper.delayFullScreen();
+                mViewFlipper.delayFullScreen();
                 return false;
             }
         });
@@ -139,28 +147,28 @@ public class MangaPageActivity extends BaseActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                tv.setText("" + (progress + 1) + "/" + vFlipper.getPageCount());
+                tv.setText("" + (progress + 1) + "/" + mViewFlipper.getPageCount());
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                seekBar.setMax(vFlipper.getPageCount() - 1);
-                seekBar.setProgress(vFlipper.getCurrPos());
+                seekBar.setMax(mViewFlipper.getPageCount() - 1);
+                seekBar.setProgress(mViewFlipper.getCurrPos());
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int pos = seekBar.getProgress();
-                vFlipper.goToPageNum(pos);
+                mViewFlipper.goToPageNum(pos);
             }
         });
         //set current pos changed listener
-        vFlipper.setOnCurrentPosChangedListener(new MyViewFlipper.OnCurrentPosChangedListener() {
+        mViewFlipper.setOnCurrentPosChangedListener(new MyViewFlipper.OnCurrentPosChangedListener() {
             @Override
             public void onChanged(int pos) {
                 sb.setProgress(pos);
-                sb.setMax(vFlipper.getPageCount() - 1);
-                tv.setText("" + (pos + 1) + "/" + vFlipper.getPageCount());
+                sb.setMax(mViewFlipper.getPageCount() - 1);
+                tv.setText("" + (pos + 1) + "/" + mViewFlipper.getPageCount());
             }
         });
 
@@ -169,22 +177,22 @@ public class MangaPageActivity extends BaseActivity {
         mFFImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                vFlipper.goNextChapter();
+                mViewFlipper.goNextChapter();
             }
         });
         mFRImageButton = (ImageButton) findViewById(R.id.frButton);
         mFRImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                vFlipper.goPrevChapter();
+                mViewFlipper.goPrevChapter();
             }
         });
 
         //start
         if (!mIsLoadFromHistory) {
-            vFlipper.initial(mMangaViewModel, mSettingViewModel, mUpdateConsumer);
+            mViewFlipper.initial(mMangaViewModel, mSettingViewModel, mUpdateConsumer);
         } else {
-            vFlipper.initialFromHistory(mMangaViewModel, mSettingViewModel, mUpdateConsumer);
+            mViewFlipper.initialFromHistory(mMangaViewModel, mSettingViewModel, mUpdateConsumer);
         }
 
     }
@@ -244,7 +252,7 @@ public class MangaPageActivity extends BaseActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_setting) {
 
-            vFlipper.stopAutoFullscreen();
+            mViewFlipper.stopAutoFullscreen();
             View v = findViewById(R.id.menu_setting);
             displayPopupWindow(v);
 
@@ -266,7 +274,7 @@ public class MangaPageActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mSettingViewModel.setIsFromLeftToRight(isChecked);
-                vFlipper.refresh();
+                mViewFlipper.refresh();
 
             }
         });
@@ -275,7 +283,7 @@ public class MangaPageActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mSettingViewModel.setIsSplitPage(MangaPageActivity.this, isChecked);
-                vFlipper.refresh();
+                mViewFlipper.refresh();
             }
         });
 
