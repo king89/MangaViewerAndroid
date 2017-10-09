@@ -119,23 +119,16 @@ public class WebMangaFox extends WebSiteBasePattern {
             Elements els = el.get(i).select(".tips");
             String vol = el.get(i).previousElementSibling().select(".volume").first().textNodes().get(0).text();
 
-            Iterator it = els.iterator();
-            while (it.hasNext()) {
-                Element e = (Element) it.next();
+            for (Element e : els) {
                 String url = e.attr("href");
                 String title = e.text();
                 if (!vol.toLowerCase().contains("not")) {
                     title = title + " - " + vol;
                 }
-                if (url.startsWith("/")) {
-                    url = WEBSITEURL + url;
-                }
-
-                if (url.endsWith("/"))
-                {
+                url = checkUrl(url);
+                if (url.endsWith("/")) {
                     url = url + "1.htm";
                 }
-
                 chapterList.add(new TitleAndUrl(title, url));
             }
         }
