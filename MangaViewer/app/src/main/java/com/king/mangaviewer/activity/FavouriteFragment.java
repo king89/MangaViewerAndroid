@@ -12,10 +12,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.FavouriteMangaItemAdapter;
+import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 
 import java.util.Collections;
@@ -61,7 +63,7 @@ public class FavouriteFragment extends BaseFragment {
         gridLayoutManager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.gridvivew_column_num));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        mRecyclerView.setAdapter(null);
+        mRecyclerView.setAdapter(new FavouriteMangaItemAdapter(getContext(), null, null));
 
         tv = (TextView) rootView.findViewById(R.id.textView);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
@@ -110,7 +112,7 @@ public class FavouriteFragment extends BaseFragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (gridLayoutManager != null){
+        if (gridLayoutManager != null) {
             gridLayoutManager.setSpanCount(getResources().getInteger(R.integer.gridvivew_column_num));
         }
     }

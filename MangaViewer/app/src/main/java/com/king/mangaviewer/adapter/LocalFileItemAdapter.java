@@ -1,8 +1,6 @@
 package com.king.mangaviewer.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +10,6 @@ import android.widget.TextView;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.LocalFragment;
-import com.king.mangaviewer.activity.MangaChapterActivity;
-import com.king.mangaviewer.component.MyImageView;
-import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
-import com.king.mangaviewer.model.FavouriteMangaMenuItem;
-import com.king.mangaviewer.model.MangaMenuItem;
-import com.king.mangaviewer.viewmodel.MangaViewModel;
 
 import java.util.List;
 
@@ -27,12 +19,12 @@ import java.util.List;
 public class LocalFileItemAdapter extends RecyclerView.Adapter<LocalFileItemAdapter.RecyclerViewHolders> {
     private Context context;
     private LayoutInflater mInflater = null;
-    private List<LocalFragment.Item> dateList;
+    private List<LocalFragment.Item> list;
     private OnLocalFileItemClickListener onClickListener;
 
     public LocalFileItemAdapter(Context context, List<LocalFragment.Item> item, OnLocalFileItemClickListener onClickListener) {
         this.context = context;
-        this.dateList = item;
+        this.list = item;
         this.onClickListener = onClickListener;
     }
 
@@ -49,14 +41,14 @@ public class LocalFileItemAdapter extends RecyclerView.Adapter<LocalFileItemAdap
 
     @Override
     public void onBindViewHolder(LocalFileItemAdapter.RecyclerViewHolders holder, int position) {
-        holder.textView.setText(dateList.get(position).file);
+        holder.textView.setText(list.get(position).file);
         // put the image on the text view
-        holder.imageView.setImageResource(dateList.get(position).icon);
+        holder.imageView.setImageResource(list.get(position).icon);
     }
 
     @Override
     public int getItemCount() {
-        return dateList.size();
+        return list != null ? list.size() : 0;
     }
 
     public class RecyclerViewHolders extends RecyclerView.ViewHolder {

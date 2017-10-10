@@ -74,7 +74,7 @@ public class HistoryFragment extends BaseFragment {
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.listView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(null);
+        recyclerView.setAdapter(new HistoryChapterItemAdapter(getContext(), null, null));
 
         tv = (TextView) rootView.findViewById(R.id.textView);
         startAsyncTask();

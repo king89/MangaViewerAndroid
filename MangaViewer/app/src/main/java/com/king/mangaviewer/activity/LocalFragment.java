@@ -85,7 +85,7 @@ public class LocalFragment extends BaseFragment {
         });
         recyclerView = (RecyclerView) rootView.findViewById(R.id.listView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(null);
+        recyclerView.setAdapter(new LocalFileItemAdapter(getContext(), null, null));
         tv.setText(extraPath);
         startAsyncTask();
         //showDialog(DIALOG_LOAD_FILE);
@@ -225,7 +225,7 @@ public class LocalFragment extends BaseFragment {
             adapter = new LocalFileItemAdapter(getContext(), fileList, listener);
         }
 
-        getActivity().runOnUiThread(new Runnable(){
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 tv.setText(extraPath);

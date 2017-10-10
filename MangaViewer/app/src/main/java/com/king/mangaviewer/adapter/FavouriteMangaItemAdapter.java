@@ -70,7 +70,7 @@ public class FavouriteMangaItemAdapter extends RecyclerView.Adapter<FavouriteMan
      */
     @Override
     public int getItemCount() {
-        return menu.size();
+        return menu != null ? menu.size() : 0;
     }
 
     public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
