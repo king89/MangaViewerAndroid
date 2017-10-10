@@ -1,6 +1,7 @@
 package com.king.mangaviewer.activity;
 
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -57,16 +58,21 @@ public class FavouriteFragment extends BaseFragment {
 
         View rootView = inflater.inflate(R.layout.fragment_favourite, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        gridLayoutManager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.gridvivew_column_num));
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setAdapter(null);
+
         tv = (TextView) rootView.findViewById(R.id.textView);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getInitContentAsycExcutor().execute();
+                startAsyncTask();
             }
         });
 
-        getInitContentAsycExcutor().execute();
+        startAsyncTask();
         return rootView;
     }
 
@@ -80,11 +86,6 @@ public class FavouriteFragment extends BaseFragment {
     protected void updateContent() {
         super.updateContent();
         MainActivity copy = (MainActivity) getActivity();
-
-        gridLayoutManager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.gridvivew_column_num));
-
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(gridLayoutManager);
 
         FavouriteMangaItemAdapter rcAdapter = new FavouriteMangaItemAdapter(copy, copy.getAppViewModel().Manga, dateList);
         mRecyclerView.setAdapter(rcAdapter);
@@ -104,7 +105,13 @@ public class FavouriteFragment extends BaseFragment {
         Collections.sort(dateList);
         Collections.reverse(dateList);
 
+    }
 
-
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (gridLayoutManager != null){
+            gridLayoutManager.setSpanCount(getResources().getInteger(R.integer.gridvivew_column_num));
+        }
     }
 }

@@ -92,7 +92,7 @@ public class MyViewFlipper extends ViewFlipper {
 
 
     protected final Object lock = new Object();
-    final ProgressDialog pd = new ProgressDialog(getContext());
+    ProgressDialog pd = new ProgressDialog(getContext());
     CompositeDisposable disposable = new CompositeDisposable();
 
 
@@ -607,6 +607,8 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
+
+
     public interface OnCurrentPosChangedListener {
         public void onChanged(int pos);
     }
@@ -691,5 +693,10 @@ public class MyViewFlipper extends ViewFlipper {
             return super.onSingleTapConfirmed(e);
         }
 
+    }
+
+    public void destroy() {
+        pd.dismiss();
+        pd = null;
     }
 }

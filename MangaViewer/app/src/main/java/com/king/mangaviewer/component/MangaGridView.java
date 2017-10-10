@@ -2,6 +2,7 @@ package com.king.mangaviewer.component;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -70,6 +71,15 @@ public class MangaGridView extends RecyclerView {
         MangaGridView.this.setLayoutManager(mGridLayoutManager);
         MangaGridView.this.setAdapter(new MangaMenuItemAdapter(getContext(), mMangaViewModel, mMangaList));
         getMoreManga();
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        GridLayoutManager layoutManager = (GridLayoutManager) this.getLayoutManager();
+        if (layoutManager != null){
+            layoutManager.setSpanCount(getResources().getInteger(R.integer.gridvivew_column_num));
+        }
     }
 
     private void Init() {

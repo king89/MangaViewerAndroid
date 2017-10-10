@@ -1,6 +1,7 @@
 package com.king.mangaviewer.activity;
 
 
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -15,30 +16,54 @@ import com.king.mangaviewer.viewmodel.HistoryViewModel;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
+import java.util.concurrent.Callable;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class BaseFragment extends Fragment {
 
-    protected SettingViewModel mSettingViewModel;
-    protected MangaViewModel mMangaViewModel;
-    private InitContentAsyc mInitContentAsyc;
     public BaseFragment() {
         // Required empty public constructor
     }
-    protected InitContentAsyc getInitContentAsycExcutor(){
-        return new InitContentAsyc();
-    }
-    protected SettingViewModel getSettingViewModel(){
-        return ((BaseActivity)this.getActivity()).getAppViewModel().Setting;
+
+    protected void startAsyncTask() {
+        Observable.fromCallable(
+                new Callable<Object>() {
+                    @Override
+                    public Object call() throws Exception {
+                        getContentBackground();
+                        return 1;
+                    }
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(@NonNull Object o) throws Exception {
+                        updateContent();
+                    }
+                });
     }
 
-    protected MangaViewModel getMangaViewModel(){
-        return ((BaseActivity)this.getActivity()).getAppViewModel().Manga;
+    protected SettingViewModel getSettingViewModel() {
+        return ((BaseActivity) this.getActivity()).getAppViewModel().Setting;
     }
-    protected HistoryViewModel getHistoryViewModel(){
-        return ((BaseActivity)this.getActivity()).getAppViewModel().HistoryManga;
+
+    protected MangaViewModel getMangaViewModel() {
+        return ((BaseActivity) this.getActivity()).getAppViewModel().Manga;
     }
+
+    protected HistoryViewModel getHistoryViewModel() {
+        return ((BaseActivity) this.getActivity()).getAppViewModel().HistoryManga;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,19 +74,7 @@ public class BaseFragment extends Fragment {
     }
 
 
-    public void refresh(){}
-
-    protected class InitContentAsyc extends AsyncTask<Void,Void,Void>{
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            return getContentBackground();
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            updateContent();
-        }
+    public void refresh() {
     }
 
     protected void updateContent() {
@@ -70,4 +83,5 @@ public class BaseFragment extends Fragment {
     protected Void getContentBackground() {
         return null;
     }
+
 }

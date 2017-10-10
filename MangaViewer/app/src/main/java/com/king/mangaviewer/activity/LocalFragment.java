@@ -84,8 +84,10 @@ public class LocalFragment extends BaseFragment {
             }
         });
         recyclerView = (RecyclerView) rootView.findViewById(R.id.listView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(null);
         tv.setText(extraPath);
-        getInitContentAsycExcutor().execute();
+        startAsyncTask();
         //showDialog(DIALOG_LOAD_FILE);
         Log.d(TAG, path.getAbsolutePath());
 
@@ -103,7 +105,6 @@ public class LocalFragment extends BaseFragment {
     @Override
     protected void updateContent() {
         super.updateContent();
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         listener = new LocalFileItemAdapter.OnLocalFileItemClickListener() {
             @Override

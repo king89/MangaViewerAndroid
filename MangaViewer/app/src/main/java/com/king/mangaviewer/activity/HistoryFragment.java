@@ -2,6 +2,7 @@ package com.king.mangaviewer.activity;
 
 
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,7 +36,7 @@ public class HistoryFragment extends BaseFragment {
     @Override
     public void onResume() {
         //Toast.makeText(getActivity(),"OnResume",Toast.LENGTH_SHORT);
-        getInitContentAsycExcutor().execute();
+        startAsyncTask();
         super.onResume();
     }
 
@@ -72,9 +73,11 @@ public class HistoryFragment extends BaseFragment {
 
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.listView);
-        tv = (TextView) rootView.findViewById(R.id.textView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(null);
 
-        getInitContentAsycExcutor().execute();
+        tv = (TextView) rootView.findViewById(R.id.textView);
+        startAsyncTask();
         return rootView;
     }
 
@@ -88,7 +91,7 @@ public class HistoryFragment extends BaseFragment {
     protected void updateContent() {
         super.updateContent();
         MainActivity activity = (MainActivity) getActivity();
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         RecyclerView.Adapter adapter = new HistoryChapterItemAdapter(activity, activity.getAppViewModel().Manga, dateList);
         recyclerView.setAdapter(adapter);
         tv.setVisibility(View.GONE);
@@ -101,7 +104,7 @@ public class HistoryFragment extends BaseFragment {
     private void getHistoryMangaList() {
         MainActivity activity = (MainActivity) getActivity();
         dateList = activity.getAppViewModel().HistoryManga.getHistoryChapterList();
-
-
     }
+
+
 }

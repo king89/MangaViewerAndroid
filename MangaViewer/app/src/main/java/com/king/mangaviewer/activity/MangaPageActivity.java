@@ -297,4 +297,10 @@ public class MangaPageActivity extends BaseActivity {
         // Show anchored to button
         popup.showAsDropDown(anchorView);
     }
+
+    @Override
+    protected void onDestroy() {
+        mViewFlipper.destroy();
+        super.onDestroy();
+    }
 }
