@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MangaViewer</string>
+    <string name="app_name">Manga Vega</string>
     <string name="hello_world">Hello world!</string>
     <string name="refresh">Refresh</string>
     <string name="title_activity_manga_chapter">MangaChapterActivity</string>
@@ -17,7 +17,7 @@
     <string name="reading_direction">Reading Direction\t\t\t</string>
     <string name="split_page">Auto Split Page\t\t\t</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="menu_main_setting_title">Change Mange Source</string>
+    <string name="menu_main_setting_title">Mange Source</string>
     <!--Menu-->
     <string name="nav_latest_update">Latest Releases</string>
     <string name="nav_all_manga">All Manga</string>
