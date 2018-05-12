@@ -1,67 +1,65 @@
-ext.versions = [
-        rxJava2          : "2.1.0",
-        rxAndroid        : "2.0.1",
-        retrofit         : "2.3.0",
-        androidBuildTools: "25.0.2",
-        androidMinSdk    : 15,
-        androidTargetSdk : 23,
-        androidCompileSdk: 25,
-        androidAppCompat : "23.3.0",
+ext.versions = [rxJava2          : "2.1.0",
+                rxAndroid        : "2.0.1",
+                retrofit         : "2.3.0",
+                androidBuildTools: "27.1.2",
+                androidMinSdk    : 15,
+                androidTargetSdk : 27,
+                androidCompileSdk: 27,
+                androidAppCompat : "23.3.0",
 
-        //Libraries
-        retrofit         : "1.9.0",
-        retrofit2        : "2.3.0",
-        butterKnife      : "8.4.0",
-        okHttp           : "3.8.0",
+                //Libraries
+                retrofit         : "1.9.0",
+                retrofit2        : "2.3.0",
+                butterKnife      : "8.4.0",
+                okHttp           : "3.8.0",
 
-        multidex         : "1.0.1",
+                multidex         : "1.0.1",
 
-        googlePlayService: "9.4.0",
-        jodaTime         : "2.9.3",
-        gson             : "2.3.1",
-        glide            : "3.7.0",
-]
+                googlePlayService: "9.4.0",
+                jodaTime         : "2.9.3",
+                gson             : "2.3.1",
+                glide            : "3.7.0",]
 
-ext.libraries = [
-        appCompatV7        : "com.android.support:appcompat-v7:$versions.androidAppCompat",
-        androidAnnotations : "com.android.support:support-annotations:$versions.androidAppCompat",
-        androidSupport     : "com.android.support:support-v4:$versions.androidAppCompat",
-        androidDesign      : "com.android.support:design:$versions.androidAppCompat",
-        androidCardView    : "com.android.support:cardview-v7:$versions.androidAppCompat",
-        androidRecyclerView: "com.android.support:recyclerview-v7:$versions.androidAppCompat",
-        androidMultidex    : "com.android.support:multidex:$versions.multidex",
+ext.libraries = [appCompatV7        : "com.android.support:appcompat-v7:$versions.androidAppCompat",
+                 androidAnnotations : "com.android.support:support-annotations:$versions.androidAppCompat",
+                 androidSupport     : "com.android.support:support-v4:$versions.androidAppCompat",
+                 androidDesign      : "com.android.support:design:$versions.androidAppCompat",
+                 androidCardView    : "com.android.support:cardview-v7:$versions.androidAppCompat",
+                 androidRecyclerView: "com.android.support:recyclerview-v7:$versions.androidAppCompat",
+                 androidMultidex    : "com.android.support:multidex:$versions.multidex",
+                 preference         : "com.android.support:preference-v14:$versions.androidAppCompat",
 
-        rxJava2            : "io.reactivex.rxjava2:rxjava:$versions.rxJava2",
-        rxAndroid          : "io.reactivex.rxjava2:rxandroid:$versions.rxAndroid",
+                 rxJava2            : "io.reactivex.rxjava2:rxjava:$versions.rxJava2",
+                 rxAndroid          : "io.reactivex.rxjava2:rxandroid:$versions.rxAndroid",
 
-        okHttp             : "com.squareup.okhttp3:okhttp:$versions.okHttp",
-        okHttpInterceptor  : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp",
-        retrofit           : "com.squareup.retrofit:retrofit:$versions.retrofit",
+                 okHttp             : "com.squareup.okhttp3:okhttp:$versions.okHttp",
+                 okHttpInterceptor  : "com.squareup.okhttp3:logging-interceptor:$versions.okHttp",
+                 retrofit           : "com.squareup.retrofit:retrofit:$versions.retrofit",
 
-        retrofit2          : "com.squareup.retrofit2:retrofit:$versions.retrofit2",
-        retrofit2Gson      : "com.squareup.retrofit2:converter-gson:$versions.retrofit2",
-        retrofit2RxJava    : "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit2",
+                 retrofit2          : "com.squareup.retrofit2:retrofit:$versions.retrofit2",
+                 retrofit2Gson      : "com.squareup.retrofit2:converter-gson:$versions.retrofit2",
+                 retrofit2RxJava    : "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit2",
 
-        butterKnife        : "com.jakewharton:butterknife:$versions.butterKnife",
-        butterKnifeCompiler: "com.jakewharton:butterknife-compiler:$versions.butterKnife",
+                 butterKnife        : "com.jakewharton:butterknife:$versions.butterKnife",
+                 butterKnifeCompiler: "com.jakewharton:butterknife-compiler:$versions.butterKnife",
 
-        googleGcm          : "com.google.android.gms:play-services-gcm:$versions.googlePlayService",
-        googleMaps         : "com.google.android.gms:play-services-maps:$versions.googlePlayService",
-        googlePlus         : "com.google.android.gms:play-services-plus:$versions.googlePlayService",
-        googleAuth         : "com.google.android.gms:play-services-auth:$versions.googlePlayService",
-        googleBase         : "com.google.android.gms:play-services-base:$versions.googlePlayService",
-        googleLocation     : "com.google.android.gms:play-services-location:$versions.googlePlayService",
-        googlePlaces       : "com.google.android.gms:play-services-places:$versions.googlePlayService",
-        jodaTime           : "joda-time:joda-time:$versions.jodaTime",
-        gson               : "com.google.code.gson:gson:$versions.gson",
+                 googleGcm          : "com.google.android.gms:play-services-gcm:$versions.googlePlayService",
+                 googleMaps         : "com.google.android.gms:play-services-maps:$versions.googlePlayService",
+                 googlePlus         : "com.google.android.gms:play-services-plus:$versions.googlePlayService",
+                 googleAuth         : "com.google.android.gms:play-services-auth:$versions.googlePlayService",
+                 googleBase         : "com.google.android.gms:play-services-base:$versions.googlePlayService",
+                 googleLocation     : "com.google.android.gms:play-services-location:$versions.googlePlayService",
+                 googlePlaces       : "com.google.android.gms:play-services-places:$versions.googlePlayService",
+                 googlePlayService  : "com.google.android.gms:play-services-ads:$versions.googlePlayService",
+                 jodaTime           : "joda-time:joda-time:$versions.jodaTime",
+                 gson               : "com.google.code.gson:gson:$versions.gson",
 
-        glide              : "com.github.bumptech.glide:glide:$versions.glide"
-]
+                 glide              : "com.github.bumptech.glide:glide:$versions.glide"]
 
-ext.appendVersionNameVersionCode = { variant, defaultConfig ->
-    variant.outputs.each { output ->
-        def file = output.packageApplication.outputFile
-        def fileName = file.name.replace(".apk", "-" + defaultConfig.versionName + ".apk")
-        output.packageApplication.outputFile = new File(file.parent, fileName)
-    }
-}
+//ext.appendVersionNameVersionCode = { variant, defaultConfig ->
+//    variant.outputs.each { output ->
+//        def file = output.outPutFileName
+//        def fileName = file.name.replace(".apk", "-" + defaultConfig.versionName + ".apk")
+//        output.packageApplication.outputFileName = new File(file.parent, fileName)
+//    }
+//}
