@@ -7,6 +7,7 @@ import android.util.Log;
 import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.common.Constants.SaveType;
 import com.king.mangaviewer.util.FileHelper;
+import com.king.mangaviewer.util.Logger;
 import com.king.mangaviewer.util.NetworkHelper;
 import com.king.mangaviewer.util.StringUtils;
 import com.king.mangaviewer.model.MangaMenuItem;
@@ -267,7 +268,7 @@ public class WebSiteBasePattern {
             }
 
             String turl = getSearchUrl(queryText, pageNum);
-            Log.v(LOG_TAG, "Search: " + turl);
+            Logger.i(LOG_TAG, "Search: " + turl);
             html = getHtml(turl);
             if (html.isEmpty()) {
                 return null;

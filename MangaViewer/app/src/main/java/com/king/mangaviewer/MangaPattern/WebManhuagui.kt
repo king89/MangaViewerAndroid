@@ -13,7 +13,7 @@ class WebManhuagui(context: Context) : WebSiteBasePattern(context) {
 
     init {
         WEBSITE_URL = "https://www.manhuagui.com/"
-        WEB_SEARCH_URL = "https://www.manhuagui.com/s/%s_p%s"
+        WEB_SEARCH_URL = "https://www.manhuagui.com/s/%s_p%s.html"
         WEB_LATEST_MANGA_BASE_URL = "https://www.manhuagui.com/update/"
         WEB_ALL_MANGA_BASE_URL = "https://www.manhuagui.com/list/"
         CHARSET = "utf-8"
@@ -45,6 +45,49 @@ class WebManhuagui(context: Context) : WebSiteBasePattern(context) {
 
         return topMangaList
 
+    }
+
+    override fun getSearchList(html: String?): MutableList<TitleAndUrl> {
+        val mangaList = ArrayList<TitleAndUrl>()
+
+        val doc = Jsoup.parse(html)
+        val el = doc.select(".bcover")
+        for (e in el) {
+            val url = checkUrl(e.attr("href")).let {
+                if (it.last() != '/') {
+                    "$it/"
+                } else {
+                    it
+                }
+            }
+            val title = e.attr("title")
+            val imageUrl = e.select("img").let {
+                if (it.attr("src").isEmpty()) {
+                    it.attr("data-src")
+                } else {
+                    it.attr("src")
+                }
+            }
+            mangaList.add(TitleAndUrl(title, url, imageUrl))
+        }
+
+        return mangaList
+    }
+
+    override fun getSearchTotalNum(html: String?): Int {
+        val doc = Jsoup.parse(html)
+        val els = doc.select(".pager a")
+        val index = els.last()?.let {
+            val pageLink = it.attr("href")
+            val p = Pattern.compile("p(\\d+)\\.")
+            val m = p.matcher(pageLink)
+            if (m.find()) {
+                m.group(1).toInt()
+            } else {
+                0
+            }
+        } ?: 0
+        return index
     }
 
     override fun getChapterList(chapterUrl: String): MutableList<TitleAndUrl> {

@@ -2,8 +2,11 @@ package com.king.mangaviewer
 
 import android.content.Context
 import com.king.mangaviewer.MangaPattern.WebManhuagui
+import com.king.mangaviewer.MangaPattern.WebSiteBasePattern
+import com.king.mangaviewer.MangaPattern.WebSiteBasePattern.STATE_SEARCH_QUERYTEXT
 import com.king.mangaviewer.util.LZString
 import junit.framework.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -15,11 +18,16 @@ class WebManhuaguiTest {
 
     @Mock
     lateinit var mMockContext: Context
+    lateinit var wbp: WebSiteBasePattern
+
+    @Before
+    fun setup() {
+        wbp = WebManhuagui(mMockContext)
+    }
 
     @Test
     fun getMangaList() {
 
-        val wbp = WebManhuagui(mMockContext)
         val hashMap = HashMap<String, Any>()
         val list = wbp.getLatestMangaList(hashMap)
         println(list.first())
@@ -28,7 +36,7 @@ class WebManhuaguiTest {
 
     @Test
     fun getChapterList() {
-        val wbp = WebManhuagui(mMockContext)
+
         val url = "https://www.manhuagui.com/comic/18467/"
         val list = wbp.getChapterList(url)
         println(list.first())
@@ -37,7 +45,7 @@ class WebManhuaguiTest {
 
     @Test
     fun getHiddenChapterList() {
-        val wbp = WebManhuagui(mMockContext)
+
         val url = "https://www.manhuagui.com/comic/19534/"
         val list = wbp.getChapterList(url)
         println(list.first())
@@ -46,7 +54,7 @@ class WebManhuaguiTest {
 
     @Test
     fun getPageList() {
-        val wbp = WebManhuagui(mMockContext)
+
         val url = "https://www.manhuagui.com/comic/18467/395378.html"
         val list = wbp.getPageList(url)
         println(list.first())
@@ -55,8 +63,24 @@ class WebManhuaguiTest {
     }
 
     @Test
-    fun searchManga() {
+    fun searchMangaNoPage() {
+        val hashState = HashMap<String, Any>().apply {
+            this[STATE_SEARCH_QUERYTEXT] = "one piece"
+        }
+        val list = wbp.getSearchingList(hashState)
+        println(list.first())
+        assertTrue(list.size > 0)
+    }
 
+    @Test
+    fun searchMangaMorePage() {
+        val hashState = HashMap<String, Any>().apply {
+            this[STATE_SEARCH_QUERYTEXT] = "a"
+        }
+        val list = wbp.getSearchingList(hashState)
+        println(list.first())
+        println(hashState)
+        assertTrue(list.size > 0)
     }
 
     @Test
