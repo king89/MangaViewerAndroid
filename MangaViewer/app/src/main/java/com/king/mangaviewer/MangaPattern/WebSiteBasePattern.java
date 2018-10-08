@@ -13,7 +13,6 @@ import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +46,6 @@ public class WebSiteBasePattern {
     public final static String STATE_PAGE_NUM_NOW = "key_page_num_now";
     public final static String STATE_TOTAL_PAGE_NUM_THIS_KEY = "key_total_page_num";
     public final static String STATE_NO_MORE = "key_no_more";
-
 
     public WebSiteBasePattern(Context context) {
         this.context = context;
@@ -104,11 +102,19 @@ public class WebSiteBasePattern {
     }
 
     protected String checkUrl(String url) {
+        return checkUrl(url, false);
+    }
+
+    protected String checkUrl(String url, boolean isHttps) {
+        String httpType = "http";
+        if (isHttps) {
+            httpType = "https";
+        }
         if (url.startsWith("//")) {
-            url = "http:" + url;
+            url = httpType + ":" + url;
         } else if (url.startsWith("/")) {
             url = WEBSITE_URL + url.substring(1);
-        } else if (!url.startsWith("http")) {
+        } else if (!url.startsWith(httpType)) {
             url = WEBSITE_URL + url;
         }
         //remove last "/"
@@ -178,9 +184,8 @@ public class WebSiteBasePattern {
         return file.getAbsolutePath();
     }
 
-
     public String DownloadImgPage(String imgUrl, MangaPageItem pageItem,
-                                  SaveType saveType, String refer) {
+            SaveType saveType, String refer) {
         if (refer == null || refer == "") {
             refer = this.WEBSITE_URL;
         }
@@ -244,7 +249,8 @@ public class WebSiteBasePattern {
                 e.printStackTrace();
             }
             int pageNum = 1;
-            int totalNum = state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY) ? (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY) : 0;
+            int totalNum = state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY) ? (int) state.get(
+                    STATE_TOTAL_PAGE_NUM_THIS_KEY) : 0;
             String html = "";
             //no total num means first time
             if (state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
@@ -298,7 +304,8 @@ public class WebSiteBasePattern {
 
         if (!noMore) {
             int pageNum = 1;
-            int totalNum = state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY) ? (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY) : 0;
+            int totalNum = state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY) ? (int) state.get(
+                    STATE_TOTAL_PAGE_NUM_THIS_KEY) : 0;
             String html = "";
             //no total num means first time
             if (state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY)) {
@@ -342,7 +349,6 @@ public class WebSiteBasePattern {
         return String.format(WEB_ALL_MANGA_BASE_URL, pageNum);
     }
     /*AllManga*/
-
 
     public String getMenuCover(MangaMenuItem menu) {
         return menu.getImagePath();

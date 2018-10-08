@@ -38,15 +38,7 @@ class WebDMZJTest {
 
     @Test
     fun getChapterList() {
-        val url = "https://www.manhuagui.com/comic/18467/"
-        val list = webSite.getChapterList(url)
-        println(list.first())
-        Assert.assertTrue(list.size > 0)
-    }
-
-    @Test
-    fun getHiddenChapterList() {
-        val url = "https://www.manhuagui.com/comic/19534/"
+        val url = "https://manhua.dmzj.com/wojianvpushibiantai/"
         val list = webSite.getChapterList(url)
         println(list.first())
         Assert.assertTrue(list.size > 0)
@@ -54,7 +46,7 @@ class WebDMZJTest {
 
     @Test
     fun getPageList() {
-        val url = "https://www.manhuagui.com/comic/18467/395378.html"
+        val url = "https://manhua.dmzj.com/wojianvpushibiantai/70128.shtml#@page=1"
         val list = webSite.getPageList(url)
         println(list.first())
         Assert.assertTrue(list.size > 0)

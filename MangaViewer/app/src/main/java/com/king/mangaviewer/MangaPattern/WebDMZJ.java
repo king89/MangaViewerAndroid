@@ -31,13 +31,13 @@ import java.util.regex.Pattern;
 
 public class WebDMZJ extends WebSiteBasePattern {
     private static final String TAG = WebDMZJ.class.getSimpleName();
-    String IMAGEURL = "http://images.dmzj.com/";
+    String IMAGEURL = "https://images.dmzj.com/";
 
     public WebDMZJ(Context context) {
         super(context);
-        WEBSITE_URL = "http://manhua.dmzj.com/";
+        WEBSITE_URL = "https://manhua.dmzj.com/";
         WEB_SEARCH_URL = "http://s.acg.dmzj.com/comicsum/search.php?s=%s&p=%s";
-        WEB_LATEST_MANGA_BASE_URL = "http://manhua.dmzj.com/update_1.shtml";
+        WEB_LATEST_MANGA_BASE_URL = "https://manhua.dmzj.com/update_1.shtml";
         WEB_ALL_MANGA_BASE_URL = "http://s.acg.dmzj.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=0&p=%s&callback=search.renderResult";
         CHARSET = "utf-8";
     }
@@ -118,7 +118,8 @@ public class WebDMZJ extends WebSiteBasePattern {
         }.getType();
         List<DMZJMangaItem> jsonList = new Gson().fromJson(json, listType);
         for (DMZJMangaItem item : jsonList) {
-            list.add(new TitleAndUrl(item.getName(), item.getComicUrl(), item.getComicCover()));
+            list.add(new TitleAndUrl(item.getName(), item.getComicUrl(),
+                    checkUrl(item.getComicCover(), true)));
         }
         return list;
     }
@@ -126,7 +127,8 @@ public class WebDMZJ extends WebSiteBasePattern {
     @Override
     public List<String> getPageList(String firstPageUrl) {
         String html = getHtml(firstPageUrl);
-        Pattern r = Pattern.compile("(eval\\(.+?\\[)(\".+?)(\\].+?,)(\\d+),(\\d+),(\'.+?\').+?(\\{\\}\\)\\))");
+        Pattern r = Pattern.compile(
+                "(eval\\(.+?\\[)(\".+?)(\\].+?,)(\\d+),(\\d+),(\'.+?\').+?(\\{\\}\\)\\))");
         try {
             Matcher m = r.matcher(html);
             m.find();
