@@ -20,8 +20,8 @@ public class WebTestManga extends WebSiteBasePattern {
     public WebTestManga(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
-        WEBSITEURL = "";
-        WEBSEARCHURL = "";
+        WEBSITE_URL = "";
+        WEB_SEARCH_URL = "";
         CHARSET = "gb2312";
     }
 
@@ -63,7 +63,7 @@ public class WebTestManga extends WebSiteBasePattern {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
         try {
             for (int i = 0; i < 10; i++) {
-                String url = WEBSITEURL + i;
+                String url = WEBSITE_URL + i;
                 String title = "Test MenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenu " + i;
                 String imageUrl = "";
                 topMangaList.add(new TitleAndUrl(title, url, imageUrl));
@@ -81,7 +81,7 @@ public class WebTestManga extends WebSiteBasePattern {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
         try {
             for (int i = 0; i < 10; i++) {
-                String url = WEBSITEURL + i;
+                String url = WEBSITE_URL + i;
                 String title = "Test Menu " + i;
                 String imageUrl = "";
                 topMangaList.add(new TitleAndUrl(title, url, imageUrl));

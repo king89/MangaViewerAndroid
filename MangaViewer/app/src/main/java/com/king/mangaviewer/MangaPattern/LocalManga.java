@@ -24,8 +24,8 @@ public class LocalManga extends WebSiteBasePattern {
     public LocalManga(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
-        WEBSITEURL = "";
-        WEBSEARCHURL = "";
+        WEBSITE_URL = "";
+        WEB_SEARCH_URL = "";
         CHARSET = "utf8";
     }
 
@@ -102,7 +102,7 @@ public class LocalManga extends WebSiteBasePattern {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
 
         for (int i = 0; i < 10; i++) {
-            String url = WEBSITEURL + i;
+            String url = WEBSITE_URL + i;
             String title = "Test Menu " + i;
             String imageUrl = "";
             topMangaList.add(new TitleAndUrl(title, url, imageUrl));

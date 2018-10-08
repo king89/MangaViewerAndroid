@@ -11,7 +11,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -25,10 +24,10 @@ public class WebMangaFox extends WebSiteBasePattern {
 
     public WebMangaFox(Context context) {
         super(context);
-        WEBSITEURL = "http://mangafox.me/";
-        WEBLATESTMANGABASEURL = "http://mangafox.me/";
-        WEBSEARCHURL = "http://mangafox.me/search.php?name_method=cw&name=%s&page=%d%s";
-        WEBALLMANGABASEURL = "http://mangafox.me/directory/%d.htm";
+        WEBSITE_URL = "http://mangafox.me/";
+        WEB_LATEST_MANGA_BASE_URL = "http://mangafox.me/";
+        WEB_SEARCH_URL = "http://mangafox.me/search.php?name_method=cw&name=%s&page=%d%s";
+        WEB_ALL_MANGA_BASE_URL = "http://mangafox.me/directory/%d.htm";
         CHARSET = "utf8";
     }
 
@@ -102,7 +101,7 @@ public class WebMangaFox extends WebSiteBasePattern {
 
     @Override
     protected String getSearchUrl(String queryText, int pageNum) {
-        return String.format(WEBSEARCHURL, queryText, pageNum, mRestSearchString);
+        return String.format(WEB_SEARCH_URL, queryText, pageNum, mRestSearchString);
     }
 
     //Chapter

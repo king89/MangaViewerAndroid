@@ -33,6 +33,14 @@
         <Language></Language>
         <Enable>1</Enable>
     </Source>
+    <Source id="4">
+        <Name>Manhuagui</Name>
+        <DisplayName>Manhuagui</DisplayName>
+        <ClassName>com.king.mangaviewer.MangaPattern.WebManhuagui</ClassName>
+        <Order>3</Order>
+        <Language></Language>
+        <Enable>1</Enable>
+    </Source>
     <Source id="999">
         <Name>TestManga</Name>
         <DisplayName>TestManga</DisplayName>

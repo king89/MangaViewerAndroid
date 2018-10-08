@@ -43,7 +43,7 @@ public class MangaHelper {
 
     private String getMenuHtml(WebSiteBasePattern pattern) {
         if (menuHtml.equalsIgnoreCase("")) {
-            return pattern.getHtml(pattern.WEBSITEURL);
+            return pattern.getHtml(pattern.WEBSITE_URL);
         } else {
             return menuHtml;
         }

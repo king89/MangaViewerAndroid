@@ -6,7 +6,7 @@
         <ClassName>com.king.mangaviewer.MangaPattern.WebHHComic</ClassName>
         <Order>2</Order>
         <Language></Language>
-        <Enable>1</Enable>
+        <Enable>0</Enable>
     </Source>
     <Source id="1">
         <Name>MangaFox</Name>
@@ -25,7 +25,22 @@
         <Language></Language>
         <Enable>1</Enable>
     </Source>
-
+    <Source id="3">
+        <Name>DMZJ</Name>
+        <DisplayName>DMZJ</DisplayName>
+        <ClassName>com.king.mangaviewer.MangaPattern.WebDMZJ</ClassName>
+        <Order>2</Order>
+        <Language></Language>
+        <Enable>1</Enable>
+    </Source>
+    <Source id="4">
+        <Name>Manhuagui</Name>
+        <DisplayName>Manhuagui</DisplayName>
+        <ClassName>com.king.mangaviewer.MangaPattern.WebManhuagui</ClassName>
+        <Order>3</Order>
+        <Language></Language>
+        <Enable>1</Enable>
+    </Source>
     <Source id="999">
         <Name>TestManga</Name>
         <DisplayName>TestManga</DisplayName>

@@ -1,11 +1,9 @@
 package com.king.mangaviewer.MangaPattern;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -19,14 +17,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,10 +35,10 @@ public class WebDMZJ extends WebSiteBasePattern {
 
     public WebDMZJ(Context context) {
         super(context);
-        WEBSITEURL = "http://manhua.dmzj.com/";
-        WEBSEARCHURL = "http://s.acg.dmzj.com/comicsum/search.php?s=%s&p=%s";
-        WEBLATESTMANGABASEURL = "http://manhua.dmzj.com/update_1.shtml";
-        WEBALLMANGABASEURL = "http://s.acg.dmzj.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=0&p=%s&callback=search.renderResult";
+        WEBSITE_URL = "http://manhua.dmzj.com/";
+        WEB_SEARCH_URL = "http://s.acg.dmzj.com/comicsum/search.php?s=%s&p=%s";
+        WEB_LATEST_MANGA_BASE_URL = "http://manhua.dmzj.com/update_1.shtml";
+        WEB_ALL_MANGA_BASE_URL = "http://s.acg.dmzj.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=0&p=%s&callback=search.renderResult";
         CHARSET = "utf-8";
     }
 

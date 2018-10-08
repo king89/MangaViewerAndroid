@@ -26,14 +26,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class WebSiteBasePattern {
     private final static String LOG_TAG = "WebSiteBasePattern";
     private static final int HTTP_TIMEOUT_NUM = 10000;
-    public String WEBSITEURL = "";
-    public String WEBSEARCHURL = "";
-    public String WEBALLMANGABASEURL = "";
-    public String WEBLATESTMANGABASEURL = "";
+    public String WEBSITE_URL = "";
+    public String WEB_SEARCH_URL = "";
+    public String WEB_ALL_MANGA_BASE_URL = "";
+    public String WEB_LATEST_MANGA_BASE_URL = "";
     public String CHARSET = "utf8";
     protected int startNum = 1;
     protected int totalNum = 1;
@@ -105,9 +107,9 @@ public class WebSiteBasePattern {
         if (url.startsWith("//")) {
             url = "http:" + url;
         } else if (url.startsWith("/")) {
-            url = WEBSITEURL + url.substring(1);
+            url = WEBSITE_URL + url.substring(1);
         } else if (!url.startsWith("http")) {
-            url = WEBSITEURL + url;
+            url = WEBSITE_URL + url;
         }
         //remove last "/"
         if (url.endsWith("/") && url.length() > 1) {
@@ -118,13 +120,15 @@ public class WebSiteBasePattern {
 
     // public void DownloadOnePage(String pageUrl,String folder,int nowPageNum)
     // { return; }
-    public String getHtml(String Url) {
+    public String getHtml(String urlString) {
         URL url;
         try {
-            url = new URL(Url);
+            url = new URL(urlString);
+            String UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36";
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(HTTP_TIMEOUT_NUM);
             conn.setReadTimeout(HTTP_TIMEOUT_NUM);
+            conn.setRequestProperty("User-Agent", UserAgent);
             conn.setDoInput(true);
             conn.connect();
             InputStream inputStream = conn.getInputStream();
@@ -140,7 +144,7 @@ public class WebSiteBasePattern {
     }
 
     public String getLatestMangaUrl() {
-        return this.WEBLATESTMANGABASEURL;
+        return this.WEB_LATEST_MANGA_BASE_URL;
     }
 
     public String getMangaFolder() {
@@ -178,7 +182,7 @@ public class WebSiteBasePattern {
     public String DownloadImgPage(String imgUrl, MangaPageItem pageItem,
                                   SaveType saveType, String refer) {
         if (refer == null || refer == "") {
-            refer = this.WEBSITEURL;
+            refer = this.WEBSITE_URL;
         }
         String folderName = getMangaFolder() + File.separator
                 + pageItem.getFolderPath();
@@ -277,7 +281,7 @@ public class WebSiteBasePattern {
     }
 
     protected String getSearchUrl(String queryText, int pageNum) {
-        return String.format(WEBSEARCHURL, queryText, pageNum);
+        return String.format(WEB_SEARCH_URL, queryText, pageNum);
     }
 
     protected List<TitleAndUrl> getSearchList(String html) {
@@ -335,7 +339,7 @@ public class WebSiteBasePattern {
     }
 
     protected String getAllMangaUrl(int pageNum) {
-        return String.format(WEBALLMANGABASEURL, pageNum);
+        return String.format(WEB_ALL_MANGA_BASE_URL, pageNum);
     }
     /*AllManga*/
 

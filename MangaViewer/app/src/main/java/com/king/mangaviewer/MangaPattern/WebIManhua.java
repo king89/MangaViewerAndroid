@@ -26,7 +26,7 @@ public class WebIManhua extends WebSiteBasePattern {
     public WebIManhua(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
-        WEBSITEURL = "http://www.imanhua.com/";
+        WEBSITE_URL = "http://www.imanhua.com/";
         CHARSET = "gb2312";
     }
 
@@ -69,7 +69,7 @@ public class WebIManhua extends WebSiteBasePattern {
             while (m.find()) {
                 Matcher m2 = rUrlAndTitle.matcher(m.group());
                 m2.find();
-                String url = WEBSITEURL + m2.group(1);
+                String url = WEBSITE_URL + m2.group(1);
                 String title = m2.group(2);
                 String imageUrl = m2.group(3);
                 topMangaList.add(new TitleAndUrl(title, url, imageUrl));
@@ -102,7 +102,7 @@ public class WebIManhua extends WebSiteBasePattern {
         m = rUrlAndTitle.matcher(html);
         while (m.find()) {
 
-            String url = WEBSITEURL + m.group(1);
+            String url = WEBSITE_URL + m.group(1);
             String title = m.group(2);
             chapterList.add(new TitleAndUrl(title, url));
 

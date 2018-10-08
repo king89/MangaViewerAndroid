@@ -25,10 +25,10 @@ public class WebMangaReader extends WebSiteBasePattern {
 
     public WebMangaReader(Context context) {
         super(context);
-        WEBSITEURL = "http://www.mangareader.net/";
-        WEBLATESTMANGABASEURL = "http://www.mangareader.net/";
-        WEBSEARCHURL = "http://www.mangareader.net/search/?w=%s&rd=0&status=0&order=0&p=%d";
-        WEBALLMANGABASEURL = "http://www.mangareader.net/popular/%d";
+        WEBSITE_URL = "http://www.mangareader.net/";
+        WEB_LATEST_MANGA_BASE_URL = "http://www.mangareader.net/";
+        WEB_SEARCH_URL = "http://www.mangareader.net/search/?w=%s&rd=0&status=0&order=0&p=%d";
+        WEB_ALL_MANGA_BASE_URL = "http://www.mangareader.net/popular/%d";
         CHARSET = "utf8";
     }
 

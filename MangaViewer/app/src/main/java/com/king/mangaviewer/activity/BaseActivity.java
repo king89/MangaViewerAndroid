@@ -5,13 +5,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
-
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
-
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.util.GsonHelper;
 import com.king.mangaviewer.util.MangaHelper;
@@ -19,7 +16,6 @@ import com.king.mangaviewer.util.SettingHelper;
 import com.king.mangaviewer.viewmodel.AppViewModel;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
-
 import io.reactivex.disposables.CompositeDisposable;
 
 

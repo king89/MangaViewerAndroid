@@ -44,10 +44,10 @@ public class WebHHComic extends WebSiteBasePattern {
     public WebHHComic(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
-        WEBSITEURL = "http://www.hhxiee.cc/";
-        WEBSEARCHURL = "http://somanhua.com/?key=%s&pageIndex=%d";
-        WEBLATESTMANGABASEURL = "http://www.hhxiee.cc/";
-        WEBALLMANGABASEURL = "http://www.hhxiee.cc/hhabc/";
+        WEBSITE_URL = "http://www.hhxiee.cc/";
+        WEB_SEARCH_URL = "http://somanhua.com/?key=%s&pageIndex=%d";
+        WEB_LATEST_MANGA_BASE_URL = "http://www.hhxiee.cc/";
+        WEB_ALL_MANGA_BASE_URL = "http://www.hhxiee.cc/hhabc/";
         CHARSET = "gb2312";
     }
 
@@ -128,7 +128,7 @@ public class WebHHComic extends WebSiteBasePattern {
                 String url = m.group(1);
                 //test has host or not
                 if (url.startsWith("/")) {
-                    url = WEBSITEURL + url;
+                    url = WEBSITE_URL + url;
                 }
                 String title = m.group(2);
                 chapterList.add(new TitleAndUrl(title, url));
@@ -217,7 +217,7 @@ public class WebHHComic extends WebSiteBasePattern {
 
             //start get html
             if (!noMore) {
-                String trul = WEBALLMANGABASEURL + pageKey + "/" + pageNum + ".htm";
+                String trul = WEB_ALL_MANGA_BASE_URL + pageKey + "/" + pageNum + ".htm";
                 String html = getHtml(trul);
                 if (!html.isEmpty()) {
 
