@@ -5,6 +5,7 @@ import android.util.Log
 import com.king.mangaviewer.model.TitleAndUrl
 import com.king.mangaviewer.util.GsonHelper
 import com.king.mangaviewer.util.LZString
+import com.king.mangaviewer.util.Logger
 import org.jsoup.Jsoup
 import java.util.ArrayList
 import java.util.regex.Pattern
@@ -127,7 +128,7 @@ class WebManhuagui(context: Context) : WebSiteBasePattern(context) {
             var m = pattern.matcher(html)
             return if (m.find()) {
                 var result = m.group()
-                println(result)
+                Logger.d(TAG, result)
                 pattern = Pattern.compile("\\,(?=([^\']*\'[^\']*\')*[^\']*\$)")
                 val array = pattern.split(result).toList()
 
@@ -154,23 +155,37 @@ class WebManhuagui(context: Context) : WebSiteBasePattern(context) {
                 }
 
                 val decodedStringList = LZString.decompressFromBase64(d).split("|")
-                println(decodedStringList)
+                Logger.d(TAG, "$decodedStringList")
 
                 val pattern = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 val stringBuilder = StringBuilder()
-                for (s in codedJson) {
+                var charToParse = StringBuilder()
+                var index = 0
+                while (index < codedJson.length) {
+                    val s = codedJson[index]
                     if (s !in pattern) {
-                        stringBuilder.append(s)
-                        continue
-                    }
-                    stringBuilder.append(decodedStringList[getInt(s.toString(), num1, num2)].let {
-                        if (it.isEmpty()) {
-                            s
-                        } else {
-                            it
+                        if (charToParse.isNotEmpty()) {
+                            stringBuilder.append(
+                                    decodedStringList[getInt(charToParse.toString(), num1,
+                                            num2)].let {
+                                        if (it.isEmpty()) {
+                                            charToParse.toString()
+                                        } else {
+                                            it
+                                        }
+                                    })
                         }
-                    })
+
+                        stringBuilder.append(s)
+                        charToParse = StringBuilder()
+                    } else {
+                        charToParse.append(s)
+                    }
+                    index++
+
                 }
+//                Logger.d(TAG, "$stringBuilder")
+
                 val imageInfo = GsonHelper.fromJson<ImageInfo>(stringBuilder.toString(),
                         ImageInfo::class.java)
                 val resultList = mutableListOf<String>()
@@ -185,7 +200,7 @@ class WebManhuagui(context: Context) : WebSiteBasePattern(context) {
                 emptyList()
             }
         } catch (e: Exception) {
-            Log.e(TAG, "error", e)
+            Logger.e(TAG, "error", e)
             return emptyList()
         }
     }
