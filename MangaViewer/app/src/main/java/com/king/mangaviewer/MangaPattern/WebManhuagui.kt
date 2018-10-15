@@ -101,13 +101,17 @@ class WebManhuagui(context: Context) : WebSiteBasePattern(context) {
             val decodedHtml = LZString.decompressFromBase64(hidden)
             doc = Jsoup.parse(decodedHtml)
         }
-        val el = doc.select(".chapter-list ul li a")
-
-        for (e in el) {
-            var url = e.attr("href")
-            val title = e.attr("title")
-            url = checkUrl(url)
-            chapterList.add(TitleAndUrl(title, url))
+        val tabList = doc.select(".chapter-list")
+        for (tab in tabList) {
+            val liList = tab.select("ul")
+            for (el in liList.reversed()) {
+                for (e in el.select("li a")) {
+                    var url = e.attr("href")
+                    val title = e.attr("title")
+                    url = checkUrl(url)
+                    chapterList.add(TitleAndUrl(title, url))
+                }
+            }
         }
 
 
