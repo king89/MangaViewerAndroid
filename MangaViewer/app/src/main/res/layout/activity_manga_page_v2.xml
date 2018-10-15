@@ -1,0 +1,118 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    >
+
+  <android.support.design.widget.AppBarLayout
+      android:id="@+id/appBarLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:elevation="8dp"
+      android:translationZ="8dp"
+      android:visibility="invisible"
+      ads:layout_constraintEnd_toEndOf="parent"
+      ads:layout_constraintStart_toStartOf="parent"
+      ads:layout_constraintTop_toTopOf="parent"
+      >
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimaryDark"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        />
+  </android.support.design.widget.AppBarLayout>
+
+
+  <com.king.mangaviewer.component.NestedRecyclerView
+      android:id="@+id/recyclerView"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:fitsSystemWindows="true"
+      ads:layout_constraintBottom_toTopOf="@+id/adView"
+      ads:layout_constraintEnd_toEndOf="parent"
+      ads:layout_constraintStart_toStartOf="parent"
+      ads:layout_constraintTop_toTopOf="@+id/appBarLayout"
+      />
+
+  <com.google.android.gms.ads.AdView
+      android:id="@+id/adView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      android:layout_gravity="center_horizontal|bottom"
+      android:layout_weight="0"
+      android:fitsSystemWindows="false"
+      ads:adSize="SMART_BANNER"
+      ads:adUnitId="@string/banner_ad_unit_id"
+      ads:layout_constraintBottom_toBottomOf="parent"
+      ads:layout_constraintEnd_toEndOf="parent"
+      ads:layout_constraintStart_toStartOf="parent"
+      />
+
+
+  <LinearLayout
+      android:id="@+id/fullscreen_content_controls"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:layout_gravity="center_horizontal|bottom"
+      android:background="@color/gray_over_lay"
+      android:orientation="horizontal"
+      android:paddingLeft="5dp"
+      android:paddingRight="5dp"
+      ads:layout_constraintBottom_toBottomOf="@+id/adView"
+      ads:layout_constraintEnd_toEndOf="parent"
+      ads:layout_constraintStart_toStartOf="parent"
+      tools:ignore="UselessParent"
+      >
+
+
+    <ImageButton
+        android:id="@+id/frButton"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:background="@mipmap/ic_fast_rewind_white"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.8"
+        android:orientation="vertical"
+        >
+
+      <TextView
+          android:id="@+id/textView_pageNum"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center|bottom"
+          android:text="-/-"
+          android:textColor="@color/text_color_blue"
+          android:textStyle="bold"
+          />
+
+      <SeekBar
+          android:id="@+id/seekBar"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:mirrorForRtl="false"
+          android:splitTrack="false"
+          android:theme="@style/AppTheme"
+          />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/ffButton"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:background="@mipmap/ic_fast_forward_white"
+        />
+  </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

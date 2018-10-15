@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.MangaPageActivity;
+import com.king.mangaviewer.activity.MangaPageActivityV2;
 import com.king.mangaviewer.component.MyImageView;
 import com.king.mangaviewer.util.AsyncImageLoader;
 import com.king.mangaviewer.model.MangaChapterItem;
@@ -82,7 +83,7 @@ public class MangaChapterItemAdapter extends RecyclerView.Adapter<MangaChapterIt
             int position = getPosition();
             // TODO Auto-generated method stub
             viewModel.setSelectedMangaChapterItem(chapter.get(position));
-            context.startActivity(new Intent(context, MangaPageActivity.class));
+            context.startActivity(new Intent(context, MangaPageActivityV2.class));
             ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
 
         }

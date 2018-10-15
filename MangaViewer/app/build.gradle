@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 apply from: "../dependencies.gradle"
 apply plugin: 'kotlin-kapt'
@@ -71,6 +72,7 @@ dependencies {
     implementation libraries.androidDesign
     implementation libraries.googlePlayService
     implementation libraries.androidMultidex
+    implementation libraries.androidDynamicAnim
 
     implementation libraries.gson
     implementation libraries.jodaTime
@@ -108,5 +110,6 @@ dependencies {
         transitive = true;
     }
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
 
