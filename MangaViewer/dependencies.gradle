@@ -18,7 +18,7 @@ ext.versions = [rxJava2          : "2.1.0",
                 googlePlayService: "9.4.0",
                 jodaTime         : "2.9.3",
                 gson             : "2.3.1",
-                glide            : "3.7.0",]
+                glide            : "4.8.0",]
 
 ext.libraries = [appCompatV7        : "com.android.support:appcompat-v7:$versions.androidAppCompat",
                  androidAnnotations : "com.android.support:support-annotations:$versions.androidAppCompat",
@@ -26,6 +26,7 @@ ext.libraries = [appCompatV7        : "com.android.support:appcompat-v7:$version
                  androidDesign      : "com.android.support:design:$versions.androidAppCompat",
                  androidCardView    : "com.android.support:cardview-v7:$versions.androidAppCompat",
                  androidRecyclerView: "com.android.support:recyclerview-v7:$versions.androidAppCompat",
+                 androidDynamicAnim : "com.android.support:support-dynamic-animation:$versions.androidAppCompat",
                  androidMultidex    : "com.android.support:multidex:$versions.multidex",
                  preference         : "com.android.support:preference-v14:$versions.androidAppCompat",
 

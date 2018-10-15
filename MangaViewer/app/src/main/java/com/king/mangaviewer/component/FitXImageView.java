@@ -473,6 +473,9 @@ public class FitXImageView extends AppCompatImageView {
         public boolean onDown(MotionEvent e) {
             overScroller.forceFinished(true);
             ViewCompat.postInvalidateOnAnimation(FitXImageView.this);
+            if (isZoomed()) {
+                FitXImageView.this.getParent().requestDisallowInterceptTouchEvent(true);
+            }
             return true;
         }
 

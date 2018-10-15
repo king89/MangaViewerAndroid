@@ -18,9 +18,7 @@ import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 import io.reactivex.disposables.CompositeDisposable;
 
-
 public class BaseActivity extends AppCompatActivity {
-
 
     private static final String KEY_MANGA_VIEW_MODEL = "key_manga_view_model";
     public Handler handler = new Handler(Looper.getMainLooper()) {
@@ -36,7 +34,8 @@ public class BaseActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             String mangaViewModelJson = savedInstanceState.getString(KEY_MANGA_VIEW_MODEL, "");
             if (!TextUtils.isEmpty(mangaViewModelJson)) {
-                getAppViewModel().Manga = GsonHelper.fromJson(mangaViewModelJson, MangaViewModel.class);
+                getAppViewModel().Manga = GsonHelper.INSTANCE.fromJson(mangaViewModelJson,
+                        MangaViewModel.class);
             }
         }
         initControl();
@@ -46,7 +45,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(KEY_MANGA_VIEW_MODEL, GsonHelper.toJson(getMangaViewModel()));
+        outState.putString(KEY_MANGA_VIEW_MODEL, GsonHelper.INSTANCE.toJson(getMangaViewModel()));
         super.onSaveInstanceState(outState);
     }
 
@@ -77,7 +76,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected boolean IsCanBack() {
-        return false;
+        return true;
     }
 
     protected void update(Message msg) {
@@ -137,6 +136,12 @@ public class BaseActivity extends AppCompatActivity {
 
     public MangaViewModel getMangaViewModel() {
         return getAppViewModel().Manga;
+    }
+
+    public void showLoading() {
+    }
+
+    public void hideLoading() {
     }
 
     @Override

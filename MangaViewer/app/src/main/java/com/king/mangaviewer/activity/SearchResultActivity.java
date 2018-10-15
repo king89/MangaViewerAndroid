@@ -117,10 +117,6 @@ public class SearchResultActivity extends BaseActivity {
         });
     }
 
-    @Override
-    protected boolean IsCanBack() {
-        return true;
-    }
 
     private void displayMangaSource(View anchorView) {
         final PopupWindow popup = new PopupWindow(this);

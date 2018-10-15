@@ -82,7 +82,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/viewPager"
             style="@style/MangaGridView"
             android:scrollbars="vertical"
             android:clipToPadding="false"

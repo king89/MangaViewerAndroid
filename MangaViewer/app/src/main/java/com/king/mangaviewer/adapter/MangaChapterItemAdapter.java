@@ -6,19 +6,14 @@ import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.activity.MangaPageActivity;
+import com.king.mangaviewer.activity.MangaPageActivityV2;
 import com.king.mangaviewer.component.MyImageView;
-import com.king.mangaviewer.util.AsyncImageLoader;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
-
 import java.util.List;
 
 public class MangaChapterItemAdapter extends RecyclerView.Adapter<MangaChapterItemAdapter.RecyclerViewHolders> {
@@ -82,7 +77,7 @@ public class MangaChapterItemAdapter extends RecyclerView.Adapter<MangaChapterIt
             int position = getPosition();
             // TODO Auto-generated method stub
             viewModel.setSelectedMangaChapterItem(chapter.get(position));
-            context.startActivity(new Intent(context, MangaPageActivity.class));
+            context.startActivity(new Intent(context, MangaPageActivityV2.class));
             ((Activity) context).overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft);
 
         }

@@ -1,26 +1,18 @@
 package com.king.mangaviewer.activity;
 
-import android.app.ProgressDialog;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter;
 import com.king.mangaviewer.component.MyImageView;
-import com.king.mangaviewer.util.AsyncImageLoader;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
@@ -30,7 +22,6 @@ import java.util.concurrent.Callable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Flowable;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
@@ -39,7 +30,7 @@ import me.grantland.widget.AutofitTextView;
 
 public class MangaChapterActivity extends BaseActivity {
 
-    @BindView(R.id.recyclerView)
+    @BindView(R.id.viewPager)
     RecyclerView listView;
 
     @BindView(R.id.imageView)
@@ -127,11 +118,6 @@ public class MangaChapterActivity extends BaseActivity {
         listView.setAdapter(adapter);
     }
 
-    @Override
-    protected boolean IsCanBack() {
-        // TODO Auto-generated method stub
-        return true;
-    }
 
     @Override
     protected String getActionBarTitle() {

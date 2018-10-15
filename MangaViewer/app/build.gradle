@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 apply from: "../dependencies.gradle"
 apply plugin: 'kotlin-kapt'
@@ -18,6 +19,7 @@ buildscript {
 repositories {
     maven { url 'https://maven.fabric.io/public' }
     mavenCentral()
+    maven { url 'http://dl.bintray.com/piasy/maven' }
 }
 
 
@@ -28,7 +30,6 @@ android {
             keyPassword 'mangaviewer'
             storeFile file(jks_path)
             storePassword 'mangaviewer'
-
         }
     }
     compileSdkVersion sdk_version
@@ -41,9 +42,9 @@ android {
         multiDexEnabled true
     }
     buildTypes {
-//        applicationVariants.all { variant ->
-//            appendVersionNameVersionCode(variant, defaultConfig)
-//        }
+        //        applicationVariants.all { variant ->
+        //            appendVersionNameVersionCode(variant, defaultConfig)
+        //        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -71,6 +72,7 @@ dependencies {
     implementation libraries.androidDesign
     implementation libraries.googlePlayService
     implementation libraries.androidMultidex
+    implementation libraries.androidDynamicAnim
 
     implementation libraries.gson
     implementation libraries.jodaTime
@@ -85,6 +87,11 @@ dependencies {
 
     implementation "org.jsoup:jsoup:1.8.2"
     implementation "me.grantland:autofittextview:0.2.1"
+    implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
+    implementation 'com.github.piasy:GlideImageLoader:1.5.5'
+    implementation 'com.android.support:support-v4:27.1.1'
+    kapt 'com.github.bumptech.glide:compiler:4.8.0'
+
     implementation libraries.butterKnife
     kapt libraries.butterKnifeCompiler
 
@@ -108,5 +115,5 @@ dependencies {
         transitive = true;
     }
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
-

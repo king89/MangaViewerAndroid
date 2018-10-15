@@ -9,7 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -21,39 +21,30 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
-import com.crashlytics.android.Crashlytics;
+import com.bumptech.glide.request.transition.Transition;
 import com.king.mangaviewer.MangaPattern.LocalManga;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.activity.BaseActivity;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
-
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import io.reactivex.Flowable;
-import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by KinG on 8/10/2015.
@@ -90,11 +81,9 @@ public class MyViewFlipper extends ViewFlipper {
 
     protected int halfMode = 0; // 0:not 1:first half 2:second half
 
-
     protected final Object lock = new Object();
     ProgressDialog pd = new ProgressDialog(getContext());
     CompositeDisposable disposable = new CompositeDisposable();
-
 
     public MyViewFlipper(Context context) {
         super(context);
@@ -134,7 +123,6 @@ public class MyViewFlipper extends ViewFlipper {
             }
         };
 
-
     }
 
     protected void initial() {
@@ -145,7 +133,8 @@ public class MyViewFlipper extends ViewFlipper {
         initial(mangaViewModel, settingViewModel, updateConsumer);
     }
 
-    public void initialFromHistory(MangaViewModel mvm, SettingViewModel svm, Consumer<Object> consumer) {
+    public void initialFromHistory(MangaViewModel mvm, SettingViewModel svm,
+            Consumer<Object> consumer) {
         initial(mvm, svm, consumer);
         getChapterList();
     }
@@ -155,7 +144,9 @@ public class MyViewFlipper extends ViewFlipper {
             @Override
             public Object call() throws Exception {
                 //use a new thread to load chapter list, this has to
-                mangaViewModel.setMangaChapterList(((BaseActivity) getContext()).getMangaHelper().getChapterList(mangaViewModel.getSelectedMangaChapterItem().getMenu()));
+                mangaViewModel.setMangaChapterList(
+                        ((BaseActivity) getContext()).getMangaHelper().getChapterList(
+                                mangaViewModel.getSelectedMangaChapterItem().getMenu()));
                 return 1;
             }
         })
@@ -176,7 +167,6 @@ public class MyViewFlipper extends ViewFlipper {
         updateConsumer = consumer;
         initPageAnimation();
         delayFullScreen();
-
 
         if (mangaViewModel.getMangaPageList() == null) {
             pd.show();
@@ -203,7 +193,9 @@ public class MyViewFlipper extends ViewFlipper {
                                         setView(getCurrPos(), getCurrPos());
                                         updateConsumer.accept(o);
                                     } else {
-                                        Toast.makeText(getContext(), getContext().getString(R.string.msg_page_no_page), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(),
+                                                getContext().getString(R.string.msg_page_no_page),
+                                                Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             })
@@ -213,7 +205,6 @@ public class MyViewFlipper extends ViewFlipper {
             setView(getCurrPos(), getCurrPos());
         }
     }
-
 
     protected boolean getIsSplitPage() {
         if (settingViewModel != null) {
@@ -355,13 +346,14 @@ public class MyViewFlipper extends ViewFlipper {
         }
         this.addView(v, this.getChildCount());
 
-
         goPrevChapter = false;
         goNextChapter = false;
     }
 
-    private void loadMangaPage(final int curr, final View v, final FitXImageView iv, final ProgressBar progressBar, final MangaPageItem pageItem, final int finalNext) {
-        if (pageItem.getMangaWebSource().getClassName().equalsIgnoreCase(LocalManga.class.getName())) {
+    private void loadMangaPage(final int curr, final View v, final FitXImageView iv,
+            final ProgressBar progressBar, final MangaPageItem pageItem, final int finalNext) {
+        if (pageItem.getMangaWebSource().getClassName().equalsIgnoreCase(
+                LocalManga.class.getName())) {
             Bitmap bitmap;
             //load zip image
             ZipFile zf;
@@ -376,41 +368,53 @@ public class MyViewFlipper extends ViewFlipper {
 
             }
         } else {
-            Observable.fromCallable(
-                    new Callable<GlideUrl>() {
-                        @Override
-                        public GlideUrl call() throws Exception {
-                            final String webImageUrl = getBaseActivty().getMangaHelper().getWebImageUrl(pageItem);
-                            Log.d(TAG, "Download Image Url: " + webImageUrl + "\n Referrer Url: " + pageItem.getReferUrl());
+            disposable.add(
+                    Observable.fromCallable(
+                            new Callable<GlideUrl>() {
+                                @Override
+                                public GlideUrl call() throws Exception {
+                                    final String webImageUrl = getBaseActivty().getMangaHelper().getWebImageUrl(
+                                            pageItem);
+                                    Log.d(TAG,
+                                            "Download Image Url: " + webImageUrl + "\n Referrer Url: " + pageItem.getReferUrl());
 
-                            String UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
-                            LazyHeaders.Builder builder = new LazyHeaders.Builder();
-                            builder.addHeader("Referer", pageItem.getReferUrl());
-                            builder.addHeader("User-Agent", UserAgent);
-                            return new GlideUrl(webImageUrl, builder.build());
-                        }
-                    })
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<GlideUrl>() {
-                        @Override
-                        public void accept(@NonNull GlideUrl glideUrl) throws Exception {
-                            loadImage(glideUrl, progressBar, v, iv, curr, finalNext);
-                        }
-                    });
+                                    String UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5";
+                                    LazyHeaders.Builder builder = new LazyHeaders.Builder();
+                                    builder.addHeader("Referer", pageItem.getReferUrl());
+                                    builder.addHeader("User-Agent", UserAgent);
+                                    return new GlideUrl(webImageUrl, builder.build());
+                                }
+                            })
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Consumer<GlideUrl>() {
+                                @Override
+                                public void accept(@NonNull GlideUrl glideUrl) throws Exception {
+                                    loadImage(glideUrl, progressBar, v, iv, curr, finalNext);
+                                }
+                            })
+            );
         }
     }
 
-    private void loadImage(final GlideUrl url, final ProgressBar progressBar, final View v, final FitXImageView iv, final int curr, final int next) {
+    private void loadImage(final GlideUrl url, final ProgressBar progressBar, final View v,
+            final FitXImageView iv, final int curr, final int next) {
         Glide.with(getContext())
-                .load(url)
                 .asBitmap()
-                .listener(new RequestListener<GlideUrl, Bitmap>() {
+                .load(url)
+                .into(new SimpleTarget<Bitmap>() {
                     @Override
-                    public boolean onException(Exception e, GlideUrl model, Target<Bitmap> target, boolean isFirstResource) {
+                    public void onResourceReady(@android.support.annotation.NonNull Bitmap resource,
+                            @Nullable Transition<? super Bitmap> transition) {
                         progressBar.setVisibility(View.GONE);
-                        Log.d(TAG, "Glide", e);
-                        Crashlytics.logException(e);
+                        showImage(iv, resource, curr, next);
+
+                    }
+
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        progressBar.setVisibility(View.GONE);
+                        Log.d(TAG, "Glide onLoadFailed");
                         Snackbar.make(v, "Image Load Failed.", Snackbar.LENGTH_INDEFINITE)
                                 .setAction("Try Again", new OnClickListener() {
                                     @Override
@@ -419,21 +423,6 @@ public class MyViewFlipper extends ViewFlipper {
                                     }
                                 })
                                 .show();
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Bitmap resource, GlideUrl model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        progressBar.setVisibility(View.GONE);
-                        return false;
-                    }
-
-                })
-
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        showImage(iv, resource, curr, next);
                     }
                 });
     }
@@ -543,7 +532,8 @@ public class MyViewFlipper extends ViewFlipper {
                 goPrevChapter();
                 return;
             } else {
-                Toast.makeText(getContext(), getResources().getString(R.string.first_page), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.first_page),
+                        Toast.LENGTH_SHORT).show();
                 //Toast.makeText(getContext(), getResources().getString(R.string.first_page_again), Toast.LENGTH_SHORT).show();
                 goPrevChapter = true;
             }
@@ -553,7 +543,8 @@ public class MyViewFlipper extends ViewFlipper {
                 goNextChapter();
                 return;
             } else {
-                Toast.makeText(getContext(), getResources().getString(R.string.last_page), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.last_page),
+                        Toast.LENGTH_SHORT).show();
                 //Toast.makeText(getContext(), getResources().getString(R.string.last_page_again), Toast.LENGTH_SHORT).show();
                 goNextChapter = true;
             }
@@ -561,22 +552,26 @@ public class MyViewFlipper extends ViewFlipper {
     }
 
     public void goPrevChapter() {
-        int index = mangaViewModel.getMangaChapterList().indexOf(mangaViewModel.getSelectedMangaChapterItem());
+        int index = mangaViewModel.getMangaChapterList().indexOf(
+                mangaViewModel.getSelectedMangaChapterItem());
         if (getOrderDesc() && index + 1 < mangaViewModel.getMangaChapterList().size()) {
             mangaViewModel.setSelectedMangaChapterItem(index + 1);
             this.initial();
         } else {
-            Toast.makeText(getContext(), getResources().getString(R.string.no_more_prev_chapter), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getResources().getString(R.string.no_more_prev_chapter),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
     public void goNextChapter() {
-        int index = mangaViewModel.getMangaChapterList().indexOf(mangaViewModel.getSelectedMangaChapterItem());
+        int index = mangaViewModel.getMangaChapterList().indexOf(
+                mangaViewModel.getSelectedMangaChapterItem());
         if (getOrderDesc() && index - 1 >= 0) {
             mangaViewModel.setSelectedMangaChapterItem(index - 1);
             this.initial();
         } else {
-            Toast.makeText(getContext(), getResources().getString(R.string.no_more_next_chapter), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getResources().getString(R.string.no_more_next_chapter),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -607,8 +602,6 @@ public class MyViewFlipper extends ViewFlipper {
         }
     }
 
-
-
     public interface OnCurrentPosChangedListener {
         public void onChanged(int pos);
     }
@@ -628,7 +621,7 @@ public class MyViewFlipper extends ViewFlipper {
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                               float velocityY) {
+                float velocityY) {
             //no page, just dont handle the fling
             if (pageList != null && pageList.size() == 0) {
                 return true;
@@ -646,22 +639,27 @@ public class MyViewFlipper extends ViewFlipper {
                 return false;
             }
 
-            if (Math.abs(velocityX) > Math.abs(velocityY) && Math.abs(Math.toDegrees(Math.atan(velocityY / velocityX))) < maxDegree) {
+            if (Math.abs(velocityX) > Math.abs(velocityY) && Math.abs(
+                    Math.toDegrees(Math.atan(velocityY / velocityX))) < maxDegree) {
 
                 if (getIsFromLeftToRight()) {
                     x = -x;
                 }
                 if (x > 0) {
-                    MyViewFlipper.this.setInAnimation(MyViewFlipper.this.getContext(), animatePreInId);
-                    MyViewFlipper.this.setOutAnimation(MyViewFlipper.this.getContext(), animatePreOutId);
+                    MyViewFlipper.this.setInAnimation(MyViewFlipper.this.getContext(),
+                            animatePreInId);
+                    MyViewFlipper.this.setOutAnimation(MyViewFlipper.this.getContext(),
+                            animatePreOutId);
                     if (canSplitPage()) {
                         movePreviousHalf();
                     } else {
                         movePrevious();
                     }
                 } else {
-                    MyViewFlipper.this.setInAnimation(MyViewFlipper.this.getContext(), animateNextInId);
-                    MyViewFlipper.this.setOutAnimation(MyViewFlipper.this.getContext(), animateNextOutId);
+                    MyViewFlipper.this.setInAnimation(MyViewFlipper.this.getContext(),
+                            animateNextInId);
+                    MyViewFlipper.this.setOutAnimation(MyViewFlipper.this.getContext(),
+                            animateNextOutId);
                     if (canSplitPage()) {
                         moveNextHalf();
                     } else {
@@ -676,7 +674,7 @@ public class MyViewFlipper extends ViewFlipper {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
-                                float distanceX, float distanceY) {
+                float distanceX, float distanceY) {
             // TODO Auto-generated method stub
 //            Log.i("TEST", "onScroll:distanceX = " + distanceX + " distanceY = "
 //                    + distanceY);

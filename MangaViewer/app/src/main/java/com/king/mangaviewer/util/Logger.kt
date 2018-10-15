@@ -25,6 +25,7 @@ object Logger {
     fun e(tag: String, message: String, e: Throwable? = null) {
         try {
             Log.e(tag, message, e)
+            e?.printStackTrace()
         } catch (ex: Throwable) {
             println("$tag $message ${e}")
         }

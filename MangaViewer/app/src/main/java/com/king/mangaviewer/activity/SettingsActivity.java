@@ -45,10 +45,6 @@ public class SettingsActivity extends BaseActivity {
 
     }
 
-    @Override
-    protected boolean IsCanBack() {
-        return true;
-    }
 
     @Override
     protected void initControl() {

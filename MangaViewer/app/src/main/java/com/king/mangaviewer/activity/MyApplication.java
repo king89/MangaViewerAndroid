@@ -9,6 +9,8 @@ import android.support.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
+import com.github.piasy.biv.BigImageViewer;
+import com.github.piasy.biv.loader.glide.GlideImageLoader;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
 import com.king.mangaviewer.util.MangaHelper;
@@ -52,6 +54,7 @@ public class MyApplication extends MultiDexApplication {
             receiver.setAlarm(this);
         }
         MyApplication.context = getApplicationContext();
+
     }
 
     public boolean isMyAlarmRunning() {

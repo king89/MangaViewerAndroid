@@ -1,115 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Manga Vega</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="refresh">Refresh</string>
-    <string name="title_activity_manga_chapter">MangaChapterActivity</string>
-    <string name="title_activity_manga_page">MangaPageActivity</string>
+  <string name="app_name">Manga Vega</string>
+  <string name="hello_world">Hello world!</string>
+  <string name="refresh">Refresh</string>
+  <string name="title_activity_manga_chapter">MangaChapterActivity</string>
+  <string name="title_activity_manga_page">MangaPageActivity</string>
 
-    <string name="choosefile">Choose Your Manga File(.zip)</string>
-    <string name="setting_source">Sources</string>
-    <string name="setting_folder_size">Cache File Size</string>
-    <string name="last_page">Last Page</string>
-    <string name="last_page_again">Fling Again To Next Chapter</string>
-    <string name="first_page">First Page</string>
-    <string name="first_page_again">Fling Again To Prev Chapter</string>
-    <string name="reading_direction">Reading Direction\t\t\t</string>
-    <string name="split_page">Auto Split Page\t\t\t</string>
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="menu_main_setting_title">Mange Source</string>
-    <!--Menu-->
-    <string name="nav_latest_update">Latest Releases</string>
-    <string name="nav_all_manga">All Manga</string>
-    <string name="nav_local">Local</string>
-    <string name="nav_favourite">Favourite</string>
-    <string name="nav_history">History</string>
-    <string name="nav_setting">Settings</string>
+  <string name="choosefile">Choose Your Manga File(.zip)</string>
+  <string name="setting_source">Sources</string>
+  <string name="setting_folder_size">Cache File Size</string>
+  <string name="last_page">Last Page</string>
+  <string name="last_page_again">Fling Again To Next Chapter</string>
+  <string name="first_page">First Page</string>
+  <string name="first_page_again">Fling Again To Prev Chapter</string>
+  <string name="reading_direction">Reading Direction\t\t\t</string>
+  <string name="split_page">Auto Split Page\t\t\t</string>
+  <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+  <string name="menu_main_setting_title">Mange Source</string>
+  <!--Menu-->
+  <string name="nav_latest_update">Latest Releases</string>
+  <string name="nav_all_manga">All Manga</string>
+  <string name="nav_local">Local</string>
+  <string name="nav_favourite">Favourite</string>
+  <string name="nav_history">History</string>
+  <string name="nav_setting">Settings</string>
 
-    <!-- Nav Drawer Menu Items -->
-    <string-array name="nav_drawer_items">
-        <item>@string/nav_latest_update</item>
-        <item>@string/nav_all_manga</item>
-        <item>@string/nav_favourite</item>
-        <item>@string/nav_history</item>
-        <item>@string/nav_local</item>
-        <item>@string/nav_setting</item>
-    </string-array>
+  <!-- Nav Drawer Menu Items -->
+  <string-array name="nav_drawer_items">
+    <item>@string/nav_latest_update</item>
+    <item>@string/nav_all_manga</item>
+    <item>@string/nav_favourite</item>
+    <item>@string/nav_history</item>
+    <item>@string/nav_local</item>
+    <item>@string/nav_setting</item>
+  </string-array>
 
-    <!-- Nav Drawer List Item Icons -->
-    <!-- Keep them in order as the titles are in -->
-    <array name="nav_drawer_icons">
-        <item>@mipmap/ic_alarm_on_white</item>
-        <item>@mipmap/ic_storage_white</item>
-        <item>@mipmap/ic_star_white</item>
-        <item>@mipmap/ic_history_white</item>
-        <item>@mipmap/ic_folder_open_white</item>
-        <item>@mipmap/ic_settings</item>
-    </array>
+  <!-- Nav Drawer List Item Icons -->
+  <!-- Keep them in order as the titles are in -->
+  <array name="nav_drawer_icons">
+    <item>@mipmap/ic_alarm_on_white</item>
+    <item>@mipmap/ic_storage_white</item>
+    <item>@mipmap/ic_star_white</item>
+    <item>@mipmap/ic_history_white</item>
+    <item>@mipmap/ic_folder_open_white</item>
+    <item>@mipmap/ic_settings</item>
+  </array>
 
-    <string name="action_settings">Settings</string>
-    <string name="favourited">Favourited</string>
-    <string name="unfavourited">Unfavourited</string>
-    <string name="do_you_want_to_delete">Are you Sure You Want To Delete This Item ?</string>
-    <string name="deleting_dialog_title">Deleting Item</string>
-    <string name="yes">YES</string>
-    <string name="no">NO</string>
-    <string name="local_current_path">Current Path</string>
-    <string name="local_set_default_path">Set Default</string>
-    <string name="local_set_default_path_successed">Set Default Path Success</string>
-    <string name="no_more_prev_chapter">No Previous Chapter</string>
-    <string name="no_more_next_chapter">No Next Chapter</string>
-    <string name="favourite_no_favourite_manga">No Favourite Manga</string>
-    <string name="history_no_history_manga">No History</string>
-    <string name="setting_msg_cache_cleared">Cache Files Cleared</string>
+  <string name="action_settings">Settings</string>
+  <string name="favourited">Favourited</string>
+  <string name="unfavourited">Unfavourited</string>
+  <string name="do_you_want_to_delete">Are you Sure You Want To Delete This Item ?</string>
+  <string name="deleting_dialog_title">Deleting Item</string>
+  <string name="yes">YES</string>
+  <string name="no">NO</string>
+  <string name="local_current_path">Current Path</string>
+  <string name="local_set_default_path">Set Default</string>
+  <string name="local_set_default_path_successed">Set Default Path Success</string>
+  <string name="no_more_prev_chapter">No Previous Chapter</string>
+  <string name="no_more_next_chapter">No Next Chapter</string>
+  <string name="favourite_no_favourite_manga">No Favourite Manga</string>
+  <string name="history_no_history_manga">No History</string>
+  <string name="setting_msg_cache_cleared">Cache Files Cleared</string>
 
-    <!--Preference-->
-    <string name="pref_key_version_name">pref_key_version_name</string>
-    <string name="pref_key_setting_storage_size">pref_key_setting_storage_size</string>
-    <string name="pref_key_contact_us">pref_key_contact_us</string>
-    <string name="pref_key_rate">pref_key_rate</string>
-    <string name="pref_key_manga_sources">pref_key_manga_sources</string>
-    <string name="pref_key_split_page">pref_key_split_page</string>
-    <string name="pref_key_auto_update_service">pref_key_auto_update_service</string>
-    <string name="pref_key_default_path">pref_key_default_path</string>
-    <string name="pref_key_auto_update_hours">pref_key_auto_update_hours</string>
+  <!--Preference-->
+  <string name="pref_key_version_name">pref_key_version_name</string>
+  <string name="pref_key_setting_storage_size">pref_key_setting_storage_size</string>
+  <string name="pref_key_contact_us">pref_key_contact_us</string>
+  <string name="pref_key_rate">pref_key_rate</string>
+  <string name="pref_key_manga_sources">pref_key_manga_sources</string>
+  <string name="pref_key_split_page">pref_key_split_page</string>
+  <string name="pref_key_auto_update_service">pref_key_auto_update_service</string>
+  <string name="pref_key_default_path">pref_key_default_path</string>
+  <string name="pref_key_auto_update_hours">pref_key_auto_update_hours</string>
 
-    <string name="pref_category_general">General</string>
-    <string name="pref_category_reading">Reading</string>
-    <string name="pref_category_system">System</string>
+  <string name="pref_category_general">General</string>
+  <string name="pref_category_reading">Reading</string>
+  <string name="pref_category_system">System</string>
 
-    <string name="pref_summary_split_page">Auto Split Page Into Two Part</string>
-    <string name="pref_summary_auto_update_service">Notify When Favourite Manga Updated</string>
+  <string name="pref_summary_split_page">Auto Split Page Into Two Part</string>
+  <string name="pref_summary_auto_update_service">Notify When Favourite Manga Updated</string>
 
-    <string name="pref_title_contact_us">Contact Us</string>
-    <string name="pref_title_setting_storage_size">Clear Cache Files</string>
-    <string name="pref_title_rate">Rate Me</string>
-    <string name="pref_title_version">Version</string>
-    <string name="pref_title_auto_update_hours">Check Update Period</string>
+  <string name="pref_title_contact_us">Contact Us</string>
+  <string name="pref_title_setting_storage_size">Clear Cache Files</string>
+  <string name="pref_title_rate">Rate Me</string>
+  <string name="pref_title_version">Version</string>
+  <string name="pref_title_auto_update_hours">Check Update Period</string>
 
 
-    <string name="pref_title_auto_update_service">Notification</string>
-    <string name="pref_dialog_message_clear_cache">Are You Sure You Want To Clear The Cache Files ?</string>
-    <string name="pref_data_rate_me">http://google.com</string>
-    <string name="pref_data_contact_us">mailto:mangaviewer2015@gmail.com?subject=About Suggestion</string>
-    <string name="pref_data_contact_us_email_text">About MangaViewer</string>
+  <string name="pref_title_auto_update_service">Notification</string>
+  <string name="pref_dialog_message_clear_cache">Are You Sure You Want To Clear The Cache Files ?</string>
+  <string name="pref_data_rate_me">http://google.com</string>
+  <string name="pref_data_contact_us">mailto:mangaviewer2015@gmail.com?subject=About Suggestion</string>
+  <string name="pref_data_contact_us_email_text">About MangaViewer</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="msg_loading">Loading...</string>
-    <string name="title_loading">Loading</string>
-    <string name="msg_tap_two_to_exit">Tap Back Again To Exit App</string>
-    <string name="prefix_chapter_title">Chapter</string>
-    <string name="msg_page_no_page">No Page In This Chapter, Please Try Again.</string>
-    <string name="msg_notify_updated_service_title">Favourited Mangas Updated</string>
-    <string name="msg_notify_updated_service_text">Check The Updated Manga</string>
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="hello_blank_fragment">Hello blank fragment</string>
+  <string name="msg_loading">Loading...</string>
+  <string name="title_loading">Loading</string>
+  <string name="msg_tap_two_to_exit">Tap Back Again To Exit App</string>
+  <string name="prefix_chapter_title">Chapter</string>
+  <string name="msg_page_no_page">No Page In This Chapter, Please Try Again.</string>
+  <string name="msg_notify_updated_service_title">Favourited Mangas Updated</string>
+  <string name="msg_notify_updated_service_text">Check The Updated Manga</string>
 
-    <string name="msg_start_auto_update_service">Started Notify Service</string>
-    <string name="msg_stop_auto_update_service">Stopped Notify Service</string>
-    <string name="pref_summary_contact_us">Tell Us What You Want</string>
-    <string name="menu_title_clear">Clear</string>
-    <string name="msg_history_dialog_title">Clear</string>
-    <string name="msg_history_dialog_message">Are you sure you want to clear all the histories?</string>
+  <string name="msg_start_auto_update_service">Started Notify Service</string>
+  <string name="msg_stop_auto_update_service">Stopped Notify Service</string>
+  <string name="pref_summary_contact_us">Tell Us What You Want</string>
+  <string name="menu_title_clear">Clear</string>
+  <string name="msg_history_dialog_title">Clear</string>
+  <string name="msg_history_dialog_message">Are you sure you want to clear all the histories?</string>
 
 
 </resources>

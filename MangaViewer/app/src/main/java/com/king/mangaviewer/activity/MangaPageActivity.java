@@ -229,12 +229,6 @@ public class MangaPageActivity extends BaseActivity {
 
 
     @Override
-    protected boolean IsCanBack() {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.page_menu, menu);

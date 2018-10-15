@@ -80,6 +80,11 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected boolean IsCanBack() {
+        return false;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         //Log.i("MainActivity", "onResume");
@@ -98,36 +103,38 @@ public class MainActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_latest_manga:
-                        mViewPager.setCurrentItem(0);
-                        break;
-                    case R.id.menu_all_manga:
-                        mViewPager.setCurrentItem(1);
-                        break;
-                    case R.id.menu_favorite:
-                        mViewPager.setCurrentItem(2);
-                        break;
-                    case R.id.menu_history:
-                        mViewPager.setCurrentItem(3);
-                        break;
-                    case R.id.menu_local:
-                        mViewPager.setCurrentItem(4);
-                        break;
-                    case R.id.menu_all_settings:
-                        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-                        break;
-                    default:
-                        break;
-                }
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.menu_latest_manga:
+                                mViewPager.setCurrentItem(0);
+                                break;
+                            case R.id.menu_all_manga:
+                                mViewPager.setCurrentItem(1);
+                                break;
+                            case R.id.menu_favorite:
+                                mViewPager.setCurrentItem(2);
+                                break;
+                            case R.id.menu_history:
+                                mViewPager.setCurrentItem(3);
+                                break;
+                            case R.id.menu_local:
+                                mViewPager.setCurrentItem(4);
+                                break;
+                            case R.id.menu_all_settings:
+                                startActivity(
+                                        new Intent(MainActivity.this, SettingsActivity.class));
+                                break;
+                            default:
+                                break;
+                        }
 
-                mDrawerLayout.closeDrawers();
-                return true;
-            }
-        });
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    }
+                });
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mTitle = mDrawerTitle = getTitle();
@@ -175,7 +182,8 @@ public class MainActivity extends BaseActivity {
         searchView =
                 (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(new ComponentName(this, SearchResultActivity.class)));
+                searchManager.getSearchableInfo(
+                        new ComponentName(this, SearchResultActivity.class)));
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -215,11 +223,14 @@ public class MainActivity extends BaseActivity {
             }
         }
 
-        lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, source));
+        lv.setAdapter(
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice,
+                        source));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                getAppViewModel().Setting.setSelectedWebSource(mws.get(position), MainActivity.this);
+                getAppViewModel().Setting.setSelectedWebSource(mws.get(position),
+                        MainActivity.this);
                 getAppViewModel().Manga.setMangaMenuList(null);
                 int currPos = mViewPager.getCurrentItem();
                 mViewPager.setAdapter(mViewPagerAdapter);
