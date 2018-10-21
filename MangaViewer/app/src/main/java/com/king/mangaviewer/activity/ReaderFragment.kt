@@ -8,23 +8,17 @@ import com.king.mangaviewer.R
 import com.king.mangaviewer.component.HasFullScreenControl
 import com.king.mangaviewer.component.ReaderListener
 import com.king.mangaviewer.component.ReaderPanel
+import com.king.mangaviewer.model.MangaUri
 
 abstract class ReaderFragment : BaseFragment(), ReaderPanel {
 
     var readerListener: ReaderListener? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    protected var mangaList: List<MangaUri>? = null
+    var startPage = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.list_manga_page_item_v2, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
     protected fun toggleUI() {
@@ -33,7 +27,26 @@ abstract class ReaderFragment : BaseFragment(), ReaderPanel {
         }
     }
 
+    override fun nextPage() {
+        val newPos = getCurrentPageNum() + 1
+        if (newPos in 0 until getTotalPageNum()){
+            smoothScrollToPage(newPos)
+        }
+    }
+
+    override fun prevPage() {
+        val newPos = getCurrentPageNum() - 1
+        if (newPos in 0 until getTotalPageNum()){
+            smoothScrollToPage(newPos)
+        }
+    }
+
+    abstract fun tapLeft()
+
+    abstract fun tapRight()
+
     companion object {
+        const val INTENT_EXTRA_MANGA_LIST_JSON = "param1"
         val TAG = "ReaderFragment"
     }
 }

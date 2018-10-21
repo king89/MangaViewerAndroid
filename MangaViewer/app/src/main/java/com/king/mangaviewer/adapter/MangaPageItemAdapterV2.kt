@@ -6,7 +6,7 @@ import com.king.mangaviewer.component.PageView
 import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.util.Logger
 
-class MangaPageItemAdapterV2(val data: List<MangaUri>, val gestureDetector: GestureDetector) : RecyclerPagerAdapter<PageView>() {
+open class MangaPageItemAdapterV2(val data: List<MangaUri>, val gestureDetector: GestureDetector) : RecyclerPagerAdapter<PageView>() {
     override fun onCreateView(container: ViewGroup): PageView {
         val pageView = PageView(container.context)
         pageView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

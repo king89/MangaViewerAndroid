@@ -3,26 +3,16 @@ package com.king.mangaviewer.component
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.ARGB_8888
-import android.graphics.BitmapFactory
 import android.graphics.PointF
 import android.graphics.drawable.Drawable
-import android.support.design.widget.Snackbar
 import android.util.AttributeSet
-import android.util.Log
 import android.view.GestureDetector
-import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.ImageView
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
-import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.ImageViewState
@@ -30,6 +20,8 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.ZOOM_FOCUS_FIXED
 import com.king.mangaviewer.R
+import com.king.mangaviewer.component.ReadingDirection.LTR
+import com.king.mangaviewer.component.ReadingDirection.RTL
 import com.king.mangaviewer.di.GlideApp
 import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.util.Logger
@@ -47,6 +39,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
     private val imageView: SubsamplingScaleImageView by lazy {
         findViewById<SubsamplingScaleImageView>(R.id.imageView)
     }
+    var readingDirection: ReadingDirection = LTR
 
     init {
         View.inflate(ctx, R.layout.list_manga_page_item_v2, this)
@@ -79,7 +72,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
         Logger.d(TAG, "onLoadingComplete")
     }
 
-    private val MAX_WIDTH: Int = 2840
+    private val MAX_WIDTH: Int = 2560
     private val MAX_HEIGHT: Int = 1920
     var newBitmap: Bitmap? = null
     var target = object : SimpleTarget<Bitmap>() {
@@ -90,15 +83,18 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
                 val width = resource.width.toFloat()
                 val height = resource.height.toFloat()
                 val factor = width / height
-                val imageState = ImageViewState(factor, PointF(0f, 0f), 0)
+                val imageState = when (readingDirection) {
+                    LTR -> ImageViewState(factor, PointF(0f, 0f), 0)
+                    RTL -> ImageViewState(factor, PointF(width, 0f), 0)
+                }
 
-                val newBitmap = resource.copy(resource.config, false)
-
+                newBitmap = resource.copy(resource.config, false)
+                newBitmap ?: return
                 if (width > height) {
                     imageView.minScale = factor
-                    imageView.setImage(ImageSource.bitmap(newBitmap), imageState)
+                    imageView.setImage(ImageSource.bitmap(newBitmap!!), imageState)
                 } else {
-                    imageView.setImage(ImageSource.bitmap(newBitmap))
+                    imageView.setImage(ImageSource.bitmap(newBitmap!!))
 
                 }
             } catch (e: OutOfMemoryError) {
@@ -182,4 +178,9 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
     companion object {
         val TAG = "PageView"
     }
+}
+
+enum class ReadingDirection {
+    LTR,
+    RTL
 }

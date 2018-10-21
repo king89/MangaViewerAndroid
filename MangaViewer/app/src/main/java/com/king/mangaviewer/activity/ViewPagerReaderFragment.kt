@@ -17,10 +17,7 @@ import com.king.mangaviewer.util.GsonHelper
 import com.king.mangaviewer.util.Logger
 import kotlinx.android.synthetic.main.fragment_viewpager_reader.viewPager
 
-class ViewPagerReaderFragment : ReaderFragment() {
-
-
-    private var mangaList: List<MangaUri>? = null
+open class ViewPagerReaderFragment : ReaderFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,11 +53,14 @@ class ViewPagerReaderFragment : ReaderFragment() {
         }
 
         mangaList?.run {
-            viewPager.adapter = MangaPageItemAdapterV2(this,
-                    GestureDetector(context, TapDetector()))
-
+            setupAdapter(this, GestureDetector(context, TapDetector()))
+            setPage(startPage)
         }
 
+    }
+
+    protected open fun setupAdapter(mangaList: List<MangaUri>, gestureDetector: GestureDetector) {
+        viewPager.adapter = MangaPageItemAdapterV2(mangaList, gestureDetector)
     }
 
     private inner class TapDetector : GestureDetector.SimpleOnGestureListener() {
@@ -72,14 +72,6 @@ class ViewPagerReaderFragment : ReaderFragment() {
         }
     }
 
-    override fun nextPage() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun prevPage() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun setPage(page: Int) {
         viewPager.setCurrentItem(page, false)
     }
@@ -89,7 +81,7 @@ class ViewPagerReaderFragment : ReaderFragment() {
     }
 
     override fun getCurrentPageNum(): Int {
-        return viewPager.currentItem
+        return viewPager?.currentItem ?: 0
     }
 
     override fun getTotalPageNum(): Int {
@@ -104,10 +96,14 @@ class ViewPagerReaderFragment : ReaderFragment() {
         return null
     }
 
+    override fun tapLeft() {
+    }
+
+    override fun tapRight() {
+    }
+
     companion object {
         val TAG = "ViewPagerReaderFragment"
-        private const val INTENT_EXTRA_MANGA_LIST_JSON = "param1"
-        private const val ARG_PARAM2 = "param2"
         @JvmStatic
         fun newInstance(dataJson: String) =
                 ViewPagerReaderFragment().apply {

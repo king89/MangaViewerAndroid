@@ -55,6 +55,8 @@ class MangaPageActivityV2 : BaseActivity(),
 
     protected var mReaderFragment: ReaderFragment? = null
 
+    private var mMangaList: List<MangaUri>? = null
+
     private val DELAY = 5000L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -230,9 +232,17 @@ class MangaPageActivityV2 : BaseActivity(),
     }
 
     private fun setupReader(mangaList: List<MangaUri>) {
+        mMangaList = mangaList
         val json = GsonHelper.toJson(mangaList)
-        val fragment = ViewPagerReaderFragment.newInstance(json)
+
+        val fragment = if (mSettingViewModel.isFromLeftToRight) {
+            ViewPagerReaderFragment.newInstance(json)
+        } else {
+            RtlViewPagerReaderFragment.newInstance(json)
+        }
+
         fragment.readerListener = this
+        fragment.startPage = 0
         supportFragmentManager?.beginTransaction()
                 ?.replace(R.id.readerFragment, fragment)
                 ?.commitNow()
@@ -304,7 +314,9 @@ class MangaPageActivityV2 : BaseActivity(),
         isFTRSwitch.isChecked = mSettingViewModel.isFromLeftToRight
         isFTRSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             mSettingViewModel.isFromLeftToRight = isChecked
-//            mViewFlipper!!.refresh()
+            mMangaList?.run {
+                setupReader(this)
+            }
         }
         splitPageSwitch.isChecked = mSettingViewModel.getIsSplitPage(this)
         splitPageSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
