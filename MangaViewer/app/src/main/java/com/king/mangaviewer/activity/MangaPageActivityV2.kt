@@ -28,10 +28,13 @@ import com.king.mangaviewer.util.GsonHelper
 import com.king.mangaviewer.viewmodel.MangaViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_manga_page_v2.progressBar
+import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class MangaPageActivityV2 : BaseActivity(),
         HasFullScreenControl,
@@ -56,15 +59,12 @@ class MangaPageActivityV2 : BaseActivity(),
     protected var mReaderFragment: ReaderFragment? = null
 
     private var mMangaList: List<MangaUri>? = null
-
+    private var delayFullScreenDispose: Disposable? = null
     private val DELAY = 5000L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initViewModels()
         super.onCreate(savedInstanceState)
-        //ad
-        val handler = Handler()
-//        handler.postDelayed({ InitAd() }, DELAY)
         hideSystemUI()
     }
 
@@ -76,11 +76,6 @@ class MangaPageActivityV2 : BaseActivity(),
     override fun getActionBarTitle(): String {
         // TODO Auto-generated method stub
         return mMangaViewModel.selectedMangaChapterItem.title ?: ""
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-
     }
 
     override fun initControl() {
@@ -111,7 +106,9 @@ class MangaPageActivityV2 : BaseActivity(),
                 controlsView.visibility = View.VISIBLE
                 supportActionBar!!.show()
 
+                delayFullScreen()
             } else {
+                delayFullScreenDispose?.dispose()
                 // TODO: The system bars are NOT visible. Make any desired
                 // adjustments to your UI, such as hiding the action bar or
                 // other navigational controls.
@@ -185,7 +182,7 @@ class MangaPageActivityV2 : BaseActivity(),
         val currentChapter = mMangaViewModel.selectedMangaChapterItem
 
         val pos = chapterList.indexOf(currentChapter)
-        if (pos - 1 > 0) {
+        if (pos - 1 >= 0) {
             mMangaViewModel.selectedMangaChapterItem = chapterList[pos - 1]
             loadPages()
         } else {
@@ -341,6 +338,16 @@ class MangaPageActivityV2 : BaseActivity(),
         window.decorView.invalidate()
     }
 
+    private fun delayFullScreen() {
+        delayFullScreenDispose?.dispose()
+        delayFullScreenDispose = Single.just("")
+                .delay(DELAY, MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { it: String ->
+                    hideSystemUI()
+                }
+    }
+
     override fun onOverScrollStart(isStart: Boolean) {
     }
 
@@ -396,6 +403,7 @@ class MangaPageActivityV2 : BaseActivity(),
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+
     }
 
     companion object {

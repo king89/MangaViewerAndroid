@@ -26,7 +26,6 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.ZOOM_FOCUS_
 import com.king.mangaviewer.R
 import com.king.mangaviewer.component.ReadingDirection.LTR
 import com.king.mangaviewer.component.ReadingDirection.RTL
-import com.king.mangaviewer.component.ReadingOrientation.PORTRAIT
 import com.king.mangaviewer.di.GlideApp
 import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.util.Logger
@@ -92,19 +91,20 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
                 (context as? Activity)?.windowManager
                         ?.defaultDisplay
                         ?.getMetrics(displayMetrics)
-                val screenSize: Float = if (displayMetrics.widthPixels == 0) {
-                    width
+                val (screenWidth, screenHeight) = if (displayMetrics.widthPixels == 0) {
+                    Pair(width, height)
                 } else {
-                    displayMetrics.widthPixels.toFloat()
+                    Pair(displayMetrics.widthPixels.toFloat(),
+                            displayMetrics.heightPixels.toFloat())
                 }
-                Logger.d(TAG, "screen width: $screenSize, image width: $width")
+                Logger.d(TAG, "screen width: $screenWidth, image width: $width")
 
                 newBitmap = resource.copy(resource.config, false)
                 newBitmap ?: return
 
                 if (context.resources.configuration.orientation == ORIENTATION_PORTRAIT) {
                     if (width > height) {
-                        val factor = screenSize / (width / 2)
+                        val factor = screenWidth / (width / 2)
                         val imageState = when (readingDirection) {
                             LTR -> ImageViewState(factor, PointF(0f, 0f), 0)
                             RTL -> ImageViewState(factor, PointF(width, 0f), 0)
@@ -113,14 +113,19 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
                         imageView.maxScale = max(factor * 2, 2f)
                         imageView.setImage(ImageSource.bitmap(newBitmap!!), imageState)
                     } else {
-                        val factor = screenSize / width
+                        val factor = screenWidth / width
+                        val imageState = if (height > screenHeight) {
+                            ImageViewState(factor, PointF(0f, -height), 0)
+                        } else {
+                            ImageViewState(factor, PointF(0f, 0f), 0)
+                        }
                         imageView.minScale = factor
                         imageView.maxScale = max(factor * 2, 2f)
-                        imageView.setImage(ImageSource.bitmap(newBitmap!!))
+                        imageView.setImage(ImageSource.bitmap(newBitmap!!),imageState)
 
                     }
                 } else {
-                    val factor = screenSize / width
+                    val factor = screenWidth / width
                     val imageState = ImageViewState(factor, PointF(0f, 0f), 0)
 
                     imageView.minScale = factor

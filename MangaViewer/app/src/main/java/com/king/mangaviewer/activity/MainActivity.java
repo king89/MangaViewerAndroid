@@ -283,12 +283,13 @@ public class MainActivity extends BaseActivity {
     private void setupViewPager(ViewPager viewPager) {
         mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+        mViewPagerAdapter.addFragment(new FavouriteFragment(), getString(R.string.nav_favourite));
         mViewPagerAdapter.addFragment(new HomeFragment(), getString(R.string.nav_latest_update));
         mViewPagerAdapter.addFragment(new AllMangaFragment(), getString(R.string.nav_all_manga));
-        mViewPagerAdapter.addFragment(new FavouriteFragment(), getString(R.string.nav_favourite));
         mViewPagerAdapter.addFragment(new HistoryFragment(), getString(R.string.nav_history));
         mViewPagerAdapter.addFragment(new LocalFragment(), getString(R.string.nav_local));
         viewPager.setAdapter(mViewPagerAdapter);
+        viewPager.setCurrentItem(1);
     }
 
     @Override
