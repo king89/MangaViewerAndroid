@@ -51,6 +51,10 @@ class ViewPagerReaderFragment : ReaderFragment() {
             }
         })
 
+        (activity as? OnOverScrollListener)?.run {
+            viewPager.setOnOverScrollListener(this)
+        }
+
         mangaList?.run {
             viewPager.adapter = MangaPageItemAdapterV2(this,
                     GestureDetector(context, TapDetector()))

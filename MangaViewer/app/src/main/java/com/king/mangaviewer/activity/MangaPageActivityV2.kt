@@ -19,7 +19,9 @@ import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import com.king.mangaviewer.R
+import com.king.mangaviewer.R.string
 import com.king.mangaviewer.component.HasFullScreenControl
+import com.king.mangaviewer.component.OnOverScrollListener
 import com.king.mangaviewer.component.ReaderListener
 import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.util.GsonHelper
@@ -31,7 +33,10 @@ import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_manga_page_v2.progressBar
 
-class MangaPageActivityV2 : BaseActivity(), HasFullScreenControl, ReaderListener {
+class MangaPageActivityV2 : BaseActivity(),
+        HasFullScreenControl,
+        ReaderListener,
+        OnOverScrollListener {
 
     override var isFullScreen: Boolean = false
 
@@ -123,37 +128,11 @@ class MangaPageActivityV2 : BaseActivity(), HasFullScreenControl, ReaderListener
                 getString(R.string.button_tooltip_prev_chapter))
 
         mFFImageButton.setOnClickListener {
-            //next chapter, pos 0 is the latest chapter
-            val chapterList = mMangaViewModel.mangaChapterList
-            val currentChapter = mMangaViewModel.selectedMangaChapterItem
-
-            val pos = chapterList.indexOf(currentChapter)
-            if (pos - 1 > 0) {
-                mMangaViewModel.selectedMangaChapterItem = chapterList[pos - 1]
-                loadPages()
-            } else {
-                Toast.makeText(this, resources.getString(R.string.no_more_next_chapter),
-                        Toast.LENGTH_SHORT)
-                        .apply { setGravity(Gravity.CENTER, 0, 0) }
-                        .show()
-            }
+            nextChapter()
         }
 
         mFRImageButton.setOnClickListener {
-            //prev chapter, pos len(list) is the oldest chapter
-            val chapterList = mMangaViewModel.mangaChapterList
-            val currentChapter = mMangaViewModel.selectedMangaChapterItem
-
-            val pos = chapterList.indexOf(currentChapter)
-            if (pos + 1 < chapterList.size) {
-                mMangaViewModel.selectedMangaChapterItem = chapterList[pos + 1]
-                loadPages()
-            } else {
-                Toast.makeText(this, resources.getString(R.string.no_more_prev_chapter),
-                        Toast.LENGTH_SHORT)
-                        .apply { setGravity(Gravity.CENTER, 0, 0) }
-                        .show()
-            }
+            prevChapter()
         }
 
         //seekbar
@@ -177,6 +156,42 @@ class MangaPageActivityV2 : BaseActivity(), HasFullScreenControl, ReaderListener
 
         loadPages()
 
+    }
+
+    private fun prevChapter() {
+        //prev chapter, pos len(list) is the oldest chapter
+
+        val chapterList = mMangaViewModel.mangaChapterList
+        val currentChapter = mMangaViewModel.selectedMangaChapterItem
+
+        val pos = chapterList.indexOf(currentChapter)
+        if (pos + 1 < chapterList.size) {
+            mMangaViewModel.selectedMangaChapterItem = chapterList[pos + 1]
+            loadPages()
+        } else {
+            Toast.makeText(this, resources.getString(string.no_more_prev_chapter),
+                    Toast.LENGTH_SHORT)
+                    .apply { setGravity(Gravity.CENTER, 0, 0) }
+                    .show()
+        }
+    }
+
+    private fun nextChapter() {
+        //next chapter, pos 0 is the latest chapter
+
+        val chapterList = mMangaViewModel.mangaChapterList
+        val currentChapter = mMangaViewModel.selectedMangaChapterItem
+
+        val pos = chapterList.indexOf(currentChapter)
+        if (pos - 1 > 0) {
+            mMangaViewModel.selectedMangaChapterItem = chapterList[pos - 1]
+            loadPages()
+        } else {
+            Toast.makeText(this, resources.getString(string.no_more_next_chapter),
+                    Toast.LENGTH_SHORT)
+                    .apply { setGravity(Gravity.CENTER, 0, 0) }
+                    .show()
+        }
     }
 
     private fun loadPages() {
@@ -312,6 +327,22 @@ class MangaPageActivityV2 : BaseActivity(), HasFullScreenControl, ReaderListener
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) hideSystemUI()
         window.decorView.invalidate()
+    }
+
+    override fun onOverScrollStart(isStart: Boolean) {
+    }
+
+    override fun onOverScrollMove(isStart: Boolean, x: Float, y: Float) {
+    }
+
+    override fun onOverScrollEnd(isStart: Boolean, confirmed: Boolean) {
+        if (confirmed) {
+            if (isStart) {
+                prevChapter()
+            } else {
+                nextChapter()
+            }
+        }
     }
 
     override fun showLoading() {

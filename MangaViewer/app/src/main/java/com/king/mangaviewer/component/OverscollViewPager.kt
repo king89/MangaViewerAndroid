@@ -52,7 +52,7 @@ internal class OverScrollPager @JvmOverloads constructor(context: Context,
                     val displacement = ev.x - mStartX
 
                     if (ev.x > mStartX && displacement > measuredWidth * SWIPE_TOLERANCE) {
-//                        mOverScrollListener!!.onOverScrolledStart()
+                       mOverScrollListener?.onOverScrollEnd(true, true)
                         return true
                     }
                     mStartX = 0f
@@ -62,7 +62,7 @@ internal class OverScrollPager @JvmOverloads constructor(context: Context,
                     val displacement = mStartX - ev.x
 
                     if (ev.x < mStartX && displacement > measuredWidth * SWIPE_TOLERANCE) {
-//                        mOverScrollListener!!.onOverScrolledEnd()
+                        mOverScrollListener?.onOverScrollEnd(false, true)
                         return true
                     }
                     mStartX = 0f
@@ -83,7 +83,7 @@ internal class OverScrollPager @JvmOverloads constructor(context: Context,
 }
 
 interface OnOverScrollListener {
-    fun onOverScrollTotart(isStart: Boolean)
-    fun onOverScrollToMove(isStart: Boolean, x: Float, y: Float)
-    fun onOverScrollToEnd(isStart: Boolean, confirmed: Boolean)
+    fun onOverScrollStart(isStart: Boolean)
+    fun onOverScrollMove(isStart: Boolean, x: Float, y: Float)
+    fun onOverScrollEnd(isStart: Boolean, confirmed: Boolean)
 }
