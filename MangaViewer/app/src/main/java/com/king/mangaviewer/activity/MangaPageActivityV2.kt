@@ -224,8 +224,8 @@ class MangaPageActivityV2 : BaseActivity(),
     }
 
     fun syncTextView() {
-        val totalNum = sb.max
-        val currentPage = sb.progress
+        val totalNum = sb.max + 1
+        val currentPage = sb.progress + 1
         tvProgress.text = "$currentPage/$totalNum"
     }
 
@@ -246,8 +246,8 @@ class MangaPageActivityV2 : BaseActivity(),
     }
 
     private fun syncSeekBar(seekBar: SeekBar) {
-        seekBar.max = mReaderFragment?.getTotalPageNum() ?: 0
-        seekBar.progress = mReaderFragment?.getCurrentPageNum()?.plus(1) ?: 0
+        seekBar.max = mReaderFragment?.getTotalPageNum()?.minus(1) ?: 0
+        seekBar.progress = mReaderFragment?.getCurrentPageNum() ?: 0
     }
 
     override fun onPageChanged(currentPage: Int) {
