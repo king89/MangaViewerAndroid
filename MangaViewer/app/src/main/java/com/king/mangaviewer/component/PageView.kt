@@ -1,11 +1,15 @@
 package com.king.mangaviewer.component
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.graphics.Bitmap
 import android.graphics.PointF
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.view.GestureDetector
 import android.view.View
 import android.widget.FrameLayout
@@ -22,6 +26,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.ZOOM_FOCUS_
 import com.king.mangaviewer.R
 import com.king.mangaviewer.component.ReadingDirection.LTR
 import com.king.mangaviewer.component.ReadingDirection.RTL
+import com.king.mangaviewer.component.ReadingOrientation.PORTRAIT
 import com.king.mangaviewer.di.GlideApp
 import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.util.Logger
@@ -30,6 +35,7 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.list_manga_page_item_v2.view.clError
 import kotlinx.android.synthetic.main.list_manga_page_item_v2.view.clLoading
 import java.util.concurrent.TimeUnit.MILLISECONDS
+import kotlin.math.max
 
 class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? = null,
         defStyleAttr: Int = 0) : FrameLayout(ctx, attrs, defStyleAttr), View.OnClickListener {
@@ -47,7 +53,6 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
         imageView.setPanLimit(SubsamplingScaleImageView.PAN_LIMIT_INSIDE)
         imageView.setMinimumScaleType(SCALE_TYPE_CUSTOM)
         imageView.setMinimumTileDpi(180)
-        imageView.maxScale = 2f
         imageView.setDoubleTapZoomStyle(ZOOM_FOCUS_FIXED)
         imageView.setOnImageEventListener(object :
                 SubsamplingScaleImageView.DefaultOnImageEventListener() {
@@ -82,20 +87,45 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
             try {
                 val width = resource.width.toFloat()
                 val height = resource.height.toFloat()
-                val factor = width / height
-                val imageState = when (readingDirection) {
-                    LTR -> ImageViewState(factor, PointF(0f, 0f), 0)
-                    RTL -> ImageViewState(factor, PointF(width, 0f), 0)
+
+                val displayMetrics = DisplayMetrics()
+                (context as? Activity)?.windowManager
+                        ?.defaultDisplay
+                        ?.getMetrics(displayMetrics)
+                val screenSize: Float = if (displayMetrics.widthPixels == 0) {
+                    width
+                } else {
+                    displayMetrics.widthPixels.toFloat()
                 }
+                Logger.d(TAG, "screen width: $screenSize, image width: $width")
 
                 newBitmap = resource.copy(resource.config, false)
                 newBitmap ?: return
-                if (width > height) {
-                    imageView.minScale = factor
-                    imageView.setImage(ImageSource.bitmap(newBitmap!!), imageState)
-                } else {
-                    imageView.setImage(ImageSource.bitmap(newBitmap!!))
 
+                if (context.resources.configuration.orientation == ORIENTATION_PORTRAIT) {
+                    if (width > height) {
+                        val factor = screenSize / (width / 2)
+                        val imageState = when (readingDirection) {
+                            LTR -> ImageViewState(factor, PointF(0f, 0f), 0)
+                            RTL -> ImageViewState(factor, PointF(width, 0f), 0)
+                        }
+                        imageView.minScale = factor
+                        imageView.maxScale = max(factor * 2, 2f)
+                        imageView.setImage(ImageSource.bitmap(newBitmap!!), imageState)
+                    } else {
+                        val factor = screenSize / width
+                        imageView.minScale = factor
+                        imageView.maxScale = max(factor * 2, 2f)
+                        imageView.setImage(ImageSource.bitmap(newBitmap!!))
+
+                    }
+                } else {
+                    val factor = screenSize / width
+                    val imageState = ImageViewState(factor, PointF(0f, 0f), 0)
+
+                    imageView.minScale = factor
+                    imageView.maxScale = max(factor * 2, 2f)
+                    imageView.setImage(ImageSource.bitmap(newBitmap!!), imageState)
                 }
             } catch (e: OutOfMemoryError) {
                 Logger.e(TAG, "Out of memory when setting image", e)
@@ -131,6 +161,11 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
         }.delay(500, MILLISECONDS)
                 .subscribe()
                 .apply { disposable.add(this) }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        refresh()
     }
 
     private fun showLoading() {
@@ -178,9 +213,20 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
     companion object {
         val TAG = "PageView"
     }
+
+    fun refresh() {
+        mData?.run {
+            setData(this)
+        }
+    }
 }
 
 enum class ReadingDirection {
     LTR,
     RTL
+}
+
+enum class ReadingOrientation {
+    PORTRAIT,
+    LANDSCAPE
 }
