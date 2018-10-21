@@ -112,6 +112,8 @@
   <string name="msg_history_dialog_message">Are you sure you want to clear all the histories?</string>
   <string name="button_tooltip_prev_chapter">Prev Chapter</string>
   <string name="button_tooltip_next_chapter">Next Chapter</string>
+  <string name="channel_name">Notification</string>
+  <string name="channel_description">Notify updated manga</string>
 
 
 </resources>

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,8 +24,10 @@ import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.model.MangaWebSource;
+import com.king.mangaviewer.util.NotificationHelper;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
+import java.util.Locale;
 import org.joda.time.DateTime;
 
 import java.text.Format;
@@ -42,13 +45,14 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
     private NotificationManager nm;
     private Handler handler;
     private String updatedNames;
+
     @Override
     public void onReceive(final Context context, Intent intent) {
         handler = new Handler();
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "YOUR TAG");
+        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
         //Acquire the lock
-        wl.acquire();
+        wl.acquire(10*60*1000L /*10 minutes*/);
 
         //You can do the processing here.
         Bundle extras = intent.getExtras();
@@ -58,7 +62,7 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
             //Make sure this intent has been sent by the one-time timer button.
             msgStr.append("One time Timer : ");
         }
-        Format formatter = new SimpleDateFormat("hh:mm:ss a");
+        Format formatter = new SimpleDateFormat("hh:mm:ss a", Locale.getDefault());
         msgStr.append(formatter.format(new Date()));
 
         Toast.makeText(context, msgStr, Toast.LENGTH_LONG).show();
@@ -76,7 +80,6 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
         //Release the lock
         wl.release();
     }
-
 
     private boolean checkManga(Context context) {
         Log.i("AutoNotify", "checkManga");
@@ -98,13 +101,14 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
                     updatedCount = updatedCount + Math.max(0, chlist.size() - chapterCount);
                     flist.get(i).setChapterCount(chlist.size());
                     flist.get(i).setUpdateCount(updatedCount);
-                    flist.get(i).setUpdatedDate(DateTime.now().toString(FavouriteMangaMenuItem.DATE_FORMAT));
+                    flist.get(i).setUpdatedDate(
+                            DateTime.now().toString(FavouriteMangaMenuItem.DATE_FORMAT));
                     dataSource.updateToFavourite(flist.get(i));
                     sb.append(flist.get(i).getTitle() + ", ");
                     isHaveUpdated = true;
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         svm.saveSetting(context);
@@ -119,6 +123,8 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
     }
 
     private void notifyFromHandler(Context context) {
+        NotificationHelper.INSTANCE.createNotificationChannel(context);
+
         nm = (NotificationManager) context.getSystemService(Service.NOTIFICATION_SERVICE);
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(AUTO_UPDATE_SERVICE, true);
@@ -128,13 +134,13 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
                 Intent.FLAG_ACTIVITY_NEW_TASK, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-
         String updatedContentText = updatedNames;
-        Notification.Builder builder = new Notification.Builder(context)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentTitle(context.getString(R.string.msg_notify_updated_service_title))
                 .setContentText(updatedContentText)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.mipmap.ic_icon_pure)
+                .setChannelId(NotificationHelper.CHANNEL_ID)
                 .setAutoCancel(true);
         ;
         nm.notify(0, builder.build());
@@ -145,7 +151,8 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
         //use for debug,if it -1, then use for release
         if (t < 0) {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-            int hour = Integer.parseInt(sp.getString(context.getResources().getString(R.string.pref_key_auto_update_hours), "6"));
+            int hour = Integer.parseInt(sp.getString(
+                    context.getResources().getString(R.string.pref_key_auto_update_hours), "6"));
             t = AlarmManager.INTERVAL_HOUR * hour;
         }
 
@@ -178,4 +185,6 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
         am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pi);
     }
+
+
 }
