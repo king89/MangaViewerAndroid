@@ -87,6 +87,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/ffButton"
         app:layout_constraintEnd_toStartOf="@+id/ffButton"
         app:layout_constraintTop_toTopOf="@+id/ffButton"
+        android:contentDescription="@string/button_tooltip_prev_chapter"
         />
 
     <ImageButton
@@ -105,6 +106,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
+        android:contentDescription="@string/button_tooltip_next_chapter"
+
         />
   </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

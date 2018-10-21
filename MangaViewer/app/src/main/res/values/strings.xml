@@ -110,6 +110,8 @@
   <string name="menu_title_clear">Clear</string>
   <string name="msg_history_dialog_title">Clear</string>
   <string name="msg_history_dialog_message">Are you sure you want to clear all the histories?</string>
+  <string name="button_tooltip_prev_chapter">Prev Chapter</string>
+  <string name="button_tooltip_next_chapter">Next Chapter</string>
 
 
 </resources>

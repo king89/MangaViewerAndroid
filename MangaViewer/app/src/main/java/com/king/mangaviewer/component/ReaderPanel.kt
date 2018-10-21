@@ -19,20 +19,6 @@ interface ReaderListener {
     fun onPageChanged(currentPage: Int)
 }
 
-interface ControlPanelListener {
-    fun onNextButtonClick()
-    fun onPrevButtonClick()
-    fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-    }
-
-    fun onStartTrackingTouch(seekBar: SeekBar) {
-    }
-
-    fun onStopTrackingTouch(seekBar: SeekBar) {
-
-    }
-}
-
 interface HasFullScreenControl {
     abstract var isFullScreen: Boolean
 

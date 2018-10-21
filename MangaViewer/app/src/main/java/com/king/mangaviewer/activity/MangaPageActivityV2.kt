@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.support.v7.widget.SwitchCompat
+import android.support.v7.widget.TooltipCompat
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -15,6 +17,7 @@ import android.widget.ImageButton
 import android.widget.PopupWindow
 import android.widget.SeekBar
 import android.widget.TextView
+import android.widget.Toast
 import com.king.mangaviewer.R
 import com.king.mangaviewer.component.HasFullScreenControl
 import com.king.mangaviewer.component.ReaderListener
@@ -65,7 +68,7 @@ class MangaPageActivityV2 : BaseActivity(), HasFullScreenControl, ReaderListener
 
     override fun getActionBarTitle(): String {
         // TODO Auto-generated method stub
-        return mangaViewModel?.selectedMangaChapterItem?.title ?: ""
+        return mMangaViewModel.selectedMangaChapterItem.title ?: ""
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -114,6 +117,45 @@ class MangaPageActivityV2 : BaseActivity(), HasFullScreenControl, ReaderListener
             }
         }
 
+        TooltipCompat.setTooltipText(mFFImageButton,
+                getString(R.string.button_tooltip_next_chapter))
+        TooltipCompat.setTooltipText(mFRImageButton,
+                getString(R.string.button_tooltip_prev_chapter))
+
+        mFFImageButton.setOnClickListener {
+            //next chapter, pos 0 is the latest chapter
+            val chapterList = mMangaViewModel.mangaChapterList
+            val currentChapter = mMangaViewModel.selectedMangaChapterItem
+
+            val pos = chapterList.indexOf(currentChapter)
+            if (pos - 1 > 0) {
+                mMangaViewModel.selectedMangaChapterItem = chapterList[pos - 1]
+                loadPages()
+            } else {
+                Toast.makeText(this, resources.getString(R.string.no_more_next_chapter),
+                        Toast.LENGTH_SHORT)
+                        .apply { setGravity(Gravity.CENTER, 0, 0) }
+                        .show()
+            }
+        }
+
+        mFRImageButton.setOnClickListener {
+            //prev chapter, pos len(list) is the oldest chapter
+            val chapterList = mMangaViewModel.mangaChapterList
+            val currentChapter = mMangaViewModel.selectedMangaChapterItem
+
+            val pos = chapterList.indexOf(currentChapter)
+            if (pos + 1 < chapterList.size) {
+                mMangaViewModel.selectedMangaChapterItem = chapterList[pos + 1]
+                loadPages()
+            } else {
+                Toast.makeText(this, resources.getString(R.string.no_more_prev_chapter),
+                        Toast.LENGTH_SHORT)
+                        .apply { setGravity(Gravity.CENTER, 0, 0) }
+                        .show()
+            }
+        }
+
         //seekbar
         sb = findViewById<View>(R.id.seekBar) as SeekBar
         sb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -133,8 +175,13 @@ class MangaPageActivityV2 : BaseActivity(), HasFullScreenControl, ReaderListener
             }
         })
 
+        loadPages()
+
+    }
+
+    private fun loadPages() {
         Observable.fromCallable {
-            getMangaHelper().GetPageList(mangaViewModel.selectedMangaChapterItem)
+            mangaHelper.GetPageList(mangaViewModel.selectedMangaChapterItem)
         }
                 .subscribeOn(Schedulers.io())
                 .flatMapIterable {
@@ -156,9 +203,9 @@ class MangaPageActivityV2 : BaseActivity(), HasFullScreenControl, ReaderListener
                 }
                 .subscribe { it ->
                     setupReader(it)
+                    update(null)
                 }
                 .apply { compositeDisposable.add(this) }
-
     }
 
     fun syncTextView() {
