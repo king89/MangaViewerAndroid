@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
+import android.graphics.BitmapFactory
+import android.graphics.PointF
 import android.graphics.drawable.Drawable
 import android.support.design.widget.Snackbar
 import android.util.AttributeSet
@@ -23,7 +25,9 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.davemorrissey.labs.subscaleview.ImageSource
+import com.davemorrissey.labs.subscaleview.ImageViewState
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CUSTOM
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.ZOOM_FOCUS_FIXED
 import com.king.mangaviewer.R
 import com.king.mangaviewer.di.GlideApp
@@ -48,7 +52,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
         View.inflate(ctx, R.layout.list_manga_page_item_v2, this)
         imageView.setDoubleTapZoomStyle(SubsamplingScaleImageView.ZOOM_FOCUS_FIXED)
         imageView.setPanLimit(SubsamplingScaleImageView.PAN_LIMIT_INSIDE)
-        imageView.setMinimumDpi(90)
+        imageView.setMinimumScaleType(SCALE_TYPE_CUSTOM)
         imageView.setMinimumTileDpi(180)
         imageView.maxScale = 2f
         imageView.setDoubleTapZoomStyle(ZOOM_FOCUS_FIXED)
@@ -83,8 +87,20 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
                 transition: Transition<in Bitmap>?) {
             showImage()
             try {
+                val width = resource.width.toFloat()
+                val height = resource.height.toFloat()
+                val factor = width / height
+                val imageState = ImageViewState(factor, PointF(0f, 0f), 0)
+
                 val newBitmap = resource.copy(resource.config, false)
-                imageView.setImage(ImageSource.bitmap(newBitmap))
+
+                if (width > height) {
+                    imageView.minScale = factor
+                    imageView.setImage(ImageSource.bitmap(newBitmap), imageState)
+                } else {
+                    imageView.setImage(ImageSource.bitmap(newBitmap))
+
+                }
             } catch (e: OutOfMemoryError) {
                 Logger.e(TAG, "Out of memory when setting image", e)
                 showError()
