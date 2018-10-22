@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.WorkerThread;
 import android.widget.ImageView;
 
 import com.king.mangaviewer.activity.MyApplication;
@@ -77,7 +78,8 @@ public class MangaHelper {
         return mangaPageList;
     }
 
-    public Drawable getPageImage(final MangaPageItem page, final ImageView imageView, final GetImageCallback imageCallback) {
+    public Drawable getPageImage(final MangaPageItem page, final ImageView imageView,
+            final GetImageCallback imageCallback) {
         //For Local Manga
         if (page.getMangaWebSource().getClassName() == LocalManga.class.getName()) {
             ZipFile zf = null;
@@ -96,7 +98,8 @@ public class MangaHelper {
                     page.getMangaWebSource());
 
             if (!page.getWebImageUrl().isEmpty()) {
-                final String imageUrl = mPattern.getPrePageImageFilePath(page.getWebImageUrl(), page);
+                final String imageUrl = mPattern.getPrePageImageFilePath(page.getWebImageUrl(),
+                        page);
                 if (!imageUrl.isEmpty() && (new File(imageUrl).exists())) {
                     //从磁盘中获取
                     Drawable drawable = Drawable.createFromPath(imageUrl);
@@ -116,7 +119,8 @@ public class MangaHelper {
                         page.setWebImageUrl(mPattern.getImageUrl(page.getUrl(),
                                 page.getNowNum()));
                     }
-                    String tmpPath = mPattern.DownloadImgPage(page.getWebImageUrl(), page, SaveType.Temp, page.getReferUrl());
+                    String tmpPath = mPattern.DownloadImgPage(page.getWebImageUrl(), page,
+                            SaveType.Temp, page.getReferUrl());
                     page.setImagePath(tmpPath);
                     Drawable drawable = Drawable.createFromPath(tmpPath);
                     Message message = handler.obtainMessage(0, drawable);
@@ -145,7 +149,8 @@ public class MangaHelper {
     }
 
     /* Menu */
-    public List<MangaMenuItem> getLatestMangeList(List<MangaMenuItem> mangaList, HashMap<String, Object> state) {
+    public List<MangaMenuItem> getLatestMangeList(List<MangaMenuItem> mangaList,
+            HashMap<String, Object> state) {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                 getSettingViewModel().getSelectedWebSource(context));
         List<TitleAndUrl> pageUrlList = mPattern.getLatestMangaList(state);
@@ -156,13 +161,15 @@ public class MangaHelper {
             for (int i = 0; i < pageUrlList.size(); i++) {
                 mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
                         .getTitle(), null, pageUrlList.get(i).getImagePath(),
-                        pageUrlList.get(i).getUrl(), getSettingViewModel().getSelectedWebSource(context)));
+                        pageUrlList.get(i).getUrl(),
+                        getSettingViewModel().getSelectedWebSource(context)));
             }
         }
         return mangaList;
     }
 
-    public List<MangaMenuItem> getAllManga(List<MangaMenuItem> mangaList, HashMap<String, Object> state) {
+    public List<MangaMenuItem> getAllManga(List<MangaMenuItem> mangaList,
+            HashMap<String, Object> state) {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                 getSettingViewModel().getSelectedWebSource(context));
 
@@ -171,14 +178,16 @@ public class MangaHelper {
             for (int i = 0; i < pageUrlList.size(); i++) {
                 mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
                         .getTitle(), null, pageUrlList.get(i).getImagePath(),
-                        pageUrlList.get(i).getUrl(), getSettingViewModel().getSelectedWebSource(context)));
+                        pageUrlList.get(i).getUrl(),
+                        getSettingViewModel().getSelectedWebSource(context)));
             }
         }
         return mangaList;
     }
 
     /* Search */
-    public List<MangaMenuItem> getSearchMangeList(List<MangaMenuItem> mangaList, HashMap<String, Object> state) {
+    public List<MangaMenuItem> getSearchMangeList(List<MangaMenuItem> mangaList,
+            HashMap<String, Object> state) {
         WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
                 getSettingViewModel().getSelectedWebSource(context));
         List<TitleAndUrl> pageUrlList = mPattern.getSearchingList(state);
@@ -186,7 +195,8 @@ public class MangaHelper {
             for (int i = 0; i < pageUrlList.size(); i++) {
                 mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
                         .getTitle(), null, pageUrlList.get(i).getImagePath(),
-                        pageUrlList.get(i).getUrl(), getSettingViewModel().getSelectedWebSource(context)));
+                        pageUrlList.get(i).getUrl(),
+                        getSettingViewModel().getSelectedWebSource(context)));
             }
         }
         return mangaList;
@@ -201,8 +211,17 @@ public class MangaHelper {
         return menu.getImagePath();
     }
 
-
     public interface GetImageCallback {
         public void imageLoaded(Drawable imageDrawable, ImageView imageView, String imageUrl);
+    }
+
+    @WorkerThread
+    public static String getMenuCover(Context context, MangaMenuItem menu) {
+        WebSiteBasePattern mPattern = PatternFactory.getPattern(context,
+                menu.getMangaWebSource());
+        if (menu != null && menu.getImagePath() != null && menu.getImagePath().isEmpty()) {
+            menu.setImagePath(mPattern.getMenuCover(menu));
+        }
+        return menu.getImagePath();
     }
 }

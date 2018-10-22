@@ -61,7 +61,6 @@ public class FavouriteFragment extends BaseFragment {
         gridLayoutManager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.gridvivew_column_num));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        mRecyclerView.setAdapter(new FavouriteMangaItemAdapter(getContext(), null, null));
 
         tv = (TextView) rootView.findViewById(R.id.textView);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);

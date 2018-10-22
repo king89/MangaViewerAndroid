@@ -19,8 +19,8 @@
   <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
   <string name="menu_main_setting_title">Mange Source</string>
   <!--Menu-->
-  <string name="nav_latest_update">Latest Releases</string>
-  <string name="nav_all_manga">All Manga</string>
+  <string name="nav_latest_update">Latest</string>
+  <string name="nav_all_manga">All</string>
   <string name="nav_local">Local</string>
   <string name="nav_favourite">Favourite</string>
   <string name="nav_history">History</string>
