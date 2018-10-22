@@ -114,6 +114,8 @@
   <string name="button_tooltip_next_chapter">Next Chapter</string>
   <string name="channel_name">Notification</string>
   <string name="channel_description">Notify updated manga</string>
+  <string name="chapter_last_read">Last read</string>
+  <string name="chapter_list">Chapters</string>
 
 
 </resources>
