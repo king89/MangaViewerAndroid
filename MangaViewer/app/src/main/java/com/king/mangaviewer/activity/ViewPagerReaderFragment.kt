@@ -12,6 +12,7 @@ import com.google.gson.reflect.TypeToken
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaPageItemAdapterV2
 import com.king.mangaviewer.component.OnOverScrollListener
+import com.king.mangaviewer.component.ReaderListener
 import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.util.GsonHelper
 import com.king.mangaviewer.util.Logger
@@ -48,8 +49,8 @@ open class ViewPagerReaderFragment : ReaderFragment() {
             }
         })
 
-        (activity as? OnOverScrollListener)?.run {
-            viewPager.setOnOverScrollListener(this)
+        (activity as? ReaderListener)?.run {
+            viewPager.setOnOverScrollListener(createOnOverScrollListener(this))
         }
 
         mangaList?.run {
@@ -57,6 +58,26 @@ open class ViewPagerReaderFragment : ReaderFragment() {
             setPage(startPage)
         }
 
+    }
+
+    protected open fun createOnOverScrollListener(
+            listener: ReaderListener): OnOverScrollListener {
+        return object : OnOverScrollListener {
+            override fun onOverScrollStart(isToRight: Boolean) {
+            }
+
+            override fun onOverScrollMove(isToRight: Boolean, x: Float, y: Float) {
+            }
+
+            override fun onOverScrollEnd(isToRight: Boolean) {
+                if (isToRight) {
+                    listener.nextChapter()
+                } else {
+                    listener.prevChapter()
+                }
+            }
+
+        }
     }
 
     protected open fun setupAdapter(mangaList: List<MangaUri>, gestureDetector: GestureDetector) {

@@ -1,8 +1,6 @@
 package com.king.mangaviewer.activity
 
-import android.content.res.Configuration
 import android.os.Bundle
-import android.os.Handler
 import android.os.Message
 import android.support.v7.widget.SwitchCompat
 import android.support.v7.widget.TooltipCompat
@@ -21,10 +19,12 @@ import android.widget.Toast
 import com.king.mangaviewer.R
 import com.king.mangaviewer.R.string
 import com.king.mangaviewer.component.HasFullScreenControl
-import com.king.mangaviewer.component.OnOverScrollListener
 import com.king.mangaviewer.component.ReaderListener
+import com.king.mangaviewer.model.MangaChapterItem
+import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.util.GsonHelper
+import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.viewmodel.MangaViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
 import io.reactivex.Observable
@@ -38,8 +38,7 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class MangaPageActivityV2 : BaseActivity(),
         HasFullScreenControl,
-        ReaderListener,
-        OnOverScrollListener {
+        ReaderListener {
 
     override var isFullScreen: Boolean = false
 
@@ -157,40 +156,74 @@ class MangaPageActivityV2 : BaseActivity(),
 
     }
 
-    private fun prevChapter() {
-        //prev chapter, pos len(list) is the oldest chapter
-
-        val chapterList = mMangaViewModel.mangaChapterList
-        val currentChapter = mMangaViewModel.selectedMangaChapterItem
-
-        val pos = chapterList.indexOf(currentChapter)
-        if (pos + 1 < chapterList.size) {
-            mMangaViewModel.selectedMangaChapterItem = chapterList[pos + 1]
-            loadPages()
+    //TODO should move to use case
+    private fun getChapterList(menu: MangaMenuItem): Single<List<MangaChapterItem>> {
+        val observable = if (mMangaViewModel.mangaChapterList == null) {
+            Single.fromCallable {
+                mangaHelper.getChapterList(menu)
+            }
         } else {
-            Toast.makeText(this, resources.getString(string.no_more_prev_chapter),
-                    Toast.LENGTH_SHORT)
-                    .apply { setGravity(Gravity.CENTER, 0, 0) }
-                    .show()
+            Single.just(mMangaViewModel.mangaChapterList)
         }
+        return observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe{showLoading()}
+                .doAfterTerminate { hideLoading() }
     }
 
-    private fun nextChapter() {
+    override fun prevChapter() {
+        //prev chapter, pos len(list) is the oldest chapter
+
+        val menu = mMangaViewModel.selectedMangaChapterItem.menu
+        getChapterList(menu)
+                .subscribe({
+                    mMangaViewModel.mangaChapterList = it
+
+                    val chapterList = mMangaViewModel.mangaChapterList
+                    val currentChapter = mMangaViewModel.selectedMangaChapterItem
+
+                    val pos = chapterList.indexOf(currentChapter)
+                    if (pos + 1 < chapterList.size) {
+                        mMangaViewModel.selectedMangaChapterItem = chapterList[pos + 1]
+                        loadPages()
+                    } else {
+                        Toast.makeText(this, resources.getString(string.no_more_prev_chapter),
+                                Toast.LENGTH_SHORT)
+                                .apply { setGravity(Gravity.CENTER, 0, 0) }
+                                .show()
+                    }
+                }, {
+                    Logger.e(TAG, "get chapter list error", it)
+                })
+                .apply { compositeDisposable.add(this) }
+
+    }
+
+    override fun nextChapter() {
         //next chapter, pos 0 is the latest chapter
+        val menu = mMangaViewModel.selectedMangaChapterItem.menu
+        getChapterList(menu)
+                .subscribe({
+                    mMangaViewModel.mangaChapterList = it
 
-        val chapterList = mMangaViewModel.mangaChapterList
-        val currentChapter = mMangaViewModel.selectedMangaChapterItem
+                    val chapterList = mMangaViewModel.mangaChapterList
+                    val currentChapter = mMangaViewModel.selectedMangaChapterItem
 
-        val pos = chapterList.indexOf(currentChapter)
-        if (pos - 1 >= 0) {
-            mMangaViewModel.selectedMangaChapterItem = chapterList[pos - 1]
-            loadPages()
-        } else {
-            Toast.makeText(this, resources.getString(string.no_more_next_chapter),
-                    Toast.LENGTH_SHORT)
-                    .apply { setGravity(Gravity.CENTER, 0, 0) }
-                    .show()
-        }
+                    val pos = chapterList.indexOf(currentChapter)
+                    if (pos - 1 >= 0) {
+                        mMangaViewModel.selectedMangaChapterItem = chapterList[pos - 1]
+                        loadPages()
+                    } else {
+                        Toast.makeText(this, resources.getString(string.no_more_next_chapter),
+                                Toast.LENGTH_SHORT)
+                                .apply { setGravity(Gravity.CENTER, 0, 0) }
+                                .show()
+                    }
+                }, {
+                    Logger.e(TAG, "get chapter list error", it)
+                })
+                .apply { compositeDisposable.add(this) }
     }
 
     private fun loadPages() {
@@ -225,7 +258,7 @@ class MangaPageActivityV2 : BaseActivity(),
     fun syncTextView() {
         val totalNum = sb.max + 1
         val currentPage = sb.progress + 1
-        tvProgress.text = "$currentPage/$totalNum"
+        tvProgress.text = "$currentPage / $totalNum"
     }
 
     private fun setupReader(mangaList: List<MangaUri>) {
@@ -346,22 +379,6 @@ class MangaPageActivityV2 : BaseActivity(),
                 .subscribe { it: String ->
                     hideSystemUI()
                 }
-    }
-
-    override fun onOverScrollStart(isStart: Boolean) {
-    }
-
-    override fun onOverScrollMove(isStart: Boolean, x: Float, y: Float) {
-    }
-
-    override fun onOverScrollEnd(isStart: Boolean, confirmed: Boolean) {
-        if (confirmed) {
-            if (isStart) {
-                prevChapter()
-            } else {
-                nextChapter()
-            }
-        }
     }
 
     override fun showLoading() {

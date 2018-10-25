@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.GestureDetector
 import com.king.mangaviewer.adapter.RtlMangaPageItemAdapterV2
+import com.king.mangaviewer.component.OnOverScrollListener
+import com.king.mangaviewer.component.ReaderListener
 import com.king.mangaviewer.model.MangaUri
 import kotlinx.android.synthetic.main.fragment_viewpager_reader.viewPager
 import kotlin.math.max
@@ -44,6 +46,26 @@ class RtlViewPagerReaderFragment : ViewPagerReaderFragment() {
 
     private fun Int.invertIndex(): Int {
         return max(getTotalPageNum() - this - 1, -1)
+    }
+
+    override fun createOnOverScrollListener(
+            listener: ReaderListener): OnOverScrollListener {
+        return object : OnOverScrollListener {
+            override fun onOverScrollStart(isToRight: Boolean) {
+            }
+
+            override fun onOverScrollMove(isToRight: Boolean, x: Float, y: Float) {
+            }
+
+            override fun onOverScrollEnd(isToRight: Boolean) {
+                if (!isToRight) {
+                    listener.nextChapter()
+                } else {
+                    listener.prevChapter()
+                }
+            }
+
+        }
     }
 
     companion object {
