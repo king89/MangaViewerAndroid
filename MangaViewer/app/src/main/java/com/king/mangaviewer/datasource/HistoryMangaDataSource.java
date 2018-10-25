@@ -72,8 +72,6 @@ public class HistoryMangaDataSource extends MangaDataSourceBase {
         String resultJson = new Gson().toJson(item, HistoryMangaChapterItem.class);
         ContentValues values = new ContentValues();
         try {
-            //check over 100
-            checkIfOver100();
             //update or add
             if (checkIsExsit(item)) {
                 open();

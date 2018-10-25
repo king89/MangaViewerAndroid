@@ -72,7 +72,7 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
 
             val lastReadItem = appViewModel.HistoryManga.getLastRead(
                     mangaViewModel.selectedMangaMenuItem)
-
+            val historyItem = appViewModel.HistoryManga.getHistoryChapterList()
             lastReadItem?.run {
                 dataList.add(
                         MangaChapterItemWrapper(getString(R.string.chapter_last_read), CATEGORY,
@@ -83,7 +83,11 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
                 dataList.add(
                         MangaChapterItemWrapper(getString(R.string.chapter_list), CATEGORY, null))
                 forEach {
-                    dataList.add(MangaChapterItemWrapper(it.title, CHAPTER, it))
+                    dataList.add(MangaChapterItemWrapper(it.title, CHAPTER, it,
+                            historyItem.any { history ->
+                                history.hash == it.hash
+                            }
+                    ))
                 }
 
             }

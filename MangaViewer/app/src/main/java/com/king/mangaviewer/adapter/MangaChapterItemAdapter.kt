@@ -1,6 +1,7 @@
 package com.king.mangaviewer.adapter
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -45,11 +46,12 @@ class MangaChapterItemAdapter(protected val context: Context,
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
+        val item = dataList[position]
         when (getItemViewType(position)) {
             LAST_READ,
             CHAPTER -> {
                 holder as ChapterViewHolders
-                dataList[position].chapter?.apply {
+                item.chapter?.apply {
                     var chapterTitle = title
                     if (menu.title.length > MAX_TITLE_LENGTH) {
                         chapterTitle = chapterTitle.replace(menu.title,
@@ -58,6 +60,9 @@ class MangaChapterItemAdapter(protected val context: Context,
                     }
                     holder.textView.text = chapterTitle
                     holder.itemView.setOnClickListener { onItemClickListener.onClick(this) }
+                    if (item.isRead){
+                        holder.setRead()
+                    }
                 }
             }
             CATEGORY -> {
@@ -77,10 +82,19 @@ class MangaChapterItemAdapter(protected val context: Context,
     open class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView)
     inner class ChapterViewHolders(itemView: View) : RecyclerViewHolders(itemView) {
         val textView: TextView by lazy { itemView.findViewById<View>(R.id.textView) as TextView }
+        val viewHeader: View by lazy { itemView.findViewById<View>(R.id.viewHeader) as View }
+
+        fun setRead() {
+            val colorRead = ContextCompat.getColor(context, R.color.color_read)
+            textView.setTextColor(colorRead)
+            viewHeader.setBackgroundColor(colorRead)
+        }
     }
 
     inner class CategoryViewHolders(itemView: View) : RecyclerViewHolders(itemView) {
-        val textView: TextView by lazy { itemView.findViewById<View>(android.R.id.text1) as TextView }
+        val textView: TextView by lazy {
+            itemView.findViewById<View>(android.R.id.text1) as TextView
+        }
     }
 
     interface OnItemClickListener {
