@@ -99,6 +99,7 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
                 .doOnTerminate { hideLoading() }
                 .subscribe {
                     setupChapterList(it)
+                    updateChapterCount()
                 })
     }
 
@@ -167,6 +168,13 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
     override fun hideLoading() {
         progressBar.visibility = View.GONE
 
+    }
+
+    private fun updateChapterCount() {
+        val chapterCount = if (mangaViewModel.mangaChapterList == null) 0 else mangaViewModel.mangaChapterList.size
+        val menu = appViewModel.Manga.selectedMangaMenuItem
+        appViewModel.Setting.removeFavouriteManga(menu)
+        appViewModel.Setting.addFavouriteManga(menu, chapterCount)
     }
 
     private fun setupChapterList(dataList: List<MangaChapterItemWrapper>) {

@@ -14,7 +14,13 @@ import com.king.mangaviewer.model.MangaMenuItem
 class HistoryViewModel(context: Context) : ViewModelBase(context) {
     private val mHistoryChapterList: List<HistoryMangaChapterItem>? = null
     private val mHistoryMangaDataSource: HistoryMangaDataSource
-    fun getHistoryChapterList(): List<HistoryMangaChapterItem> = mHistoryMangaDataSource.allHistoryMangaItem
+
+    @JvmOverloads
+    fun getHistoryChapterList(
+            menu: MangaMenuItem? = null): List<HistoryMangaChapterItem> = mHistoryMangaDataSource.allHistoryMangaItem.filter {
+        if (menu == null) return@filter true
+        return@filter menu.hash == it.menu.hash
+    }
 
     init {
         this.mHistoryMangaDataSource = HistoryMangaDataSource(context)
