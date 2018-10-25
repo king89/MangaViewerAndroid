@@ -596,7 +596,7 @@ public class MyViewFlipper extends ViewFlipper {
 
     public boolean getIsFromLeftToRight() {
         if (settingViewModel != null) {
-            return settingViewModel.getIsFromLeftToRight();
+            return settingViewModel.getIsFromLeftToRight(getContext());
         } else {
             return true;
         }

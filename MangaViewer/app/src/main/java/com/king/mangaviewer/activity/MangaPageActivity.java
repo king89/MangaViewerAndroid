@@ -91,47 +91,47 @@ public class MangaPageActivity extends BaseActivity {
         final View controlsView = findViewById(R.id.fullscreen_content_controls);
 
         mDecorView = getWindow().getDecorView();
-        mDecorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-            @Override
-            public void onSystemUiVisibilityChange(int visibility) {
-                int mControlsHeight = 0;
-                int mShortAnimTime = 0;
-                if (mControlsHeight == 0) {
-                    mControlsHeight = controlsView.getHeight();
-                }
-                if (mShortAnimTime == 0) {
-                    mShortAnimTime = getResources().getInteger(
-                            android.R.integer.config_shortAnimTime);
-                }
-                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-                    // TODO: The system bars are visible. Make any desired
-                    // adjustments to your UI, such as showing the action bar or
-                    // other navigational controls.
+        mDecorView.setOnSystemUiVisibilityChangeListener(
+                new View.OnSystemUiVisibilityChangeListener() {
+                    @Override
+                    public void onSystemUiVisibilityChange(int visibility) {
+                        int mControlsHeight = 0;
+                        int mShortAnimTime = 0;
+                        if (mControlsHeight == 0) {
+                            mControlsHeight = controlsView.getHeight();
+                        }
+                        if (mShortAnimTime == 0) {
+                            mShortAnimTime = getResources().getInteger(
+                                    android.R.integer.config_shortAnimTime);
+                        }
+                        if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                            // TODO: The system bars are visible. Make any desired
+                            // adjustments to your UI, such as showing the action bar or
+                            // other navigational controls.
 //                    isFullScreen = false;
-                    mViewFlipper.setFullScreen(false);
-                    controlsView.animate()
-                            .translationY(0)
-                            .setDuration(mShortAnimTime);
-                    controlsView.setVisibility(View.VISIBLE);
-                    getSupportActionBar().show();
+                            mViewFlipper.setFullScreen(false);
+                            controlsView.animate()
+                                    .translationY(0)
+                                    .setDuration(mShortAnimTime);
+                            controlsView.setVisibility(View.VISIBLE);
+                            getSupportActionBar().show();
 
-                } else {
-                    // TODO: The system bars are NOT visible. Make any desired
-                    // adjustments to your UI, such as hiding the action bar or
-                    // other navigational controls.
+                        } else {
+                            // TODO: The system bars are NOT visible. Make any desired
+                            // adjustments to your UI, such as hiding the action bar or
+                            // other navigational controls.
 //                    isFullScreen = true;
-                    mViewFlipper.setFullScreen(true);
+                            mViewFlipper.setFullScreen(true);
 
-                    controlsView.animate()
-                            .translationY(mControlsHeight)
-                            .setDuration(mShortAnimTime);
-                    controlsView.setVisibility(View.GONE);
-                    getSupportActionBar().hide();
-                }
+                            controlsView.animate()
+                                    .translationY(mControlsHeight)
+                                    .setDuration(mShortAnimTime);
+                            controlsView.setVisibility(View.GONE);
+                            getSupportActionBar().hide();
+                        }
 
-
-            }
-        });
+                    }
+                });
 
         //seekbar
         final TextView tv = (TextView) findViewById(R.id.textView_pageNum);
@@ -163,14 +163,15 @@ public class MangaPageActivity extends BaseActivity {
             }
         });
         //set current pos changed listener
-        mViewFlipper.setOnCurrentPosChangedListener(new MyViewFlipper.OnCurrentPosChangedListener() {
-            @Override
-            public void onChanged(int pos) {
-                sb.setProgress(pos);
-                sb.setMax(mViewFlipper.getPageCount() - 1);
-                tv.setText("" + (pos + 1) + "/" + mViewFlipper.getPageCount());
-            }
-        });
+        mViewFlipper.setOnCurrentPosChangedListener(
+                new MyViewFlipper.OnCurrentPosChangedListener() {
+                    @Override
+                    public void onChanged(int pos) {
+                        sb.setProgress(pos);
+                        sb.setMax(mViewFlipper.getPageCount() - 1);
+                        tv.setText("" + (pos + 1) + "/" + mViewFlipper.getPageCount());
+                    }
+                });
 
         //Image Button
         mFFImageButton = (ImageButton) findViewById(R.id.ffButton);
@@ -216,7 +217,8 @@ public class MangaPageActivity extends BaseActivity {
     protected void update(Message msg) {
         this.getSupportActionBar().setTitle(getActionBarTitle());
         //add to history
-        this.getAppViewModel().HistoryManga.addChapterItemToHistory(mMangaViewModel.getSelectedMangaChapterItem());
+        this.getAppViewModel().HistoryManga.addChapterItemToHistory(
+                mMangaViewModel.getSelectedMangaChapterItem());
 
     }
 
@@ -226,7 +228,6 @@ public class MangaPageActivity extends BaseActivity {
         mMangaViewModel.setMangaPageList(null);
         super.goBack();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -263,11 +264,11 @@ public class MangaPageActivity extends BaseActivity {
         SwitchCompat isFTRSwitch = (SwitchCompat) layout.findViewById(R.id.LTRSwitch);
         SwitchCompat splitPageSwitch = (SwitchCompat) layout.findViewById(R.id.splitPageSwitch);
 
-        isFTRSwitch.setChecked(mSettingViewModel.getIsFromLeftToRight());
+        isFTRSwitch.setChecked(mSettingViewModel.getIsFromLeftToRight(this));
         isFTRSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mSettingViewModel.setIsFromLeftToRight(isChecked);
+                mSettingViewModel.setIsFromLeftToRight(MangaPageActivity.this, isChecked);
                 mViewFlipper.refresh();
 
             }

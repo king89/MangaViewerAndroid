@@ -75,7 +75,7 @@ public class MainActivity extends BaseActivity {
         if (intent.getBooleanExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false)) {
             intent.putExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false);
 //            displayView(getResources().getInteger(R.integer.menu_favourite_pos));
-            mViewPager.setCurrentItem(2);
+            mViewPager.setCurrentItem(0);
         }
     }
 

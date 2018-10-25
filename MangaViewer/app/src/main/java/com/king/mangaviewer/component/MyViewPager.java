@@ -72,7 +72,6 @@ public class MyViewPager extends ViewPager {
 
     protected int halfMode = 0; // 0:not 1:first half 2:second half
 
-
     protected final Object lock = new Object();
 
     public MyViewPager(Context context) {
@@ -96,7 +95,6 @@ public class MyViewPager extends ViewPager {
 //        gestureDetector = new GestureDetector(getContext(), new GestureListener());
         mDecorView = ((Activity) getContext()).getWindow().getDecorView();
 
-
         mHideHandler = new Handler();
         mHideRunnable = new Runnable() {
             @Override
@@ -109,7 +107,8 @@ public class MyViewPager extends ViewPager {
         this.setOffscreenPageLimit(0);
         this.addOnPageChangeListener(new OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            public void onPageScrolled(int position, float positionOffset,
+                    int positionOffsetPixels) {
 
             }
 
@@ -165,7 +164,6 @@ public class MyViewPager extends ViewPager {
 //        }
     }
 
-
     protected boolean getIsSplitPage() {
         if (settingViewModel != null) {
             return settingViewModel.getIsSplitPage(getContext());
@@ -200,9 +198,9 @@ public class MyViewPager extends ViewPager {
                 setView(getCurrPos(), getCurrPos());
                 updateHandler.sendEmptyMessage(0);
             } else {
-                Toast.makeText(getContext(), getContext().getString(R.string.msg_page_no_page), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.msg_page_no_page),
+                        Toast.LENGTH_SHORT).show();
             }
-
 
         }
     };
@@ -320,7 +318,7 @@ public class MyViewPager extends ViewPager {
                     pageList.get(next), iv, new MangaHelper.GetImageCallback() {
 
                         public void imageLoaded(Drawable imageDrawable,
-                                                ImageView imageView, String imageUrl) {
+                                ImageView imageView, String imageUrl) {
                             // TODO Auto-generated method stub
                             if (imageDrawable != null && imageView != null) {
                                 //imageView.setImageDrawable(imageDrawable);
@@ -342,7 +340,6 @@ public class MyViewPager extends ViewPager {
             this.removeViewAt(0);
         }
         this.addView(v, this.getChildCount());
-
 
         goPrevChapter = false;
         goNextChapter = false;
@@ -453,7 +450,8 @@ public class MyViewPager extends ViewPager {
                 goPrevChapter();
                 return;
             } else {
-                Toast.makeText(getContext(), getResources().getString(R.string.first_page), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.first_page),
+                        Toast.LENGTH_SHORT).show();
                 //Toast.makeText(getContext(), getResources().getString(R.string.first_page_again), Toast.LENGTH_SHORT).show();
                 goPrevChapter = true;
             }
@@ -463,7 +461,8 @@ public class MyViewPager extends ViewPager {
                 goNextChapter();
                 return;
             } else {
-                Toast.makeText(getContext(), getResources().getString(R.string.last_page), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.last_page),
+                        Toast.LENGTH_SHORT).show();
                 //Toast.makeText(getContext(), getResources().getString(R.string.last_page_again), Toast.LENGTH_SHORT).show();
                 goNextChapter = true;
             }
@@ -471,22 +470,26 @@ public class MyViewPager extends ViewPager {
     }
 
     public void goPrevChapter() {
-        int index = mangaViewModel.getMangaChapterList().indexOf(mangaViewModel.getSelectedMangaChapterItem());
+        int index = mangaViewModel.getMangaChapterList().indexOf(
+                mangaViewModel.getSelectedMangaChapterItem());
         if (getOrderDesc() && index + 1 < mangaViewModel.getMangaChapterList().size()) {
             mangaViewModel.setSelectedMangaChapterItem(index + 1);
             this.initial();
         } else {
-            Toast.makeText(getContext(), getResources().getString(R.string.no_more_prev_chapter), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getResources().getString(R.string.no_more_prev_chapter),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
     public void goNextChapter() {
-        int index = mangaViewModel.getMangaChapterList().indexOf(mangaViewModel.getSelectedMangaChapterItem());
+        int index = mangaViewModel.getMangaChapterList().indexOf(
+                mangaViewModel.getSelectedMangaChapterItem());
         if (getOrderDesc() && index - 1 >= 0) {
             mangaViewModel.setSelectedMangaChapterItem(index - 1);
             this.initial();
         } else {
-            Toast.makeText(getContext(), getResources().getString(R.string.no_more_next_chapter), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getResources().getString(R.string.no_more_next_chapter),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -512,7 +515,7 @@ public class MyViewPager extends ViewPager {
 
     public boolean getIsFromLeftToRight() {
         if (settingViewModel != null) {
-            return settingViewModel.getIsFromLeftToRight();
+            return settingViewModel.getIsFromLeftToRight(getContext());
         } else {
             return true;
         }
@@ -536,7 +539,6 @@ public class MyViewPager extends ViewPager {
         public int getCount() {
             return 3;
         }
-
 
         @Override
         public boolean isViewFromObject(View view, Object object) {

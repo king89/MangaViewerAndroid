@@ -73,6 +73,7 @@
   <string name="pref_key_auto_update_service">pref_key_auto_update_service</string>
   <string name="pref_key_default_path">pref_key_default_path</string>
   <string name="pref_key_auto_update_hours">pref_key_auto_update_hours</string>
+  <string name="pref_key_is_ltr">pref_key_is_ltr</string>
 
   <string name="pref_category_general">General</string>
   <string name="pref_category_reading">Reading</string>

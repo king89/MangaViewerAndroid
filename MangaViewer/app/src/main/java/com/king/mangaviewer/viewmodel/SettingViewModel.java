@@ -71,15 +71,21 @@ public class SettingViewModel extends ViewModelBase {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(context.getString(R.string.pref_key_split_page), mIsSplitPage);
-        editor.commit();
+        editor.apply();
         this.mIsSplitPage = mIsSplitPage;
     }
 
-    public void setIsFromLeftToRight(boolean mIsFromLeftToRight) {
+    public void setIsFromLeftToRight(Context context, boolean mIsFromLeftToRight) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(context.getString(R.string.pref_key_is_ltr), mIsFromLeftToRight);
+        editor.apply();
         this.mIsFromLeftToRight = mIsFromLeftToRight;
     }
 
-    public boolean getIsFromLeftToRight() {
+    public boolean getIsFromLeftToRight(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        mIsFromLeftToRight = sp.getBoolean(context.getString(R.string.pref_key_is_ltr), true);
         return mIsFromLeftToRight;
     }
 
