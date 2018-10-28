@@ -51,14 +51,14 @@ class RtlViewPagerReaderFragment : ViewPagerReaderFragment() {
     override fun createOnOverScrollListener(
             listener: ReaderListener): OnOverScrollListener {
         return object : OnOverScrollListener {
-            override fun onOverScrollStart(isToRight: Boolean) {
+            override fun onOverScrollStarted(atRight: Boolean) {
             }
 
-            override fun onOverScrollMove(isToRight: Boolean, x: Float, y: Float) {
+            override fun onOverScrollMove(atRight: Boolean, x: Float, y: Float) {
             }
 
-            override fun onOverScrollEnd(isToRight: Boolean) {
-                if (!isToRight) {
+            override fun onOverScrollFinished(atRight: Boolean) {
+                if (!atRight) {
                     listener.nextChapter()
                 } else {
                     listener.prevChapter()
