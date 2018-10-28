@@ -9,6 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaderFactory
+import com.bumptech.glide.load.model.LazyHeaders
 import com.king.mangaviewer.R
 import com.king.mangaviewer.activity.MangaChapterActivity
 import com.king.mangaviewer.di.GlideApp
@@ -42,16 +45,17 @@ open class MangaMenuItemAdapter(protected val context: Context,
 
     override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
 
-        //holder.imageView.setImageURL(this.menu.get(position), true, context.getResources().getDrawable(R.color.lightGrey));
         Single.fromCallable {
-            MangaHelper.getMenuCover(context, menu.get(position))
+            val url = MangaHelper.getMenuCover(context, menu.get(position))
+            val header = LazyHeaders.Builder().addHeader("Referer", menu[position].url).build()
+            GlideUrl(url, header)
         }
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe {
                     holder.imageView.setImageResource(R.color.manga_place_holder)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { it: String ->
+                .subscribe { it: GlideUrl ->
                     GlideApp.with(holder.imageView)
                             .load(it)
                             .override(320, 320)
