@@ -1,4 +1,4 @@
-package com.king.mangaviewer.usecase
+package com.king.mangaviewer.domain.usecase
 
 import android.content.Context
 import com.king.mangaviewer.model.MangaChapterItem

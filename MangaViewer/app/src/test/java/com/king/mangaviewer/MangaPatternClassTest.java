@@ -2,8 +2,8 @@ package com.king.mangaviewer;
 
 import android.content.Context;
 
-import com.king.mangaviewer.MangaPattern.WebDMZJ;
-import com.king.mangaviewer.MangaPattern.WebSiteBasePattern;
+import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider;
+import com.king.mangaviewer.domain.data.mangaprovider.WebDMZJ;
 import com.king.mangaviewer.model.TitleAndUrl;
 
 
@@ -31,7 +31,7 @@ public class MangaPatternClassTest  {
     @Test
     public void getMangaList(){
 
-        WebSiteBasePattern wbp = new WebDMZJ(mMockContext);
+        MangaProvider wbp = new WebDMZJ(mMockContext);
         HashMap<String, Object> hashMap = new HashMap<>();
         List<TitleAndUrl> list = wbp.getLatestMangaList(hashMap);
         System.out.println(list.get(0).getUrl());
@@ -40,7 +40,7 @@ public class MangaPatternClassTest  {
 
     @Test
     public void getChapterList(){
-        WebSiteBasePattern wbp = new WebDMZJ(mMockContext);
+        MangaProvider wbp = new WebDMZJ(mMockContext);
         String url = "http://manhua.dmzj.com/gsmmx21/";
         List<TitleAndUrl> list = wbp.getChapterList(url);
         System.out.println(list.get(0).getUrl());
@@ -49,7 +49,7 @@ public class MangaPatternClassTest  {
 
     @Test
     public void getPageList(){
-        WebSiteBasePattern wbp = new WebDMZJ(mMockContext);
+        MangaProvider wbp = new WebDMZJ(mMockContext);
         String url = "http://manhua.dmzj.com/gsmmx21/3.shtml";
         List<String> list = wbp.getPageList(url);
 

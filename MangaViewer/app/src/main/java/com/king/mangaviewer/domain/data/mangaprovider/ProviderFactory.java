@@ -1,13 +1,11 @@
-package com.king.mangaviewer.MangaPattern;
-
-import android.content.Context;
+package com.king.mangaviewer.domain.data.mangaprovider;
 
 import com.king.mangaviewer.model.MangaWebSource;
 
-public class PatternFactory {
-    public static WebSiteBasePattern getPattern(Context context, MangaWebSource type) {
+public class ProviderFactory {
+    public static MangaProvider getPattern(MangaWebSource type) {
         try {
-            return (WebSiteBasePattern) Class.forName(type.getClassName()).getConstructor(Context.class).newInstance(context);
+            return (MangaProvider) Class.forName(type.getClassName()).newInstance();
         } catch (InstantiationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -1,6 +1,5 @@
 package com.king.mangaviewer.activity;
 
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +17,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.MangaPattern.WebSiteBasePattern;
+import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider;
 import com.king.mangaviewer.component.MangaGridView;
 import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.util.MangaHelper;
@@ -107,7 +106,7 @@ public class SearchResultActivity extends BaseActivity {
 
         //reset all manga list
         this.getAppViewModel().Manga.resetAllMangaList();
-        this.getAppViewModel().Manga.getAllMangaStateHash().put(WebSiteBasePattern.STATE_SEARCH_QUERYTEXT, query);
+        this.getAppViewModel().Manga.getAllMangaStateHash().put(MangaProvider.STATE_SEARCH_QUERYTEXT, query);
 
         gv.Initial(this.getAppViewModel().Manga, new MangaGridView.IGetMore() {
             @Override

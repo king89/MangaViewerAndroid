@@ -1,6 +1,6 @@
 package com.king.mangaviewer.viewmodel;
 
-import com.king.mangaviewer.MangaPattern.LocalManga;
+import com.king.mangaviewer.domain.data.mangaprovider.LocalManga;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaWebSource;
@@ -20,7 +20,7 @@ public class LocalMangaViewModel extends MangaViewModel {
 
     public void setSelectedFilePath(File path, String fileName) {
         //selectedFilePath = path;
-        LocalManga tLocalManga = new LocalManga(null);
+        LocalManga tLocalManga = new LocalManga();
         List<TitleAndUrl> chapterList = tLocalManga.getChapterList(path.getAbsolutePath());
 
         MangaChapterItem tSelectedChapter = null;

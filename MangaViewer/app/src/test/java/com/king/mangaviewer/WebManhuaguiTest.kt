@@ -1,9 +1,9 @@
 package com.king.mangaviewer
 
 import android.content.Context
-import com.king.mangaviewer.MangaPattern.WebManhuagui
-import com.king.mangaviewer.MangaPattern.WebSiteBasePattern
-import com.king.mangaviewer.MangaPattern.WebSiteBasePattern.STATE_SEARCH_QUERYTEXT
+import com.king.mangaviewer.domain.data.mangaprovider.WebManhuagui
+import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider
+import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider.STATE_SEARCH_QUERYTEXT
 import com.king.mangaviewer.util.LZString
 import junit.framework.Assert.assertTrue
 import org.junit.Before
@@ -18,7 +18,7 @@ class WebManhuaguiTest {
 
     @Mock
     lateinit var mMockContext: Context
-    lateinit var wbp: WebSiteBasePattern
+    lateinit var wbp: MangaProvider
 
     @Before
     fun setup() {

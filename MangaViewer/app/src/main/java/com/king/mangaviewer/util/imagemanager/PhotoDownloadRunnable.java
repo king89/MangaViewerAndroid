@@ -3,7 +3,7 @@ package com.king.mangaviewer.util.imagemanager;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import com.king.mangaviewer.activity.MyApplication;
+import com.king.mangaviewer.MyApplication;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.util.NetworkHelper;
@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Created by KinG on 3/8/2016.

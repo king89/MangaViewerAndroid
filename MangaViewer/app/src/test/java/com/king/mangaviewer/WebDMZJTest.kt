@@ -1,10 +1,8 @@
 package com.king.mangaviewer
 
 import android.content.Context
-import com.king.mangaviewer.MangaPattern.WebDMZJ
-import com.king.mangaviewer.MangaPattern.WebManhuagui
-import com.king.mangaviewer.MangaPattern.WebSiteBasePattern
-import com.king.mangaviewer.util.LZString
+import com.king.mangaviewer.domain.data.mangaprovider.WebDMZJ
+import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider
 import junit.framework.Assert
 import org.junit.Before
 import org.junit.Test
@@ -19,7 +17,7 @@ class WebDMZJTest {
     @Mock
     lateinit var mMockContext: Context
 
-    lateinit var webSite: WebSiteBasePattern
+    lateinit var webSite: MangaProvider
 
     @Before
     fun setup() {

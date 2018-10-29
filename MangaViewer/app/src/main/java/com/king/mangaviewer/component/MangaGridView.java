@@ -1,26 +1,19 @@
 package com.king.mangaviewer.component;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.TextView;
 
+import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
-import com.king.mangaviewer.MangaPattern.WebSiteBasePattern;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 
@@ -186,8 +179,8 @@ public class MangaGridView extends RecyclerView {
             if (mLoadingFooter != null) {
                 mLoadingFooter.setVisibility(GONE);
             }
-            if (mStateHash.containsKey(WebSiteBasePattern.STATE_NO_MORE)) {
-                mNoMore = (boolean) mStateHash.get(WebSiteBasePattern.STATE_NO_MORE);
+            if (mStateHash.containsKey(MangaProvider.STATE_NO_MORE)) {
+                mNoMore = (boolean) mStateHash.get(MangaProvider.STATE_NO_MORE);
             }
             setFlagLoading(false);
             if(mSwipeRefreshLayout != null){

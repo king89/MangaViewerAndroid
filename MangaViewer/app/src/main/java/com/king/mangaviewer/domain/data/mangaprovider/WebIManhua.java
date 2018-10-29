@@ -1,6 +1,5 @@
-package com.king.mangaviewer.MangaPattern;
+package com.king.mangaviewer.domain.data.mangaprovider;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.king.mangaviewer.model.TitleAndUrl;
@@ -15,7 +14,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WebIManhua extends WebSiteBasePattern {
+public class WebIManhua extends MangaProvider {
     String LOG_TAG = "WebIManhua";
     String param = "p";
     String imagePrefix = ""; // imanhua_ , JOJO_, no prefix
@@ -23,8 +22,7 @@ public class WebIManhua extends WebSiteBasePattern {
     String imageUrl = "http://t5.mangafiles.com/Files/Images";
     ImanhuaInfo deserializedProduct = null;
 
-    public WebIManhua(Context context) {
-        super(context);
+    public WebIManhua() {
         // TODO Auto-generated constructor stub
         WEBSITE_URL = "http://www.imanhua.com/";
         CHARSET = "gb2312";

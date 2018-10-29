@@ -1,6 +1,4 @@
-package com.king.mangaviewer.MangaPattern;
-
-import android.content.Context;
+package com.king.mangaviewer.domain.data.mangaprovider;
 
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
@@ -18,13 +16,12 @@ import java.util.List;
 /**
  * Created by KinG on 9/2/2015.
  */
-public class WebMangaReader extends WebSiteBasePattern {
+public class WebMangaReader extends MangaProvider {
 
     private final static int PAGE_SIZE = 30;
     public static final int SEARCH_LIST_PAGE_SIZE = 30;
 
-    public WebMangaReader(Context context) {
-        super(context);
+    public WebMangaReader() {
         WEBSITE_URL = "http://www.mangareader.net/";
         WEB_LATEST_MANGA_BASE_URL = "http://www.mangareader.net/";
         WEB_SEARCH_URL = "http://www.mangareader.net/search/?w=%s&rd=0&status=0&order=0&p=%d";

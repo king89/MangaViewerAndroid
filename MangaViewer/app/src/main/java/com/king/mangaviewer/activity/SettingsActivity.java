@@ -14,6 +14,7 @@ import android.support.v7.preference.SwitchPreferenceCompat;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.king.mangaviewer.MyApplication;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.preference.MangaViewerDialogPreference;
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
@@ -52,7 +53,7 @@ public class SettingsActivity extends BaseActivity {
     }
 
     public SettingViewModel getSettingViewModel() {
-        return ((MyApplication) getApplication()).AppViewModel.Setting;
+        return ((MyApplication) getApplication()).appViewModel.Setting;
     }
 
     private void finishSetting() {

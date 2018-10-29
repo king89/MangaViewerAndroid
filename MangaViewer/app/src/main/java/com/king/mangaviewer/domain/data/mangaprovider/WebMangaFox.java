@@ -1,6 +1,4 @@
-package com.king.mangaviewer.MangaPattern;
-
-import android.content.Context;
+package com.king.mangaviewer.domain.data.mangaprovider;
 
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
@@ -16,14 +14,13 @@ import java.util.List;
 /**
  * Created by KinG on 8/31/2015.
  */
-public class WebMangaFox extends WebSiteBasePattern {
+public class WebMangaFox extends MangaProvider {
 
 
     private static String mRestSearchString = "&type=&author_method=cw&author=&artist_method=cw&artist=&genres%5BAction%5D=0&genres%5BAdult%5D=0&genres%5BAdventure%5D=0&genres%5BComedy%5D=0&genres%5BDoujinshi%5D=0&genres%5BDrama%5D=0&genres%5BEcchi%5D=0&genres%5BFantasy%5D=0&genres%5BGender+Bender%5D=0&genres%5BHarem%5D=0&genres%5BHistorical%5D=0&genres%5BHorror%5D=0&genres%5BJosei%5D=0&genres%5BMartial+Arts%5D=0&genres%5BMature%5D=0&genres%5BMecha%5D=0&genres%5BMystery%5D=0&genres%5BOne+Shot%5D=0&genres%5BPsychological%5D=0&genres%5BRomance%5D=0&genres%5BSchool+Life%5D=0&genres%5BSci-fi%5D=0&genres%5BSeinen%5D=0&genres%5BShoujo%5D=0&genres%5BShoujo+Ai%5D=0&genres%5BShounen%5D=0&genres%5BShounen+Ai%5D=0&genres%5BSlice+of+Life%5D=0&genres%5BSmut%5D=0&genres%5BSports%5D=0&genres%5BSupernatural%5D=0&genres%5BTragedy%5D=0&genres%5BWebtoons%5D=0&genres%5BYaoi%5D=0&genres%5BYuri%5D=0&released_method=eq&released=&rating_method=eq&rating=&is_completed=&advopts=1&sort=views&order=za";
     private static String LOG_TAG = "WebMangaFox";
 
-    public WebMangaFox(Context context) {
-        super(context);
+    public WebMangaFox() {
         WEBSITE_URL = "http://mangafox.me/";
         WEB_LATEST_MANGA_BASE_URL = "http://mangafox.me/";
         WEB_SEARCH_URL = "http://mangafox.me/search.php?name_method=cw&name=%s&page=%d%s";

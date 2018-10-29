@@ -1,6 +1,5 @@
-package com.king.mangaviewer.MangaPattern;
+package com.king.mangaviewer.domain.data.mangaprovider;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -29,12 +28,11 @@ import java.util.regex.Pattern;
  * Created by liang on 10/25/2016.
  */
 
-public class WebDMZJ extends WebSiteBasePattern {
+public class WebDMZJ extends MangaProvider {
     private static final String TAG = WebDMZJ.class.getSimpleName();
     String IMAGEURL = "https://images.dmzj.com/";
 
-    public WebDMZJ(Context context) {
-        super(context);
+    public WebDMZJ() {
         WEBSITE_URL = "https://manhua.dmzj.com/";
         WEB_SEARCH_URL = "http://s.acg.dmzj.com/comicsum/search.php?s=%s&p=%s";
         WEB_LATEST_MANGA_BASE_URL = "https://manhua.dmzj.com/update_1.shtml";

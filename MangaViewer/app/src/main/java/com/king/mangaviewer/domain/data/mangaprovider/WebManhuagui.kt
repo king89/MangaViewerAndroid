@@ -1,7 +1,5 @@
-package com.king.mangaviewer.MangaPattern
+package com.king.mangaviewer.domain.data.mangaprovider
 
-import android.content.Context
-import android.util.Log
 import com.king.mangaviewer.model.TitleAndUrl
 import com.king.mangaviewer.util.GsonHelper
 import com.king.mangaviewer.util.LZString
@@ -10,7 +8,7 @@ import org.jsoup.Jsoup
 import java.util.ArrayList
 import java.util.regex.Pattern
 
-class WebManhuagui(context: Context) : WebSiteBasePattern(context) {
+class WebManhuagui() : MangaProvider() {
 
     init {
         WEBSITE_URL = "https://www.manhuagui.com/"

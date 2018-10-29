@@ -1,9 +1,10 @@
-package com.king.mangaviewer.MangaPattern;
+package com.king.mangaviewer.domain.data.mangaprovider;
 
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.king.mangaviewer.MyApplication;
 import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.common.Constants.SaveType;
 import com.king.mangaviewer.util.FileHelper;
@@ -26,11 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 
-public class WebSiteBasePattern {
-    private final static String LOG_TAG = "WebSiteBasePattern";
+public class MangaProvider {
+    private final static String LOG_TAG = "MangaProvider";
     private static final int HTTP_TIMEOUT_NUM = 10000;
     public String WEBSITE_URL = "";
     public String WEB_SEARCH_URL = "";
@@ -40,7 +39,6 @@ public class WebSiteBasePattern {
     protected int startNum = 1;
     protected int totalNum = 1;
     protected String firstPageHtml = null;
-    private Context context;
 
     public static final String STATE_SEARCH_QUERYTEXT = "key_search_querytext";
     public final static String STATE_PAGE_KEY = "key_page_key";
@@ -48,8 +46,7 @@ public class WebSiteBasePattern {
     public final static String STATE_TOTAL_PAGE_NUM_THIS_KEY = "key_total_page_num";
     public final static String STATE_NO_MORE = "key_no_more";
 
-    public WebSiteBasePattern(Context context) {
-        this.context = context;
+    public MangaProvider() {
     }
 
     public List<String> getPageList(String firstPageUrl) {
@@ -155,6 +152,7 @@ public class WebSiteBasePattern {
     }
 
     public String getMangaFolder() {
+        Context context = MyApplication.getContext();
         if (context != null) {
             // Check if have external storage
             if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {

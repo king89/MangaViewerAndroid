@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import com.king.mangaviewer.MyApplication;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.util.GsonHelper;
 import com.king.mangaviewer.util.MangaHelper;
@@ -16,7 +17,10 @@ import com.king.mangaviewer.util.SettingHelper;
 import com.king.mangaviewer.viewmodel.AppViewModel;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
+import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
 import io.reactivex.disposables.CompositeDisposable;
+import javax.inject.Inject;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -29,7 +33,12 @@ public class BaseActivity extends AppCompatActivity {
     public CompositeDisposable compositeDisposable = new CompositeDisposable();
     protected Toolbar mToolbar;
 
+    @Inject
+    protected AppViewModel mAppViewModel;
+
     protected void onCreate(android.os.Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
+
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             String mangaViewModelJson = savedInstanceState.getString(KEY_MANGA_VIEW_MODEL, "");
@@ -119,15 +128,11 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public AppViewModel getAppViewModel() {
-        return ((MyApplication) this.getApplication()).AppViewModel;
+        return mAppViewModel;
     }
 
     public MangaHelper getMangaHelper() {
         return ((MyApplication) this.getApplication()).MangaHelper;
-    }
-
-    public SettingHelper getSettingHelper() {
-        return ((MyApplication) this.getApplication()).SettingHelper;
     }
 
     public SettingViewModel getSettingViewModel() {

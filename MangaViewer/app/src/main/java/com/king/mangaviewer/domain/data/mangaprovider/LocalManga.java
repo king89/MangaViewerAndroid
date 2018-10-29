@@ -1,6 +1,5 @@
-package com.king.mangaviewer.MangaPattern;
+package com.king.mangaviewer.domain.data.mangaprovider;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.king.mangaviewer.model.TitleAndUrl;
@@ -18,11 +17,11 @@ import java.util.zip.ZipFile;
 /**
  * Created by KinG on 12/24/2014.
  */
-public class LocalManga extends WebSiteBasePattern {
+public class LocalManga extends MangaProvider {
     String LOG_TAG = "LocalManga";
 
-    public LocalManga(Context context) {
-        super(context);
+    public LocalManga() {
+
         // TODO Auto-generated constructor stub
         WEBSITE_URL = "";
         WEB_SEARCH_URL = "";

@@ -2,8 +2,6 @@ package com.king.mangaviewer;
 
 import android.test.ApplicationTestCase;
 
-import com.king.mangaviewer.activity.MyApplication;
-
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */

@@ -1,6 +1,5 @@
-package com.king.mangaviewer.MangaPattern;
+package com.king.mangaviewer.domain.data.mangaprovider;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.king.mangaviewer.model.TitleAndUrl;
@@ -18,7 +17,7 @@ import java.util.regex.Pattern;
 /**
  * Created by KinG on 12/24/2014.
  */
-public class WebHHComic extends WebSiteBasePattern {
+public class WebHHComic extends MangaProvider {
     String LOG_TAG = "WebHHComic";
     String[] ServerList = new String[]{
             "http://216.18.193.164:9393/dm01/",
@@ -41,8 +40,7 @@ public class WebHHComic extends WebSiteBasePattern {
     String key = "tahfcioewrm";
 
 
-    public WebHHComic(Context context) {
-        super(context);
+    public WebHHComic() {
         // TODO Auto-generated constructor stub
         WEBSITE_URL = "http://www.hhxiee.cc/";
         WEB_SEARCH_URL = "http://somanhua.com/?key=%s&pageIndex=%d";

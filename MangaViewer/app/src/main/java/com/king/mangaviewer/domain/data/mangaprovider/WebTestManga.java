@@ -1,6 +1,4 @@
-package com.king.mangaviewer.MangaPattern;
-
-import android.content.Context;
+package com.king.mangaviewer.domain.data.mangaprovider;
 
 import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.model.MangaPageItem;
@@ -14,11 +12,10 @@ import java.util.Random;
 /**
  * Created by KinG on 12/24/2014.
  */
-public class WebTestManga extends WebSiteBasePattern {
+public class WebTestManga extends MangaProvider {
     String LOG_TAG = "WebTestManga";
 
-    public WebTestManga(Context context) {
-        super(context);
+    public WebTestManga() {
         // TODO Auto-generated constructor stub
         WEBSITE_URL = "";
         WEB_SEARCH_URL = "";
