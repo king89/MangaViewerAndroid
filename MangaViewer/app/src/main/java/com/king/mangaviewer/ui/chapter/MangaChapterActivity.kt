@@ -1,8 +1,6 @@
-package com.king.mangaviewer.activity
+package com.king.mangaviewer.ui.chapter
 
-import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
 import android.os.Message
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
@@ -15,9 +13,9 @@ import android.widget.Toast
 
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter
-import com.king.mangaviewer.component.MyImageView
 
-import butterknife.ButterKnife
+import com.king.mangaviewer.activity.BaseActivity
+import com.king.mangaviewer.ui.page.MangaPageActivityV2
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.OnItemClickListener
 import com.king.mangaviewer.adapter.MangaChapterItemWrapper
 import com.king.mangaviewer.adapter.WrapperType.CATEGORY
@@ -29,7 +27,6 @@ import com.king.mangaviewer.util.MangaHelper
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import me.grantland.widget.AutofitTextView
 

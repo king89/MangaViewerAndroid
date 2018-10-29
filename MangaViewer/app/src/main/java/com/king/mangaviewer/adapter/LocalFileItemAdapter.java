@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.activity.LocalFragment;
+import com.king.mangaviewer.ui.main.fragment.LocalFragment;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.king.mangaviewer.activity;
+package com.king.mangaviewer.ui.main.fragment;
 
 
 import android.content.res.Configuration;
@@ -15,9 +15,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.activity.BaseFragment;
 import com.king.mangaviewer.adapter.FavouriteMangaItemAdapter;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 
+import com.king.mangaviewer.ui.main.MainActivity;
 import java.util.Collections;
 import java.util.List;
 

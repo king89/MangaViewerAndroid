@@ -1,4 +1,4 @@
-package com.king.mangaviewer.activity
+package com.king.mangaviewer.ui.page
 
 import android.os.Bundle
 import android.os.Message
@@ -18,6 +18,10 @@ import android.widget.TextView
 import android.widget.Toast
 import com.king.mangaviewer.R
 import com.king.mangaviewer.R.string
+import com.king.mangaviewer.activity.BaseActivity
+import com.king.mangaviewer.ui.page.fragment.ReaderFragment
+import com.king.mangaviewer.ui.page.fragment.RtlViewPagerReaderFragment
+import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment
 import com.king.mangaviewer.component.HasFullScreenControl
 import com.king.mangaviewer.component.ReaderListener
 import com.king.mangaviewer.model.MangaChapterItem
@@ -79,7 +83,8 @@ class MangaPageActivityV2 : BaseActivity(),
 
     override fun initControl() {
         // TODO Auto-generated method stub
-        mIsLoadFromHistory = intent.getBooleanExtra(INTENT_EXTRA_FROM_HISTORY, false)
+        mIsLoadFromHistory = intent.getBooleanExtra(
+                INTENT_EXTRA_FROM_HISTORY, false)
         setContentView(R.layout.activity_manga_page_v2)
 
         val controlsView = findViewById<View>(R.id.fullscreen_content_controls)

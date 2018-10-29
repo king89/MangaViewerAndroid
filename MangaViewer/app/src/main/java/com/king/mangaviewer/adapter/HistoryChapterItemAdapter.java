@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.activity.MangaPageActivityV2;
+import com.king.mangaviewer.ui.page.MangaPageActivityV2;
 import com.king.mangaviewer.component.MyImageView;
 import com.king.mangaviewer.model.HistoryMangaChapterItem;
 import com.king.mangaviewer.util.AsyncImageLoader;

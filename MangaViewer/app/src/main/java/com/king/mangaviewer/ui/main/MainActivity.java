@@ -1,4 +1,4 @@
-package com.king.mangaviewer.activity;
+package com.king.mangaviewer.ui.main;
 
 import android.app.SearchManager;
 import android.content.ComponentName;
@@ -8,7 +8,6 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,7 +17,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,10 +28,17 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.adapter.NavDrawerListAdapter;
+import com.king.mangaviewer.ui.main.fragment.AllMangaFragment;
+import com.king.mangaviewer.activity.BaseActivity;
+import com.king.mangaviewer.activity.BaseFragment;
+import com.king.mangaviewer.ui.main.fragment.FavouriteFragment;
+import com.king.mangaviewer.ui.main.fragment.HistoryFragment;
+import com.king.mangaviewer.ui.main.fragment.HomeFragment;
+import com.king.mangaviewer.ui.main.fragment.LocalFragment;
+import com.king.mangaviewer.ui.search.SearchResultActivity;
+import com.king.mangaviewer.ui.setting.SettingsActivity;
 import com.king.mangaviewer.model.NavDrawerItem;
 import com.king.mangaviewer.model.MangaWebSource;
-import com.king.mangaviewer.service.AutoNotifyUpdatedService;
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
 
 import java.util.ArrayList;

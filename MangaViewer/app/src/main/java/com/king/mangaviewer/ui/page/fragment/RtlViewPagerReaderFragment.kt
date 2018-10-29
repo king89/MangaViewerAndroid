@@ -1,4 +1,4 @@
-package com.king.mangaviewer.activity
+package com.king.mangaviewer.ui.page.fragment
 
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -74,7 +74,8 @@ class RtlViewPagerReaderFragment : ViewPagerReaderFragment() {
         fun newInstance(dataJson: String) =
                 RtlViewPagerReaderFragment().apply {
                     arguments = Bundle().apply {
-                        putString(INTENT_EXTRA_MANGA_LIST_JSON, dataJson)
+                        putString(
+                                INTENT_EXTRA_MANGA_LIST_JSON, dataJson)
                     }
                 }
     }

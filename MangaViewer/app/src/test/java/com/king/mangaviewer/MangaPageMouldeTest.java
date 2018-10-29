@@ -2,7 +2,7 @@ package com.king.mangaviewer;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.king.mangaviewer.activity.MainActivity;
+import com.king.mangaviewer.ui.main.MainActivity;
 
 /**
  * Created by KinG on 7/31/2015.

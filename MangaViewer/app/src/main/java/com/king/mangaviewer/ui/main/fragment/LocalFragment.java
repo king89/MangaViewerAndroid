@@ -1,4 +1,4 @@
-package com.king.mangaviewer.activity;
+package com.king.mangaviewer.ui.main.fragment;
 
 
 import android.content.Intent;
@@ -12,17 +12,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.activity.BaseActivity;
+import com.king.mangaviewer.activity.BaseFragment;
+import com.king.mangaviewer.activity.LocalReadActivity;
 import com.king.mangaviewer.adapter.LocalFileItemAdapter;
 
+import com.king.mangaviewer.ui.main.MainActivity;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.king.mangaviewer.di
 
-import com.king.mangaviewer.activity.MainActivity
+import com.king.mangaviewer.ui.main.MainActivity
 import com.king.mangaviewer.di.annotation.ActivityScoped
 import dagger.Module
 import dagger.android.ContributesAndroidInjector

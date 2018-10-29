@@ -1,4 +1,4 @@
-package com.king.mangaviewer.activity;
+package com.king.mangaviewer.ui.main.fragment;
 
 
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.activity.BaseFragment;
 import com.king.mangaviewer.component.MangaGridView;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.util.MangaHelper;

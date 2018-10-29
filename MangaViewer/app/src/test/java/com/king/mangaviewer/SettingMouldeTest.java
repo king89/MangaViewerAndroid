@@ -3,7 +3,7 @@ package com.king.mangaviewer;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.MediumTest;
 
-import com.king.mangaviewer.activity.MainActivity;
+import com.king.mangaviewer.ui.main.MainActivity;
 import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 import com.king.mangaviewer.model.MangaMenuItem;
@@ -11,7 +11,6 @@ import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**

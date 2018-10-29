@@ -1,4 +1,4 @@
-package com.king.mangaviewer.activity
+package com.king.mangaviewer.ui.page.fragment
 
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -24,7 +24,8 @@ open class ViewPagerReaderFragment : ReaderFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             val type = object : TypeToken<List<MangaUri>>() {}.type
-            mangaList = GsonHelper.fromJson(it.getString(INTENT_EXTRA_MANGA_LIST_JSON), type)
+            mangaList = GsonHelper.fromJson(it.getString(
+                    INTENT_EXTRA_MANGA_LIST_JSON), type)
         }
     }
 
@@ -129,7 +130,8 @@ open class ViewPagerReaderFragment : ReaderFragment() {
         fun newInstance(dataJson: String) =
                 ViewPagerReaderFragment().apply {
                     arguments = Bundle().apply {
-                        putString(INTENT_EXTRA_MANGA_LIST_JSON, dataJson)
+                        putString(
+                                INTENT_EXTRA_MANGA_LIST_JSON, dataJson)
                     }
                 }
     }

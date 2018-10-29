@@ -1,4 +1,4 @@
-package com.king.mangaviewer.activity;
+package com.king.mangaviewer.ui.search;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -17,6 +17,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.activity.BaseActivity;
 import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider;
 import com.king.mangaviewer.component.MangaGridView;
 import com.king.mangaviewer.model.MangaWebSource;

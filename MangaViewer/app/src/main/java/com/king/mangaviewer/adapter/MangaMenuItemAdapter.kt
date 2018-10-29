@@ -10,10 +10,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaderFactory
 import com.bumptech.glide.load.model.LazyHeaders
 import com.king.mangaviewer.R
-import com.king.mangaviewer.activity.MangaChapterActivity
+import com.king.mangaviewer.ui.chapter.MangaChapterActivity
 import com.king.mangaviewer.di.GlideApp
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.util.MangaHelper

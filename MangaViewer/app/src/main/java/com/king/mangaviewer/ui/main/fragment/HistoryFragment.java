@@ -1,8 +1,7 @@
-package com.king.mangaviewer.activity;
+package com.king.mangaviewer.ui.main.fragment;
 
 
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,13 +12,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.activity.BaseFragment;
 import com.king.mangaviewer.adapter.HistoryChapterItemAdapter;
 import com.king.mangaviewer.model.HistoryMangaChapterItem;
 
+import com.king.mangaviewer.ui.main.MainActivity;
 import java.util.List;
 
 

@@ -13,7 +13,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.activity.MainActivity;
+import com.king.mangaviewer.ui.main.MainActivity;
 import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;

@@ -1,7 +1,6 @@
 package com.king.mangaviewer.service;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -18,7 +17,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.activity.MainActivity;
+import com.king.mangaviewer.ui.main.MainActivity;
 import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.datasource.FavouriteMangaDataSource;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
