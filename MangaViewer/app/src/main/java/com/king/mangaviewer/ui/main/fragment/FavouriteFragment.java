@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.activity.BaseFragment;
+import com.king.mangaviewer.base.BaseFragment;
 import com.king.mangaviewer.adapter.FavouriteMangaItemAdapter;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 

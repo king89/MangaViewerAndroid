@@ -8,26 +8,20 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.activity.BaseActivity;
+import com.king.mangaviewer.base.BaseActivity;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
@@ -35,7 +29,6 @@ import com.king.mangaviewer.viewmodel.SettingViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by KinG on 8/10/2015.

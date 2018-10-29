@@ -36,11 +36,12 @@ public class SettingViewModel extends ViewModelBase {
     private FavouriteMangaDataSource mFavouriteMangaDataSource;
     private boolean mIsFromLeftToRight = true;
     private boolean mIsSplitPage = true;
-
+    private Context context = null;
     private int mUpdatedFavouriteMangaCount;
 
     public SettingViewModel(Context context) {
         super(context);
+        this.context = context;
     }
 
     public static SettingViewModel loadSetting(Context context) {
@@ -49,7 +50,7 @@ public class SettingViewModel extends ViewModelBase {
         svm.setMangaWebSources(loadMangaSource(context));
 
         //ensure get the latest manga source
-        int id = svm.getSelectedWebSource(context).getId();
+        int id = svm.getSelectedWebSource().getId();
         svm.setSelectedWebSource(id, context);
         //if the previous web source deleted, get the first one
         if (svm.mSelectedWebSource == null) {
@@ -176,7 +177,7 @@ public class SettingViewModel extends ViewModelBase {
         return getFavouriteMangaDataSource().getAllFavouriteMangaMenu(getMangaWebSources());
     }
 
-    public MangaWebSource getSelectedWebSource(Context context) {
+    public MangaWebSource getSelectedWebSource() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         String id = sp.getString(context.getString(R.string.pref_key_manga_sources), null);
         if (id == null) {

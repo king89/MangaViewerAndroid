@@ -28,9 +28,11 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.base.ViewModelFactory;
+import com.king.mangaviewer.di.annotation.ActivityScopedFactory;
 import com.king.mangaviewer.ui.main.fragment.AllMangaFragment;
-import com.king.mangaviewer.activity.BaseActivity;
-import com.king.mangaviewer.activity.BaseFragment;
+import com.king.mangaviewer.base.BaseActivity;
+import com.king.mangaviewer.base.BaseFragment;
 import com.king.mangaviewer.ui.main.fragment.FavouriteFragment;
 import com.king.mangaviewer.ui.main.fragment.HistoryFragment;
 import com.king.mangaviewer.ui.main.fragment.HomeFragment;
@@ -41,8 +43,10 @@ import com.king.mangaviewer.model.NavDrawerItem;
 import com.king.mangaviewer.model.MangaWebSource;
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
 
+import dagger.android.support.HasSupportFragmentInjector;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity {
 
@@ -65,6 +69,10 @@ public class MainActivity extends BaseActivity {
     private ViewPager mViewPager;
     private int mSelectedPosition;
     private int mTwoTapToExit;
+
+    @Inject
+    @ActivityScopedFactory
+    public ViewModelFactory viewModelFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,7 +229,7 @@ public class MainActivity extends BaseActivity {
             int i = 0;
             for (MangaWebSource m : mws) {
                 source.add(m.getDisplayName());
-                if (m.getId() == getAppViewModel().Setting.getSelectedWebSource(this).getId()) {
+                if (m.getId() == getAppViewModel().Setting.getSelectedWebSource().getId()) {
                     tSelectWebSourcePos = i;
                 }
                 i++;

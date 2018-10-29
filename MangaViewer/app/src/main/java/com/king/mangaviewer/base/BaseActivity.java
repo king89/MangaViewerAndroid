@@ -1,4 +1,4 @@
-package com.king.mangaviewer.activity;
+package com.king.mangaviewer.base;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,10 +19,11 @@ import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.disposables.CompositeDisposable;
 import javax.inject.Inject;
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends DaggerAppCompatActivity {
 
     private static final String KEY_MANGA_VIEW_MODEL = "key_manga_view_model";
     public Handler handler = new Handler(Looper.getMainLooper()) {
@@ -37,8 +38,6 @@ public class BaseActivity extends AppCompatActivity {
     protected AppViewModel mAppViewModel;
 
     protected void onCreate(android.os.Bundle savedInstanceState) {
-        AndroidInjection.inject(this);
-
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             String mangaViewModelJson = savedInstanceState.getString(KEY_MANGA_VIEW_MODEL, "");

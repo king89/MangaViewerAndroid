@@ -17,8 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.activity.BaseActivity;
-import com.king.mangaviewer.activity.BaseFragment;
+import com.king.mangaviewer.base.BaseActivity;
+import com.king.mangaviewer.base.BaseFragment;
 import com.king.mangaviewer.activity.LocalReadActivity;
 import com.king.mangaviewer.adapter.LocalFileItemAdapter;
 

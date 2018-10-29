@@ -28,7 +28,7 @@ import io.fabric.sdk.android.Fabric;
 import javax.inject.Inject;
 
 public class MyApplication extends MultiDexApplication implements HasActivityInjector,
-        HasSupportFragmentInjector, HasServiceInjector, HasBroadcastReceiverInjector,
+        HasServiceInjector, HasBroadcastReceiverInjector,
         HasContentProviderInjector {
     @Inject
     DispatchingAndroidInjector<Activity> activityInjector;
@@ -96,10 +96,5 @@ public class MyApplication extends MultiDexApplication implements HasActivityInj
     @Override
     public AndroidInjector<Service> serviceInjector() {
         return serviceInjector;
-    }
-
-    @Override
-    public AndroidInjector<Fragment> supportFragmentInjector() {
-        return fragmentInjector;
     }
 }

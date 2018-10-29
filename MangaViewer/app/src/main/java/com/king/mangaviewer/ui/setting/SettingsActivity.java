@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.king.mangaviewer.MyApplication;
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.activity.BaseActivity;
+import com.king.mangaviewer.base.BaseActivity;
 import com.king.mangaviewer.preference.MangaViewerDialogPreference;
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
 import com.king.mangaviewer.util.Util;

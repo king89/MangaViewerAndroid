@@ -14,7 +14,7 @@ import android.widget.Toast
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter
 
-import com.king.mangaviewer.activity.BaseActivity
+import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.OnItemClickListener
 import com.king.mangaviewer.adapter.MangaChapterItemWrapper

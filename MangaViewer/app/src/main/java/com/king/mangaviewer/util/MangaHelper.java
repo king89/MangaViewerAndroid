@@ -148,7 +148,7 @@ public class MangaHelper {
     public List<MangaMenuItem> getLatestMangeList(List<MangaMenuItem> mangaList,
             HashMap<String, Object> state) {
         MangaProvider mPattern = ProviderFactory.getPattern(
-                getSettingViewModel().getSelectedWebSource(context));
+                getSettingViewModel().getSelectedWebSource());
         List<TitleAndUrl> pageUrlList = mPattern.getLatestMangaList(state);
         if (mangaList == null) {
             mangaList = new ArrayList<>();
@@ -158,7 +158,7 @@ public class MangaHelper {
                 mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
                         .getTitle(), null, pageUrlList.get(i).getImagePath(),
                         pageUrlList.get(i).getUrl(),
-                        getSettingViewModel().getSelectedWebSource(context)));
+                        getSettingViewModel().getSelectedWebSource()));
             }
         }
         return mangaList;
@@ -167,7 +167,7 @@ public class MangaHelper {
     public List<MangaMenuItem> getAllManga(List<MangaMenuItem> mangaList,
             HashMap<String, Object> state) {
         MangaProvider mPattern = ProviderFactory.getPattern(
-                getSettingViewModel().getSelectedWebSource(context));
+                getSettingViewModel().getSelectedWebSource());
 
         List<TitleAndUrl> pageUrlList = mPattern.getAllMangaList(state);
         if (pageUrlList != null) {
@@ -175,7 +175,7 @@ public class MangaHelper {
                 mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
                         .getTitle(), null, pageUrlList.get(i).getImagePath(),
                         pageUrlList.get(i).getUrl(),
-                        getSettingViewModel().getSelectedWebSource(context)));
+                        getSettingViewModel().getSelectedWebSource()));
             }
         }
         return mangaList;
@@ -185,14 +185,14 @@ public class MangaHelper {
     public List<MangaMenuItem> getSearchMangeList(List<MangaMenuItem> mangaList,
             HashMap<String, Object> state) {
         MangaProvider mPattern = ProviderFactory.getPattern(
-                getSettingViewModel().getSelectedWebSource(context));
+                getSettingViewModel().getSelectedWebSource());
         List<TitleAndUrl> pageUrlList = mPattern.getSearchingList(state);
         if (pageUrlList != null) {
             for (int i = 0; i < pageUrlList.size(); i++) {
                 mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
                         .getTitle(), null, pageUrlList.get(i).getImagePath(),
                         pageUrlList.get(i).getUrl(),
-                        getSettingViewModel().getSelectedWebSource(context)));
+                        getSettingViewModel().getSelectedWebSource()));
             }
         }
         return mangaList;

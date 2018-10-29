@@ -18,7 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.king.mangaviewer.R
 import com.king.mangaviewer.R.string
-import com.king.mangaviewer.activity.BaseActivity
+import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.ui.page.fragment.ReaderFragment
 import com.king.mangaviewer.ui.page.fragment.RtlViewPagerReaderFragment
 import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment

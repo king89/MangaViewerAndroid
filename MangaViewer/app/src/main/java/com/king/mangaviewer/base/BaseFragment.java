@@ -1,8 +1,6 @@
-package com.king.mangaviewer.activity;
+package com.king.mangaviewer.base;
 
 
-import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;

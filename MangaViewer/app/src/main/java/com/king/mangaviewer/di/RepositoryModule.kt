@@ -2,10 +2,13 @@ package com.king.mangaviewer.di
 
 import android.app.Application
 import android.arch.persistence.room.Room
+import android.content.Context
 import com.king.mangaviewer.domain.data.local.FavouriteMangaDAO
 import com.king.mangaviewer.domain.data.local.HistoryMangaDAO
 import com.king.mangaviewer.domain.data.local.MangaDataBase
 import com.king.mangaviewer.di.annotation.ApplicationScope
+import com.king.mangaviewer.viewmodel.AppViewModel
+import com.king.mangaviewer.viewmodel.SettingViewModel
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -53,6 +56,16 @@ abstract class RepositoryModule {
                     .readTimeout(timeout, SECONDS)
                     .writeTimeout(timeout, SECONDS)
                     .build()
+        }
+
+        @Provides
+        @JvmStatic
+        @ApplicationScope
+        fun provideAppViewModel(application: Context): AppViewModel {
+            return AppViewModel(application).apply {
+                Setting = SettingViewModel.loadSetting(application)
+
+            }
         }
     }
 }

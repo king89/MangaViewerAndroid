@@ -20,6 +20,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.base.BaseActivity;
 import com.king.mangaviewer.component.MyViewFlipper;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;

@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.king.mangaviewer.R
-import com.king.mangaviewer.activity.BaseFragment
+import com.king.mangaviewer.base.BaseFragment
 import com.king.mangaviewer.component.HasFullScreenControl
 import com.king.mangaviewer.component.ReaderListener
 import com.king.mangaviewer.component.ReaderPanel

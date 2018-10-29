@@ -1,6 +1,7 @@
 package com.king.mangaviewer.ui.main.fragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -10,11 +11,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.activity.BaseFragment;
+import com.king.mangaviewer.base.BaseFragment;
 import com.king.mangaviewer.component.MangaGridView;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.util.MangaHelper;
 
+import dagger.android.AndroidInjection;
+import dagger.android.support.AndroidSupportInjection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,9 +32,15 @@ public class HomeFragment extends BaseFragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
+    }
+
+    @Override
     public void refresh() {
         this.getMangaViewModel().setMangaMenuList(null);
-        tvMangaSource.setText(getSettingViewModel().getSelectedWebSource(getActivity()).getDisplayName());
+        tvMangaSource.setText(getSettingViewModel().getSelectedWebSource().getDisplayName());
         gv.refresh();
     }
 
@@ -50,7 +59,7 @@ public class HomeFragment extends BaseFragment {
         View rootView = setContentView(inflater, container);
 
         tvMangaSource = (TextView) rootView.findViewById(R.id.manga_source_textView);
-        String selectedMangaSourceName = getSettingViewModel().getSelectedWebSource(getActivity()).getDisplayName();
+        String selectedMangaSourceName = getSettingViewModel().getSelectedWebSource().getDisplayName();
         tvMangaSource.setText(selectedMangaSourceName);
         TextView tv = (TextView) rootView.findViewById(R.id.textView);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);

@@ -17,7 +17,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.activity.BaseActivity;
+import com.king.mangaviewer.base.BaseActivity;
 import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider;
 import com.king.mangaviewer.component.MangaGridView;
 import com.king.mangaviewer.model.MangaWebSource;
@@ -103,7 +103,7 @@ public class SearchResultActivity extends BaseActivity {
     }
 
     private void setSearchResult(String query) {
-        mangaSourceTv.setText(getAppViewModel().Setting.getSelectedWebSource(this).getDisplayName());
+        mangaSourceTv.setText(getAppViewModel().Setting.getSelectedWebSource().getDisplayName());
 
         //reset all manga list
         this.getAppViewModel().Manga.resetAllMangaList();
@@ -131,7 +131,7 @@ public class SearchResultActivity extends BaseActivity {
             int i = 0;
             for (MangaWebSource m : mws) {
                 source.add(m.getDisplayName());
-                if (m.getId() == getAppViewModel().Setting.getSelectedWebSource(this).getId()) {
+                if (m.getId() == getAppViewModel().Setting.getSelectedWebSource().getId()) {
                     tSelectWebSourcePos = i;
                 }
                 i++;

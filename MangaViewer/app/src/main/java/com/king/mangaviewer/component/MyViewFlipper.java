@@ -28,7 +28,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.king.mangaviewer.domain.data.mangaprovider.LocalManga;
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.activity.BaseActivity;
+import com.king.mangaviewer.base.BaseActivity;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
