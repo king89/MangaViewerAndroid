@@ -7,8 +7,13 @@ import com.king.mangaviewer.domain.data.local.FavouriteMangaDAO
 import com.king.mangaviewer.domain.data.local.HistoryMangaDAO
 import com.king.mangaviewer.domain.data.local.MangaDataBase
 import com.king.mangaviewer.di.annotation.ApplicationScope
+import com.king.mangaviewer.domain.data.AppRepository
+import com.king.mangaviewer.domain.data.AppRepositoryImpl
+import com.king.mangaviewer.domain.data.MangaRepository
+import com.king.mangaviewer.domain.data.MangaRepositoryImpl
 import com.king.mangaviewer.viewmodel.AppViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -20,6 +25,14 @@ Can add this class in different flavor
  */
 @Module
 abstract class RepositoryModule {
+
+    @ApplicationScope
+    @Binds
+    abstract fun providerAppRepository(impl: AppRepositoryImpl): AppRepository
+
+    @ApplicationScope
+    @Binds
+    abstract fun providerMangaRepository(impl: MangaRepositoryImpl): MangaRepository
 
     @Module
     companion object {
@@ -46,6 +59,7 @@ abstract class RepositoryModule {
         fun provideHistoryMangaDao(db: MangaDataBase): HistoryMangaDAO {
             return db.historyMangaDAO()
         }
+
         @ApplicationScope
         @Provides
         @JvmStatic

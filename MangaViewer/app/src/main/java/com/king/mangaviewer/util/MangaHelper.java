@@ -198,20 +198,12 @@ public class MangaHelper {
         return mangaList;
     }
 
-    public String getMenuCover(MangaMenuItem menu) {
-        MangaProvider mPattern = ProviderFactory.getPattern(menu.getMangaWebSource());
-        if (menu != null && menu.getImagePath() != null && menu.getImagePath().isEmpty()) {
-            menu.setImagePath(mPattern.getMenuCover(menu));
-        }
-        return menu.getImagePath();
-    }
-
     public interface GetImageCallback {
         public void imageLoaded(Drawable imageDrawable, ImageView imageView, String imageUrl);
     }
 
     @WorkerThread
-    public static String getMenuCover(Context context, MangaMenuItem menu) {
+    public static String getMenuCover(MangaMenuItem menu) {
         MangaProvider mPattern = ProviderFactory.getPattern(menu.getMangaWebSource());
         if (menu != null && menu.getImagePath() != null && menu.getImagePath().isEmpty()) {
             menu.setImagePath(mPattern.getMenuCover(menu));

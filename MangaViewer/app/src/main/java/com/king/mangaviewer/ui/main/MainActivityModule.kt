@@ -21,7 +21,7 @@ abstract class MainActivityModule {
     abstract fun homeFragment(): HomeFragment
 
     @FragmentScoped
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = [HomeFragmentModule::class])
     abstract fun allMangaFragment(): AllMangaFragment
 
     @Binds

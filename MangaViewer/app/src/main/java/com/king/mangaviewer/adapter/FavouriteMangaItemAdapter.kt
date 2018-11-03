@@ -1,20 +1,18 @@
 package com.king.mangaviewer.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.king.mangaviewer.R
 import com.king.mangaviewer.model.FavouriteMangaMenuItem
 import com.king.mangaviewer.model.MangaMenuItem
-import com.king.mangaviewer.viewmodel.MangaViewModel
 
 /**
  * Created by KinG on 6/18/2016.
  */
-class FavouriteMangaItemAdapter(context: Context, viewModel: MangaViewModel,
-        private val menu: List<MangaMenuItem>) :
-        MangaMenuItemAdapter(context, viewModel, menu) {
+class FavouriteMangaItemAdapter(private val menu: List<MangaMenuItem>,
+        private val listener: OnItemClickListener? = null) :
+        MangaMenuItemAdapter(menu, listener) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolders {
         val layoutView = LayoutInflater.from(parent.context).inflate(

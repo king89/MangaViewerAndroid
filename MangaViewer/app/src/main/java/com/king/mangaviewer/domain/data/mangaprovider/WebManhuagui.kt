@@ -202,7 +202,7 @@ class WebManhuagui() : MangaProvider() {
                 emptyList()
             }
         } catch (e: Exception) {
-            Logger.e(TAG, "error", e)
+            Logger.e(TAG, e, "error")
             return emptyList()
         }
     }

@@ -1,6 +1,5 @@
 package com.king.mangaviewer.ui.main.fragment;
 
-
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,14 +14,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.adapter.MangaMenuItemAdapter;
 import com.king.mangaviewer.base.BaseFragment;
 import com.king.mangaviewer.adapter.FavouriteMangaItemAdapter;
 import com.king.mangaviewer.model.FavouriteMangaMenuItem;
 
+import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.ui.main.MainActivity;
 import java.util.Collections;
 import java.util.List;
-
+import org.jetbrains.annotations.NotNull;
 
 public class FavouriteFragment extends BaseFragment {
 
@@ -56,11 +57,12 @@ public class FavouriteFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_favourite, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.viewPager);
-        gridLayoutManager = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.gridvivew_column_num));
+        gridLayoutManager = new GridLayoutManager(getActivity(),
+                getResources().getInteger(R.integer.gridvivew_column_num));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
@@ -88,7 +90,13 @@ public class FavouriteFragment extends BaseFragment {
         super.updateContent();
         MainActivity copy = (MainActivity) getActivity();
 
-        FavouriteMangaItemAdapter rcAdapter = new FavouriteMangaItemAdapter(copy, copy.getAppViewModel().Manga, dateList);
+        FavouriteMangaItemAdapter rcAdapter = new FavouriteMangaItemAdapter(dateList,
+                new MangaMenuItemAdapter.OnItemClickListener() {
+                    @Override
+                    public void onClick(@NotNull MangaMenuItem menu) {
+
+                    }
+                });
         mRecyclerView.setAdapter(rcAdapter);
 
         tv.setVisibility(View.GONE);
@@ -112,7 +120,8 @@ public class FavouriteFragment extends BaseFragment {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (gridLayoutManager != null) {
-            gridLayoutManager.setSpanCount(getResources().getInteger(R.integer.gridvivew_column_num));
+            gridLayoutManager.setSpanCount(
+                    getResources().getInteger(R.integer.gridvivew_column_num));
         }
     }
 }

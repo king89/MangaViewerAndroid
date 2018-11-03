@@ -1,10 +1,10 @@
 package com.king.mangaviewer.viewmodel;
 
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import android.support.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
@@ -117,14 +117,20 @@ public class SettingViewModel extends ViewModelBase {
 
                     int id = Integer.parseInt(eElement.getAttribute("id"));
                     String name = eElement.getElementsByTagName("Name").item(0).getTextContent();
-                    String displayName = eElement.getElementsByTagName("DisplayName").item(0).getTextContent();
-                    String className = eElement.getElementsByTagName("ClassName").item(0).getTextContent();
-                    int order = Integer.parseInt(eElement.getElementsByTagName("Order").item(0).getTextContent());
-                    String language = eElement.getElementsByTagName("Language").item(0).getTextContent();
-                    int enable = Integer.parseInt(eElement.getElementsByTagName("Enable").item(0).getTextContent());
+                    String displayName = eElement.getElementsByTagName("DisplayName").item(
+                            0).getTextContent();
+                    String className = eElement.getElementsByTagName("ClassName").item(
+                            0).getTextContent();
+                    int order = Integer.parseInt(
+                            eElement.getElementsByTagName("Order").item(0).getTextContent());
+                    String language = eElement.getElementsByTagName("Language").item(
+                            0).getTextContent();
+                    int enable = Integer.parseInt(
+                            eElement.getElementsByTagName("Enable").item(0).getTextContent());
                     //dont need the disable source
                     if (enable > 0) {
-                        mws.add(new MangaWebSource(id, name, displayName, className, order, language, enable));
+                        mws.add(new MangaWebSource(id, name, displayName, className, order,
+                                language, enable));
                     }
                 }
             }
@@ -146,7 +152,8 @@ public class SettingViewModel extends ViewModelBase {
         this.mMangaWebSources = mMangaWebSources;
     }
 
-    public boolean checkIsFavourited(MangaMenuItem manga) {
+    public boolean checkIsFavourited(@Nullable MangaMenuItem manga) {
+        if (manga == null) return false;
         return getFavouriteMangaDataSource().checkIsexsit(new FavouriteMangaMenuItem(manga));
     }
 
@@ -154,7 +161,8 @@ public class SettingViewModel extends ViewModelBase {
         if (checkIsFavourited(manga)) {
             return false;
         } else {
-            getFavouriteMangaDataSource().addToFavourite(new FavouriteMangaMenuItem(manga, chapterCount));
+            getFavouriteMangaDataSource().addToFavourite(
+                    new FavouriteMangaMenuItem(manga, chapterCount));
             return true;
         }
 
@@ -202,7 +210,8 @@ public class SettingViewModel extends ViewModelBase {
         mSelectedWebSource = webSite;
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString(context.getString(R.string.pref_key_manga_sources), mSelectedWebSource.getId() + "");
+        editor.putString(context.getString(R.string.pref_key_manga_sources),
+                mSelectedWebSource.getId() + "");
         editor.commit();
     }
 

@@ -39,13 +39,13 @@ public class BaseActivity extends DaggerAppCompatActivity {
 
     protected void onCreate(android.os.Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            String mangaViewModelJson = savedInstanceState.getString(KEY_MANGA_VIEW_MODEL, "");
-            if (!TextUtils.isEmpty(mangaViewModelJson)) {
-                getAppViewModel().Manga = GsonHelper.INSTANCE.fromJson(mangaViewModelJson,
-                        MangaViewModel.class);
-            }
-        }
+        //if (savedInstanceState != null) {
+        //    String mangaViewModelJson = savedInstanceState.getString(KEY_MANGA_VIEW_MODEL, "");
+        //    if (!TextUtils.isEmpty(mangaViewModelJson)) {
+        //        getAppViewModel().Manga = GsonHelper.INSTANCE.fromJson(mangaViewModelJson,
+        //                MangaViewModel.class);
+        //    }
+        //}
         initControl();
         initActionBar();
 
@@ -53,7 +53,7 @@ public class BaseActivity extends DaggerAppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(KEY_MANGA_VIEW_MODEL, GsonHelper.INSTANCE.toJson(getMangaViewModel()));
+        //outState.putString(KEY_MANGA_VIEW_MODEL, GsonHelper.INSTANCE.toJson(getMangaViewModel()));
         super.onSaveInstanceState(outState);
     }
 

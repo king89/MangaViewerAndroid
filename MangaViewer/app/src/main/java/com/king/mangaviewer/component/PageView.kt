@@ -68,7 +68,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
     }
 
     private fun onImageDisplayFailed(e: Exception?) {
-        Logger.e(TAG, "onImageDisplayFailed", e)
+        Logger.e(TAG, e, "onImageDisplayFailed")
         showError()
     }
 
@@ -133,7 +133,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
                     imageView.setImage(ImageSource.bitmap(newBitmap!!), imageState)
                 }
             } catch (e: OutOfMemoryError) {
-                Logger.e(TAG, "Out of memory when setting image", e)
+                Logger.e(TAG, e, "Out of memory when setting image")
                 showError()
             }
 

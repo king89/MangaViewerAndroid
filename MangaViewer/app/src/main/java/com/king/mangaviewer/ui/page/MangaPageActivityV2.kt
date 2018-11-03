@@ -199,7 +199,7 @@ class MangaPageActivityV2 : BaseActivity(),
                                 .show()
                     }
                 }, {
-                    Logger.e(TAG, "get chapter list error", it)
+                    Logger.e(TAG, it, "get chapter list error")
                 })
                 .apply { compositeDisposable.add(this) }
 
@@ -226,7 +226,7 @@ class MangaPageActivityV2 : BaseActivity(),
                                 .show()
                     }
                 }, {
-                    Logger.e(TAG, "get chapter list error", it)
+                    Logger.e(TAG, it, "get chapter list error")
                 })
                 .apply { compositeDisposable.add(this) }
     }

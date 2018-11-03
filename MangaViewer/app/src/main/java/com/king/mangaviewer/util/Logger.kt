@@ -1,6 +1,5 @@
 package com.king.mangaviewer.util
 
-import android.app.Application
 import android.util.Log
 
 object Logger {
@@ -22,7 +21,7 @@ object Logger {
 
     @JvmStatic
     @JvmOverloads
-    fun e(tag: String, message: String, e: Throwable? = null) {
+    fun e(tag: String, e: Throwable? = null, message: String = "") {
         try {
             Log.e(tag, message, e)
             e?.printStackTrace()

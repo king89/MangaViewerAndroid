@@ -103,7 +103,7 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
     private fun loadChapterCover() {
         //get the first page image in the latest dataList
         Single.fromCallable {
-            MangaHelper.getMenuCover(this, mangaViewModel.selectedMangaMenuItem)
+            MangaHelper.getMenuCover(mangaViewModel.selectedMangaMenuItem)
         }
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe {
@@ -168,10 +168,12 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
     }
 
     private fun updateChapterCount() {
-        val chapterCount = if (mangaViewModel.mangaChapterList == null) 0 else mangaViewModel.mangaChapterList.size
-        val menu = appViewModel.Manga.selectedMangaMenuItem
-        appViewModel.Setting.removeFavouriteManga(menu)
-        appViewModel.Setting.addFavouriteManga(menu, chapterCount)
+        if (appViewModel.Setting.checkIsFavourited(appViewModel.Manga.selectedMangaMenuItem)) {
+            val chapterCount = if (mangaViewModel.mangaChapterList == null) 0 else mangaViewModel.mangaChapterList.size
+            val menu = appViewModel.Manga.selectedMangaMenuItem
+            appViewModel.Setting.removeFavouriteManga(menu)
+            appViewModel.Setting.addFavouriteManga(menu, chapterCount)
+        }
     }
 
     private fun setupChapterList(dataList: List<MangaChapterItemWrapper>) {

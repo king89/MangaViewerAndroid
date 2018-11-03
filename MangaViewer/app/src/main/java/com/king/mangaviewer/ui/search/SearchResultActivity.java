@@ -109,12 +109,12 @@ public class SearchResultActivity extends BaseActivity {
         this.getAppViewModel().Manga.resetAllMangaList();
         this.getAppViewModel().Manga.getAllMangaStateHash().put(MangaProvider.STATE_SEARCH_QUERYTEXT, query);
 
-        gv.Initial(this.getAppViewModel().Manga, new MangaGridView.IGetMore() {
-            @Override
-            public void getMoreManga(List<MangaMenuItem> mMangaList, HashMap<String, Object> state) {
-                new MangaHelper(SearchResultActivity.this).getSearchMangeList(mMangaList, state);
-            }
-        });
+        //gv.Initial(this.getAppViewModel().Manga, new MangaGridView.MangaGridViewCallback() {
+        //    @Override
+        //    public void getMoreManga(List<MangaMenuItem> mMangaList, HashMap<String, Object> state) {
+        //        new MangaHelper(SearchResultActivity.this).getSearchMangeList(mMangaList, state);
+        //    }
+        //});
     }
 
 

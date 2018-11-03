@@ -49,6 +49,7 @@
         android:layout_weight="0"
         android:background="@color/colorPrimary"
         android:orientation="horizontal"
+        android:visibility="gone"
         >
 
         <TextView
@@ -60,6 +61,7 @@
             android:text="@string/msg_loading"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#fff"/>
+            android:textColor="#fff"
+            />
     </RelativeLayout>
 </RelativeLayout>
