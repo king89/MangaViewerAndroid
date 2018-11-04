@@ -11,6 +11,7 @@ import com.king.mangaviewer.domain.data.AppRepository
 import com.king.mangaviewer.domain.data.AppRepositoryImpl
 import com.king.mangaviewer.domain.data.MangaRepository
 import com.king.mangaviewer.domain.data.MangaRepositoryImpl
+import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.viewmodel.AppViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
 import dagger.Binds
@@ -36,7 +37,7 @@ abstract class RepositoryModule {
 
     @Module
     companion object {
-        @Singleton
+        @ApplicationScope
         @Provides
         @JvmStatic
         fun provideDb(context: Application): MangaDataBase {
@@ -46,14 +47,14 @@ abstract class RepositoryModule {
                     "manga.db").build()
         }
 
-        @Singleton
+        @ApplicationScope
         @Provides
         @JvmStatic
         fun provideFavouriteMangaDao(db: MangaDataBase): FavouriteMangaDAO {
             return db.favourtieMangaDAO()
         }
 
-        @Singleton
+        @ApplicationScope
         @Provides
         @JvmStatic
         fun provideHistoryMangaDao(db: MangaDataBase): HistoryMangaDAO {
@@ -78,7 +79,7 @@ abstract class RepositoryModule {
         fun provideAppViewModel(application: Context): AppViewModel {
             return AppViewModel(application).apply {
                 Setting = SettingViewModel.loadSetting(application)
-
+                Logger.d("-=-=","create AppViewModel ")
             }
         }
     }

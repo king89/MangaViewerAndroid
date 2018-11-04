@@ -24,6 +24,7 @@ import com.king.mangaviewer.adapter.WrapperType.LAST_READ
 import com.king.mangaviewer.di.GlideApp
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.util.MangaHelper
+import com.king.mangaviewer.util.MangaHelperV2
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -61,7 +62,7 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
         progressBar.visibility = View.VISIBLE
         compositeDisposable.add(Flowable.fromCallable {
 
-            val mList = mangaHelper.getChapterList(
+            val mList = MangaHelperV2.getChapterList(
                     mangaViewModel.selectedMangaMenuItem)
             mangaViewModel.mangaChapterList = mList
 

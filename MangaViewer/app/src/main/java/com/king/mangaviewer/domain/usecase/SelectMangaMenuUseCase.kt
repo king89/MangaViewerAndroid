@@ -5,9 +5,11 @@ import com.king.mangaviewer.viewmodel.AppViewModel
 import io.reactivex.Completable
 import javax.inject.Inject
 
-class SelectMangaMenuUseCase @Inject constructor(appViewModel: AppViewModel) {
+class SelectMangaMenuUseCase @Inject constructor(private val appViewModel: AppViewModel) {
     fun execute(menu: MangaMenuItem): Completable {
-
-        return Completable.error(Exception())
+        return Completable.fromCallable {
+            appViewModel.Manga.selectedMangaMenuItem = menu
+            Any()
+        }
     }
 }

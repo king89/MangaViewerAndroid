@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseFragmentViewModel
 import com.king.mangaviewer.domain.data.AppRepository
 import com.king.mangaviewer.domain.usecase.GetLatestMangaListUseCase
+import com.king.mangaviewer.domain.usecase.SelectMangaMenuUseCase
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaMenuItem
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 class HomeFragmentViewModel @Inject constructor(
         private val appRepository: AppRepository,
-        private val getLatestMangaListUseCase: GetLatestMangaListUseCase
+        private val getLatestMangaListUseCase: GetLatestMangaListUseCase,
+        private val selectMangaMenuUseCase: SelectMangaMenuUseCase
 ) : BaseFragmentViewModel() {
 
     private val _mangaList = MutableLiveData<List<MangaMenuItem>>()
@@ -35,6 +37,10 @@ class HomeFragmentViewModel @Inject constructor(
                     Logger.e(TAG, it)
                 })
                 .apply { disposable.add(this) }
+    }
+
+    fun selectMangaMenu(menuItem: MangaMenuItem) {
+        selectMangaMenuUseCase.execute(menuItem).subscribe()
     }
 
     companion object {

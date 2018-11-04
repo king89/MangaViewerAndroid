@@ -54,7 +54,7 @@ public class SettingsActivity extends BaseActivity {
     }
 
     public SettingViewModel getSettingViewModel() {
-        return ((MyApplication) getApplication()).appViewModel.Setting;
+        return ((MyApplication) getApplication()).getAppViewModel().Setting;
     }
 
     private void finishSetting() {

@@ -1,5 +1,6 @@
 package com.king.mangaviewer.adapter
 
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,26 +15,23 @@ class FavouriteMangaItemAdapter(private val menu: List<MangaMenuItem>,
         private val listener: OnItemClickListener? = null) :
         MangaMenuItemAdapter(menu, listener) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolders {
-        val layoutView = LayoutInflater.from(parent.context).inflate(
-                R.layout.list_favourite_manga_menu_item, parent, false)
-        return RecyclerViewHolders(layoutView)
-    }
-
-    override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
 
-        val count = (menu[position] as FavouriteMangaMenuItem).updateCount
-        holder.countTextView?.apply {
-            visibility = View.VISIBLE
-            if (count in 1..99) {
-                text = count.toString()
-            } else if (count > 99) {
-                text = "99+"
-            } else {
-                visibility = View.INVISIBLE
+        if (holder is DataViewHolder) {
+            val count = (menu[position] as FavouriteMangaMenuItem).updateCount
+            holder.countTextView?.apply {
+                visibility = View.VISIBLE
+                when {
+                    count in 1..99 -> text = count.toString()
+                    count > 99 -> text = "99+"
+                    else -> visibility = View.INVISIBLE
+                }
             }
         }
     }
 
+    override fun getDataViewHolderRes(): Int {
+        return R.layout.list_favourite_manga_menu_item
+    }
 }

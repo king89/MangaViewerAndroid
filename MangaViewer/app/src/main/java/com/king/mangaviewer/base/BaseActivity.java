@@ -131,7 +131,7 @@ public class BaseActivity extends DaggerAppCompatActivity {
     }
 
     public MangaHelper getMangaHelper() {
-        return ((MyApplication) this.getApplication()).MangaHelper;
+        return ((MyApplication) this.getApplication()).getMangaHelper();
     }
 
     public SettingViewModel getSettingViewModel() {

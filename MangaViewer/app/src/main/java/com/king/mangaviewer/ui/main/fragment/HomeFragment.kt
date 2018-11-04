@@ -67,6 +67,7 @@ open class HomeFragment : BaseFragment() {
         gv = rootView.findViewById<View>(R.id.gridView) as MangaGridView
         gv.adapter = MangaMenuItemAdapter(listOf(), object : OnItemClickListener {
             override fun onClick(menu: MangaMenuItem) {
+                viewModel.selectMangaMenu(menu)
                 startActivity(Intent(context, MangaChapterActivity::class.java))
                 activity!!.overridePendingTransition(R.anim.in_rightleft,
                         R.anim.out_rightleft)

@@ -1,5 +1,6 @@
 package com.king.mangaviewer.adapter
 
+import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,9 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.king.mangaviewer.R
 import com.king.mangaviewer.di.GlideApp
+import com.king.mangaviewer.model.LoadingState
+import com.king.mangaviewer.model.LoadingState.Idle
+import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.MangaHelper
@@ -21,50 +25,90 @@ import java.util.HashMap
 
 open class MangaMenuItemAdapter(menu: List<MangaMenuItem>,
         private val listener: OnItemClickListener? = null) :
-        BaseRecyclerViewAdapter<MangaMenuItem, MangaMenuItemAdapter.RecyclerViewHolders>() {
+        BaseRecyclerViewAdapter<MangaMenuItem, RecyclerView.ViewHolder>() {
 
-    private val mStateHash: HashMap<String, Any>? = null
-    private val isFavouriteMangaMenu: Boolean = false
-    private lateinit var endlessScrollListener: EndlessScrollListener
+    private var mLoadingState: LoadingState = Idle
 
     init {
         mDataList = menu
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolders {
-        val layoutView = LayoutInflater.from(parent.context).inflate(R.layout.list_manga_menu_item,
-                parent, false)
-        return RecyclerViewHolders(layoutView)
+    override fun getItemCount(): Int {
+        return super.getItemCount() + if (mLoadingState is Loading) 1 else 0
     }
 
-    override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
-        val item = mDataList!![position]
-        Single.fromCallable {
-            val url = MangaHelper.getMenuCover(item)
-            val header = LazyHeaders.Builder().addHeader("Referer", item.url).build()
-            GlideUrl(url, header)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            TYPE_FOOTER -> {
+                FooterViewHolder.createHolder(parent)
+            }
+            else -> {
+                DataViewHolder.createHolder(parent, getDataViewHolderRes())
+            }
+
         }
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe {
-                    holder.imageView.setImageResource(R.color.manga_place_holder)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ it: GlideUrl ->
-                    GlideApp.with(holder.imageView)
-                            .load(it)
-                            .override(320, 320)
-                            .placeholder(R.color.manga_place_holder)
-                            .into(holder.imageView)
-                }, { Logger.e(TAG, it) })
-                .apply { holder.disposable.add(this) }
-
-        val title = this.mDataList!![position].title
-        holder.textView.text = title
-        holder.itemView.setOnClickListener { listener?.onClick(item) }
     }
 
-    override fun onViewRecycled(holder: RecyclerViewHolders) {
-        holder.disposable.clear()
+    protected open fun getDataViewHolderRes(): Int {
+        return R.layout.list_manga_menu_item
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is FooterViewHolder -> {
+
+            }
+            is DataViewHolder -> {
+                val item = mDataList!![position]
+                Single.fromCallable {
+                    val url = MangaHelper.getMenuCover(item)
+                    val header = LazyHeaders.Builder().addHeader("Referer", item.url).build()
+                    GlideUrl(url, header)
+                }
+                        .subscribeOn(Schedulers.io())
+                        .doOnSubscribe {
+                            holder.imageView.setImageResource(R.color.manga_place_holder)
+                        }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ it: GlideUrl ->
+                            GlideApp.with(holder.imageView)
+                                    .load(it)
+                                    .override(320, 320)
+                                    .placeholder(R.color.manga_place_holder)
+                                    .into(holder.imageView)
+                        }, { Logger.e(TAG, it) })
+                        .apply { holder.disposable.add(this) }
+
+                val title = this.mDataList!![position].title
+                holder.textView.text = title
+                holder.itemView.setOnClickListener { listener?.onClick(item) }
+            }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (mLoadingState is Loading && position >= super.getItemCount()) {
+            TYPE_FOOTER
+        } else {
+            TYPE_DATA
+        }
+    }
+
+    fun getSpanSize(position: Int, total: Int): Int {
+        return if (getItemViewType(position) == TYPE_DATA)
+            1
+        else {
+            total
+        }
+    }
+
+    fun setLoadingState(loadingState: LoadingState) {
+        mLoadingState = loadingState
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        holder as RecyclerViewHolders
+        holder.recycle()
         super.onViewRecycled(holder)
     }
 
@@ -73,11 +117,12 @@ open class MangaMenuItemAdapter(menu: List<MangaMenuItem>,
         return position.toLong()
     }
 
-    fun setEndlessScrollListener(endlessScrollListener: EndlessScrollListener) {
-        this.endlessScrollListener = endlessScrollListener
+    abstract class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        open fun recycle() {
+        }
     }
 
-    inner class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class DataViewHolder(itemView: View) : RecyclerViewHolders(itemView) {
 
         val disposable = CompositeDisposable()
         var textView: TextView
@@ -90,33 +135,39 @@ open class MangaMenuItemAdapter(menu: List<MangaMenuItem>,
             countTextView = itemView.findViewById<View>(R.id.countTextView) as? TextView
         }
 
-//        override fun onClick(view: View) {
-//            val menuPos = adapterPosition
-//            viewModel.selectedMangaMenuItem = menu[menuPos]
-//            context.startActivity(Intent(context, MangaChapterActivity::class.java))
-//            (context as Activity).overridePendingTransition(R.anim.in_rightleft,
-//                    R.anim.out_rightleft)
-//
-//        }
+        override fun recycle() {
+            disposable.clear()
+        }
+
+        companion object {
+            fun createHolder(parent: ViewGroup, @LayoutRes layoutRes: Int): RecyclerViewHolders {
+                val layoutView = LayoutInflater.from(parent.context).inflate(
+                        layoutRes,
+                        parent, false)
+                return DataViewHolder(layoutView)
+            }
+        }
+
     }
 
-
+    class FooterViewHolder(itemView: View) : RecyclerViewHolders(itemView) {
+        companion object {
+            fun createHolder(parent: ViewGroup): RecyclerViewHolders {
+                val layoutView = LayoutInflater.from(parent.context).inflate(
+                        R.layout.list_item_loading_footer,
+                        parent, false)
+                return FooterViewHolder(layoutView)
+            }
+        }
+    }
 
     interface OnItemClickListener {
         fun onClick(menu: MangaMenuItem)
     }
 
-    interface EndlessScrollListener {
-        /**
-         * Loads more data.
-         *
-         * @param position
-         * @return true loads data actually, false otherwise.
-         */
-        fun onLoadMore(menuList: List<MangaMenuItem>, state: HashMap<String, Any>)
-    }
-
     companion object {
         const val TAG = "MangaMenuItemAdapter"
+        val TYPE_DATA = 0
+        val TYPE_FOOTER = 1
     }
 }

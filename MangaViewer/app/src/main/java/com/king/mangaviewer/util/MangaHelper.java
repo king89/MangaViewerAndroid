@@ -39,7 +39,7 @@ public class MangaHelper {
     }
 
     private SettingViewModel getSettingViewModel() {
-        return ((MyApplication) context.getApplicationContext()).appViewModel.Setting;
+        return ((MyApplication) context.getApplicationContext()).getAppViewModel().Setting;
     }
 
     private String getMenuHtml(MangaProvider pattern) {

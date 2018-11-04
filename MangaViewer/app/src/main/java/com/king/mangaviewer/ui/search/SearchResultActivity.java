@@ -97,7 +97,6 @@ public class SearchResultActivity extends BaseActivity {
         mangaSourceTv = (TextView) this.findViewById(R.id.manga_source_textView);
         TextView tv = (TextView) findViewById(R.id.textView);
         gv = (MangaGridView) findViewById(R.id.gridView);
-        gv.setLoadingFooter(tv);
         setSearchResult(query);
 
     }

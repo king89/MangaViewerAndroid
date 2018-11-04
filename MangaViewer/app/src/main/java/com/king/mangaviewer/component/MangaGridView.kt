@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.os.AsyncTask
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.GridLayoutManager.SpanSizeLookup
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
@@ -14,6 +15,7 @@ import android.widget.TextView
 import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
+import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.viewmodel.MangaViewModel
 
@@ -24,14 +26,11 @@ class MangaGridView @JvmOverloads constructor(context: Context, attrs: Attribute
         defStyleAttr: Int = 0) : RecyclerView(context, attrs,
         defStyleAttr) {
 
-    private val mStateHash: HashMap<String, Any>? = null
     private var flagLoading: Boolean = false
     private val flagLock = Any()
-    private val mMangaList: MutableList<MangaMenuItem>? = null
     private var mLoadingFooter: View? = null
     private var mNoMore = false
     private var mGridLayoutManager: GridLayoutManager? = null
-    private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
 
     private var mOnScrollListener: RecyclerView.OnScrollListener = object :
             RecyclerView.OnScrollListener() {
@@ -44,8 +43,20 @@ class MangaGridView @JvmOverloads constructor(context: Context, attrs: Attribute
             val totalItemCount = recyclerView.adapter.itemCount
             if (firstVisibleItem + visibleItemCount >= totalItemCount - VISIBLE_THRESHOLD && totalItemCount != 0) {
                 if (getFlagLoading() == false && !mNoMore) {
-                    getMoreManga()
+                    (adapter as? MangaMenuItemAdapter)?.run {
+
+                    }
                 }
+            }
+        }
+    }
+
+    override fun setAdapter(adapter: Adapter<*>?) {
+        super.setAdapter(adapter)
+        mGridLayoutManager!!.spanSizeLookup = object : SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return (adapter as? MangaMenuItemAdapter)?.getSpanSize(position,
+                        resources.getInteger(R.integer.gridvivew_column_num)) ?: 1
             }
         }
     }
@@ -66,13 +77,6 @@ class MangaGridView @JvmOverloads constructor(context: Context, attrs: Attribute
         this@MangaGridView.layoutManager = mGridLayoutManager
     }
 
-    fun setLoadingFooter(view: View) {
-        mLoadingFooter = view
-    }
-
-    fun setSwipeRefreshLayout(layout: SwipeRefreshLayout) {
-        mSwipeRefreshLayout = layout
-    }
 
     protected fun getMoreManga() {
         setFlagLoading(true)

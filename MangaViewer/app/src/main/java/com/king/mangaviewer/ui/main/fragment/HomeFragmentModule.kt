@@ -2,7 +2,6 @@ package com.king.mangaviewer.ui.main.fragment
 
 import com.king.mangaviewer.base.BaseFragmentModule
 import com.king.mangaviewer.base.BaseFragmentViewModel
-import com.king.mangaviewer.di.RepositoryModule
 import com.king.mangaviewer.di.annotation.FragmentScoped
 import com.king.mangaviewer.di.annotation.FragmentViewModelKey
 import dagger.Binds

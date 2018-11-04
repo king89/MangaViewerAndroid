@@ -29,6 +29,7 @@ import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.util.GsonHelper
 import com.king.mangaviewer.util.Logger
+import com.king.mangaviewer.util.MangaHelperV2
 import com.king.mangaviewer.viewmodel.MangaViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
 import io.reactivex.Observable
@@ -49,8 +50,8 @@ class MangaPageActivityV2 : BaseActivity(),
     private lateinit var mDecorView: View
     private lateinit var sb: SeekBar
 
-    lateinit var mMangaViewModel: MangaViewModel
-    lateinit var mSettingViewModel: SettingViewModel
+    val mMangaViewModel: MangaViewModel by lazy { appViewModel.Manga }
+    val mSettingViewModel: SettingViewModel by lazy { appViewModel.Setting }
 
     internal var mIsLoadFromHistory: Boolean = false
     internal var mUpdateConsumer: Consumer<Any> = Consumer { update(null) }
@@ -66,14 +67,8 @@ class MangaPageActivityV2 : BaseActivity(),
     private val DELAY = 5000L
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initViewModels()
         super.onCreate(savedInstanceState)
         hideSystemUI()
-    }
-
-    protected fun initViewModels() {
-        mMangaViewModel = appViewModel.Manga
-        mSettingViewModel = appViewModel.Setting
     }
 
     override fun getActionBarTitle(): String {
@@ -173,7 +168,7 @@ class MangaPageActivityV2 : BaseActivity(),
         return observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe{showLoading()}
+                .doOnSubscribe { showLoading() }
                 .doAfterTerminate { hideLoading() }
     }
 
@@ -233,7 +228,7 @@ class MangaPageActivityV2 : BaseActivity(),
 
     private fun loadPages() {
         Observable.fromCallable {
-            mangaHelper.GetPageList(mangaViewModel.selectedMangaChapterItem)
+            MangaHelperV2.getPageList(mangaViewModel.selectedMangaChapterItem)
         }
                 .subscribeOn(Schedulers.io())
                 .flatMapIterable {
