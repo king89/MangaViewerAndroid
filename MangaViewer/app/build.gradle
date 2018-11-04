@@ -96,6 +96,9 @@ dependencies {
     implementation libraries.androidLifeCycle
     implementation libraries.androidRoom
     implementation libraries.androidRoomRxJava
+    implementation libraries.androidPagingRuntime
+    implementation libraries.androidPagingRxJava
+
 
     implementation "org.jsoup:jsoup:1.8.2"
     implementation "me.grantland:autofittextview:0.2.1"

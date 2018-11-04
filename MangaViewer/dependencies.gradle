@@ -7,6 +7,7 @@ ext.versions = [rxJava2          : "2.1.0",
                 androidCompileSdk: 27,
                 androidAppCompat : "27.1.1",
                 androidArch      : "1.1.1",
+                androidArchPaging: "1.0.1",
 
                 //Libraries
                 retrofit         : "1.9.0",
@@ -65,10 +66,15 @@ ext.libraries = [appCompatV7           : "com.android.support:appcompat-v7:$vers
                  dagger2Complier       : "com.google.dagger:dagger-compiler:$versions.dagger2",
                  dagger2AndroidComplier: "com.google.dagger:dagger-android-processor:$versions.dagger2",
 
-                 androidLifeCycle         : "android.arch.lifecycle:extensions:$versions.androidArch",
-                 androidRoom              : "android.arch.persistence.room:runtime:$versions.androidArch",
-                 androidRoomComplier      : "android.arch.persistence.room:compiler:$versions.androidArch",
-                 androidRoomRxJava        : "android.arch.persistence.room:rxjava2:$versions.androidArch",]
+                 androidLifeCycle      : "android.arch.lifecycle:extensions:$versions.androidArch",
+                 androidRoom           : "android.arch.persistence.room:runtime:$versions.androidArch",
+                 androidRoomComplier   : "android.arch.persistence.room:compiler:$versions.androidArch",
+                 androidRoomRxJava     : "android.arch.persistence.room:rxjava2:$versions.androidArch",
+
+                 androidPagingRxJava   : "android.arch.paging:rxjava2:$versions.androidArchPaging",
+                 androidPagingRuntime  : "android.arch.paging:runtime:$versions.androidArchPaging",
+
+]
 
 //ext.appendVersionNameVersionCode = { variant, defaultConfig ->
 //    variant.outputs.each { output ->

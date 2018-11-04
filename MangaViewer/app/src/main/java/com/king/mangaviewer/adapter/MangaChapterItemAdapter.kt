@@ -8,22 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.king.mangaviewer.R
+import com.king.mangaviewer.adapter.MangaChapterItemAdapter.RecyclerViewHolders
 import com.king.mangaviewer.adapter.WrapperType.CATEGORY
 import com.king.mangaviewer.adapter.WrapperType.CHAPTER
 import com.king.mangaviewer.adapter.WrapperType.LAST_READ
 import com.king.mangaviewer.model.MangaChapterItem
 
-class MangaChapterItemAdapter(protected val context: Context,
-        protected val onItemClickListener: OnItemClickListener,
-        protected val dataList: List<MangaChapterItemWrapper>) :
-        RecyclerView.Adapter<MangaChapterItemAdapter.RecyclerViewHolders>() {
+class MangaChapterItemAdapter(private val context: Context,
+        private val onItemClickListener: OnItemClickListener) :
+        BaseRecyclerViewAdapter<MangaChapterItemWrapper, RecyclerViewHolders>() {
 
     private val MAX_TITLE_LENGTH = 20
 
-    override fun getItemCount(): Int {
-        // TODO Auto-generated method stub
-        return dataList.size
-    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolders {
         return when (viewType) {
@@ -46,7 +43,7 @@ class MangaChapterItemAdapter(protected val context: Context,
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
-        val item = dataList[position]
+        val item = mDataList[position]
         when (getItemViewType(position)) {
             LAST_READ,
             CHAPTER -> {
@@ -67,7 +64,7 @@ class MangaChapterItemAdapter(protected val context: Context,
             }
             CATEGORY -> {
                 holder as CategoryViewHolders
-                holder.textView.text = dataList[position].displayName
+                holder.textView.text = mDataList[position].displayName
             }
 
             else -> {
@@ -76,7 +73,7 @@ class MangaChapterItemAdapter(protected val context: Context,
     }
 
     override fun getItemViewType(position: Int): Int {
-        return dataList[position].type
+        return mDataList[position].type
     }
 
     open class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView)

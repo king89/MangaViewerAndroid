@@ -28,7 +28,6 @@ class HistoryViewModel(context: Context) : ViewModelBase(context) {
 
     @WorkerThread
     fun getLastRead(menu: MangaMenuItem): MangaChapterItem? {
-        var result: MangaChapterItem? = null
         return mHistoryMangaDataSource.allHistoryMangaItem.firstOrNull {
             it.menu.hash == menu.hash
         }

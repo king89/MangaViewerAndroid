@@ -72,12 +72,10 @@ class MangaPageActivityV2 : BaseActivity(),
     }
 
     override fun getActionBarTitle(): String {
-        // TODO Auto-generated method stub
         return mMangaViewModel.selectedMangaChapterItem.title ?: ""
     }
 
     override fun initControl() {
-        // TODO Auto-generated method stub
         mIsLoadFromHistory = intent.getBooleanExtra(
                 INTENT_EXTRA_FROM_HISTORY, false)
         setContentView(R.layout.activity_manga_page_v2)

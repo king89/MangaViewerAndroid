@@ -284,7 +284,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initControl() {
-        // TODO Auto-generated method stub
         setContentView(R.layout.activity_main_menu);
         mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
