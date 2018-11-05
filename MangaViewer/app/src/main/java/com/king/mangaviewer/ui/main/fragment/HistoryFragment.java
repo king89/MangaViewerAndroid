@@ -82,9 +82,8 @@ public class HistoryFragment extends BaseFragment {
     }
 
     @Override
-    protected Void getContentBackground() {
+    protected void getContentBackground() {
         getHistoryMangaList();
-        return null;
     }
 
     @Override

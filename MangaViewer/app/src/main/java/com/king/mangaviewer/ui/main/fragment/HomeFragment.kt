@@ -28,9 +28,7 @@ import javax.inject.Inject
 
 open class HomeFragment : BaseFragment() {
 
-    @Inject
-    @field:FragmentScopedFactory
-    lateinit var fragmentViewModelFactory: ViewModelFactory
+
     lateinit var viewModel: HomeFragmentViewModel
 
     lateinit var gv: MangaGridView
@@ -65,7 +63,7 @@ open class HomeFragment : BaseFragment() {
                 R.id.swipeRefreshLayout) as SwipeRefreshLayout
         mSwipeRefreshLayout.setOnRefreshListener { refresh() }
         gv = rootView.findViewById<View>(R.id.gridView) as MangaGridView
-        gv.adapter = MangaMenuItemAdapter(listOf(), object : OnItemClickListener {
+        gv.adapter = MangaMenuItemAdapter(object : OnItemClickListener {
             override fun onClick(menu: MangaMenuItem) {
                 viewModel.selectMangaMenu(menu)
                 startActivity(Intent(context, MangaChapterActivity::class.java))
@@ -103,7 +101,7 @@ open class HomeFragment : BaseFragment() {
                 }
             })
 
-            this.getData()
+            this.attachToView()
         }
     }
 

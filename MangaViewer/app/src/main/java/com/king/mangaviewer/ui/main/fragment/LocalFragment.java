@@ -95,11 +95,8 @@ public class LocalFragment extends BaseFragment {
     }
 
     @Override
-    protected Void getContentBackground() {
-
+    protected void getContentBackground() {
         loadFileList();
-
-        return super.getContentBackground();
     }
 
     @Override

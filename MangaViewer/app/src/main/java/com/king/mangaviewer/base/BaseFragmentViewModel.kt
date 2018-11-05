@@ -16,6 +16,8 @@ abstract class BaseFragmentViewModel : ViewModel() {
         disposable.clear()
     }
 
+    abstract fun attachToView()
+
     init {
         mLoadingState.value = Idle
     }

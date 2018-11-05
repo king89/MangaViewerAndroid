@@ -6,6 +6,8 @@ import com.king.mangaviewer.di.annotation.ActivityScoped
 import com.king.mangaviewer.di.annotation.ActivityViewModelKey
 import com.king.mangaviewer.di.annotation.FragmentScoped
 import com.king.mangaviewer.ui.main.fragment.AllMangaFragment
+import com.king.mangaviewer.ui.main.fragment.FavouriteFragment
+import com.king.mangaviewer.ui.main.fragment.FavouriteFragmentModule
 import com.king.mangaviewer.ui.main.fragment.HomeFragment
 import com.king.mangaviewer.ui.main.fragment.HomeFragmentModule
 import dagger.Binds
@@ -23,6 +25,10 @@ abstract class MainActivityModule {
     @FragmentScoped
     @ContributesAndroidInjector(modules = [HomeFragmentModule::class])
     abstract fun allMangaFragment(): AllMangaFragment
+
+    @FragmentScoped
+    @ContributesAndroidInjector(modules = [FavouriteFragmentModule::class])
+    abstract fun favoriteFragment(): FavouriteFragment
 
     @Binds
     @IntoMap

@@ -23,15 +23,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.HashMap
 
-open class MangaMenuItemAdapter(menu: List<MangaMenuItem>,
-        private val listener: OnItemClickListener? = null) :
+open class MangaMenuItemAdapter(private val listener: OnItemClickListener? = null) :
         BaseRecyclerViewAdapter<MangaMenuItem, RecyclerView.ViewHolder>() {
 
     private var mLoadingState: LoadingState = Idle
-
-    init {
-        mDataList = menu
-    }
 
     override fun getItemCount(): Int {
         return super.getItemCount() + if (mLoadingState is Loading) 1 else 0
@@ -59,16 +54,13 @@ open class MangaMenuItemAdapter(menu: List<MangaMenuItem>,
 
             }
             is DataViewHolder -> {
-                val item = mDataList!![position]
+                val item = mDataList[position]
                 Single.fromCallable {
                     val url = MangaHelper.getMenuCover(item)
                     val header = LazyHeaders.Builder().addHeader("Referer", item.url).build()
                     GlideUrl(url, header)
                 }
                         .subscribeOn(Schedulers.io())
-                        .doOnSubscribe {
-                            holder.imageView.setImageResource(R.color.manga_place_holder)
-                        }
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ it: GlideUrl ->
                             GlideApp.with(holder.imageView)
@@ -79,7 +71,7 @@ open class MangaMenuItemAdapter(menu: List<MangaMenuItem>,
                         }, { Logger.e(TAG, it) })
                         .apply { holder.disposable.add(this) }
 
-                val title = this.mDataList!![position].title
+                val title = this.mDataList[position].title
                 holder.textView.text = title
                 holder.itemView.setOnClickListener { listener?.onClick(item) }
             }

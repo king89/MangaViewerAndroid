@@ -21,9 +21,13 @@ import com.king.mangaviewer.preference.MangaViewerDialogPreference;
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver;
 import com.king.mangaviewer.util.Util;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import java.util.concurrent.Callable;
 
 import static android.widget.Toast.*;
-
 
 /**
  * A {@link SettingsActivity} that presents a set of application settings. On
@@ -43,10 +47,10 @@ public class SettingsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new GeneralPreferenceFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
+                new GeneralPreferenceFragment()).commit();
 
     }
-
 
     @Override
     protected void initControl() {
@@ -145,22 +149,40 @@ public class SettingsActivity extends BaseActivity {
             addPreferencesFromResource(R.xml.pref_general);
             mSettingViewModel = ((SettingsActivity) getActivity()).getSettingViewModel();
             //Cache Size
-            final MangaViewerDialogPreference p = (MangaViewerDialogPreference) findPreference(getString(R.string.pref_key_setting_storage_size));
+            final MangaViewerDialogPreference p = (MangaViewerDialogPreference) findPreference(
+                    getString(R.string.pref_key_setting_storage_size));
             p.setOnDialogClickListener(new MangaViewerDialogPreference.OnDialogClickListener() {
                 @Override
                 public void onClick() {
-                    mSettingViewModel.resetMangaFolder(ctx);
-                    Glide.get(ctx).clearDiskCache();
-                    Glide.get(ctx).clearMemory();
-                    p.setSummary(mSettingViewModel.getMangaFolderSize(ctx));
-                    makeText(ctx, getString(R.string.setting_msg_cache_cleared), LENGTH_SHORT).show();
+                    Observable.fromCallable(new Callable<Object>() {
+                        @Override
+                        public Object call() throws Exception {
+                            mSettingViewModel.resetMangaFolder(ctx);
+                            Glide.get(ctx).clearDiskCache();
+                            return 1;
+                        }
+                    }).subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Consumer<Object>() {
+                                @Override
+                                public void accept(Object o) throws Exception {
+                                    Glide.get(ctx).clearMemory();
+                                    p.setSummary(mSettingViewModel.getMangaFolderSize(ctx));
+                                    makeText(ctx, getString(R.string.setting_msg_cache_cleared),
+                                            LENGTH_SHORT).show();
+                                }
+                            });
+
+
                 }
             });
             p.setSummary(mSettingViewModel.getMangaFolderSize(ctx));
 
             //Manga Sources
-            final ListPreference mangaSourcesPref = (ListPreference) findPreference(getString(R.string.pref_key_manga_sources));
-            String value = PreferenceManager.getDefaultSharedPreferences(ctx).getString(mangaSourcesPref.getKey(), "");
+            final ListPreference mangaSourcesPref = (ListPreference) findPreference(
+                    getString(R.string.pref_key_manga_sources));
+            String value = PreferenceManager.getDefaultSharedPreferences(ctx).getString(
+                    mangaSourcesPref.getKey(), "");
             CharSequence[] csEntries = new CharSequence[mSettingViewModel.getMangaWebSources().size()];
             CharSequence[] csValues = new CharSequence[mSettingViewModel.getMangaWebSources().size()];
             for (int i = 0; i < mSettingViewModel.getMangaWebSources().size(); i++) {
@@ -169,53 +191,61 @@ public class SettingsActivity extends BaseActivity {
             }
             mangaSourcesPref.setEntries(csEntries);
             mangaSourcesPref.setEntryValues(csValues);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_manga_sources)));
-
-
-
+            bindPreferenceSummaryToValue(
+                    findPreference(getString(R.string.pref_key_manga_sources)));
 
             //auto update hour
-            final ListPreference autoUpdateHour = (ListPreference)findPreference(getString(R.string.pref_key_auto_update_hours));
-            int index = autoUpdateHour.findIndexOfValue(sp.getString(getString(R.string.pref_key_auto_update_hours),"6"));
+            final ListPreference autoUpdateHour = (ListPreference) findPreference(
+                    getString(R.string.pref_key_auto_update_hours));
+            int index = autoUpdateHour.findIndexOfValue(
+                    sp.getString(getString(R.string.pref_key_auto_update_hours), "6"));
             autoUpdateHour.setSummary(autoUpdateHour.getEntries()[index]);
-            autoUpdateHour.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    AutoUpdateAlarmReceiver receiver = new AutoUpdateAlarmReceiver();
-                    receiver.cancelAlarm(ctx);
-                    receiver.setAlarm(ctx);
-                    int index = autoUpdateHour.findIndexOfValue(newValue.toString());
-                    autoUpdateHour.setSummary(autoUpdateHour.getEntries()[index]);
-                    return true;
-                }
-            });
+            autoUpdateHour.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener() {
+                        @Override
+                        public boolean onPreferenceChange(Preference preference, Object newValue) {
+                            AutoUpdateAlarmReceiver receiver = new AutoUpdateAlarmReceiver();
+                            receiver.cancelAlarm(ctx);
+                            receiver.setAlarm(ctx);
+                            int index = autoUpdateHour.findIndexOfValue(newValue.toString());
+                            autoUpdateHour.setSummary(autoUpdateHour.getEntries()[index]);
+                            return true;
+                        }
+                    });
             //auto update service
-            final SwitchPreferenceCompat autoUpdateServicePref = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_key_auto_update_service));
-            autoUpdateServicePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    AutoUpdateAlarmReceiver receiver = new AutoUpdateAlarmReceiver();
-                    if ((boolean) newValue) {
-                        receiver.setAlarm(ctx);
-                        Toast.makeText(ctx, getString(R.string.msg_start_auto_update_service), Toast.LENGTH_SHORT).show();
-                        autoUpdateHour.setEnabled(true);
-                    } else {
-                        receiver.cancelAlarm(ctx);
-                        Toast.makeText(ctx, getString(R.string.msg_stop_auto_update_service), Toast.LENGTH_SHORT).show();
-                        autoUpdateHour.setEnabled(false);
-                    }
-                    return true;
-                }
-            });
+            final SwitchPreferenceCompat autoUpdateServicePref = (SwitchPreferenceCompat) findPreference(
+                    getString(R.string.pref_key_auto_update_service));
+            autoUpdateServicePref.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener() {
+                        @Override
+                        public boolean onPreferenceChange(Preference preference, Object newValue) {
+                            AutoUpdateAlarmReceiver receiver = new AutoUpdateAlarmReceiver();
+                            if ((boolean) newValue) {
+                                receiver.setAlarm(ctx);
+                                Toast.makeText(ctx,
+                                        getString(R.string.msg_start_auto_update_service),
+                                        Toast.LENGTH_SHORT).show();
+                                autoUpdateHour.setEnabled(true);
+                            } else {
+                                receiver.cancelAlarm(ctx);
+                                Toast.makeText(ctx,
+                                        getString(R.string.msg_stop_auto_update_service),
+                                        Toast.LENGTH_SHORT).show();
+                                autoUpdateHour.setEnabled(false);
+                            }
+                            return true;
+                        }
+                    });
 
-            final Preference versionPref = findPreference(getString(R.string.pref_key_version_name));
+            final Preference versionPref = findPreference(
+                    getString(R.string.pref_key_version_name));
             versionPref.setSummary(Util.getVersionName(ctx));
 
             //set auto update hour enable
-            boolean isEnable = sp.getBoolean(getString(R.string.pref_key_auto_update_service),true);
+            boolean isEnable = sp.getBoolean(getString(R.string.pref_key_auto_update_service),
+                    true);
             autoUpdateHour.setEnabled(isEnable);
         }
     }
-
 
 }

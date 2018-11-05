@@ -11,15 +11,13 @@ import com.king.mangaviewer.model.MangaMenuItem
 /**
  * Created by KinG on 6/18/2016.
  */
-class FavouriteMangaItemAdapter(private val menu: List<MangaMenuItem>,
-        private val listener: OnItemClickListener? = null) :
-        MangaMenuItemAdapter(menu, listener) {
-
+class FavouriteMangaItemAdapter(private val listener: OnItemClickListener? = null) :
+        MangaMenuItemAdapter(listener) {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
 
         if (holder is DataViewHolder) {
-            val count = (menu[position] as FavouriteMangaMenuItem).updateCount
+            val count = (mDataList[position] as FavouriteMangaMenuItem).updateCount
             holder.countTextView?.apply {
                 visibility = View.VISIBLE
                 when {
