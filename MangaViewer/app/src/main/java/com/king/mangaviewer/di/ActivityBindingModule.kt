@@ -8,6 +8,7 @@ import com.king.mangaviewer.ui.chapter.MangaChapterActivityModule
 import com.king.mangaviewer.ui.main.MainActivityModule
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
 import com.king.mangaviewer.ui.search.SearchResultActivity
+import com.king.mangaviewer.ui.search.SearchResultActivityModule
 import com.king.mangaviewer.ui.setting.SettingsActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -36,7 +37,7 @@ abstract class ActivityBindingModule {
     internal abstract fun settingsActivity(): SettingsActivity
 
     @ActivityScoped
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = [SearchResultActivityModule::class])
     internal abstract fun searchResultActivity(): SearchResultActivity
     //Add Activity Module to the map
 }

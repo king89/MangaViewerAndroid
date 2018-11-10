@@ -1,6 +1,7 @@
 package com.king.mangaviewer.ui.search
 
 import android.app.SearchManager
+import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -15,33 +16,35 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.PopupWindow
 import android.widget.TextView
-
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter.OnItemClickListener
 import com.king.mangaviewer.base.BaseActivity
-import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider
+import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.component.MangaGridView
-import com.king.mangaviewer.model.MangaWebSource
-import com.king.mangaviewer.util.MangaHelper
+import com.king.mangaviewer.di.annotation.ActivityScopedFactory
+import com.king.mangaviewer.model.LoadingState.Idle
+import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaMenuItem
-import com.king.mangaviewer.util.Logger
-import io.reactivex.Completable
-
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.king.mangaviewer.ui.chapter.MangaChapterActivity
+import com.king.mangaviewer.util.withViewModel
 import java.util.ArrayList
 import java.util.HashMap
+import javax.inject.Inject
 
 /**
  * Created by KinG on 7/23/2015.
  */
 class SearchResultActivity : BaseActivity() {
 
+    @Inject
+    @field:ActivityScopedFactory
+    lateinit var activityScopedFactory: ViewModelFactory
+    lateinit var viewModel: SearchResultActivityViewModel
+
     lateinit var gv: MangaGridView
     internal var state = HashMap<String, Any>()
-    lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private var searchView: SearchView? = null
     private var queryString = ""
     lateinit var mangaSourceTv: TextView
@@ -54,21 +57,48 @@ class SearchResultActivity : BaseActivity() {
 
     override fun initControl() {
         setContentView(R.layout.activity_search_result)
+        initViewModel()
+
         gv = this.findViewById<View>(R.id.gridView) as MangaGridView
-        swipeRefreshLayout = this.findViewById<View>(R.id.swipeRefreshLayout) as SwipeRefreshLayout
-        swipeRefreshLayout.setOnRefreshListener {
-            setSearchResult(queryString)
-            swipeRefreshLayout.isRefreshing = false
+        mSwipeRefreshLayout = this.findViewById<View>(R.id.swipeRefreshLayout) as SwipeRefreshLayout
+        mSwipeRefreshLayout.setOnRefreshListener {
+            getQueryResult(queryString)
+            mSwipeRefreshLayout.isRefreshing = false
         }
         mangaSourceTv = this.findViewById<View>(R.id.manga_source_textView) as TextView
-        val tv = findViewById<View>(R.id.textView) as TextView
         gv = findViewById<View>(R.id.gridView) as MangaGridView
-        gv.adapter = MangaMenuItemAdapter(object:OnItemClickListener{
+        gv.adapter = MangaMenuItemAdapter(object : OnItemClickListener {
             override fun onClick(menu: MangaMenuItem) {
-
+                viewModel.selectMenu(menu)
+                startActivity(Intent(this@SearchResultActivity, MangaChapterActivity::class.java))
+                this@SearchResultActivity.overridePendingTransition(R.anim.in_rightleft,
+                        R.anim.out_rightleft)
             }
 
         })
+    }
+
+    private fun initViewModel() {
+        withViewModel<SearchResultActivityViewModel>(activityScopedFactory) {
+            viewModel = this
+            this.loadingState.observe(this@SearchResultActivity, Observer {
+                when (it) {
+                    is Loading -> {
+                        mSwipeRefreshLayout.isRefreshing = true
+                    }
+                    is Idle -> {
+                        mSwipeRefreshLayout.isRefreshing = false
+                    }
+                }
+            })
+
+            this.mangaList.observe(this@SearchResultActivity, Observer {
+                //update adapter
+                it?.run {
+                    (gv.adapter as MangaMenuItemAdapter).submitList(it)
+                }
+            })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -98,31 +128,8 @@ class SearchResultActivity : BaseActivity() {
     }
 
     private fun getQueryResult(query: String) {
-
-        setSearchResult(query)
-
-    }
-
-    private fun setSearchResult(query: String) {
         mangaSourceTv.text = appViewModel.Setting.selectedWebSource.displayName
-
-        //reset all manga list
-        this.appViewModel.Manga.resetAllMangaList()
-        this.appViewModel.Manga.allMangaStateHash[MangaProvider.STATE_SEARCH_QUERYTEXT] = query
-        val hash = this.appViewModel.Manga.allMangaStateHash
-
-        Single.fromCallable {
-            val list = MangaHelper(this).getSearchMangeList(mutableListOf(), hash)
-            list
-        }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    (gv.adapter as? MangaMenuItemAdapter)?.submitList(it)
-                }, {
-                    Logger.e(TAG, it)
-                })
-                .apply { compositeDisposable.add(this) }
+        viewModel.searchManga(query)
     }
 
     private fun displayMangaSource(anchorView: View) {
@@ -148,7 +155,7 @@ class SearchResultActivity : BaseActivity() {
             appViewModel.Setting.setSelectedWebSource(mws!![position],
                     this@SearchResultActivity)
             appViewModel.Manga.mangaMenuList = null
-            setSearchResult(queryString)
+            getQueryResult(queryString)
             popup.dismiss()
         }
         lv.setItemChecked(tSelectWebSourcePos, true)
