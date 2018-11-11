@@ -3,7 +3,6 @@ package com.king.mangaviewer.util
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.king.mangaviewer.R

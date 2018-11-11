@@ -67,7 +67,8 @@ public class AutoNotifyUpdatedService extends Service {
                 updatedCount = updatedCount + Math.max(0, chlist.size() - chapterCount);
                 flist.get(i).setChapterCount(chlist.size());
                 flist.get(i).setUpdateCount(updatedCount);
-                flist.get(i).setUpdatedDate(DateTime.now().toString(FavouriteMangaMenuItem.DATE_FORMAT));
+                flist.get(i).setUpdatedDate(DateTime.now().toString(
+                        FavouriteMangaMenuItem.Companion.getDATE_FORMAT()));
                 dataSource.updateToFavourite(flist.get(i));
                 isHaveUpdated = true;
             }

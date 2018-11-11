@@ -9,8 +9,12 @@ import com.king.mangaviewer.domain.data.local.MangaDataBase
 import com.king.mangaviewer.di.annotation.ApplicationScope
 import com.king.mangaviewer.domain.data.AppRepository
 import com.king.mangaviewer.domain.data.AppRepositoryImpl
+import com.king.mangaviewer.domain.data.FavoriteMangaRepository
+import com.king.mangaviewer.domain.data.FavoriteMangaRepositoryImpl
 import com.king.mangaviewer.domain.data.MangaRepository
 import com.king.mangaviewer.domain.data.MangaRepositoryImpl
+import com.king.mangaviewer.domain.data.local.FavouriteMangaDataSource
+import com.king.mangaviewer.domain.data.local.FavouriteMangaLocalDataSource
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.viewmodel.AppViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
@@ -29,11 +33,22 @@ abstract class RepositoryModule {
 
     @ApplicationScope
     @Binds
-    abstract fun providerAppRepository(impl: AppRepositoryImpl): AppRepository
+    abstract fun provideAppRepository(impl: AppRepositoryImpl): AppRepository
 
     @ApplicationScope
     @Binds
-    abstract fun providerMangaRepository(impl: MangaRepositoryImpl): MangaRepository
+    abstract fun provideMangaRepository(impl: MangaRepositoryImpl): MangaRepository
+
+    @ApplicationScope
+    @Binds
+    abstract fun provideFavoriteMangaDataSource(impl: FavouriteMangaLocalDataSource): FavouriteMangaDataSource
+
+    @ApplicationScope
+    @Binds
+    abstract fun provideFavoriteMangaRepository(impl: FavoriteMangaRepositoryImpl): FavoriteMangaRepository
+
+
+
 
     @Module
     companion object {
@@ -44,7 +59,9 @@ abstract class RepositoryModule {
             return Room.databaseBuilder(
                     context.applicationContext,
                     MangaDataBase::class.java,
-                    "manga.db").build()
+                    "manga.db")
+                    .fallbackToDestructiveMigration()
+                    .build()
         }
 
         @ApplicationScope

@@ -1,15 +1,15 @@
 package com.king.mangaviewer.domain.usecase
 
-import android.os.Looper
+import com.king.mangaviewer.domain.data.FavoriteMangaRepository
 import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
 import com.king.mangaviewer.model.MangaChapterItem
-import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.viewmodel.AppViewModel
 import io.reactivex.Single
 import java.util.ArrayList
 import javax.inject.Inject
 
-class GetChapterListUseCase @Inject constructor(private val appViewModel: AppViewModel) {
+class GetChapterListUseCase @Inject constructor(private val appViewModel: AppViewModel,
+        private val favoriteMangaRepository: FavoriteMangaRepository) {
     fun execute(): Single<List<MangaChapterItem>> {
         return Single.fromCallable {
             appViewModel.Manga.mangaChapterList = emptyList()
@@ -22,7 +22,7 @@ class GetChapterListUseCase @Inject constructor(private val appViewModel: AppVie
             if (tauList != null) {
                 for (i in tauList.indices) {
                     list.add(MangaChapterItem("Chapter-$i", tauList[i]
-                            .title, null, tauList[i].imagePath,
+                            .title, "", tauList[i].imagePath,
                             tauList[i].url, menu))
                 }
             }
@@ -32,10 +32,9 @@ class GetChapterListUseCase @Inject constructor(private val appViewModel: AppVie
                 .doAfterSuccess {
                     //update chapter count if it is favorite manga
                     val menu = appViewModel.Manga.selectedMangaMenuItem
-                    if (appViewModel.Setting.checkIsFavourited(menu)) {
+                    if (favoriteMangaRepository.checkIsFavorite(menu).blockingGet()) {
                         val chapterCount = it.size
-                        appViewModel.Setting.removeFavouriteManga(menu)
-                        appViewModel.Setting.addFavouriteManga(menu, chapterCount)
+                        favoriteMangaRepository.updateFavouriteManga(menu, chapterCount).blockingGet()
                     }
                 }
                 .map { it }

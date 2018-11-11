@@ -194,7 +194,7 @@ public class FavouriteMangaDataSource extends MangaDataSourceBase {
         }
 
         MangaMenuItem menu = new MangaMenuItem(hash, title, description, imagePath, url, mangaWebSource);
-        return FavouriteMangaMenuItem.createFavouriteMangaMenuItem(menu, favouriteDate, updateDate, chapterCount, updateCount);
+        return FavouriteMangaMenuItem.Companion.createFavouriteMangaMenuItem(menu, favouriteDate, updateDate, chapterCount, updateCount);
     }
 
 }

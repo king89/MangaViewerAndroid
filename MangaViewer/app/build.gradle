@@ -96,6 +96,7 @@ dependencies {
     implementation libraries.androidLifeCycle
     implementation libraries.androidRoom
     implementation libraries.androidRoomRxJava
+    kapt libraries.androidRoomComplier
     implementation libraries.androidPagingRuntime
     implementation libraries.androidPagingRxJava
 

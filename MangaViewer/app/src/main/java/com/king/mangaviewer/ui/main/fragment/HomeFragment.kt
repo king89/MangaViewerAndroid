@@ -14,9 +14,7 @@ import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter.OnItemClickListener
 import com.king.mangaviewer.base.BaseFragment
-import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.component.MangaGridView
-import com.king.mangaviewer.di.annotation.FragmentScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaMenuItem
@@ -24,7 +22,6 @@ import com.king.mangaviewer.ui.chapter.MangaChapterActivity
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.withViewModel
 import dagger.android.support.AndroidSupportInjection
-import javax.inject.Inject
 
 open class HomeFragment : BaseFragment() {
 

@@ -101,7 +101,8 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
                     flist.get(i).setChapterCount(chlist.size());
                     flist.get(i).setUpdateCount(updatedCount);
                     flist.get(i).setUpdatedDate(
-                            DateTime.now().toString(FavouriteMangaMenuItem.DATE_FORMAT));
+                            DateTime.now().toString(
+                                    FavouriteMangaMenuItem.Companion.getDATE_FORMAT()));
                     dataSource.updateToFavourite(flist.get(i));
                     sb.append(flist.get(i).getTitle() + ", ");
                     isHaveUpdated = true;

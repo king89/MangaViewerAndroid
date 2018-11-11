@@ -3,8 +3,6 @@ package com.king.mangaviewer.component
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Rect
-import android.os.AsyncTask
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.GridLayoutManager.SpanSizeLookup
 import android.support.v7.widget.RecyclerView
@@ -12,15 +10,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 
-import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
-import com.king.mangaviewer.model.LoadingState.Loading
-import com.king.mangaviewer.model.MangaMenuItem
-import com.king.mangaviewer.viewmodel.MangaViewModel
-
-import java.util.ArrayList
-import java.util.HashMap
 
 class MangaGridView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
         defStyleAttr: Int = 0) : RecyclerView(context, attrs,

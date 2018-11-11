@@ -10,7 +10,7 @@ import io.reactivex.Single
 @Dao
 interface HistoryMangaDAO {
 
-    @Query("SELECT * FROM favourite_manga")
+    @Query("SELECT * FROM history_manga")
     fun getList(): Single<List<HistoryManga>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

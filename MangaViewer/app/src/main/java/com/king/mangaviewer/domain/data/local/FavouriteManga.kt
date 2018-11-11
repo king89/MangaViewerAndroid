@@ -3,6 +3,7 @@ package com.king.mangaviewer.domain.data.local
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import com.king.mangaviewer.model.FavouriteMangaMenuItem
 
 @Entity(tableName = "favourite_manga")
 class FavouriteManga(
@@ -37,4 +38,17 @@ class FavouriteManga(
         @ColumnInfo(name = "chapter_count")
         var chapter_count: Int
 
-)
+) {
+    constructor(mangaItem: FavouriteMangaMenuItem) : this(
+            mangaItem.hash,
+            mangaItem.title,
+            mangaItem.description,
+            mangaItem.imagePath,
+            mangaItem.url,
+            mangaItem.mangaWebSource.id,
+            mangaItem.favouriteDate,
+            mangaItem.updatedDate,
+            mangaItem.updateCount,
+            mangaItem.chapterCount
+    )
+}

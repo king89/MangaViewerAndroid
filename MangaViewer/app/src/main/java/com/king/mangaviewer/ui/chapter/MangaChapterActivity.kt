@@ -62,7 +62,6 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
     override fun initControl() {
         setContentView(R.layout.activity_manga_chapter)
 
-        initFAB()
         textView.text = this.appViewModel.Manga.selectedMangaMenuItem.title
         loadChapterCover()
         setupChapterList()
@@ -129,6 +128,19 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
                         })
             })
 
+            this.favouriteState.observe(this@MangaChapterActivity, Observer {
+                if (it!!) {
+                    floatingActionButton.setImageResource(R.mipmap.ic_star_white)
+                    floatingActionButton.setOnClickListener { view ->
+                        this.removeFromFavorite()
+                    }
+                } else {
+                    floatingActionButton.setImageResource(R.mipmap.ic_star_border_white)
+                    floatingActionButton.setOnClickListener { view ->
+                        this.addToFavorite()
+                    }
+                }
+            })
             this.attachToView()
         }
 
@@ -156,32 +168,8 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
 
     }
 
-    private fun initFAB() {
-        if (appViewModel.Setting.checkIsFavourited(appViewModel.Manga.selectedMangaMenuItem)) {
-            floatingActionButton.setImageResource(R.mipmap.ic_star_white)
-        } else {
-            floatingActionButton.setImageResource(R.mipmap.ic_star_border_white)
-        }
-
-        floatingActionButton.setOnClickListener {
-            //try to add, if yes, set favourited, if not, remove it from favourite list
-            val chapterCount = if (mangaViewModel.mangaChapterList == null) 0 else mangaViewModel.mangaChapterList.size
-            if (appViewModel.Setting.addFavouriteManga(appViewModel.Manga.selectedMangaMenuItem,
-                            chapterCount)) {
-                floatingActionButton.setImageResource(R.mipmap.ic_star_white)
-                Toast.makeText(this@MangaChapterActivity, getString(R.string.favourited),
-                        Toast.LENGTH_SHORT).show()
-            } else {
-                appViewModel.Setting.removeFavouriteManga(appViewModel.Manga.selectedMangaMenuItem)
-                floatingActionButton.setImageResource(R.mipmap.ic_star_border_white)
-                Toast.makeText(this@MangaChapterActivity, getString(R.string.unfavourited),
-                        Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     override fun onClick(chapter: MangaChapterItem) {
-        mangaViewModel.selectedMangaChapterItem = chapter
+        viewModel.selectChapter(chapter)
         startActivity(Intent(this, MangaPageActivityV2::class.java))
         overridePendingTransition(R.anim.in_rightleft,
                 R.anim.out_rightleft)

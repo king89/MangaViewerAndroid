@@ -24,7 +24,7 @@ object MangaHelperV2 {
         if (pageUrlList != null) {
             for (i in pageUrlList.indices) {
                 mangaList.add(MangaMenuItem("Menu-$i", pageUrlList[i]
-                        .title, null, pageUrlList[i].imagePath,
+                        .title, "", pageUrlList[i].imagePath,
                         pageUrlList[i].url,
                         mangaWebSource))
             }
@@ -42,7 +42,7 @@ object MangaHelperV2 {
         if (tauList != null) {
             for (i in tauList.indices) {
                 list.add(MangaChapterItem("Chapter-$i", tauList[i]
-                        .title, null, tauList[i].imagePath,
+                        .title, "", tauList[i].imagePath,
                         tauList[i].url, menu))
             }
         }
@@ -57,7 +57,7 @@ object MangaHelperV2 {
         if (pageUrlList !=
                 null) {
             for (i in pageUrlList.indices) {
-                val item = MangaPageItem("page-$i", null, null, null, pageUrlList[i], chapter, i,
+                val item = MangaPageItem("page-$i", "", "", "", pageUrlList[i], chapter, i,
                         pageUrlList.size)
                 item.referUrl = chapter.url
                 mangaPageList.add(item)

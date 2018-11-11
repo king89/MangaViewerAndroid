@@ -17,10 +17,11 @@ class HistoryViewModel(context: Context) : ViewModelBase(context) {
 
     @JvmOverloads
     fun getHistoryChapterList(
-            menu: MangaMenuItem? = null): List<HistoryMangaChapterItem> = mHistoryMangaDataSource.allHistoryMangaItem.filter {
-        if (menu == null) return@filter true
-        return@filter menu.hash == it.menu.hash
-    }
+            menu: MangaMenuItem? = null): List<HistoryMangaChapterItem> = emptyList()
+//            mHistoryMangaDataSource.allHistoryMangaItem.filter {
+//        if (menu == null) return@filter true
+//        return@filter menu.hash == it.menu.hash
+//    }
 
     init {
         this.mHistoryMangaDataSource = HistoryMangaDataSource(context)
@@ -36,8 +37,8 @@ class HistoryViewModel(context: Context) : ViewModelBase(context) {
 
     //add histroy
     fun addChapterItemToHistory(chapter: MangaChapterItem): Boolean {
-        val historyItem = HistoryMangaChapterItem(chapter)
-        mHistoryMangaDataSource.addToHistory(historyItem)
+//        val historyItem = HistoryMangaChapterItem(chapter)
+//        mHistoryMangaDataSource.addToHistory(historyItem)
         return true
     }
 

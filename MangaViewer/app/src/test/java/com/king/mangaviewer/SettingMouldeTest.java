@@ -55,32 +55,32 @@ public class SettingMouldeTest extends ActivityInstrumentationTestCase2<MainActi
 //        Log.v("testResetFolder",s);
 //    }
 
-    @MediumTest
-    public void testDataBaseLoadAndSaveFavouriteManga() {
-
-        mLaunchIntent = getActivity();
-        FavouriteMangaDataSource dataSource = new FavouriteMangaDataSource(getActivity());
-
-        SettingViewModel svm = SettingViewModel.loadSetting(mLaunchIntent);
-        List<MangaWebSource> sources = svm.getMangaWebSources();
-        dataSource.getAllFavouriteMangaMenu(sources);
-        List<FavouriteMangaMenuItem> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            FavouriteMangaMenuItem item = new FavouriteMangaMenuItem(new MangaMenuItem(i + "", i + "", i + "", i + "", "url" + i, svm.getSelectedWebSource(mLaunchIntent)), 0);
-            list.add(item);
-        }
-
-        dataSource.addToFavourite(list.get(0));
-        dataSource.addToFavourite(list.get(1));
-        dataSource.addToFavourite(list.get(2));
-        dataSource.addToFavourite(list.get(3));
-
-        dataSource.removeFromFavourite(list.get(1));
-
-        FavouriteMangaMenuItem item = list.get(2);
-        item.setUpdateCount(2);
-        dataSource.updateToFavourite(item);
-
-
-    }
+    //@MediumTest
+    //public void testDataBaseLoadAndSaveFavouriteManga() {
+    //
+    //    mLaunchIntent = getActivity();
+    //    FavouriteMangaDataSource dataSource = new FavouriteMangaDataSource(getActivity());
+    //
+    //    SettingViewModel svm = SettingViewModel.loadSetting(mLaunchIntent);
+    //    List<MangaWebSource> sources = svm.getMangaWebSources();
+    //    dataSource.getAllFavouriteMangaMenu(sources);
+    //    List<FavouriteMangaMenuItem> list = new ArrayList<>();
+    //    for (int i = 0; i < 10; i++) {
+    //        FavouriteMangaMenuItem item = new FavouriteMangaMenuItem(new MangaMenuItem(i + "", i + "", i + "", i + "", "url" + i, svm.getSelectedWebSource(mLaunchIntent)), 0);
+    //        list.add(item);
+    //    }
+    //
+    //    dataSource.addToFavourite(list.get(0));
+    //    dataSource.addToFavourite(list.get(1));
+    //    dataSource.addToFavourite(list.get(2));
+    //    dataSource.addToFavourite(list.get(3));
+    //
+    //    dataSource.removeFromFavourite(list.get(1));
+    //
+    //    FavouriteMangaMenuItem item = list.get(2);
+    //    item.setUpdateCount(2);
+    //    dataSource.updateToFavourite(item);
+    //
+    //
+    //}
 }

@@ -1,12 +1,9 @@
 package com.king.mangaviewer.adapter
 
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.king.mangaviewer.R
 import com.king.mangaviewer.model.FavouriteMangaMenuItem
-import com.king.mangaviewer.model.MangaMenuItem
 
 /**
  * Created by KinG on 6/18/2016.

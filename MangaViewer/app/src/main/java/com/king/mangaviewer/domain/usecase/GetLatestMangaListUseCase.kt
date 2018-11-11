@@ -5,7 +5,6 @@ import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.viewmodel.AppViewModel
 import io.reactivex.Observable
-import io.reactivex.Single
 import java.util.ArrayList
 import java.util.HashMap
 import javax.inject.Inject
@@ -25,7 +24,7 @@ class GetLatestMangaListUseCase @Inject constructor(private val appViewModel: Ap
             if (pageUrlList != null) {
                 for (i in pageUrlList.indices) {
                     mangaList.add(MangaMenuItem("Menu-$i", pageUrlList[i]
-                            .title, null, pageUrlList[i].imagePath,
+                            .title, "", pageUrlList[i].imagePath,
                             pageUrlList[i].url,
                             appViewModel.Setting.selectedWebSource))
                 }

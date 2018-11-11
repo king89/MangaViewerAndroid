@@ -21,7 +21,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import java.util.HashMap
 
 open class MangaMenuItemAdapter(private val listener: OnItemClickListener? = null) :
         BaseRecyclerViewAdapter<MangaMenuItem, RecyclerView.ViewHolder>() {

@@ -45,7 +45,7 @@ class HistoryManga(
         var manga_websource_id: Int,
 
         @ColumnInfo(name = "last_read_time")
-        var favourite_date: String,
+        var last_read_time: String,
 
         @Embedded(prefix = "menu_")
         var menu: HistoryMangaMenu
