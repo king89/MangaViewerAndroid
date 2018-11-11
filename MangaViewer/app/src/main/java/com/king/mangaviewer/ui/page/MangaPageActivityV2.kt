@@ -72,7 +72,7 @@ class MangaPageActivityV2 : BaseActivity(),
     }
 
     override fun getActionBarTitle(): String {
-        return mMangaViewModel.selectedMangaChapterItem.title ?: ""
+        return mMangaViewModel.selectedMangaChapterItem.title
     }
 
     override fun initControl() {

@@ -11,10 +11,12 @@ import com.king.mangaviewer.domain.data.AppRepository
 import com.king.mangaviewer.domain.data.AppRepositoryImpl
 import com.king.mangaviewer.domain.data.FavoriteMangaRepository
 import com.king.mangaviewer.domain.data.FavoriteMangaRepositoryImpl
-import com.king.mangaviewer.domain.data.MangaRepository
-import com.king.mangaviewer.domain.data.MangaRepositoryImpl
+import com.king.mangaviewer.domain.data.HistoryMangaRepository
+import com.king.mangaviewer.domain.data.HistoryMangaRepositoryImpl
 import com.king.mangaviewer.domain.data.local.FavouriteMangaDataSource
 import com.king.mangaviewer.domain.data.local.FavouriteMangaLocalDataSource
+import com.king.mangaviewer.domain.data.local.HistoryMangaDataSource
+import com.king.mangaviewer.domain.data.local.HistoryMangaLocalDataSource
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.viewmodel.AppViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
@@ -23,7 +25,6 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit.SECONDS
-import javax.inject.Singleton
 
 /*
 Can add this class in different flavor
@@ -37,18 +38,23 @@ abstract class RepositoryModule {
 
     @ApplicationScope
     @Binds
-    abstract fun provideMangaRepository(impl: MangaRepositoryImpl): MangaRepository
+    abstract fun provideHistoryMangaRepository(
+            impl: HistoryMangaRepositoryImpl): HistoryMangaRepository
 
     @ApplicationScope
     @Binds
-    abstract fun provideFavoriteMangaDataSource(impl: FavouriteMangaLocalDataSource): FavouriteMangaDataSource
+    abstract fun provideHistoryMangaDataSource(
+            impl: HistoryMangaLocalDataSource): HistoryMangaDataSource
 
     @ApplicationScope
     @Binds
-    abstract fun provideFavoriteMangaRepository(impl: FavoriteMangaRepositoryImpl): FavoriteMangaRepository
+    abstract fun provideFavoriteMangaDataSource(
+            impl: FavouriteMangaLocalDataSource): FavouriteMangaDataSource
 
-
-
+    @ApplicationScope
+    @Binds
+    abstract fun provideFavoriteMangaRepository(
+            impl: FavoriteMangaRepositoryImpl): FavoriteMangaRepository
 
     @Module
     companion object {
@@ -96,7 +102,7 @@ abstract class RepositoryModule {
         fun provideAppViewModel(application: Context): AppViewModel {
             return AppViewModel(application).apply {
                 Setting = SettingViewModel.loadSetting(application)
-                Logger.d("-=-=","create AppViewModel ")
+                Logger.d("-=-=", "create AppViewModel ")
             }
         }
     }

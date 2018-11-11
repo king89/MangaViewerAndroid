@@ -152,39 +152,6 @@ public class SettingViewModel extends ViewModelBase {
         this.mMangaWebSources = mMangaWebSources;
     }
 
-    public boolean checkIsFavourited(@Nullable MangaMenuItem manga) {
-        if (manga == null) return false;
-        return getFavouriteMangaDataSource().checkIsexsit(new FavouriteMangaMenuItem(manga));
-    }
-
-    public boolean addFavouriteManga(MangaMenuItem manga, int chapterCount) {
-        if (checkIsFavourited(manga)) {
-            return false;
-        } else {
-            getFavouriteMangaDataSource().addToFavourite(
-                    new FavouriteMangaMenuItem(manga, chapterCount));
-            return true;
-        }
-
-    }
-
-    public boolean addFavouriteManga(FavouriteMangaMenuItem manga) {
-        return addFavouriteManga(manga, 0);
-    }
-
-    public boolean removeFavouriteManga(MangaMenuItem manga) {
-        if (checkIsFavourited(manga)) {
-            getFavouriteMangaDataSource().removeFromFavourite(new FavouriteMangaMenuItem(manga));
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public List<FavouriteMangaMenuItem> getFavouriteMangaList() {
-        return getFavouriteMangaDataSource().getAllFavouriteMangaMenu(getMangaWebSources());
-    }
-
     public MangaWebSource getSelectedWebSource() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         String id = sp.getString(context.getString(R.string.pref_key_manga_sources), null);
@@ -244,11 +211,4 @@ public class SettingViewModel extends ViewModelBase {
         }
     }
 
-    public int getUpdatedFavouriteMangaCount() {
-        return mUpdatedFavouriteMangaCount;
-    }
-
-    public void setUpdatedFavouriteMangaCount(int updatedFavouriteMangaCount) {
-        this.mUpdatedFavouriteMangaCount = updatedFavouriteMangaCount;
-    }
 }

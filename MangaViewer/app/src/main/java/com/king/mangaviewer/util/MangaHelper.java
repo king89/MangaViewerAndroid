@@ -137,7 +137,7 @@ public class MangaHelper {
         if (tauList != null) {
             for (int i = 0; i < tauList.size(); i++) {
                 list.add(new MangaChapterItem("Chapter-" + i, tauList.get(i)
-                        .getTitle(), null, tauList.get(i).getImagePath(),
+                        .getTitle(), "", tauList.get(i).getImagePath(),
                         tauList.get(i).getUrl(), menu));
             }
         }
@@ -156,7 +156,7 @@ public class MangaHelper {
         if (pageUrlList != null) {
             for (int i = 0; i < pageUrlList.size(); i++) {
                 mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
-                        .getTitle(), null, pageUrlList.get(i).getImagePath(),
+                        .getTitle(), "", pageUrlList.get(i).getImagePath(),
                         pageUrlList.get(i).getUrl(),
                         getSettingViewModel().getSelectedWebSource()));
             }
@@ -173,7 +173,7 @@ public class MangaHelper {
         if (pageUrlList != null) {
             for (int i = 0; i < pageUrlList.size(); i++) {
                 mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
-                        .getTitle(), null, pageUrlList.get(i).getImagePath(),
+                        .getTitle(), "", pageUrlList.get(i).getImagePath(),
                         pageUrlList.get(i).getUrl(),
                         getSettingViewModel().getSelectedWebSource()));
             }
@@ -190,7 +190,7 @@ public class MangaHelper {
         if (pageUrlList != null) {
             for (int i = 0; i < pageUrlList.size(); i++) {
                 mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
-                        .getTitle(), null, pageUrlList.get(i).getImagePath(),
+                        .getTitle(), "", pageUrlList.get(i).getImagePath(),
                         pageUrlList.get(i).getUrl(),
                         getSettingViewModel().getSelectedWebSource()));
             }

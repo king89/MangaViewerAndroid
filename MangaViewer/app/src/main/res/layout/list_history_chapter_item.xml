@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.king.mangaviewer.component.MyImageView
+        <ImageView
             android:id="@+id/imageView"
             android:layout_width="80dp"
             android:layout_height="110dp"

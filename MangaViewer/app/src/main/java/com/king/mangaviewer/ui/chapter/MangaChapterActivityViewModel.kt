@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseActivityViewModel
 import com.king.mangaviewer.domain.data.AppRepository
-import com.king.mangaviewer.domain.data.MangaRepository
+import com.king.mangaviewer.domain.data.HistoryMangaRepository
 import com.king.mangaviewer.domain.usecase.AddToFavoriteUseCase
 import com.king.mangaviewer.domain.usecase.GetChapterListUseCase
 import com.king.mangaviewer.domain.usecase.GetFavoriteStateUseCase
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 class MangaChapterActivityViewModel @Inject constructor(
         private val appRepository: AppRepository,
-        private val mangaRepository: MangaRepository,
+        private val mangaRepository: HistoryMangaRepository,
         private val getChapterListUseCase: GetChapterListUseCase,
         private val getReadChapterUseCase: GetReadChapterUseCase,
         private val selectMangaChapterUseCase: SelectMangaChapterUseCase,
@@ -121,6 +121,8 @@ class MangaChapterActivityViewModel @Inject constructor(
 
     fun selectChapter(chapter: MangaChapterItem) {
         selectMangaChapterUseCase.execute(chapter)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({},
                         { Logger.e(TAG, it) })
                 .apply { disposable.add(this) }

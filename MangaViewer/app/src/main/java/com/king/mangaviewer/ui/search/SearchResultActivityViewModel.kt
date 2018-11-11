@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseActivityViewModel
 import com.king.mangaviewer.domain.data.AppRepository
-import com.king.mangaviewer.domain.data.MangaRepository
+import com.king.mangaviewer.domain.data.HistoryMangaRepository
 import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider
 import com.king.mangaviewer.domain.usecase.SearchMangaMenuUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaMenuUseCase
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class SearchResultActivityViewModel @Inject constructor(
         private val AppRepository: AppRepository,
-        private val MangaRepository: MangaRepository,
+        private val MangaRepository: HistoryMangaRepository,
         private val selectMangaMenuUseCase: SelectMangaMenuUseCase,
         private val searchMangaMenuUseCase: SearchMangaMenuUseCase
 ) :
