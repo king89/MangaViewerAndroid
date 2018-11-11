@@ -9,7 +9,6 @@ import android.view.Menu
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.Toast
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.OnItemClickListener

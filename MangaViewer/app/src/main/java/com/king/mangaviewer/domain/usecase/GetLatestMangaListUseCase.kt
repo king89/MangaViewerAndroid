@@ -16,7 +16,8 @@ class GetLatestMangaListUseCase @Inject constructor(private val appViewModel: Ap
         return Observable.create {
             it.onNext(listOf())
             var mangaList: ArrayList<MangaMenuItem>? = null
-            val mPattern = ProviderFactory.getPattern(appViewModel.Setting.selectedWebSource)
+            val source = appViewModel.Setting.selectedWebSource
+            val mPattern = ProviderFactory.getPattern(source)
             val pageUrlList = mPattern!!.getLatestMangaList(state)
             if (mangaList == null) {
                 mangaList = ArrayList()
@@ -26,7 +27,7 @@ class GetLatestMangaListUseCase @Inject constructor(private val appViewModel: Ap
                     mangaList.add(MangaMenuItem("Menu-$i", pageUrlList[i]
                             .title, "", pageUrlList[i].imagePath,
                             pageUrlList[i].url,
-                            appViewModel.Setting.selectedWebSource))
+                            source))
                 }
             }
             it.onNext(mangaList)

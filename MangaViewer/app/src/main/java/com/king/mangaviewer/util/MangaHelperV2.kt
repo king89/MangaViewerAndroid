@@ -65,4 +65,13 @@ object MangaHelperV2 {
         }
         return mangaPageList
     }
+
+    @WorkerThread
+    fun getWebImageUrl(page: MangaPageItem): String {
+        val mPattern = ProviderFactory.getPattern(page.mangaWebSource)
+        page.webImageUrl = mPattern!!.getImageUrl(page.url,
+                page.nowNum)
+        return page.webImageUrl
+
+    }
 }

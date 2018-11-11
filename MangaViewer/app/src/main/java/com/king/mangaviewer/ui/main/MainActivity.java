@@ -52,6 +52,9 @@ public class MainActivity extends BaseActivity {
 
     private static final long DELAYTIME = 5000;
     private static final String STATE_KEY_POSITION = "state_key_position";
+    private final int FAVOURITE_POS = 0;
+    private final int ALL_POS = 1;
+
     CharSequence mTitle;
     CharSequence mDrawerTitle;
     private DrawerLayout mDrawerLayout;
@@ -77,7 +80,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initDrawer(savedInstanceState);
     }
 
@@ -88,7 +90,7 @@ public class MainActivity extends BaseActivity {
         if (intent.getBooleanExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false)) {
             intent.putExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false);
 //            displayView(getResources().getInteger(R.integer.menu_favourite_pos));
-            mViewPager.setCurrentItem(0);
+            mViewPager.setCurrentItem(FAVOURITE_POS);
         }
     }
 
@@ -173,7 +175,7 @@ public class MainActivity extends BaseActivity {
             // on first time display view for first nav item
             if (getIntent().getBooleanExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false)) {
                 getIntent().putExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false);
-                mViewPager.setCurrentItem(2);
+                mViewPager.setCurrentItem(ALL_POS);
             } else {
                 //
             }
@@ -301,7 +303,7 @@ public class MainActivity extends BaseActivity {
         mViewPagerAdapter.addFragment(new HistoryFragment(), getString(R.string.nav_history));
         mViewPagerAdapter.addFragment(new LocalFragment(), getString(R.string.nav_local));
         viewPager.setAdapter(mViewPagerAdapter);
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(ALL_POS);
     }
 
     @Override

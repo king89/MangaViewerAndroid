@@ -1,5 +1,6 @@
 package com.king.mangaviewer.ui.page
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.os.Message
 import android.support.v7.widget.SwitchCompat
@@ -19,17 +20,25 @@ import android.widget.Toast
 import com.king.mangaviewer.R
 import com.king.mangaviewer.R.string
 import com.king.mangaviewer.base.BaseActivity
+import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.ui.page.fragment.ReaderFragment
 import com.king.mangaviewer.ui.page.fragment.RtlViewPagerReaderFragment
 import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment
 import com.king.mangaviewer.component.HasFullScreenControl
 import com.king.mangaviewer.component.ReaderListener
+import com.king.mangaviewer.di.annotation.ActivityScopedFactory
+import com.king.mangaviewer.model.LoadingState.Idle
+import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.model.MangaUri
+import com.king.mangaviewer.ui.chapter.MangaChapterActivityViewModel
+import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.ErrorMessage.NoNextChapter
+import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.ErrorMessage.NoPrevChapter
 import com.king.mangaviewer.util.GsonHelper
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.MangaHelperV2
+import com.king.mangaviewer.util.withViewModel
 import com.king.mangaviewer.viewmodel.MangaViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
 import io.reactivex.Observable
@@ -40,10 +49,15 @@ import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_manga_page_v2.progressBar
 import java.util.concurrent.TimeUnit.MILLISECONDS
+import javax.inject.Inject
 
 class MangaPageActivityV2 : BaseActivity(),
         HasFullScreenControl,
         ReaderListener {
+    @Inject
+    @field:ActivityScopedFactory
+    lateinit var activityScopedFactory: ViewModelFactory
+    lateinit var viewModel: MangaPageActivityV2ViewModel
 
     override var isFullScreen: Boolean = false
 
@@ -150,107 +164,57 @@ class MangaPageActivityV2 : BaseActivity(),
             }
         })
 
-        loadPages()
+        initViewModel()
 
     }
 
-    //TODO should move to use case
-    private fun getChapterList(menu: MangaMenuItem): Single<List<MangaChapterItem>> {
-        val observable = if (mMangaViewModel.mangaChapterList == null) {
-            Single.fromCallable {
-                mangaHelper.getChapterList(menu)
-            }
-        } else {
-            Single.just(mMangaViewModel.mangaChapterList)
+    private fun initViewModel() {
+        withViewModel<MangaPageActivityV2ViewModel>(activityScopedFactory) {
+            viewModel = this
+
+            loadingState.observe(this@MangaPageActivityV2, Observer {
+                when (it) {
+                    Loading -> showLoading()
+                    Idle -> hideLoading()
+                }
+            })
+
+            errorMessage.observe(this@MangaPageActivityV2, Observer {
+                when (it!!) {
+                    NoPrevChapter ->
+                        showErrorMessage(resources.getString(string.no_more_prev_chapter))
+                    NoNextChapter ->
+                        showErrorMessage(resources.getString(string.no_more_next_chapter))
+                    else -> {
+                    }
+                }
+            })
+
+            selectedChapterName.observe(this@MangaPageActivityV2, Observer {
+                supportActionBar!!.title = it
+            })
+
+            dataList.observe(this@MangaPageActivityV2, Observer {
+                setupReader(it!!)
+            })
+
+            attachToView()
         }
-        return observable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { showLoading() }
-                .doAfterTerminate { hideLoading() }
+    }
+
+    private fun showErrorMessage(s: String) {
+        Toast.makeText(this, s,
+                Toast.LENGTH_SHORT)
+                .apply { setGravity(Gravity.CENTER, 0, 0) }
+                .show()
     }
 
     override fun prevChapter() {
-        //prev chapter, pos len(list) is the oldest chapter
-
-        val menu = mMangaViewModel.selectedMangaChapterItem.menu
-        getChapterList(menu)
-                .subscribe({
-                    mMangaViewModel.mangaChapterList = it
-
-                    val chapterList = mMangaViewModel.mangaChapterList
-                    val currentChapter = mMangaViewModel.selectedMangaChapterItem
-
-                    val pos = chapterList.indexOf(currentChapter)
-                    if (pos + 1 < chapterList.size) {
-                        mMangaViewModel.selectedMangaChapterItem = chapterList[pos + 1]
-                        loadPages()
-                    } else {
-                        Toast.makeText(this, resources.getString(string.no_more_prev_chapter),
-                                Toast.LENGTH_SHORT)
-                                .apply { setGravity(Gravity.CENTER, 0, 0) }
-                                .show()
-                    }
-                }, {
-                    Logger.e(TAG, it, "get chapter list error")
-                })
-                .apply { compositeDisposable.add(this) }
-
+        viewModel.prevChapter()
     }
 
     override fun nextChapter() {
-        //next chapter, pos 0 is the latest chapter
-        val menu = mMangaViewModel.selectedMangaChapterItem.menu
-        getChapterList(menu)
-                .subscribe({
-                    mMangaViewModel.mangaChapterList = it
-
-                    val chapterList = mMangaViewModel.mangaChapterList
-                    val currentChapter = mMangaViewModel.selectedMangaChapterItem
-
-                    val pos = chapterList.indexOf(currentChapter)
-                    if (pos - 1 >= 0) {
-                        mMangaViewModel.selectedMangaChapterItem = chapterList[pos - 1]
-                        loadPages()
-                    } else {
-                        Toast.makeText(this, resources.getString(string.no_more_next_chapter),
-                                Toast.LENGTH_SHORT)
-                                .apply { setGravity(Gravity.CENTER, 0, 0) }
-                                .show()
-                    }
-                }, {
-                    Logger.e(TAG, it, "get chapter list error")
-                })
-                .apply { compositeDisposable.add(this) }
-    }
-
-    private fun loadPages() {
-        Observable.fromCallable {
-            MangaHelperV2.getPageList(mangaViewModel.selectedMangaChapterItem)
-        }
-                .subscribeOn(Schedulers.io())
-                .flatMapIterable {
-                    it
-                }
-                .map {
-                    it.apply {
-                        webImageUrl = mangaHelper.getWebImageUrl(it)
-                    }
-                    MangaUri(it.webImageUrl, it.referUrl)
-                }
-                .toList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    showLoading()
-                }
-                .doAfterTerminate {
-                    hideLoading()
-                }
-                .subscribe { it ->
-                    setupReader(it)
-                    update(null)
-                }
-                .apply { compositeDisposable.add(this) }
+        viewModel.nextChapter()
     }
 
     fun syncTextView() {
@@ -290,14 +254,6 @@ class MangaPageActivityV2 : BaseActivity(),
 
     override fun onPageChanged(currentPage: Int) {
         syncControlPanel()
-    }
-
-    override fun update(msg: Message?) {
-        this.supportActionBar!!.title = actionBarTitle
-        //add to history
-        this.appViewModel.HistoryManga.addChapterItemToHistory(
-                mMangaViewModel.selectedMangaChapterItem)
-
     }
 
     override fun goBack() {

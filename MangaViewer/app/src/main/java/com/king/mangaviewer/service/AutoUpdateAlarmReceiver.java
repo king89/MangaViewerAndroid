@@ -49,7 +49,7 @@ public class AutoUpdateAlarmReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         handler = new Handler();
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "");
+        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AutoUpdateAlarmReceiver:");
         //Acquire the lock
         wl.acquire(10*60*1000L /*10 minutes*/);
 

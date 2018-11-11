@@ -7,6 +7,7 @@ import com.king.mangaviewer.ui.chapter.MangaChapterActivity
 import com.king.mangaviewer.ui.chapter.MangaChapterActivityModule
 import com.king.mangaviewer.ui.main.MainActivityModule
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
+import com.king.mangaviewer.ui.page.MangaPageActivityV2Module
 import com.king.mangaviewer.ui.search.SearchResultActivity
 import com.king.mangaviewer.ui.search.SearchResultActivityModule
 import com.king.mangaviewer.ui.setting.SettingsActivity
@@ -25,7 +26,7 @@ abstract class ActivityBindingModule {
     internal abstract fun mangaChapterActivity(): MangaChapterActivity
 
     @ActivityScoped
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = [MangaPageActivityV2Module::class])
     internal abstract fun mangaPageActivityV2(): MangaPageActivityV2
 
     @ActivityScoped
