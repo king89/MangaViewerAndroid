@@ -61,9 +61,9 @@ abstract class RepositoryModule {
         @ApplicationScope
         @Provides
         @JvmStatic
-        fun provideDb(context: Application): MangaDataBase {
+        fun provideDb(context: Context): MangaDataBase {
             return Room.databaseBuilder(
-                    context.applicationContext,
+                    context,
                     MangaDataBase::class.java,
                     "manga.db")
                     .fallbackToDestructiveMigration()

@@ -12,6 +12,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
@@ -87,8 +88,8 @@ public class MainActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         //Log.i("MainActivity", "OnNewIntent");
-        if (intent.getBooleanExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false)) {
-            intent.putExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false);
+        if (intent.getBooleanExtra(AutoUpdateAlarmReceiver.Companion.getAUTO_UPDATE_SERVICE(), false)) {
+            intent.putExtra(AutoUpdateAlarmReceiver.Companion.getAUTO_UPDATE_SERVICE(), false);
 //            displayView(getResources().getInteger(R.integer.menu_favourite_pos));
             mViewPager.setCurrentItem(FAVOURITE_POS);
         }
@@ -173,8 +174,9 @@ public class MainActivity extends BaseActivity {
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
-            if (getIntent().getBooleanExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false)) {
-                getIntent().putExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false);
+            if (getIntent().getBooleanExtra(
+                    AutoUpdateAlarmReceiver.Companion.getAUTO_UPDATE_SERVICE(), false)) {
+                getIntent().putExtra(AutoUpdateAlarmReceiver.Companion.getAUTO_UPDATE_SERVICE(), false);
                 mViewPager.setCurrentItem(ALL_POS);
             } else {
                 //
@@ -294,7 +296,7 @@ public class MainActivity extends BaseActivity {
         mTwoTapToExit = 0;
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(final ViewPager viewPager) {
         mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         mViewPagerAdapter.addFragment(new FavouriteFragment(), getString(R.string.nav_favourite));
@@ -332,7 +334,7 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 

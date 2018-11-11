@@ -49,6 +49,7 @@ class FavouriteFragment : BaseFragment() {
         viewModel.refresh(true)
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu!!.clear()
         super.onCreateOptionsMenu(menu, inflater)

@@ -66,18 +66,20 @@ class MangaChapterActivityViewModel @Inject constructor(
     }
 
     fun updateHistoryChapter() {
-        getReadChapterUseCase.execute()
-                .map {
-                    Pair(mChapterPair.value?.first ?: emptyList(), it)
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mChapterPair.value = it
-                }, {
-                    Logger.e(TAG, it)
-                })
-                .apply { disposable.add(this) }
+        if (mChapterPair.value!!.first.isNotEmpty()) {
+            getReadChapterUseCase.execute()
+                    .map {
+                        Pair(mChapterPair.value?.first!!, it)
+                    }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        mChapterPair.value = it
+                    }, {
+                        Logger.e(TAG, it)
+                    })
+                    .apply { disposable.add(this) }
+        }
     }
 
     fun addToFavorite() {

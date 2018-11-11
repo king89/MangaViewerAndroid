@@ -17,6 +17,7 @@ import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.MangaHelper
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -56,12 +57,17 @@ open class MangaMenuItemAdapter(private val listener: OnItemClickListener? = nul
                 val item = mDataList[position]
                 Single.fromCallable {
                     val url = MangaHelper.getMenuCover(item)
+                    if (url.isNullOrEmpty()) return@fromCallable Any()
                     val header = LazyHeaders.Builder().addHeader("Referer", item.url).build()
                     GlideUrl(url, header)
                 }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ it: GlideUrl ->
+                        .subscribe({ it: Any ->
+                            (it as? GlideUrl) ?: apply {
+                                holder.imageView.setImageResource(R.color.manga_place_holder)
+                                return@subscribe
+                            }
                             GlideApp.with(holder.imageView)
                                     .load(it)
                                     .override(320, 320)
