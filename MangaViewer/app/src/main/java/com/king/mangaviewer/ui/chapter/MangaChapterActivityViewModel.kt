@@ -38,7 +38,7 @@ class MangaChapterActivityViewModel @Inject constructor(
     val favouriteState = mFavouriteState
 
     init {
-        mChapterPair.value = Pair(listOf(), listOf())
+        mChapterPair.value = Pair(emptyList(), emptyList())
     }
 
     override fun attachToView() {
@@ -49,7 +49,7 @@ class MangaChapterActivityViewModel @Inject constructor(
     fun getChapterList() {
         getChapterListUseCase.execute()
                 .map {
-                    val readList = getReadChapterUseCase.execute().blockingGet()
+                    val readList = getReadChapterUseCase.execute().blockingLast()
                     Pair(it, readList)
                 }
                 .subscribeOn(Schedulers.io())
@@ -82,7 +82,7 @@ class MangaChapterActivityViewModel @Inject constructor(
 
     fun addToFavorite() {
         val menu = appRepository.appViewModel.Manga.selectedMangaMenuItem
-        addToFavoriteUseCase.execute(menu)
+        addToFavoriteUseCase.execute(menu, mChapterPair.value?.first?.size ?: 0)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

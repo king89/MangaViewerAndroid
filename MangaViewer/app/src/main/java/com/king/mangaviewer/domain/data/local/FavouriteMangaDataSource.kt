@@ -60,7 +60,7 @@ class FavouriteMangaLocalDataSource @Inject constructor(
         return this.let {
             val mangaSource = appViewModel.Setting.mangaWebSources.firstOrNull { source ->
                 source.id == manga_websource_id
-            }
+            }!!
             val item = MangaMenuItem(hash, title, description, imagePath, url, mangaSource)
             FavouriteMangaMenuItem.createFavouriteMangaMenuItem(item, favourite_date, updated_date,
                     chapter_count, update_count)

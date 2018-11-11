@@ -33,6 +33,9 @@ class HistoryMangaLocalDataSource @Inject constructor(
                 .flatMapIterable { it }
                 .map {
                     it.toHistoryChapterItem()
+                }.filter {
+                    menu ?: return@filter true
+                    menu.hash == it.menu.hash
                 }
                 .toList()
     }

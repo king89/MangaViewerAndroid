@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import android.support.annotation.Nullable;
+import com.king.mangaviewer.util.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
@@ -30,6 +31,7 @@ import java.util.List;
 
 public class SettingViewModel extends ViewModelBase {
 
+    private MangaWebSource DEFAULT_WEB_SOURCE;
     private MangaWebSource mSelectedWebSource;
     private List<MangaWebSource> mMangaWebSources;
     private HashMap<String, FavouriteMangaMenuItem> mFavouriteMangaList;
@@ -150,15 +152,18 @@ public class SettingViewModel extends ViewModelBase {
 
     public void setMangaWebSources(List<MangaWebSource> mMangaWebSources) {
         this.mMangaWebSources = mMangaWebSources;
+        DEFAULT_WEB_SOURCE = mMangaWebSources.get(0);
     }
 
+    //TODO need to fix
     public MangaWebSource getSelectedWebSource() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         String id = sp.getString(context.getString(R.string.pref_key_manga_sources), null);
         if (id == null) {
-            id = getMangaWebSources().get(0).getId() + "";
+            mSelectedWebSource = DEFAULT_WEB_SOURCE;
+        } else {
+            setSelectedWebSource(Integer.parseInt(id), context);
         }
-        setSelectedWebSource(Integer.parseInt(id), context);
         return mSelectedWebSource;
     }
 
@@ -179,7 +184,7 @@ public class SettingViewModel extends ViewModelBase {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(context.getString(R.string.pref_key_manga_sources),
                 mSelectedWebSource.getId() + "");
-        editor.commit();
+        editor.apply();
     }
 
     public void setSelectedWebSource(int id, Context context) {

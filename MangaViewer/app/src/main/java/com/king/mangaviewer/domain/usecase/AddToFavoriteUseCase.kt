@@ -14,7 +14,6 @@ class AddToFavoriteUseCase @Inject constructor(
     @SuppressLint("CheckResult")
     fun execute(menu: MangaMenuItem, chapterCount: Int = 0): Completable {
         return favouriteMangaRepository.addFavouriteManga(menu, chapterCount)
-
     }
 
     companion object {

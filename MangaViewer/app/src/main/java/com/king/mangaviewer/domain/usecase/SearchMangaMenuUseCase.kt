@@ -19,7 +19,7 @@ class SearchMangaMenuUseCase @Inject constructor(private val appViewModel: AppVi
             if (pageUrlList != null) {
                 for (i in pageUrlList.indices) {
                     mangaList.add(MangaMenuItem("Menu-$i", pageUrlList[i]
-                            .title, null, pageUrlList[i].imagePath,
+                            .title, "", pageUrlList[i].imagePath,
                             pageUrlList[i].url,
                             appViewModel.Setting.selectedWebSource))
                 }
