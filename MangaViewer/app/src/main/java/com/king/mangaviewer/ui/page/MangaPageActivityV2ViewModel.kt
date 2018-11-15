@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseActivityViewModel
 import com.king.mangaviewer.base.ErrorMessage
 import com.king.mangaviewer.base.ErrorMessage.GenericError
+import com.king.mangaviewer.base.ErrorMessage.NoError
 import com.king.mangaviewer.base.ErrorMessage.ViewModelError
 import com.king.mangaviewer.domain.data.AppRepository
 import com.king.mangaviewer.domain.usecase.GetChapterListUseCase
@@ -14,7 +15,6 @@ import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.model.MangaUri
-import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoError
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoNextChapter
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoPrevChapter
 import com.king.mangaviewer.util.Logger
@@ -120,7 +120,6 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     }
 
     sealed class SubError : ViewModelError(){
-        object NoError : SubError()
         object NoNextChapter : SubError()
         object NoPrevChapter : SubError()
     }

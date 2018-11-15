@@ -17,6 +17,8 @@ import com.king.mangaviewer.domain.data.local.FavouriteMangaDataSource
 import com.king.mangaviewer.domain.data.local.FavouriteMangaLocalDataSource
 import com.king.mangaviewer.domain.data.local.HistoryMangaDataSource
 import com.king.mangaviewer.domain.data.local.HistoryMangaLocalDataSource
+import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
+import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactoryImpl
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.viewmodel.AppViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
@@ -31,6 +33,9 @@ Can add this class in different flavor
  */
 @Module
 abstract class RepositoryModule {
+    @ApplicationScope
+    @Binds
+    abstract fun provideMangaProviderFactory(impl: ProviderFactoryImpl): ProviderFactory
 
     @ApplicationScope
     @Binds

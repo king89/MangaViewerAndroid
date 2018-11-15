@@ -9,15 +9,17 @@ import java.util.ArrayList
 import java.util.HashMap
 import javax.inject.Inject
 
-class GetLatestMangaListUseCase @Inject constructor(private val appViewModel: AppViewModel) {
+class GetLatestMangaListUseCase @Inject constructor(
+        private val appViewModel: AppViewModel,
+        private val providerFactory: ProviderFactory
+) {
     @SuppressLint("CheckResult")
     fun execute(): Observable<List<MangaMenuItem>> {
         val state: HashMap<String, Any> = HashMap()
         return Observable.create {
-            it.onNext(listOf())
             var mangaList: ArrayList<MangaMenuItem>? = null
             val source = appViewModel.Setting.selectedWebSource
-            val mPattern = ProviderFactory.getPattern(source)
+            val mPattern = providerFactory.getPattern(source)
             val pageUrlList = mPattern!!.getLatestMangaList(state)
             if (mangaList == null) {
                 mangaList = ArrayList()

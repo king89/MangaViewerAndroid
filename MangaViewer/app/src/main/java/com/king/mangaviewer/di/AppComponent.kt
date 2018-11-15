@@ -4,6 +4,7 @@ import android.app.Application
 import com.king.mangaviewer.MyApplication
 import com.king.mangaviewer.di.annotation.ApplicationScope
 import com.king.mangaviewer.domain.data.AppRepository
+import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
@@ -32,6 +33,8 @@ interface AppComponent : AndroidInjector<MyApplication> {
     }
 
     fun okhttpClient(): OkHttpClient
+
+    fun providerFactory(): ProviderFactory
 
     fun appRepository(): AppRepository
 }

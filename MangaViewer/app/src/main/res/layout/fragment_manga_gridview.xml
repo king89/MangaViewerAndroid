@@ -1,67 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    >
 
-    <LinearLayout
+
+  <TextView
+      android:id="@+id/manga_source_textView"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:background="@color/red_over_lay"
+      android:gravity="center_horizontal"
+      android:paddingBottom="2dp"
+      android:paddingTop="2dp"
+      android:text="Small Text"
+      android:textAlignment="center"
+      android:textAppearance="?android:attr/textAppearanceSmall"
+      android:textColor="#ffffff"
+      app:layout_constraintBottom_toTopOf="@+id/swipeRefreshLayout"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      />
+
+  <android.support.v4.widget.SwipeRefreshLayout
+      android:id="@+id/swipeRefreshLayout"
+      android:layout_width="wrap_content"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="@+id/manga_source_textView"
+      app:layout_constraintTop_toBottomOf="@+id/manga_source_textView"
+      >
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/manga_source_textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/red_over_lay"
-            android:gravity="center_horizontal"
-            android:paddingBottom="2dp"
-            android:paddingTop="2dp"
-            android:text="Small Text"
-            android:textAlignment="center"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#ffffff"/>
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.king.mangaviewer.component.MangaGridView
-                android:id="@+id/gridView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                style="@style/MangaGridView"
-                android:scrollbarStyle="outsideOverlay"
-                android:scrollbars="vertical"
-                android:smoothScrollbar="true"
-                tools:listitem="@layout/list_manga_menu_item">
-
-            </com.king.mangaviewer.component.MangaGridView>
-        </android.support.v4.widget.SwipeRefreshLayout>
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_weight="0"
-        android:background="@color/colorPrimary"
-        android:orientation="horizontal"
-        android:visibility="gone"
         >
+      <com.king.mangaviewer.component.MangaGridView
+          android:id="@+id/gridView"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:scrollbarStyle="outsideOverlay"
+          android:scrollbars="vertical"
+          android:smoothScrollbar="true"
+          tools:listitem="@layout/list_manga_menu_item"
+          style="@style/MangaGridView"
+          >
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true"
-            android:text="@string/msg_loading"
-            android:textAlignment="center"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#fff"
-            />
-    </RelativeLayout>
-</RelativeLayout>
+      </com.king.mangaviewer.component.MangaGridView>
+
+      <include
+          layout="@layout/layout_error_retry"
+          android:id="@+id/layout_error"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:visibility="gone"
+          tools:visibility="visible"
+          />
+    </FrameLayout>
+  </android.support.v4.widget.SwipeRefreshLayout>
+
+</android.support.constraint.ConstraintLayout>

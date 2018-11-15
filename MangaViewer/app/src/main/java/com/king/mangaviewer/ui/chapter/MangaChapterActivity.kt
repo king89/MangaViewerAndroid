@@ -24,7 +24,7 @@ import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
-import com.king.mangaviewer.util.MangaHelper
+import com.king.mangaviewer.util.MangaHelperV2
 import com.king.mangaviewer.util.withViewModel
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -149,7 +149,7 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
     private fun loadChapterCover() {
         //get the first page image in the latest dataList
         Single.fromCallable {
-            MangaHelper.getMenuCover(mangaViewModel.selectedMangaMenuItem)
+            MangaHelperV2.getMenuCover(mangaViewModel.selectedMangaMenuItem)
         }
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe {

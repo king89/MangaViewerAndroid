@@ -2,12 +2,9 @@ package com.king.mangaviewer.util.imagemanager;
 
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-
-import com.king.mangaviewer.MyApplication;
 import com.king.mangaviewer.model.MangaMenuItem;
-import com.king.mangaviewer.util.MangaHelper;
+import com.king.mangaviewer.util.MangaHelperV2;
 import com.king.mangaviewer.util.NetworkHelper;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
@@ -16,6 +13,7 @@ import java.net.MalformedURLException;
 /**
  * Created by KinG on 3/8/2016.
  */
+@Deprecated
 public class PhotoDownloadRunnable implements Runnable {
 
     // Sets a tag for this class
@@ -65,7 +63,7 @@ public class PhotoDownloadRunnable implements Runnable {
             }
             try {
 
-                String url = new MangaHelper(MyApplication.getContext()).getMenuCover(mPhotoTask.getMangaMenuItem());
+                String url = MangaHelperV2.INSTANCE.getMenuCover(mPhotoTask.getMangaMenuItem());
 
                 if (Thread.interrupted()) {
                     throw new InterruptedException();

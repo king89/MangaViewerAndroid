@@ -29,12 +29,14 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+@Deprecated
 public class MangaHelper {
     String menuHtml = "";
     private Context context;
-
+    private ProviderFactory providerFactory;
     public MangaHelper(Context context) {
         this.context = context;
+        providerFactory = MyApplication.INSTANCE.component.providerFactory();
         // WebType = setting;
     }
 
@@ -44,7 +46,7 @@ public class MangaHelper {
 
     private String getMenuHtml(MangaProvider pattern) {
         if (menuHtml.equalsIgnoreCase("")) {
-            return pattern.getHtml(pattern.WEBSITE_URL);
+            return pattern.getHtml(pattern.getWEBSITE_URL());
         } else {
             return menuHtml;
         }
@@ -53,7 +55,7 @@ public class MangaHelper {
 
     /* Page */
     public String getWebImageUrl(MangaPageItem page) {
-        MangaProvider mPattern = ProviderFactory.getPattern(page.getMangaWebSource());
+        MangaProvider mPattern = providerFactory.getPattern(page.getMangaWebSource());
         page.setWebImageUrl(mPattern.getImageUrl(page.getUrl(),
                 page.getNowNum()));
         return page.getWebImageUrl();
@@ -61,7 +63,7 @@ public class MangaHelper {
     }
 
     public List<MangaPageItem> GetPageList(MangaChapterItem chapter) {
-        MangaProvider mPattern = ProviderFactory.getPattern(chapter.getMangaWebSource());
+        MangaProvider mPattern = providerFactory.getPattern(chapter.getMangaWebSource());
         List<String> pageUrlList = mPattern.getPageList(chapter.getUrl());
         List<MangaPageItem> mangaPageList = new ArrayList<MangaPageItem>();
         if (pageUrlList != null) {
@@ -92,7 +94,7 @@ public class MangaHelper {
             }
         } else {
             //get pre page image file path, if exist just use it, if not : download
-            final MangaProvider mPattern = ProviderFactory.getPattern(page.getMangaWebSource());
+            final MangaProvider mPattern = providerFactory.getPattern(page.getMangaWebSource());
 
             if (!page.getWebImageUrl().isEmpty()) {
                 final String imageUrl = mPattern.getPrePageImageFilePath(page.getWebImageUrl(),
@@ -130,7 +132,7 @@ public class MangaHelper {
 
     /* Chapter */
     public List<MangaChapterItem> getChapterList(MangaMenuItem menu) {
-        MangaProvider mPattern = ProviderFactory.getPattern(menu.getMangaWebSource());
+        MangaProvider mPattern = providerFactory.getPattern(menu.getMangaWebSource());
 
         List<TitleAndUrl> tauList = mPattern.getChapterList(menu.getUrl());
         List<MangaChapterItem> list = new ArrayList<MangaChapterItem>();
@@ -147,7 +149,7 @@ public class MangaHelper {
     /* Menu */
     public List<MangaMenuItem> getLatestMangeList(List<MangaMenuItem> mangaList,
             HashMap<String, Object> state) {
-        MangaProvider mPattern = ProviderFactory.getPattern(
+        MangaProvider mPattern = providerFactory.getPattern(
                 getSettingViewModel().getSelectedWebSource());
         List<TitleAndUrl> pageUrlList = mPattern.getLatestMangaList(state);
         if (mangaList == null) {
@@ -166,7 +168,7 @@ public class MangaHelper {
 
     public List<MangaMenuItem> getAllManga(List<MangaMenuItem> mangaList,
             HashMap<String, Object> state) {
-        MangaProvider mPattern = ProviderFactory.getPattern(
+        MangaProvider mPattern = providerFactory.getPattern(
                 getSettingViewModel().getSelectedWebSource());
 
         List<TitleAndUrl> pageUrlList = mPattern.getAllMangaList(state);
@@ -184,7 +186,7 @@ public class MangaHelper {
     /* Search */
     public List<MangaMenuItem> getSearchMangeList(List<MangaMenuItem> mangaList,
             HashMap<String, Object> state) {
-        MangaProvider mPattern = ProviderFactory.getPattern(
+        MangaProvider mPattern = providerFactory.getPattern(
                 getSettingViewModel().getSelectedWebSource());
         List<TitleAndUrl> pageUrlList = mPattern.getSearchingList(state);
         if (pageUrlList != null) {
@@ -202,12 +204,5 @@ public class MangaHelper {
         public void imageLoaded(Drawable imageDrawable, ImageView imageView, String imageUrl);
     }
 
-    @WorkerThread
-    public static String getMenuCover(MangaMenuItem menu) {
-        MangaProvider mPattern = ProviderFactory.getPattern(menu.getMangaWebSource());
-        if (menu != null && menu.getImagePath() != null && menu.getImagePath().isEmpty()) {
-            menu.setImagePath(mPattern.getMenuCover(menu));
-        }
-        return menu.getImagePath();
-    }
+
 }

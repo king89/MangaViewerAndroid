@@ -21,11 +21,11 @@ public class WebMangaFox extends MangaProvider {
     private static String LOG_TAG = "WebMangaFox";
 
     public WebMangaFox() {
-        WEBSITE_URL = "http://mangafox.me/";
-        WEB_LATEST_MANGA_BASE_URL = "http://mangafox.me/";
-        WEB_SEARCH_URL = "http://mangafox.me/search.php?name_method=cw&name=%s&page=%d%s";
-        WEB_ALL_MANGA_BASE_URL = "http://mangafox.me/directory/%d.htm";
-        CHARSET = "utf8";
+        setWEBSITE_URL("http://mangafox.me/");
+        setLatestMangaUrl("http://mangafox.me/");
+        setWEB_SEARCH_URL("http://mangafox.me/search.php?name_method=cw&name=%s&page=%d%s");
+        setWEB_ALL_MANGA_BASE_URL("http://mangafox.me/directory/%d.htm");
+        setCHARSET("utf8");
     }
 
     //Menu
@@ -98,7 +98,7 @@ public class WebMangaFox extends MangaProvider {
 
     @Override
     protected String getSearchUrl(String queryText, int pageNum) {
-        return String.format(WEB_SEARCH_URL, queryText, pageNum, mRestSearchString);
+        return String.format(getWEB_SEARCH_URL(), queryText, pageNum, mRestSearchString);
     }
 
     //Chapter

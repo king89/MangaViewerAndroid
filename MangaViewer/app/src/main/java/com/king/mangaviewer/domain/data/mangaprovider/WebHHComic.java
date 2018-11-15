@@ -42,11 +42,11 @@ public class WebHHComic extends MangaProvider {
 
     public WebHHComic() {
         // TODO Auto-generated constructor stub
-        WEBSITE_URL = "http://www.hhxiee.cc/";
-        WEB_SEARCH_URL = "http://somanhua.com/?key=%s&pageIndex=%d";
-        WEB_LATEST_MANGA_BASE_URL = "http://www.hhxiee.cc/";
-        WEB_ALL_MANGA_BASE_URL = "http://www.hhxiee.cc/hhabc/";
-        CHARSET = "gb2312";
+        setWEBSITE_URL("http://www.hhxiee.cc/");
+        setWEB_SEARCH_URL("http://somanhua.com/?key=%s&pageIndex=%d");
+        setLatestMangaUrl("http://www.hhxiee.cc/");
+        setWEB_ALL_MANGA_BASE_URL("http://www.hhxiee.cc/hhabc/");
+        setCHARSET("gb2312");
     }
 
     private List<String> Decode(String code, String key, String server) {
@@ -81,12 +81,12 @@ public class WebHHComic extends MangaProvider {
     @Override
     public List<String> getPageList(String firstPageUrl) {
         try {
-            if (firstPageHtml == null) {
-                firstPageHtml = getHtml(firstPageUrl);
+            if (getFirstPageHtml() == null) {
+                setFirstPageHtml(getHtml(firstPageUrl));
             }
             //Get code
             Pattern codeRe = Pattern.compile("(?<=PicListUrl = \")(.+?)(?=\")");
-            Matcher m = codeRe.matcher(firstPageHtml);
+            Matcher m = codeRe.matcher(getFirstPageHtml());
             if (m.find()) {
                 code = m.group(1);
                 key = "tahfcioewrm";
@@ -126,7 +126,7 @@ public class WebHHComic extends MangaProvider {
                 String url = m.group(1);
                 //test has host or not
                 if (url.startsWith("/")) {
-                    url = WEBSITE_URL + url;
+                    url = getWEBSITE_URL() + url;
                 }
                 String title = m.group(2);
                 chapterList.add(new TitleAndUrl(title, url));
@@ -187,11 +187,14 @@ public class WebHHComic extends MangaProvider {
         List<TitleAndUrl> mangaList = new ArrayList<>();
         double mangaCountEachPage = 24.0f;
 
-        String pageKey = state.containsKey(STATE_PAGE_KEY) ? state.get(STATE_PAGE_KEY).toString() : "a";
-        int pageNum = state.containsKey(STATE_PAGE_NUM_NOW) ? (int) state.get(STATE_PAGE_NUM_NOW) : 1;
-        int totalPageNumThisKey = state.containsKey(STATE_TOTAL_PAGE_NUM_THIS_KEY) ?
-                (int) state.get(STATE_TOTAL_PAGE_NUM_THIS_KEY) : -1;
-        boolean noMore = state.containsKey(STATE_NO_MORE) ? (boolean) state.get(STATE_NO_MORE) : false;
+        String pageKey = state.containsKey(Companion.getSTATE_PAGE_KEY()) ? state.get(
+                Companion.getSTATE_PAGE_KEY()).toString() : "a";
+        int pageNum = state.containsKey(Companion.getSTATE_PAGE_NUM_NOW()) ? (int) state.get(
+                Companion.getSTATE_PAGE_NUM_NOW()) : 1;
+        int totalPageNumThisKey = state.containsKey(Companion.getSTATE_TOTAL_PAGE_NUM_THIS_KEY()) ?
+                (int) state.get(Companion.getSTATE_TOTAL_PAGE_NUM_THIS_KEY()) : -1;
+        boolean noMore = state.containsKey(Companion.getSTATE_NO_MORE()) ? (boolean) state.get(
+                Companion.getSTATE_NO_MORE()) : false;
 
         if (!noMore) {
             //if totalPageNumThisKey == -1 means first time, then just go on
@@ -209,13 +212,13 @@ public class WebHHComic extends MangaProvider {
                 }
             }
 
-            state.put(STATE_NO_MORE, noMore);
-            state.put(STATE_PAGE_KEY, pageKey);
-            state.put(STATE_PAGE_NUM_NOW, pageNum);
+            state.put(Companion.getSTATE_NO_MORE(), noMore);
+            state.put(Companion.getSTATE_PAGE_KEY(), pageKey);
+            state.put(Companion.getSTATE_PAGE_NUM_NOW(), pageNum);
 
             //start get html
             if (!noMore) {
-                String trul = WEB_ALL_MANGA_BASE_URL + pageKey + "/" + pageNum + ".htm";
+                String trul = getWEB_ALL_MANGA_BASE_URL() + pageKey + "/" + pageNum + ".htm";
                 String html = getHtml(trul);
                 if (!html.isEmpty()) {
 
@@ -224,7 +227,7 @@ public class WebHHComic extends MangaProvider {
                     //get total Page num
                     int totalMangaForThisKey = Integer.parseInt(el.select("font").get(0).text());
                     totalPageNumThisKey = (int) Math.ceil(totalMangaForThisKey / mangaCountEachPage);
-                    state.put(STATE_TOTAL_PAGE_NUM_THIS_KEY, totalPageNumThisKey);
+                    state.put(Companion.getSTATE_TOTAL_PAGE_NUM_THIS_KEY(), totalPageNumThisKey);
 
                     //get manga list
                     el = doc.select(".list").get(0);

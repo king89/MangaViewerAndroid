@@ -10,12 +10,10 @@ import android.widget.TextView
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.king.mangaviewer.R
-import com.king.mangaviewer.adapter.MangaMenuItemAdapter.Companion
-import com.king.mangaviewer.component.MyImageView
 import com.king.mangaviewer.di.GlideApp
 import com.king.mangaviewer.model.HistoryMangaChapterItem
 import com.king.mangaviewer.util.Logger
-import com.king.mangaviewer.util.MangaHelper
+import com.king.mangaviewer.util.MangaHelperV2
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -38,7 +36,7 @@ class HistoryChapterItemAdapter(private val context: Context,
 
     override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
         Single.fromCallable {
-            val url = MangaHelper.getMenuCover(mDataList[position].menu)
+            val url = MangaHelperV2.getMenuCover(mDataList[position].menu)
             val header = LazyHeaders.Builder().addHeader("Referer",
                     mDataList[position].menu.url).build()
             GlideUrl(url, header)

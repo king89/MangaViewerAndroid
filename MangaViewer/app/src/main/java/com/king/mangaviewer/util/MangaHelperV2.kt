@@ -1,6 +1,7 @@
 package com.king.mangaviewer.util
 
 import android.support.annotation.WorkerThread
+import com.king.mangaviewer.MyApplication
 import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.model.MangaMenuItem
@@ -10,14 +11,16 @@ import java.util.ArrayList
 import java.util.HashMap
 
 object MangaHelperV2 {
+    private var providerFactory: ProviderFactory = MyApplication.INSTANCE.component.providerFactory()
+
     /* Menu */
     @WorkerThread
     fun getLatestMangeList(mangaList: MutableList<MangaMenuItem>?,
             state: HashMap<String, Any>, mangaWebSource: MangaWebSource): List<MangaMenuItem> {
         var mangaList = mangaList
-        val mPattern = ProviderFactory.getPattern(
+        val mPattern = providerFactory.getPattern(
                 mangaWebSource)
-        val pageUrlList = mPattern!!.getLatestMangaList(state)
+        val pageUrlList = mPattern.getLatestMangaList(state)
         if (mangaList == null) {
             mangaList = ArrayList()
         }
@@ -35,9 +38,9 @@ object MangaHelperV2 {
     /* Chapter */
     @WorkerThread
     fun getChapterList(menu: MangaMenuItem): List<MangaChapterItem> {
-        val mPattern = ProviderFactory.getPattern(menu.mangaWebSource)
+        val mPattern = providerFactory.getPattern(menu.mangaWebSource)
 
-        val tauList = mPattern!!.getChapterList(menu.url)
+        val tauList = mPattern.getChapterList(menu.url)
         val list = ArrayList<MangaChapterItem>()
         if (tauList != null) {
             for (i in tauList.indices) {
@@ -51,27 +54,33 @@ object MangaHelperV2 {
 
     @WorkerThread
     fun getPageList(chapter: MangaChapterItem): List<MangaPageItem> {
-        val mPattern = ProviderFactory.getPattern(chapter.mangaWebSource)
-        val pageUrlList = mPattern!!.getPageList(chapter.url)
+        val mPattern = providerFactory.getPattern(chapter.mangaWebSource)
+        val pageUrlList = mPattern.getPageList(chapter.url)
         val mangaPageList = ArrayList<MangaPageItem>()
-        if (pageUrlList !=
-                null) {
             for (i in pageUrlList.indices) {
                 val item = MangaPageItem("page-$i", "", "", "", pageUrlList[i], chapter, i,
                         pageUrlList.size)
                 item.referUrl = chapter.url
                 mangaPageList.add(item)
             }
-        }
         return mangaPageList
     }
 
     @WorkerThread
     fun getWebImageUrl(page: MangaPageItem): String {
-        val mPattern = ProviderFactory.getPattern(page.mangaWebSource)
-        page.webImageUrl = mPattern!!.getImageUrl(page.url,
+        val mPattern = providerFactory.getPattern(page.mangaWebSource)
+        page.webImageUrl = mPattern.getImageUrl(page.url,
                 page.nowNum)
         return page.webImageUrl
 
+    }
+
+    @WorkerThread
+    fun getMenuCover(menu: MangaMenuItem): String {
+        val mPattern = providerFactory.getPattern(menu.mangaWebSource)
+        if (menu.imagePath.isEmpty()) {
+            menu.imagePath = mPattern.getMenuCover(menu)
+        }
+        return menu.imagePath
     }
 }

@@ -17,9 +17,9 @@ public class WebTestManga extends MangaProvider {
 
     public WebTestManga() {
         // TODO Auto-generated constructor stub
-        WEBSITE_URL = "";
-        WEB_SEARCH_URL = "";
-        CHARSET = "gb2312";
+        setWEBSITE_URL("");
+        setWEB_SEARCH_URL("");
+        setCHARSET("gb2312");
     }
 
 
@@ -60,7 +60,7 @@ public class WebTestManga extends MangaProvider {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
         try {
             for (int i = 0; i < 10; i++) {
-                String url = WEBSITE_URL + i;
+                String url = getWEBSITE_URL() + i;
                 String title = "Test MenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenuMenu " + i;
                 String imageUrl = "";
                 topMangaList.add(new TitleAndUrl(title, url, imageUrl));
@@ -78,7 +78,7 @@ public class WebTestManga extends MangaProvider {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
         try {
             for (int i = 0; i < 10; i++) {
-                String url = WEBSITE_URL + i;
+                String url = getWEBSITE_URL() + i;
                 String title = "Test Menu " + i;
                 String imageUrl = "";
                 topMangaList.add(new TitleAndUrl(title, url, imageUrl));

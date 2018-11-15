@@ -20,10 +20,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.king.mangaviewer.MyApplication;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.base.BaseActivity;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.util.MangaHelper;
+import com.king.mangaviewer.util.MangaHelperV2;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 
@@ -33,6 +35,7 @@ import java.util.List;
 /**
  * Created by KinG on 8/10/2015.
  */
+@Deprecated
 public class MyViewPager extends ViewPager {
 
     GestureDetector gestureDetector = null;
@@ -212,7 +215,7 @@ public class MyViewPager extends ViewPager {
     }
 
     protected void getPageList() {
-        pageList = getBaseActivty().getMangaHelper().GetPageList(
+        pageList = MangaHelperV2.INSTANCE.getPageList(
                 mangaViewModel.getSelectedMangaChapterItem());
         mangaViewModel.setMangaPageList(pageList);
         handler.sendEmptyMessage(0);
@@ -307,7 +310,7 @@ public class MyViewPager extends ViewPager {
         }
         Drawable cachedImage = null;
         if (pageList.size() > next) {
-            cachedImage = getBaseActivty().getMangaHelper().getPageImage(
+            cachedImage = new MangaHelper(MyApplication.context).getPageImage(
                     pageList.get(next), iv, new MangaHelper.GetImageCallback() {
 
                         public void imageLoaded(Drawable imageDrawable,

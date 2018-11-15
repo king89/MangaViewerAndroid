@@ -22,11 +22,11 @@ public class WebMangaReader extends MangaProvider {
     public static final int SEARCH_LIST_PAGE_SIZE = 30;
 
     public WebMangaReader() {
-        WEBSITE_URL = "http://www.mangareader.net/";
-        WEB_LATEST_MANGA_BASE_URL = "http://www.mangareader.net/";
-        WEB_SEARCH_URL = "http://www.mangareader.net/search/?w=%s&rd=0&status=0&order=0&p=%d";
-        WEB_ALL_MANGA_BASE_URL = "http://www.mangareader.net/popular/%d";
-        CHARSET = "utf8";
+        setWEBSITE_URL("http://www.mangareader.net/");
+        setLatestMangaUrl("http://www.mangareader.net/");
+        setWEB_SEARCH_URL("http://www.mangareader.net/search/?w=%s&rd=0&status=0&order=0&p=%d");
+        setWEB_ALL_MANGA_BASE_URL("http://www.mangareader.net/popular/%d");
+        setCHARSET("utf8");
     }
 
     //Menu

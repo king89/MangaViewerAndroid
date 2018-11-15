@@ -3,6 +3,7 @@ package com.king.mangaviewer.base
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import com.king.mangaviewer.base.ErrorMessage.NoError
 import com.king.mangaviewer.model.LoadingState
 import com.king.mangaviewer.model.LoadingState.Idle
 import io.reactivex.disposables.CompositeDisposable
@@ -12,7 +13,7 @@ abstract class BaseFragmentViewModel : ViewModel() {
     protected val mLoadingState = MutableLiveData<LoadingState>()
     val loadingState: LiveData<LoadingState> = mLoadingState
 
-    protected val mErrorMessage = MutableLiveData<ErrorMessage>()
+    protected val mErrorMessage = MutableLiveData<ErrorMessage>().apply { value = NoError }
     val errorMessage: LiveData<ErrorMessage> = mErrorMessage
 
     override fun onCleared() {
@@ -28,6 +29,7 @@ abstract class BaseFragmentViewModel : ViewModel() {
 }
 
 sealed class ErrorMessage {
+    object NoError : ErrorMessage()
     open class ViewModelError : ErrorMessage()
     object GenericError : ErrorMessage()
 }

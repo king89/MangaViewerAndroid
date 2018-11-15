@@ -33,11 +33,12 @@ public class WebDMZJ extends MangaProvider {
     String IMAGEURL = "https://images.dmzj.com/";
 
     public WebDMZJ() {
-        WEBSITE_URL = "https://manhua.dmzj.com/";
-        WEB_SEARCH_URL = "http://s.acg.dmzj.com/comicsum/search.php?s=%s&p=%s";
-        WEB_LATEST_MANGA_BASE_URL = "https://manhua.dmzj.com/update_1.shtml";
-        WEB_ALL_MANGA_BASE_URL = "http://s.acg.dmzj.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=0&p=%s&callback=search.renderResult";
-        CHARSET = "utf-8";
+        setWEBSITE_URL("https://manhua.dmzj.com/");
+        setWEB_SEARCH_URL("http://s.acg.dmzj.com/comicsum/search.php?s=%s&p=%s");
+        setLatestMangaUrl("https://manhua.dmzj.com/update_1.shtml");
+        setWEB_ALL_MANGA_BASE_URL(
+                "http://s.acg.dmzj.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=0&p=%s&callback=search.renderResult");
+        setCHARSET("utf-8");
     }
 
     @Override

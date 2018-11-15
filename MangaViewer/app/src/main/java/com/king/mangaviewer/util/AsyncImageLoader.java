@@ -92,7 +92,7 @@ public class AsyncImageLoader {
         new Thread() {
             @Override
             public void run() {
-                final String imageUrl = new MangaHelper(context).getMenuCover(menu);
+                final String imageUrl = MangaHelperV2.INSTANCE.getMenuCover(menu);
                 Drawable drawable = loadImageFromUrl(imageUrl);
                 imageCache.put(imageUrl, new SoftReference<Drawable>(drawable));
                 Message message = handler.obtainMessage(0, new ImageAndUrl(drawable, imageUrl));

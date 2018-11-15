@@ -26,10 +26,12 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.king.mangaviewer.MyApplication;
 import com.king.mangaviewer.domain.data.mangaprovider.LocalManga;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.base.BaseActivity;
 import com.king.mangaviewer.model.MangaPageItem;
+import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
 import io.reactivex.Flowable;
@@ -52,6 +54,7 @@ import java.util.zip.ZipFile;
 public class MyViewFlipper extends ViewFlipper {
 
     private static final String TAG = MyViewFlipper.class.getSimpleName();
+    private MangaHelper mangaHelper = new MangaHelper(MyApplication.context);
     GestureDetector gestureDetector = null;
     List<MangaPageItem> pageList = null;
     LayoutInflater mInflater = null;
@@ -144,8 +147,7 @@ public class MyViewFlipper extends ViewFlipper {
             @Override
             public Object call() throws Exception {
                 //use a new thread to load chapter list, this has to
-                mangaViewModel.setMangaChapterList(
-                        ((BaseActivity) getContext()).getMangaHelper().getChapterList(
+                mangaViewModel.setMangaChapterList(mangaHelper.getChapterList(
                                 mangaViewModel.getSelectedMangaChapterItem().getMenu()));
                 return 1;
             }
@@ -247,7 +249,7 @@ public class MyViewFlipper extends ViewFlipper {
     }
 
     protected void getPageList() {
-        pageList = getBaseActivty().getMangaHelper().GetPageList(
+        pageList = mangaHelper.GetPageList(
                 mangaViewModel.getSelectedMangaChapterItem());
         mangaViewModel.setMangaPageList(pageList);
     }
@@ -373,7 +375,7 @@ public class MyViewFlipper extends ViewFlipper {
                             new Callable<GlideUrl>() {
                                 @Override
                                 public GlideUrl call() throws Exception {
-                                    final String webImageUrl = getBaseActivty().getMangaHelper().getWebImageUrl(
+                                    final String webImageUrl = mangaHelper.getWebImageUrl(
                                             pageItem);
                                     Log.d(TAG,
                                             "Download Image Url: " + webImageUrl + "\n Referrer Url: " + pageItem.getReferUrl());

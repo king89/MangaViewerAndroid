@@ -6,12 +6,15 @@ import com.king.mangaviewer.viewmodel.AppViewModel
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class SearchMangaMenuUseCase @Inject constructor(private val appViewModel: AppViewModel) {
+class SearchMangaMenuUseCase @Inject constructor(
+        private val appViewModel: AppViewModel,
+        private val providerFactory: ProviderFactory
+) {
     fun execute(state: HashMap<String, Any>): Observable<List<MangaMenuItem>> {
         return Observable.create {
             it.onNext(listOf())
             var mangaList: ArrayList<MangaMenuItem>? = null
-            val mPattern = ProviderFactory.getPattern(appViewModel.Setting.selectedWebSource)
+            val mPattern = providerFactory.getPattern(appViewModel.Setting.selectedWebSource)
             val pageUrlList = mPattern.getSearchingList(state)
             if (mangaList == null) {
                 mangaList = ArrayList()

@@ -13,7 +13,7 @@ class WebManhuagui() : MangaProvider() {
     init {
         WEBSITE_URL = "https://www.manhuagui.com/"
         WEB_SEARCH_URL = "https://www.manhuagui.com/s/%s_p%s.html"
-        WEB_LATEST_MANGA_BASE_URL = "https://www.manhuagui.com/update/"
+        latestMangaUrl = "https://www.manhuagui.com/update/"
         WEB_ALL_MANGA_BASE_URL = "https://www.manhuagui.com/list/"
         CHARSET = "utf-8"
     }
@@ -46,7 +46,7 @@ class WebManhuagui() : MangaProvider() {
 
     }
 
-    override fun getSearchList(html: String?): MutableList<TitleAndUrl> {
+    override fun getSearchList(html: String): MutableList<TitleAndUrl> {
         val mangaList = ArrayList<TitleAndUrl>()
 
         val doc = Jsoup.parse(html)
@@ -73,7 +73,7 @@ class WebManhuagui() : MangaProvider() {
         return mangaList
     }
 
-    override fun getSearchTotalNum(html: String?): Int {
+    override fun getSearchTotalNum(html: String): Int {
         val doc = Jsoup.parse(html)
         val els = doc.select(".pager a")
         val index = els.last()?.let {

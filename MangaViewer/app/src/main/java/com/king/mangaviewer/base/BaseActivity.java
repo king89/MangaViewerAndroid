@@ -5,20 +5,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
-import com.king.mangaviewer.MyApplication;
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.util.GsonHelper;
-import com.king.mangaviewer.util.MangaHelper;
-import com.king.mangaviewer.util.SettingHelper;
 import com.king.mangaviewer.viewmodel.AppViewModel;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
-import dagger.android.AndroidInjection;
-import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.disposables.CompositeDisposable;
 import javax.inject.Inject;
@@ -128,10 +120,6 @@ public class BaseActivity extends DaggerAppCompatActivity {
 
     public AppViewModel getAppViewModel() {
         return mAppViewModel;
-    }
-
-    public MangaHelper getMangaHelper() {
-        return ((MyApplication) this.getApplication()).getMangaHelper();
     }
 
     public SettingViewModel getSettingViewModel() {

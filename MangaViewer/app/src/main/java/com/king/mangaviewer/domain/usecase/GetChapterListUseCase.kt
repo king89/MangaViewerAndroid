@@ -8,14 +8,16 @@ import io.reactivex.Single
 import java.util.ArrayList
 import javax.inject.Inject
 
-class GetChapterListUseCase @Inject constructor(private val appViewModel: AppViewModel,
+class GetChapterListUseCase @Inject constructor(
+        private val appViewModel: AppViewModel,
+        private val providerFactory: ProviderFactory,
         private val favoriteMangaRepository: FavoriteMangaRepository) {
     fun execute(): Single<List<MangaChapterItem>> {
         return Single.fromCallable {
             appViewModel.Manga.mangaChapterList = emptyList()
 
             val menu = appViewModel.Manga.selectedMangaMenuItem
-            val mPattern = ProviderFactory.getPattern(menu.mangaWebSource)
+            val mPattern = providerFactory.getPattern(menu.mangaWebSource)
 
             val tauList = mPattern.getChapterList(menu.url)
             val list = ArrayList<MangaChapterItem>()

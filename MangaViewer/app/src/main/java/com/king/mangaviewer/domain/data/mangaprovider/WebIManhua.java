@@ -24,8 +24,8 @@ public class WebIManhua extends MangaProvider {
 
     public WebIManhua() {
         // TODO Auto-generated constructor stub
-        WEBSITE_URL = "http://www.imanhua.com/";
-        CHARSET = "gb2312";
+        setWEBSITE_URL("http://www.imanhua.com/");
+        setCHARSET("gb2312");
     }
 
     private int GetInt(String s, int isDecimal) {
@@ -67,7 +67,7 @@ public class WebIManhua extends MangaProvider {
             while (m.find()) {
                 Matcher m2 = rUrlAndTitle.matcher(m.group());
                 m2.find();
-                String url = WEBSITE_URL + m2.group(1);
+                String url = getWEBSITE_URL() + m2.group(1);
                 String title = m2.group(2);
                 String imageUrl = m2.group(3);
                 topMangaList.add(new TitleAndUrl(title, url, imageUrl));
@@ -100,7 +100,7 @@ public class WebIManhua extends MangaProvider {
         m = rUrlAndTitle.matcher(html);
         while (m.find()) {
 
-            String url = WEBSITE_URL + m.group(1);
+            String url = getWEBSITE_URL() + m.group(1);
             String title = m.group(2);
             chapterList.add(new TitleAndUrl(title, url));
 
@@ -114,16 +114,16 @@ public class WebIManhua extends MangaProvider {
         List<String> pageList = null;
         try {
             // TODO Auto-generated method stub
-            if (firstPageHtml == null) {
-                firstPageHtml = getHtml(firstPageUrl);
+            if (getFirstPageHtml() == null) {
+                setFirstPageHtml(getHtml(firstPageUrl));
             }
-            totalNum = getTotalNum(firstPageHtml);
+            setTotalNum(getTotalNum(getFirstPageHtml()));
             pageList = new ArrayList<String>();
-            for (int i = startNum; i <= totalNum; i++) {
+            for (int i = getStartNum(); i <= getTotalNum(); i++) {
                 pageList.add(firstPageUrl + "?" + param + "=" + i + "");
             }
             Pattern r = Pattern.compile("(?<=var cInfo=)\\{.+?\\}");
-            Matcher m = r.matcher(firstPageHtml);
+            Matcher m = r.matcher(getFirstPageHtml());
             if (m.find()) {
                 String result = m.group();
                 if (deserializedProduct == null) {
@@ -133,7 +133,7 @@ public class WebIManhua extends MangaProvider {
                 deserializedProduct.setObject(jObject);
             } else {
                 r = Pattern.compile("(?<=}\\().+?(?=\\)\\))");
-                m = r.matcher(firstPageHtml);
+                m = r.matcher(getFirstPageHtml());
 
                 if (m.find()) {
                     //从 js 函数取出 cinfo 代码 部分

@@ -39,7 +39,7 @@ class GlideImageHelper {
 
         fun getMenuCover(imageView: ImageView, menu: MangaMenuItem, defaultDrawable: Drawable) {
 
-            val disposable = Observable.fromCallable { MangaHelper.getMenuCover(menu) }
+            val disposable = Observable.fromCallable { MangaHelperV2.getMenuCover(menu) }
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
