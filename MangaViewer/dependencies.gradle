@@ -1,4 +1,4 @@
-ext.versions = [rxJava2          : "2.1.0",
+ext.versions = [rxJava2          : "2.2.3",
                 rxAndroid        : "2.0.1",
                 retrofit         : "2.3.0",
                 androidBuildTools: "27.0.3",

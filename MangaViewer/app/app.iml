@@ -187,7 +187,6 @@
     <orderEntry type="library" scope="TEST" name="Gradle: com.android.support:multidex-instrumentation-1.0.2" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:appcompat-v7-27.1.1" level="project" />
     <orderEntry type="library" name="Gradle: com.crashlytics.sdk.android:beta-1.2.5" level="project" />
-    <orderEntry type="library" name="Gradle: io.reactivex.rxjava2:rxjava:2.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp:3.8.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.crashlytics.sdk.android:crashlytics-2.6.8" level="project" />
     <orderEntry type="library" name="Gradle: com.github.bumptech.glide:gifdecoder-4.8.0" level="project" />
@@ -209,10 +208,10 @@
     <orderEntry type="library" name="Gradle: android.arch.paging:runtime-1.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:1.13.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: me.grantland:autofittextview-0.2.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.reactivestreams:reactive-streams:1.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-ads-lite-9.4.0" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.lifecycle:viewmodel-1.1.1" level="project" />
     <orderEntry type="library" name="Gradle: com.jakewharton:butterknife-8.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.reactivestreams:reactive-streams:1.0.2@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.github.bumptech.glide:glide-4.8.0" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-dynamic-animation-27.1.1" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-vector-drawable-27.1.1" level="project" />
@@ -222,6 +221,7 @@
     <orderEntry type="library" scope="TEST" name="Gradle: com.android.support.test.espresso:espresso-core-3.0.2" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.lifecycle:extensions-1.1.1" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.core:common:1.1.1@jar" level="project" />
+    <orderEntry type="library" name="Gradle: io.reactivex.rxjava2:rxjava:2.2.3@jar" level="project" />
     <orderEntry type="library" name="Gradle: io.reactivex.rxjava2:rxandroid-2.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-clearcut-9.4.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.12@jar" level="project" />
