@@ -11,6 +11,10 @@ abstract class BaseFragmentViewModel : ViewModel() {
     val disposable: CompositeDisposable = CompositeDisposable()
     protected val mLoadingState = MutableLiveData<LoadingState>()
     val loadingState: LiveData<LoadingState> = mLoadingState
+
+    protected val mErrorMessage = MutableLiveData<ErrorMessage>()
+    val errorMessage: LiveData<ErrorMessage> = mErrorMessage
+
     override fun onCleared() {
         super.onCleared()
         disposable.clear()
@@ -21,4 +25,9 @@ abstract class BaseFragmentViewModel : ViewModel() {
     init {
         mLoadingState.value = Idle
     }
+}
+
+sealed class ErrorMessage {
+    open class ViewModelError : ErrorMessage()
+    object GenericError : ErrorMessage()
 }

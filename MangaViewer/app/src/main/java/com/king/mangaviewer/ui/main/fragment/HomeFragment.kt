@@ -4,6 +4,8 @@ import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
+import android.support.design.widget.Snackbar.LENGTH_SHORT
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -24,7 +26,6 @@ import com.king.mangaviewer.util.withViewModel
 import dagger.android.support.AndroidSupportInjection
 
 open class HomeFragment : BaseFragment() {
-
 
     lateinit var viewModel: HomeFragmentViewModel
 
@@ -98,6 +99,13 @@ open class HomeFragment : BaseFragment() {
                 }
             })
 
+            errorMessage.observe(this@HomeFragment, Observer { it ->
+                Snackbar.make(this@HomeFragment.view!!,
+                        R.string.oops_error_message, LENGTH_SHORT)
+                        .setAction(R.string.retry) { this.getData() }
+                        .show()
+
+            })
             this.attachToView()
         }
     }

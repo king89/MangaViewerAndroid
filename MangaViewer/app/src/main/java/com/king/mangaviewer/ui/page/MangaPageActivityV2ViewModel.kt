@@ -3,6 +3,9 @@ package com.king.mangaviewer.ui.page
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseActivityViewModel
+import com.king.mangaviewer.base.ErrorMessage
+import com.king.mangaviewer.base.ErrorMessage.GenericError
+import com.king.mangaviewer.base.ErrorMessage.ViewModelError
 import com.king.mangaviewer.domain.data.AppRepository
 import com.king.mangaviewer.domain.usecase.GetChapterListUseCase
 import com.king.mangaviewer.domain.usecase.GetPageListUseCase
@@ -11,14 +14,11 @@ import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.model.MangaUri
-import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.ErrorMessage.NoError
-import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.ErrorMessage.NoNextChapter
-import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.ErrorMessage.NoPrevChapter
-import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.ErrorMessage.OopsError
+import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoError
+import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoNextChapter
+import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoPrevChapter
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.MangaHelperV2
-import io.reactivex.Completable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -110,7 +110,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
                         },
                         {
                             Logger.e(TAG, it)
-                            errorMessage.value = OopsError
+                            errorMessage.value = GenericError
                         })
                 .apply { disposable.add(this) }
     }
@@ -119,10 +119,9 @@ class MangaPageActivityV2ViewModel @Inject constructor(
         const val TAG = "MangaChapterActivityViewModel"
     }
 
-    sealed class ErrorMessage {
-        object NoError : ErrorMessage()
-        object OopsError : ErrorMessage()
-        object NoNextChapter : ErrorMessage()
-        object NoPrevChapter : ErrorMessage()
+    sealed class SubError : ViewModelError(){
+        object NoError : SubError()
+        object NoNextChapter : SubError()
+        object NoPrevChapter : SubError()
     }
 }

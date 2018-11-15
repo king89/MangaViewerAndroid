@@ -3,6 +3,7 @@ package com.king.mangaviewer.ui.main.fragment
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseFragmentViewModel
+import com.king.mangaviewer.base.ErrorMessage.GenericError
 import com.king.mangaviewer.domain.data.AppRepository
 import com.king.mangaviewer.domain.usecase.GetLatestMangaListUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaMenuUseCase
@@ -37,6 +38,7 @@ class HomeFragmentViewModel @Inject constructor(
                     _mangaList.value = it
                 }, {
                     Logger.e(TAG, it)
+                    mErrorMessage.value = GenericError
                 })
                 .apply { disposable.add(this) }
     }
