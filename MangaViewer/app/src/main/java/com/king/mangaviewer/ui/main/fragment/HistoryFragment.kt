@@ -4,10 +4,15 @@ import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
+import android.graphics.Canvas
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.ViewHolder
+import android.support.v7.widget.helper.ItemTouchHelper
+import android.support.v7.widget.helper.ItemTouchHelper.LEFT
+import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -24,6 +29,7 @@ import com.king.mangaviewer.ui.page.MangaPageActivityV2
 import com.king.mangaviewer.ui.page.MangaPageActivityV2.Companion.INTENT_EXTRA_FROM_HISTORY
 import com.king.mangaviewer.util.withViewModel
 import dagger.android.support.AndroidSupportInjection
+import com.king.mangaviewer.util.RecyclerItemTouchHelper
 
 class HistoryFragment : BaseFragment() {
 
@@ -56,10 +62,10 @@ class HistoryFragment : BaseFragment() {
             AlertDialog.Builder(this.activity!!)
                     .setTitle(getString(R.string.msg_history_dialog_title))
                     .setMessage(getString(R.string.msg_history_dialog_message))
-                    .setPositiveButton(getString(R.string.yes)) { dialog, which ->
+                    .setPositiveButton(getString(R.string.clear)) { dialog, which ->
                         viewModel.clearAllHistory()
                     }
-                    .setNegativeButton(getString(R.string.no), null)
+                    .setNegativeButton(getString(R.string.cancel), null)
                     .show()
         }
         return super.onOptionsItemSelected(item)
@@ -86,7 +92,18 @@ class HistoryFragment : BaseFragment() {
                     R.anim.out_rightleft)
         }
 
+        addItemTouchForRecyclerView()
+
         initViewModel()
+    }
+
+    private fun addItemTouchForRecyclerView() {
+        val itemTouchHelperCallback = RecyclerItemTouchHelper(0,
+                ItemTouchHelper.LEFT or RIGHT) { viewHolder, direction, position ->
+            viewModel.delete(viewHolder.adapterPosition)
+        }
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView)
+
     }
 
     private fun initViewModel() {

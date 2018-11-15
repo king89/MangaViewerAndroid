@@ -14,7 +14,7 @@ class FavouriteMangaItemAdapter(private val listener: OnItemClickListener? = nul
         super.onBindViewHolder(holder, position)
 
         if (holder is DataViewHolder) {
-            val count = (mDataList[position] as FavouriteMangaMenuItem).updateCount
+            val count = (getItem(position) as FavouriteMangaMenuItem).updateCount
             holder.countTextView?.apply {
                 visibility = View.VISIBLE
                 when {

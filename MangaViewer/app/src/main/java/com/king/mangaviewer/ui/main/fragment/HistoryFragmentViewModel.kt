@@ -3,7 +3,10 @@ package com.king.mangaviewer.ui.main.fragment
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseFragmentViewModel
+import com.king.mangaviewer.base.ErrorMessage.NoError
 import com.king.mangaviewer.domain.data.AppRepository
+import com.king.mangaviewer.domain.usecase.DeleteAllHistoryUseCase
+import com.king.mangaviewer.domain.usecase.DeleteHistoryChapterUseCase
 import com.king.mangaviewer.domain.usecase.GetFavoriteMangaListUseCase
 import com.king.mangaviewer.domain.usecase.GetHistoryChapterListUseCase
 import com.king.mangaviewer.domain.usecase.SelectHistoryChapterUseCase
@@ -22,7 +25,9 @@ import javax.inject.Inject
 class HistoryFragmentViewModel @Inject constructor(
         private val appRepository: AppRepository,
         private val getHistoryChapterListUseCase: GetHistoryChapterListUseCase,
-        private val selectHistoryChapterUseCase: SelectHistoryChapterUseCase
+        private val selectHistoryChapterUseCase: SelectHistoryChapterUseCase,
+        private val deleteHistoryChapterUseCase: DeleteHistoryChapterUseCase,
+        private val deleteAllHistoryUseCase: DeleteAllHistoryUseCase
 ) : BaseFragmentViewModel() {
 
     private val _mangaList = MutableLiveData<List<HistoryMangaChapterItem>>()
@@ -56,9 +61,31 @@ class HistoryFragmentViewModel @Inject constructor(
         getData(isSilent)
     }
 
-    fun clearAllHistory(){
+    fun delete(pos: Int) {
+        mangaList.value?.get(pos)?.let { it ->
+            deleteHistoryChapterUseCase.execute(it)
+                    .subscribe({
+                        getData(false)
+                    }, {
+                        Logger.e(TAG, it)
+                    })
+                    .apply { disposable.add(this) }
 
+        }
     }
+
+    fun clearAllHistory() {
+        deleteAllHistoryUseCase.execute().subscribe(
+                {
+                    mErrorMessage.value = NoError
+                    getData(false)
+                },
+                {
+                    Logger.e(TAG, it)
+                })
+                .apply { disposable.add(this) }
+    }
+
     companion object {
         const val TAG = "HistoryFragmentViewModel"
     }

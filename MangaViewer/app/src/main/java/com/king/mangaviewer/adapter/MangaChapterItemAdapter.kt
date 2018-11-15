@@ -2,6 +2,7 @@ package com.king.mangaviewer.adapter
 
 import android.content.Context
 import android.support.v4.content.ContextCompat
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,11 +17,9 @@ import com.king.mangaviewer.model.MangaChapterItem
 
 class MangaChapterItemAdapter(private val context: Context,
         private val onItemClickListener: OnItemClickListener) :
-        BaseRecyclerViewAdapter<MangaChapterItemWrapper, RecyclerViewHolders>() {
+        BaseRecyclerViewAdapter<MangaChapterItemWrapper, RecyclerViewHolders>(diffCallBack) {
 
     private val MAX_TITLE_LENGTH = 20
-
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolders {
         return when (viewType) {
@@ -43,7 +42,7 @@ class MangaChapterItemAdapter(private val context: Context,
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
-        val item = mDataList[position]
+        val item = getItem(position)
         when (getItemViewType(position)) {
             LAST_READ,
             CHAPTER -> {
@@ -57,14 +56,14 @@ class MangaChapterItemAdapter(private val context: Context,
                     }
                     holder.textView.text = chapterTitle
                     holder.itemView.setOnClickListener { onItemClickListener.onClick(this) }
-                    if (item.isRead){
+                    if (item.isRead) {
                         holder.setRead()
                     }
                 }
             }
             CATEGORY -> {
                 holder as CategoryViewHolders
-                holder.textView.text = mDataList[position].displayName
+                holder.textView.text = getItem(position).displayName
             }
 
             else -> {
@@ -73,7 +72,7 @@ class MangaChapterItemAdapter(private val context: Context,
     }
 
     override fun getItemViewType(position: Int): Int {
-        return mDataList[position].type
+        return getItem(position).type
     }
 
     open class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -98,4 +97,27 @@ class MangaChapterItemAdapter(private val context: Context,
         fun onClick(chapter: MangaChapterItem)
     }
 
+    companion object {
+        val diffCallBack = object : DiffUtil.ItemCallback<MangaChapterItemWrapper>() {
+            override fun areItemsTheSame(oldItem: MangaChapterItemWrapper?,
+                    newItem: MangaChapterItemWrapper?): Boolean {
+
+                return when {
+                    oldItem?.type == newItem?.type -> {
+                        if (oldItem?.type == CHAPTER) {
+                            oldItem.chapter?.hash == newItem?.chapter?.hash
+                        } else {
+                            oldItem?.displayName == newItem?.displayName
+                        }
+                    }
+                    else -> false
+                }
+            }
+
+            override fun areContentsTheSame(oldItem: MangaChapterItemWrapper?,
+                    newItem: MangaChapterItemWrapper?): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
 }

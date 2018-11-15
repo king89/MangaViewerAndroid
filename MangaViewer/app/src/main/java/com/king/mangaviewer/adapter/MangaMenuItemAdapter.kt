@@ -1,6 +1,7 @@
 package com.king.mangaviewer.adapter
 
 import android.support.annotation.LayoutRes
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +24,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 open class MangaMenuItemAdapter(private val listener: OnItemClickListener? = null) :
-        BaseRecyclerViewAdapter<MangaMenuItem, RecyclerView.ViewHolder>() {
+        BaseRecyclerViewAdapter<MangaMenuItem, RecyclerView.ViewHolder>(diffCallBack) {
 
     private var mLoadingState: LoadingState = Idle
 
@@ -53,7 +54,7 @@ open class MangaMenuItemAdapter(private val listener: OnItemClickListener? = nul
 
             }
             is DataViewHolder -> {
-                val item = mDataList[position]
+                val item = getItem(position)
                 Single.fromCallable {
                     val url = MangaHelperV2.getMenuCover(item)
                     if (url.isEmpty()) return@fromCallable Any()
@@ -75,7 +76,7 @@ open class MangaMenuItemAdapter(private val listener: OnItemClickListener? = nul
                         }, { Logger.e(TAG, it) })
                         .apply { holder.disposable.add(this) }
 
-                val title = this.mDataList[position].title
+                val title = this.getItem(position).title
                 holder.textView.text = title
                 holder.itemView.setOnClickListener { listener?.onClick(item) }
             }
@@ -165,5 +166,17 @@ open class MangaMenuItemAdapter(private val listener: OnItemClickListener? = nul
         const val TAG = "MangaMenuItemAdapter"
         val TYPE_DATA = 0
         val TYPE_FOOTER = 1
+
+        val diffCallBack = object : DiffUtil.ItemCallback<MangaMenuItem>(){
+            override fun areItemsTheSame(oldItem: MangaMenuItem?,
+                    newItem: MangaMenuItem?): Boolean {
+                return oldItem?.hash == newItem?.hash
+            }
+
+            override fun areContentsTheSame(oldItem: MangaMenuItem?,
+                    newItem: MangaMenuItem?): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 }
