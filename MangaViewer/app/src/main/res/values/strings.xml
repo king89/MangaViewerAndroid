@@ -117,6 +117,7 @@
   <string name="channel_description">Notify updated manga</string>
   <string name="chapter_last_read">Last read</string>
   <string name="chapter_list">Chapters</string>
+  <string name="oops_error_message">Oops, something went wrong.</string>
 
 
 </resources>

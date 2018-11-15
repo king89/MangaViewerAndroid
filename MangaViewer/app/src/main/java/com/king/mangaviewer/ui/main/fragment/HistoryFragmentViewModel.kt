@@ -6,6 +6,7 @@ import com.king.mangaviewer.base.BaseFragmentViewModel
 import com.king.mangaviewer.domain.data.AppRepository
 import com.king.mangaviewer.domain.usecase.GetFavoriteMangaListUseCase
 import com.king.mangaviewer.domain.usecase.GetHistoryChapterListUseCase
+import com.king.mangaviewer.domain.usecase.SelectHistoryChapterUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaChapterUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaMenuUseCase
 import com.king.mangaviewer.model.FavouriteMangaMenuItem
@@ -21,7 +22,7 @@ import javax.inject.Inject
 class HistoryFragmentViewModel @Inject constructor(
         private val appRepository: AppRepository,
         private val getHistoryChapterListUseCase: GetHistoryChapterListUseCase,
-        private val selectMangaChapterUseCase: SelectMangaChapterUseCase
+        private val selectHistoryChapterUseCase: SelectHistoryChapterUseCase
 ) : BaseFragmentViewModel() {
 
     private val _mangaList = MutableLiveData<List<HistoryMangaChapterItem>>()
@@ -48,7 +49,7 @@ class HistoryFragmentViewModel @Inject constructor(
     }
 
     fun selectChapter(chapterItem: HistoryMangaChapterItem) {
-        selectMangaChapterUseCase.execute(chapterItem).subscribe()
+        selectHistoryChapterUseCase.execute(chapterItem).subscribe()
     }
 
     fun refresh(isSilent: Boolean) {

@@ -9,14 +9,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class SelectMangaChapterUseCase @Inject constructor(private val appViewModel: AppViewModel,
-        private val historyMangaRepository: HistoryMangaRepository) {
+class SelectHistoryChapterUseCase @Inject constructor(
+        private val appViewModel: AppViewModel,
+        private val historyMangaRepository: HistoryMangaRepository,
+        private val getChapterListUseCase: GetChapterListUseCase) {
     fun execute(chapter: MangaChapterItem): Completable {
         return Completable.fromCallable {
             appViewModel.Manga.selectedMangaChapterItem = chapter
             appViewModel.Manga.selectedMangaMenuItem = chapter.menu
             Any()
         }.andThen(historyMangaRepository.addToHistory(HistoryMangaChapterItem(chapter)))
+                .andThen(getChapterListUseCase.execute().toCompletable())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }

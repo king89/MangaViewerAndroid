@@ -3,6 +3,8 @@ package com.king.mangaviewer.ui.page
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.os.Message
+import android.support.design.widget.Snackbar
+import android.support.design.widget.Snackbar.LENGTH_SHORT
 import android.support.v7.widget.SwitchCompat
 import android.support.v7.widget.TooltipCompat
 import android.view.Gravity
@@ -186,6 +188,8 @@ class MangaPageActivityV2 : BaseActivity(),
                     NoNextChapter ->
                         showErrorMessage(resources.getString(string.no_more_next_chapter))
                     else -> {
+                        Snackbar.make(this@MangaPageActivityV2.mDecorView,
+                                R.string.oops_error_message, LENGTH_SHORT)
                     }
                 }
             })

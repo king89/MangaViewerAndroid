@@ -14,8 +14,10 @@ import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.ErrorMessage.NoError
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.ErrorMessage.NoNextChapter
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.ErrorMessage.NoPrevChapter
+import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.ErrorMessage.OopsError
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.MangaHelperV2
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -70,63 +72,46 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     }
 
     fun nextChapter() {
-        getChapterList()
-                .subscribe({
-                    val chapterList = appRepository.appViewModel.Manga.mangaChapterList
-                    val currentChapter = appRepository.appViewModel.Manga.selectedMangaChapterItem
+        val chapterList = appRepository.appViewModel.Manga.mangaChapterList
+        val currentChapter = appRepository.appViewModel.Manga.selectedMangaChapterItem
 
-                    val pos = chapterList.indexOf(currentChapter)
-                    if (pos - 1 >= 0) {
-                        selectChapter(chapterList[pos - 1])
-                    } else {
-                        errorMessage.value = NoNextChapter
-                    }
-                }, {
-                    Logger.e(TAG, it, "get chapter list error")
-                })
-                .apply { disposable.add(this) }
+        val pos = chapterList.indexOf(currentChapter)
+        if (pos - 1 >= 0) {
+            selectChapter(chapterList[pos - 1])
+        } else {
+            errorMessage.value = NoNextChapter
+        }
+
     }
 
     fun prevChapter() {
-        getChapterList()
-                .subscribe({
-                    val chapterList = appRepository.appViewModel.Manga.mangaChapterList
-                    val currentChapter = appRepository.appViewModel.Manga.selectedMangaChapterItem
+        val chapterList = appRepository.appViewModel.Manga.mangaChapterList
+        val currentChapter = appRepository.appViewModel.Manga.selectedMangaChapterItem
 
-                    val pos = chapterList.indexOf(currentChapter)
-                    if (pos + 1 < chapterList.size) {
-                        selectChapter(chapterList[pos + 1])
-                    } else {
-                        errorMessage.value = NoPrevChapter
-                    }
-                }, {
-                    Logger.e(TAG, it, "get chapter list error")
-                })
-                .apply { disposable.add(this) }
-    }
-
-    private fun getChapterList(): Single<List<MangaChapterItem>> {
-        val observable = if (appRepository.appViewModel.Manga.mangaChapterList == null) {
-            getChapterListUseCase.execute()
+        val pos = chapterList.indexOf(currentChapter)
+        if (pos + 1 < chapterList.size) {
+            selectChapter(chapterList[pos + 1])
         } else {
-            Single.just(appRepository.appViewModel.Manga.mangaChapterList)
+            errorMessage.value = NoPrevChapter
         }
-        return observable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mLoadingState.value = Loading }
-                .doAfterTerminate { mLoadingState.value = Idle }
+
     }
 
     private fun selectChapter(chapter: MangaChapterItem) {
         selectMangaChapterUseCase.execute(chapter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mSelectedChapterName.value = chapter.title
-                    getPageList()
-                },
-                        { Logger.e(TAG, it) })
+                .doOnSubscribe { mLoadingState.value = Loading }
+                .doAfterTerminate { mLoadingState.value = Idle }
+                .subscribe(
+                        {
+                            mSelectedChapterName.value = chapter.title
+                            getPageList()
+                        },
+                        {
+                            Logger.e(TAG, it)
+                            errorMessage.value = OopsError
+                        })
                 .apply { disposable.add(this) }
     }
 
@@ -136,6 +121,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
 
     sealed class ErrorMessage {
         object NoError : ErrorMessage()
+        object OopsError : ErrorMessage()
         object NoNextChapter : ErrorMessage()
         object NoPrevChapter : ErrorMessage()
     }
