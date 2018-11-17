@@ -14,6 +14,7 @@ interface HistoryMangaDataSource {
             menu: MangaMenuItem? = null): Single<List<HistoryMangaChapterItem>>
 
     fun removeHistory(item: HistoryMangaChapterItem): Completable
+    fun removeRelatedHistory(item: HistoryMangaChapterItem): Completable
     fun clearAll(): Completable
 }
 
@@ -21,6 +22,7 @@ class HistoryMangaLocalDataSource @Inject constructor(
         private val appViewModel: AppViewModel,
         private val historyMangaDAO: HistoryMangaDAO
 ) : HistoryMangaDataSource {
+
     override fun addToHistory(
             item: HistoryMangaChapterItem): Completable = Completable.fromCallable {
         historyMangaDAO.insert(item.toHistoryManga())
@@ -44,6 +46,15 @@ class HistoryMangaLocalDataSource @Inject constructor(
             Completable.fromCallable {
                 historyMangaDAO.delete(item.toHistoryManga())
             }
+
+    override fun removeRelatedHistory(item: HistoryMangaChapterItem): Completable {
+        return Completable.fromCallable {
+            getAllHistoryMangaItem(item.menu).blockingGet().forEach {
+                removeHistory(it).blockingAwait()
+            }
+        }
+
+    }
 
     override fun clearAll(): Completable =
             Completable.fromCallable {

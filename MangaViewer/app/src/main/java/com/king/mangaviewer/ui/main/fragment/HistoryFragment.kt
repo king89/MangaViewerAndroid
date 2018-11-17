@@ -1,17 +1,15 @@
 package com.king.mangaviewer.ui.main.fragment
 
-import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
-import android.graphics.Canvas
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.ViewHolder
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.support.v7.widget.helper.ItemTouchHelper.LEFT
 import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
 import android.view.LayoutInflater
 import android.view.Menu
@@ -25,17 +23,21 @@ import com.king.mangaviewer.adapter.HistoryChapterItemAdapter
 import com.king.mangaviewer.base.BaseFragment
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
+import com.king.mangaviewer.ui.chapter.MangaChapterActivity
+import com.king.mangaviewer.ui.main.HasFloatActionButton
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
 import com.king.mangaviewer.ui.page.MangaPageActivityV2.Companion.INTENT_EXTRA_FROM_HISTORY
+import com.king.mangaviewer.util.RecyclerItemTouchHelper
 import com.king.mangaviewer.util.withViewModel
 import dagger.android.support.AndroidSupportInjection
-import com.king.mangaviewer.util.RecyclerItemTouchHelper
 
-class HistoryFragment : BaseFragment() {
+class HistoryFragment : BaseFragment(), HasFloatActionButton {
 
-    lateinit var recyclerView: RecyclerView
+    private var recyclerView: RecyclerView? = null
+    private var adapter: HistoryChapterItemAdapter? = null
     lateinit var tv: TextView
     lateinit var viewModel: HistoryFragmentViewModel
+    private var fab: FloatingActionButton? = null
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -76,21 +78,31 @@ class HistoryFragment : BaseFragment() {
 
         val rootView = inflater.inflate(R.layout.fragment_history, container, false)
         recyclerView = rootView.findViewById<View>(R.id.listView) as RecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView!!.layoutManager = LinearLayoutManager(context)
         tv = rootView.findViewById<View>(R.id.textView) as TextView
         return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.adapter = HistoryChapterItemAdapter(activity as Context) {
-            viewModel.selectChapter(it)
-            val intent = Intent(context, MangaPageActivityV2::class.java)
-            intent.putExtra(INTENT_EXTRA_FROM_HISTORY, true)
-            this@HistoryFragment.startActivity(intent)
-            this@HistoryFragment.activity?.overridePendingTransition(R.anim.in_rightleft,
-                    R.anim.out_rightleft)
-        }
+        recyclerView!!.adapter = HistoryChapterItemAdapter(
+                activity as Context) { item, showAsChapter ->
+            if (showAsChapter) {
+                viewModel.selectChapter(item)
+                val intent = Intent(context, MangaPageActivityV2::class.java)
+                intent.putExtra(INTENT_EXTRA_FROM_HISTORY, true)
+                this@HistoryFragment.startActivity(intent)
+                this@HistoryFragment.activity?.overridePendingTransition(R.anim.in_rightleft,
+                        R.anim.out_rightleft)
+            } else {
+                viewModel.selectMenu(item)
+                val intent = Intent(context, MangaChapterActivity::class.java)
+                intent.putExtra(INTENT_EXTRA_FROM_HISTORY, true)
+                this@HistoryFragment.startActivity(intent)
+                this@HistoryFragment.activity?.overridePendingTransition(R.anim.in_rightleft,
+                        R.anim.out_rightleft)
+            }
+        }.apply { adapter = this }
 
         addItemTouchForRecyclerView()
 
@@ -100,7 +112,11 @@ class HistoryFragment : BaseFragment() {
     private fun addItemTouchForRecyclerView() {
         val itemTouchHelperCallback = RecyclerItemTouchHelper(0,
                 ItemTouchHelper.LEFT or RIGHT) { viewHolder, direction, position ->
-            viewModel.delete(viewHolder.adapterPosition)
+            if (adapter!!.showAsChapter) {
+                viewModel.deleteChapter(adapter!!.getItemByPos(viewHolder.adapterPosition))
+            } else {
+                viewModel.deleteMenu(adapter!!.getItemByPos(viewHolder.adapterPosition))
+            }
         }
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView)
 
@@ -122,7 +138,7 @@ class HistoryFragment : BaseFragment() {
                 } else {
                     tv.visibility = View.GONE
                 }
-                (recyclerView.adapter as? HistoryChapterItemAdapter)?.submitList(it)
+                adapter?.submitList(it)
             })
 
             attachToView()
@@ -134,4 +150,27 @@ class HistoryFragment : BaseFragment() {
 
     private fun showLoading() {
     }
+
+    override fun initFab(fab: FloatingActionButton) {
+        this.fab = fab
+        fab.setImageDrawable(ContextCompat.getDrawable(fab.context, R.drawable.ic_unfold))
+        fab.show()
+    }
+
+    override fun onClick() {
+        //toggle list type
+        adapter?.apply {
+            toggleShowType()
+            if (showAsChapter) {
+                fab?.setImageDrawable(ContextCompat.getDrawable(fab?.context!!, R.drawable.ic_unfold))
+
+            } else {
+                fab?.setImageDrawable(ContextCompat.getDrawable(fab?.context!!, R.drawable.ic_fold))
+
+            }
+            submitList(viewModel.mangaList.value!!)
+        }
+
+    }
+
 }

@@ -16,6 +16,7 @@ interface HistoryMangaRepository : HistoryMangaDataSource {
 class HistoryMangaRepositoryImpl @Inject constructor(
         private val historyMangaDataSource: HistoryMangaDataSource
 ) : HistoryMangaRepository {
+
     override fun addToHistory(
             item: HistoryMangaChapterItem): Completable = historyMangaDataSource.addToHistory(item)
 
@@ -25,6 +26,10 @@ class HistoryMangaRepositoryImpl @Inject constructor(
 
     override fun removeHistory(
             item: HistoryMangaChapterItem): Completable = historyMangaDataSource.removeHistory(item)
+
+    override fun removeRelatedHistory(
+            item: HistoryMangaChapterItem): Completable =
+            historyMangaDataSource.removeRelatedHistory(item)
 
     override fun clearAll(): Completable = historyMangaDataSource.clearAll()
 }

@@ -40,6 +40,8 @@ android {
         versionCode buildVersionCode()
         versionName VERSION_NAME as String
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+
     }
     buildTypes {
         //        applicationVariants.all { variant ->

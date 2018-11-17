@@ -5,6 +5,8 @@ import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -22,8 +24,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class HistoryChapterItemAdapter(private val context: Context,
-        private val onClickListener: ((chapter: HistoryMangaChapterItem) -> Unit)? = null) :
-        BaseRecyclerViewAdapter<HistoryMangaChapterItem, HistoryChapterItemAdapter.RecyclerViewHolders>(diffCallBack) {
+        private val onClickListener: ((chapter: HistoryMangaChapterItem, showAsChapter: Boolean) -> Unit)? = null) :
+        BaseRecyclerViewAdapter<HistoryMangaChapterItem, HistoryChapterItemAdapter.RecyclerViewHolders>(
+                diffCallBack) {
+    var showAsChapter = true
 
     override fun getItemId(position: Int): Long {
         // TODO Auto-generated method stub
@@ -59,13 +63,35 @@ class HistoryChapterItemAdapter(private val context: Context,
         holder.dateTextView.text = getItem(position).lastReadDate
         holder.sourceTextView.text = getItem(position).mangaWebSource.displayName
         holder.itemView.setOnClickListener {
-            onClickListener?.invoke(getItem(position))
+            onClickListener?.invoke(getItem(position), showAsChapter)
         }
     }
 
     override fun onViewRecycled(holder: RecyclerViewHolders) {
         super.onViewRecycled(holder)
         holder.recycle()
+    }
+
+    override fun submitList(list: List<HistoryMangaChapterItem>) {
+        val newList = if (showAsChapter) {
+            list
+        } else {
+            list.distinctBy {
+                it.menu.hash
+            }
+        }
+        super.submitList(newList)
+    }
+
+    fun getItemByPos(position: Int): HistoryMangaChapterItem =
+            getItem(position)
+
+    fun toggleShowType() {
+        changeShowType(!showAsChapter)
+    }
+
+    private fun changeShowType(showAsChapter: Boolean) {
+        this.showAsChapter = showAsChapter
     }
 
     inner class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView),
@@ -100,7 +126,7 @@ class HistoryChapterItemAdapter(private val context: Context,
     companion object {
         const val TAG = "HistoryChapterItemAdapter"
 
-        val diffCallBack = object : DiffUtil.ItemCallback<HistoryMangaChapterItem>(){
+        val diffCallBack = object : DiffUtil.ItemCallback<HistoryMangaChapterItem>() {
             override fun areItemsTheSame(oldItem: HistoryMangaChapterItem?,
                     newItem: HistoryMangaChapterItem?): Boolean {
                 return oldItem?.hash == newItem?.hash

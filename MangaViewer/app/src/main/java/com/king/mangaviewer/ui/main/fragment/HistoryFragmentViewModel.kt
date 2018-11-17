@@ -25,6 +25,7 @@ import javax.inject.Inject
 class HistoryFragmentViewModel @Inject constructor(
         private val appRepository: AppRepository,
         private val getHistoryChapterListUseCase: GetHistoryChapterListUseCase,
+        private val selectMangaMenuUseCase: SelectMangaMenuUseCase,
         private val selectHistoryChapterUseCase: SelectHistoryChapterUseCase,
         private val deleteHistoryChapterUseCase: DeleteHistoryChapterUseCase,
         private val deleteAllHistoryUseCase: DeleteAllHistoryUseCase
@@ -57,21 +58,34 @@ class HistoryFragmentViewModel @Inject constructor(
         selectHistoryChapterUseCase.execute(chapterItem).subscribe()
     }
 
+    fun selectMenu(chapterItem: HistoryMangaChapterItem) {
+        selectMangaMenuUseCase.execute(chapterItem.menu).subscribe()
+    }
+
     fun refresh(isSilent: Boolean) {
         getData(isSilent)
     }
 
-    fun delete(pos: Int) {
-        mangaList.value?.get(pos)?.let { it ->
-            deleteHistoryChapterUseCase.execute(it)
-                    .subscribe({
-                        getData(false)
-                    }, {
-                        Logger.e(TAG, it)
-                    })
-                    .apply { disposable.add(this) }
+    fun deleteChapter(item: HistoryMangaChapterItem) {
+        deleteHistoryChapterUseCase.execute(item)
+                .subscribe({
+                    getData(false)
+                }, {
+                    Logger.e(TAG, it)
+                })
+                .apply { disposable.add(this) }
 
-        }
+    }
+
+    fun deleteMenu(item: HistoryMangaChapterItem) {
+        deleteHistoryChapterUseCase.execute(item, true)
+                .subscribe({
+                    getData(false)
+                }, {
+                    Logger.e(TAG, it)
+                })
+                .apply { disposable.add(this) }
+
     }
 
     fun clearAllHistory() {

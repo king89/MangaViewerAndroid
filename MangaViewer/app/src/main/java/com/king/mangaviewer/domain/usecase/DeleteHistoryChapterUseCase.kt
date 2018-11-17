@@ -14,8 +14,12 @@ class DeleteHistoryChapterUseCase @Inject constructor(
         private val historyMangaRepository: HistoryMangaRepository
 ) {
     @SuppressLint("CheckResult")
-    fun execute(item: HistoryMangaChapterItem): Completable {
-        return historyMangaRepository.removeHistory(item)
+    fun execute(item: HistoryMangaChapterItem, alsoDeleteRelatedChapter: Boolean = false): Completable {
+        return if (alsoDeleteRelatedChapter) {
+            historyMangaRepository.removeRelatedHistory(item)
+        } else {
+            historyMangaRepository.removeHistory(item)
+        }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }

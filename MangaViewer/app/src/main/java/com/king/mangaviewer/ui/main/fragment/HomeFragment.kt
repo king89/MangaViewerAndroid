@@ -4,10 +4,11 @@ import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
-import android.support.design.widget.Snackbar.LENGTH_INDEFINITE
-import android.support.design.widget.Snackbar.LENGTH_SHORT
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -17,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.king.mangaviewer.R
+import com.king.mangaviewer.adapter.HistoryChapterItemAdapter
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter.OnItemClickListener
 import com.king.mangaviewer.base.BaseFragment
@@ -26,12 +28,13 @@ import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.ui.chapter.MangaChapterActivity
+import com.king.mangaviewer.ui.main.HasFloatActionButton
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.withViewModel
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_manga_gridview.layout_error
 
-open class HomeFragment : BaseFragment() {
+open class HomeFragment : BaseFragment(), HasFloatActionButton {
 
     lateinit var viewModel: HomeFragmentViewModel
 
@@ -40,6 +43,8 @@ open class HomeFragment : BaseFragment() {
     lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private var snackbar: Snackbar? = null
     private var rootView: View? = null
+    private var fab: FloatingActionButton? = null
+
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
@@ -66,6 +71,7 @@ open class HomeFragment : BaseFragment() {
         mSwipeRefreshLayout = rootView.findViewById<View>(
                 R.id.swipeRefreshLayout) as SwipeRefreshLayout
         mSwipeRefreshLayout.setOnRefreshListener { refresh() }
+
         gv = rootView.findViewById<View>(R.id.gridView) as MangaGridView
         gv.adapter = MangaMenuItemAdapter(object : OnItemClickListener {
             override fun onClick(menu: MangaMenuItem) {
@@ -75,6 +81,21 @@ open class HomeFragment : BaseFragment() {
                         R.anim.out_rightleft)
             }
         })
+        gv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                if (dy > 0 || dy < 0 && fab?.isShown == true)
+                    fab?.hide()
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    fab?.show()
+                }
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+        })
+
         rootView.findViewById<Button>(R.id.btRetry).setOnClickListener {
             refresh()
         }
@@ -124,6 +145,16 @@ open class HomeFragment : BaseFragment() {
             })
             this.attachToView()
         }
+    }
+
+    override fun initFab(fab: FloatingActionButton) {
+//        this.fab = fab
+//        fab.setImageDrawable(ContextCompat.getDrawable(fab.context, R.drawable.ic_search))
+//        fab.show()
+        fab.hide()
+    }
+
+    override fun onClick() {
     }
 
     open val TAG = "HomeFragment"
