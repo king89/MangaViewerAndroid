@@ -111,7 +111,7 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
 
     private fun addItemTouchForRecyclerView() {
         val itemTouchHelperCallback = RecyclerItemTouchHelper(0,
-                ItemTouchHelper.LEFT or RIGHT) { viewHolder, direction, position ->
+                ItemTouchHelper.LEFT) { viewHolder, direction, position ->
             if (adapter!!.showAsChapter) {
                 viewModel.deleteChapter(adapter!!.getItemByPos(viewHolder.adapterPosition))
             } else {

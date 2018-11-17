@@ -56,9 +56,7 @@ class MangaChapterItemAdapter(private val context: Context,
                     }
                     holder.textView.text = chapterTitle
                     holder.itemView.setOnClickListener { onItemClickListener.onClick(this) }
-                    if (item.isRead) {
-                        holder.setRead()
-                    }
+                    holder.setRead(item.isRead)
                 }
             }
             CATEGORY -> {
@@ -80,10 +78,13 @@ class MangaChapterItemAdapter(private val context: Context,
         val textView: TextView by lazy { itemView.findViewById<View>(R.id.textView) as TextView }
         val viewHeader: View by lazy { itemView.findViewById<View>(R.id.viewHeader) as View }
 
-        fun setRead() {
-            val colorRead = ContextCompat.getColor(context, R.color.color_read)
-            textView.setTextColor(colorRead)
-            viewHeader.setBackgroundColor(colorRead)
+        fun setRead(read: Boolean) {
+            val bannerColor = if (read) {
+                ContextCompat.getColor(context, R.color.color_read_banner)
+            } else {
+                ContextCompat.getColor(context, R.color.color_unread_banner)
+            }
+            viewHeader.setBackgroundColor(bannerColor)
         }
     }
 
