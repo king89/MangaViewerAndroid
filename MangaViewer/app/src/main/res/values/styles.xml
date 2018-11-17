@@ -1,42 +1,55 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+  <!--
+      Base application theme, dependent on API level. This theme is replaced
+      by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+  -->
+  <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
     <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        Theme customizations available in newer API levels can go in
+        res/values-vXX/styles.xml, while customizations related to
+        backward-compatibility can go here.
     -->
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
-    </style>
+  </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+  <!-- Application theme. -->
+  <style name="AppTheme" parent="AppBaseTheme">
+    <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
 
-    <style name="ToolBarStyle" parent="">
-        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
-    </style>
+  </style>
 
-    <style name="MangaGridView" >
-        <item name="android:clipToPadding">false</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="android:paddingLeft">15dp</item>
-        <item name="android:paddingRight">15dp</item>
-    </style>
+  <style name="AppThemeTransparent" parent="AppTheme"/>
 
-    <style name="ReaderTheme" parent="AppTheme">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+  <style name="ToolBarStyle" parent="">
+    <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+  </style>
 
-    </style>
+  <style name="MangaGridView">
+    <item name="android:clipToPadding">false</item>
+    <item name="android:paddingTop">10dp</item>
+    <item name="android:paddingBottom">10dp</item>
+    <item name="android:paddingLeft">15dp</item>
+    <item name="android:paddingRight">15dp</item>
+  </style>
+
+  <style name="ReaderTheme" parent="AppTheme">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+
+  </style>
+
+  <style name="ExpandedTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+    <item name="android:textColor">@android:color/transparent</item>
+    <item name="android:textSize">0sp</item>
+  </style>
+
+  <style name="AppTheme.PlainFab" parent="@style/Widget.Design.FloatingActionButton">
+    <item name="elevation">0dp</item>
+    <item name="fabSize">mini</item>
+  </style>
 </resources>

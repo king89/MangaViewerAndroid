@@ -32,6 +32,7 @@
           android:value=".activity.SearchResultActivity"/>
     </activity>
     <activity
+        android:theme="@style/AppThemeTransparent"
         android:name=".ui.chapter.MangaChapterActivity"
         android:label="@string/app_name">
     </activity>

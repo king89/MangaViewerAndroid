@@ -122,6 +122,7 @@
   <string name="delete">Delete</string>
   <string name="cancel">Cancel</string>
   <string name="clear">Clear</string>
+  <string name="no_description">No decription</string>
 
 
 </resources>

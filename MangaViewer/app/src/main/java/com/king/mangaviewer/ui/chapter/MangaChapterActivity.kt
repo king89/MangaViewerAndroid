@@ -25,12 +25,17 @@ import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
 import com.king.mangaviewer.util.MangaHelperV2
+import com.king.mangaviewer.util.VersionUtil.isGreaterOrEqualApi19
+import com.king.mangaviewer.util.glide.BlurTransformation
 import com.king.mangaviewer.util.withViewModel
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import me.grantland.widget.AutofitTextView
+import kotlinx.android.synthetic.main.activity_manga_chapter.fabShare
+import kotlinx.android.synthetic.main.activity_manga_chapter.fabSort
+import kotlinx.android.synthetic.main.activity_manga_chapter.ivCover
+import kotlinx.android.synthetic.main.activity_manga_chapter.tvTitle
 import javax.inject.Inject
 
 class MangaChapterActivity : BaseActivity(), OnItemClickListener {
@@ -46,24 +51,22 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
     private val imageView: ImageView by lazy {
         findViewById<ImageView>(R.id.imageView)
     }
-    private val textView: AutofitTextView by lazy {
-        findViewById<AutofitTextView>(R.id.textView)
-    }
 
     private val progressBar: ProgressBar by lazy {
         findViewById<ProgressBar>(R.id.progressBar)
     }
 
-    private val floatingActionButton: FloatingActionButton by lazy {
-        findViewById<FloatingActionButton>(R.id.fab)
+    private val fabFavorite: FloatingActionButton by lazy {
+        findViewById<FloatingActionButton>(R.id.fabFavorite)
     }
 
     override fun initControl() {
         setContentView(R.layout.activity_manga_chapter)
 
-        textView.text = this.appViewModel.Manga.selectedMangaMenuItem.title
+        tvTitle.text = this.appViewModel.Manga.selectedMangaMenuItem.title
         loadChapterCover()
         setupChapterList()
+        initButtons()
         initViewModel()
 
     }
@@ -71,6 +74,11 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
     override fun onResume() {
         super.onResume()
         viewModel.updateHistoryChapter()
+    }
+
+    private fun initButtons() {
+        fabShare.setOnClickListener { }
+        fabSort.setOnClickListener { }
     }
 
     private fun initViewModel() {
@@ -129,13 +137,13 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
 
             this.favouriteState.observe(this@MangaChapterActivity, Observer {
                 if (it!!) {
-                    floatingActionButton.setImageResource(R.mipmap.ic_star_white)
-                    floatingActionButton.setOnClickListener { view ->
+                    fabFavorite.setImageResource(R.mipmap.ic_star_white)
+                    fabFavorite.setOnClickListener { view ->
                         this.removeFromFavorite()
                     }
                 } else {
-                    floatingActionButton.setImageResource(R.mipmap.ic_star_border_white)
-                    floatingActionButton.setOnClickListener { view ->
+                    fabFavorite.setImageResource(R.mipmap.ic_star_border_white)
+                    fabFavorite.setOnClickListener { view ->
                         this.addToFavorite()
                     }
                 }
@@ -157,11 +165,18 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { it: String ->
-                    GlideApp.with(imageView)
+                    val glide = GlideApp.with(imageView)
+                            .asBitmap()
                             .load(it)
                             .override(320, 320)
                             .placeholder(R.color.manga_place_holder)
-                            .into(imageView)
+                    glide.into(ivCover)
+
+                    if (isGreaterOrEqualApi19()) {
+                        glide.transform(BlurTransformation(imageView.context))
+                    }
+                    glide.into(imageView)
+
                 }
                 .apply { compositeDisposable.add(this) }
 
