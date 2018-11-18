@@ -4,11 +4,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.king.mangaviewer.R
 import com.king.mangaviewer.model.FavouriteMangaMenuItem
+import com.king.mangaviewer.model.MangaMenuItem
 
 /**
  * Created by KinG on 6/18/2016.
  */
-class FavouriteMangaItemAdapter(private val listener: OnItemClickListener? = null) :
+class FavouriteMangaItemAdapter(
+        listener: ((view: View, menu: MangaMenuItem) -> Unit)? = null) :
         MangaMenuItemAdapter(listener) {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)

@@ -18,7 +18,6 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
-import com.king.mangaviewer.adapter.MangaMenuItemAdapter.OnItemClickListener
 import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.component.MangaGridView
@@ -67,15 +66,13 @@ class SearchResultActivity : BaseActivity() {
         }
         mangaSourceTv = this.findViewById<View>(R.id.manga_source_textView) as TextView
         gv = findViewById<View>(R.id.gridView) as MangaGridView
-        gv.adapter = MangaMenuItemAdapter(object : OnItemClickListener {
-            override fun onClick(menu: MangaMenuItem) {
-                viewModel.selectMenu(menu)
-                startActivity(Intent(this@SearchResultActivity, MangaChapterActivity::class.java))
-                this@SearchResultActivity.overridePendingTransition(R.anim.in_rightleft,
-                        R.anim.out_rightleft)
-            }
+        gv.adapter = MangaMenuItemAdapter { view, item ->
+            viewModel.selectMenu(item)
+            startActivity(Intent(this@SearchResultActivity, MangaChapterActivity::class.java))
+            this@SearchResultActivity.overridePendingTransition(R.anim.in_rightleft,
+                    R.anim.out_rightleft)
 
-        })
+        }
     }
 
     private fun initViewModel() {

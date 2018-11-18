@@ -49,7 +49,6 @@ class FavouriteFragment : BaseFragment() {
         viewModel.refresh(true)
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu!!.clear()
         super.onCreateOptionsMenu(menu, inflater)
@@ -63,15 +62,12 @@ class FavouriteFragment : BaseFragment() {
         gridLayoutManager = GridLayoutManager(activity,
                 resources.getInteger(R.integer.gridvivew_column_num))
         mRecyclerView.layoutManager = gridLayoutManager
-        mRecyclerView.adapter = FavouriteMangaItemAdapter(
-                object : MangaMenuItemAdapter.OnItemClickListener {
-                    override fun onClick(menu: MangaMenuItem) {
-                        viewModel.selectMangaMenu(menu)
-                        startActivity(Intent(context, MangaChapterActivity::class.java))
-                        activity!!.overridePendingTransition(R.anim.in_rightleft,
-                                R.anim.out_rightleft)
-                    }
-                })
+        mRecyclerView.adapter = FavouriteMangaItemAdapter { view, item ->
+            viewModel.selectMangaMenu(item)
+            startActivity(Intent(context, MangaChapterActivity::class.java))
+            activity!!.overridePendingTransition(R.anim.in_rightleft,
+                    R.anim.out_rightleft)
+        }
         tv = rootView.findViewById<View>(R.id.textView) as TextView
         mSwipeRefreshLayout = rootView.findViewById<View>(
                 R.id.swipeRefreshLayout) as SwipeRefreshLayout

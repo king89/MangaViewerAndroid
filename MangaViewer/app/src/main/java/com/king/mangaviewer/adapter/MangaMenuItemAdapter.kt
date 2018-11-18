@@ -23,7 +23,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-open class MangaMenuItemAdapter(private val listener: OnItemClickListener? = null) :
+open class MangaMenuItemAdapter(
+        private val listener: ((view: View, menu: MangaMenuItem) -> Unit)? = null) :
         BaseRecyclerViewAdapter<MangaMenuItem, RecyclerView.ViewHolder>(diffCallBack) {
 
     private var mLoadingState: LoadingState = Idle
@@ -78,7 +79,7 @@ open class MangaMenuItemAdapter(private val listener: OnItemClickListener? = nul
 
                 val title = this.getItem(position).title
                 holder.textView.text = title
-                holder.itemView.setOnClickListener { listener?.onClick(item) }
+                holder.itemView.setOnClickListener { listener?.invoke(holder.imageView, item) }
             }
         }
     }
@@ -158,16 +159,12 @@ open class MangaMenuItemAdapter(private val listener: OnItemClickListener? = nul
         }
     }
 
-    interface OnItemClickListener {
-        fun onClick(menu: MangaMenuItem)
-    }
-
     companion object {
         const val TAG = "MangaMenuItemAdapter"
         val TYPE_DATA = 0
         val TYPE_FOOTER = 1
 
-        val diffCallBack = object : DiffUtil.ItemCallback<MangaMenuItem>(){
+        val diffCallBack = object : DiffUtil.ItemCallback<MangaMenuItem>() {
             override fun areItemsTheSame(oldItem: MangaMenuItem?,
                     newItem: MangaMenuItem?): Boolean {
                 return oldItem?.hash == newItem?.hash

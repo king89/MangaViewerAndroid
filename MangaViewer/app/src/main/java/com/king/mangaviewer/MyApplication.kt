@@ -11,10 +11,12 @@ import com.crashlytics.android.core.CrashlyticsCore
 import com.king.mangaviewer.di.AppComponent
 import com.king.mangaviewer.di.DaggerAppComponent
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver
+import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.viewmodel.AppViewModel
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import io.fabric.sdk.android.Fabric
+import io.reactivex.plugins.RxJavaPlugins
 import javax.inject.Inject
 
 class MyApplication : DaggerApplication() {
@@ -42,7 +44,7 @@ class MyApplication : DaggerApplication() {
         super.onCreate()
         val core = CrashlyticsCore.Builder().build()
         Fabric.with(this, Crashlytics.Builder().core(core).build())
-
+        setupRxExceptionHandler()
         //notify service
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         val isStartService = sp.getBoolean(getString(R.string.pref_key_auto_update_service), true)
@@ -54,6 +56,12 @@ class MyApplication : DaggerApplication() {
         INSTANCE = this
     }
 
+    private fun setupRxExceptionHandler() {
+        RxJavaPlugins.setErrorHandler {
+            Logger.e(TAG, it)
+        }
+    }
+
     companion object {
         @SuppressLint("StaticFieldLeak")
         @JvmStatic
@@ -61,5 +69,7 @@ class MyApplication : DaggerApplication() {
 
         @SuppressLint("StaticFieldLeak")
         lateinit var INSTANCE: MyApplication
+
+        const val TAG = "MyApplication"
     }
 }

@@ -2,10 +2,13 @@ package com.king.mangaviewer.ui.chapter
 
 import android.arch.lifecycle.Observer
 import android.content.Intent
+import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -25,6 +28,7 @@ import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
 import com.king.mangaviewer.util.MangaHelperV2
+import com.king.mangaviewer.util.VersionUtil
 import com.king.mangaviewer.util.VersionUtil.isGreaterOrEqualApi19
 import com.king.mangaviewer.util.glide.BlurTransformation
 import com.king.mangaviewer.util.withViewModel
@@ -211,9 +215,25 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.chapter_menu, menu)
-
-
         return super.onCreateOptionsMenu(menu)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            // Respond to the action bar's Up/Home button
+            android.R.id.home -> {
+                supportFinishAfterTransition()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        if (VersionUtil.isGreaterOrEqualApi21()) {
+            supportFinishAfterTransition()
+        } else {
+            super.onBackPressed()
+        }
+    }
 }
