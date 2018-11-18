@@ -29,6 +29,7 @@ import com.king.mangaviewer.ui.main.HasFloatActionButton
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
 import com.king.mangaviewer.ui.page.MangaPageActivityV2.Companion.INTENT_EXTRA_FROM_HISTORY
 import com.king.mangaviewer.util.AppNavigator
+import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.RecyclerItemTouchHelper
 import com.king.mangaviewer.util.withViewModel
 import dagger.android.support.AndroidSupportInjection
@@ -164,18 +165,22 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
     override fun onClick() {
         //toggle list type
         adapter?.apply {
-            toggleShowType()
+            Logger.d(TAG, "showAsChapter 1: $showAsChapter")
+            changeShowType(!showAsChapter)
+            Logger.d(TAG, "showAsChapter 2: $showAsChapter")
+
             if (showAsChapter) {
                 fab?.setImageDrawable(
                         ContextCompat.getDrawable(fab?.context!!, R.drawable.ic_unfold))
-
             } else {
                 fab?.setImageDrawable(ContextCompat.getDrawable(fab?.context!!, R.drawable.ic_fold))
-
             }
             submitList(viewModel.mangaList.value!!)
         }
 
+    }
+    companion object {
+        const val TAG = "HistoryFragment"
     }
 
 }

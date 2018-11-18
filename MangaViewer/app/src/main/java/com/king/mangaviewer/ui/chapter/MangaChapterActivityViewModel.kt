@@ -73,6 +73,8 @@ class MangaChapterActivityViewModel @Inject constructor(
                     }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe { mLoadingState.value = Idle }
+                    .doAfterTerminate { mLoadingState.value = Idle }
                     .subscribe({
                         mChapterPair.value = it
                     }, {

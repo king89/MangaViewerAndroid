@@ -11,7 +11,7 @@
     >
   <FrameLayout
       android:layout_width="match_parent"
-      android:layout_height="110dp"
+      android:layout_height="130dp"
       >
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -86,7 +86,7 @@
       <ImageView
           android:id="@+id/imageView"
           android:layout_width="0dp"
-          android:layout_height="110dp"
+          android:layout_height="130dp"
           android:scaleType="fitXY"
           android:src="@color/lightGrey"
           app:layout_constraintBottom_toBottomOf="parent"

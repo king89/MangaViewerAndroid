@@ -86,11 +86,8 @@ class HistoryChapterItemAdapter(private val context: Context,
     fun getItemByPos(position: Int): HistoryMangaChapterItem =
             getItem(position)
 
-    fun toggleShowType() {
-        changeShowType(!showAsChapter)
-    }
 
-    private fun changeShowType(showAsChapter: Boolean) {
+    fun changeShowType(showAsChapter: Boolean) {
         this.showAsChapter = showAsChapter
     }
 
