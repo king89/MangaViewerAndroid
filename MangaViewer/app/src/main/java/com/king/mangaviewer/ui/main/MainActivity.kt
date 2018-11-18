@@ -39,6 +39,7 @@ import com.king.mangaviewer.ui.main.fragment.HomeFragment
 import com.king.mangaviewer.ui.main.fragment.LocalFragment
 import com.king.mangaviewer.ui.search.SearchResultActivity
 import com.king.mangaviewer.ui.setting.SettingsActivity
+import com.king.mangaviewer.util.AppNavigator
 import kotlinx.android.synthetic.main.activity_main_menu.fab
 import kotlinx.android.synthetic.main.activity_main_menu.tabLayout
 import java.util.ArrayList
@@ -65,6 +66,9 @@ class MainActivity : BaseActivity() {
     @Inject
     @field:ActivityScopedFactory
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var appNavigator: AppNavigator
 
     private val exitAppHandler = Handler()
     private val exitAppRunable = Runnable { mTwoTapToExit = 0 }

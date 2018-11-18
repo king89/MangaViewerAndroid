@@ -1,7 +1,9 @@
 package com.king.mangaviewer.ui.main
 
+import android.app.Activity
 import com.king.mangaviewer.base.BaseActivityModule
 import com.king.mangaviewer.base.BaseActivityViewModel
+import com.king.mangaviewer.di.NavigatorModule
 import com.king.mangaviewer.di.annotation.ActivityScoped
 import com.king.mangaviewer.di.annotation.ActivityViewModelKey
 import com.king.mangaviewer.di.annotation.FragmentScoped
@@ -18,7 +20,7 @@ import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
 
-@Module(includes = [BaseActivityModule::class])
+@Module(includes = [BaseActivityModule::class, NavigatorModule::class])
 abstract class MainActivityModule {
     @FragmentScoped
     @ContributesAndroidInjector(modules = [HomeFragmentModule::class])
@@ -43,6 +45,9 @@ abstract class MainActivityModule {
     abstract fun provideMainActivityViewModel(
             viewModel: MainActivityViewModel): BaseActivityViewModel
 
+    @Binds
+    @ActivityScoped
+    abstract fun provideActivity(activity: MainActivity): Activity
 
     @Module
     companion object {

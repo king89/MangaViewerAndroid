@@ -24,7 +24,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class HistoryChapterItemAdapter(private val context: Context,
-        private val onClickListener: ((chapter: HistoryMangaChapterItem, showAsChapter: Boolean) -> Unit)? = null) :
+        private val onClickListener: ((view: View, chapter: HistoryMangaChapterItem, showAsChapter: Boolean) -> Unit)? = null) :
         BaseRecyclerViewAdapter<HistoryMangaChapterItem, HistoryChapterItemAdapter.RecyclerViewHolders>(
                 diffCallBack) {
     var showAsChapter = true
@@ -63,7 +63,7 @@ class HistoryChapterItemAdapter(private val context: Context,
         holder.dateTextView.text = getItem(position).lastReadDate
         holder.sourceTextView.text = getItem(position).mangaWebSource.displayName
         holder.itemView.setOnClickListener {
-            onClickListener?.invoke(getItem(position), showAsChapter)
+            onClickListener?.invoke(holder.imageView, getItem(position), showAsChapter)
         }
     }
 

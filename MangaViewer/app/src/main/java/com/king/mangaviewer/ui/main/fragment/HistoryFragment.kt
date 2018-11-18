@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.ContextCompat
+import android.support.v4.util.Pair
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -27,17 +28,23 @@ import com.king.mangaviewer.ui.chapter.MangaChapterActivity
 import com.king.mangaviewer.ui.main.HasFloatActionButton
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
 import com.king.mangaviewer.ui.page.MangaPageActivityV2.Companion.INTENT_EXTRA_FROM_HISTORY
+import com.king.mangaviewer.util.AppNavigator
 import com.king.mangaviewer.util.RecyclerItemTouchHelper
 import com.king.mangaviewer.util.withViewModel
 import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 class HistoryFragment : BaseFragment(), HasFloatActionButton {
 
     private var recyclerView: RecyclerView? = null
     private var adapter: HistoryChapterItemAdapter? = null
+        get() = recyclerView?.adapter as? HistoryChapterItemAdapter
     lateinit var tv: TextView
     lateinit var viewModel: HistoryFragmentViewModel
     private var fab: FloatingActionButton? = null
+
+    @Inject
+    lateinit var appNavigator: AppNavigator
 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
@@ -86,7 +93,7 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView!!.adapter = HistoryChapterItemAdapter(
-                activity as Context) { item, showAsChapter ->
+                activity as Context) { imageView, item, showAsChapter ->
             if (showAsChapter) {
                 viewModel.selectChapter(item)
                 val intent = Intent(context, MangaPageActivityV2::class.java)
@@ -96,13 +103,10 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
                         R.anim.out_rightleft)
             } else {
                 viewModel.selectMenu(item)
-                val intent = Intent(context, MangaChapterActivity::class.java)
-                intent.putExtra(INTENT_EXTRA_FROM_HISTORY, true)
-                this@HistoryFragment.startActivity(intent)
-                this@HistoryFragment.activity?.overridePendingTransition(R.anim.in_rightleft,
-                        R.anim.out_rightleft)
+                appNavigator.navigateToChapter(Pair(imageView, "cover"))
+
             }
-        }.apply { adapter = this }
+        }
 
         addItemTouchForRecyclerView()
 
@@ -162,7 +166,8 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
         adapter?.apply {
             toggleShowType()
             if (showAsChapter) {
-                fab?.setImageDrawable(ContextCompat.getDrawable(fab?.context!!, R.drawable.ic_unfold))
+                fab?.setImageDrawable(
+                        ContextCompat.getDrawable(fab?.context!!, R.drawable.ic_unfold))
 
             } else {
                 fab?.setImageDrawable(ContextCompat.getDrawable(fab?.context!!, R.drawable.ic_fold))
