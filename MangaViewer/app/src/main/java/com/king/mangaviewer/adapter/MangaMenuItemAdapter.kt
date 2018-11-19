@@ -16,8 +16,10 @@ import com.king.mangaviewer.model.LoadingState
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaMenuItem
+import com.king.mangaviewer.util.GlideImageHelper
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.MangaHelperV2
+import com.king.mangaviewer.util.glide.CropImageTransformation
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -56,25 +58,8 @@ open class MangaMenuItemAdapter(
             }
             is DataViewHolder -> {
                 val item = getItem(position)
-                Single.fromCallable {
-                    val url = MangaHelperV2.getMenuCover(item)
-                    if (url.isEmpty()) return@fromCallable Any()
-                    val header = LazyHeaders.Builder().addHeader("Referer", item.url).build()
-                    GlideUrl(url, header)
-                }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ it: Any ->
-                            (it as? GlideUrl) ?: apply {
-                                holder.imageView.setImageResource(R.color.manga_place_holder)
-                                return@subscribe
-                            }
-                            GlideApp.with(holder.imageView)
-                                    .load(it)
-                                    .override(320, 320)
-                                    .placeholder(R.color.manga_place_holder)
-                                    .into(holder.imageView)
-                        }, { Logger.e(TAG, it) })
+                GlideImageHelper.getMenuCover(holder.imageView, item, CropImageTransformation())
+                        .subscribe()
                         .apply { holder.disposable.add(this) }
 
                 val title = this.getItem(position).title
@@ -134,6 +119,7 @@ open class MangaMenuItemAdapter(
         }
 
         override fun recycle() {
+            imageView.setImageResource(R.color.manga_place_holder)
             disposable.clear()
         }
 

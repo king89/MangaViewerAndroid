@@ -15,9 +15,11 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.king.mangaviewer.R
 import com.king.mangaviewer.di.GlideApp
 import com.king.mangaviewer.model.HistoryMangaChapterItem
+import com.king.mangaviewer.util.GlideImageHelper
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.MangaHelperV2
 import com.king.mangaviewer.util.SwipeViewHolder
+import com.king.mangaviewer.util.glide.CropImageTransformation
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -41,21 +43,9 @@ class HistoryChapterItemAdapter(private val context: Context,
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
-        Single.fromCallable {
-            val url = MangaHelperV2.getMenuCover(getItem(position).menu)
-            val header = LazyHeaders.Builder().addHeader("Referer",
-                    getItem(position).menu.url).build()
-            GlideUrl(url, header)
-        }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ it: GlideUrl ->
-                    GlideApp.with(holder.imageView)
-                            .load(it)
-                            .override(320, 320)
-                            .placeholder(R.color.manga_place_holder)
-                            .into(holder.imageView)
-                }, { Logger.e(TAG, it) })
+        val item = getItem(position).menu
+        GlideImageHelper.getMenuCover(holder.imageView, item, CropImageTransformation())
+                .subscribe()
                 .apply { holder.disposable.add(this) }
 
         holder.titleTextView.text = getItem(position).menu.title

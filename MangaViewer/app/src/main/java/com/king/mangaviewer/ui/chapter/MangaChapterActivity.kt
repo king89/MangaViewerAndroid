@@ -27,10 +27,12 @@ import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
+import com.king.mangaviewer.util.GlideImageHelper
 import com.king.mangaviewer.util.MangaHelperV2
 import com.king.mangaviewer.util.VersionUtil
 import com.king.mangaviewer.util.VersionUtil.isGreaterOrEqualApi19
 import com.king.mangaviewer.util.glide.BlurTransformation
+import com.king.mangaviewer.util.glide.CropImageTransformation
 import com.king.mangaviewer.util.withViewModel
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -159,29 +161,19 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
 
     // TODO need to change
     private fun loadChapterCover() {
-        //get the first page image in the latest dataList
-        Single.fromCallable {
-            MangaHelperV2.getMenuCover(mangaViewModel.selectedMangaMenuItem)
+        val item = mangaViewModel.selectedMangaMenuItem
+
+        val transformation = if (VersionUtil.isGreaterOrEqualApi19()) {
+            BlurTransformation(imageView.context)
+        } else {
+            null
         }
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe {
-                    imageView.setImageResource(R.color.manga_place_holder)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { it: String ->
-                    val glide = GlideApp.with(imageView)
-                            .asBitmap()
-                            .load(it)
-                            .override(320, 320)
-                            .placeholder(R.color.manga_place_holder)
-                    glide.into(ivCover)
+        GlideImageHelper.getMenuCover(imageView, item, transformation)
+                .subscribe()
+                .apply { compositeDisposable.add(this) }
 
-                    if (isGreaterOrEqualApi19()) {
-                        glide.transform(BlurTransformation(imageView.context))
-                    }
-                    glide.into(imageView)
-
-                }
+        GlideImageHelper.getMenuCover(ivCover, item, CropImageTransformation())
+                .subscribe()
                 .apply { compositeDisposable.add(this) }
 
     }
