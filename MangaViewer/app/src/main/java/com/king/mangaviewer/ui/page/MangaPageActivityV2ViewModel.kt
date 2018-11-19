@@ -50,9 +50,6 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     fun getPageList() {
         getPageListUseCase.execute()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mLoadingState.value = Loading }
-                .doAfterTerminate { mLoadingState.value = Idle }
                 .toObservable()
                 .flatMapIterable { it }
                 .map {
@@ -62,6 +59,9 @@ class MangaPageActivityV2ViewModel @Inject constructor(
                     MangaUri(it.webImageUrl, it.referUrl)
                 }
                 .toList()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { mLoadingState.value = Loading }
+                .doAfterTerminate { mLoadingState.value = Idle }
                 .subscribe({
                     mDataList.value = it
                 }, {

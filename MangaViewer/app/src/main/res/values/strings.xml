@@ -123,6 +123,7 @@
   <string name="cancel">Cancel</string>
   <string name="clear">Clear</string>
   <string name="no_description">No decription</string>
+  <string name="load_page_fail_message">Load image failed</string>
 
 
 </resources>

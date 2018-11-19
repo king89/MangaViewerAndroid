@@ -12,47 +12,14 @@ import org.mockito.runners.MockitoJUnitRunner
 import java.util.HashMap
 
 @RunWith(MockitoJUnitRunner::class)
-class WebDMZJTest {
+class WebDMZJTest : MangaProviderTestBase() {
 
     @Mock
     lateinit var mMockContext: Context
-
     lateinit var webSite: MangaProvider
 
-    @Before
-    fun setup() {
-        webSite = WebDMZJ(mMockContext)
-
-    }
-
-    @Test
-    fun getMangaList() {
-
-        val hashMap = HashMap<String, Any>()
-        val list = webSite.getLatestMangaList(hashMap)
-        println(list.first())
-        Assert.assertTrue(list.size > 0)
-    }
-
-    @Test
-    fun getChapterList() {
-        val url = "https://manhua.dmzj.com/wojianvpushibiantai/"
-        val list = webSite.getChapterList(url)
-        println(list.first())
-        Assert.assertTrue(list.size > 0)
-    }
-
-    @Test
-    fun getPageList() {
-        val url = "https://manhua.dmzj.com/wojianvpushibiantai/70128.shtml#@page=1"
-        val list = webSite.getPageList(url)
-        println(list.first())
-        Assert.assertTrue(list.size > 0)
-    }
-
-    @Test
-    fun searchManga() {
-
-    }
+    override fun getMangaChapterUrl(): String = "https://manhua.dmzj.com/wojianvpushibiantai/"
+    override fun getMangaPageUrl(): String = "https://manhua.dmzj.com/wojianvpushibiantai/70128.shtml#@page=1"
+    override fun getProvider(): MangaProvider = WebDMZJ()
 
 }

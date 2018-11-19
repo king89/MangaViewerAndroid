@@ -63,13 +63,11 @@ public class WebMangaReader extends MangaProvider {
         List<TitleAndUrl> list = new ArrayList<>();
 
         Document doc = Jsoup.parse(html);
-        Elements els = doc.select("#chapterlist a");
-        Iterator i = els.iterator();
-        while (i.hasNext()) {
-            Element e = (Element) i.next();
-            String url = checkUrl(e.attr("href"));
-            String title = e.text();
-            list.add(new TitleAndUrl(title, url, null));
+        Elements els = doc.select(".chico_manga");
+        for (Element e : els) {
+            String url = checkUrl(e.nextElementSibling().attr("href"));
+            String title = e.nextElementSibling().text();
+            list.add(new TitleAndUrl(title, url));
         }
         Collections.reverse(list);
         return list;

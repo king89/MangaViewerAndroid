@@ -1,9 +1,9 @@
 package com.king.mangaviewer
 
 import android.content.Context
-import com.king.mangaviewer.domain.data.mangaprovider.WebManhuagui
 import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider
-import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider.STATE_SEARCH_QUERYTEXT
+import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider.Companion.STATE_SEARCH_QUERYTEXT
+import com.king.mangaviewer.domain.data.mangaprovider.WebManhuagui
 import com.king.mangaviewer.util.LZString
 import junit.framework.Assert.assertTrue
 import org.junit.Before
@@ -17,39 +17,38 @@ import java.util.HashMap
 class WebManhuaguiTest {
 
     @Mock
-    lateinit var mMockContext: Context
     lateinit var wbp: MangaProvider
 
     @Before
     fun setup() {
-        wbp = WebManhuagui(mMockContext)
+        wbp = WebManhuagui()
     }
 
     @Test
     fun getMangaList() {
 
         val hashMap = HashMap<String, Any>()
-        val list = wbp.getLatestMangaList(hashMap)
+        val list = wbp.getLatestMangaList(hashMap)!!
         println(list.first())
-        assertTrue(list.size > 0)
+        assertTrue(list.isNotEmpty())
     }
 
     @Test
     fun getChapterList() {
 
         val url = "https://www.manhuagui.com/comic/18467/"
-        val list = wbp.getChapterList(url)
+        val list = wbp.getChapterList(url)!!
         println(list.first())
-        assertTrue(list.size > 0)
+        assertTrue(list.isNotEmpty())
     }
 
     @Test
     fun getHiddenChapterList() {
 
         val url = "https://www.manhuagui.com/comic/19534/"
-        val list = wbp.getChapterList(url)
+        val list = wbp.getChapterList(url)!!
         println(list.first())
-        assertTrue(list.size > 0)
+        assertTrue(list.isNotEmpty())
     }
 
     @Test
@@ -59,7 +58,7 @@ class WebManhuaguiTest {
         val list = wbp.getPageList(url)
         println(list.first())
         println(list)
-        assertTrue(list.size > 0)
+        assertTrue(list.isNotEmpty())
 
     }
 
@@ -68,9 +67,9 @@ class WebManhuaguiTest {
         val hashState = HashMap<String, Any>().apply {
             this[STATE_SEARCH_QUERYTEXT] = "one piece"
         }
-        val list = wbp.getSearchingList(hashState)
+        val list = wbp.getSearchingList(hashState)!!
         println(list.first())
-        assertTrue(list.size > 0)
+        assertTrue(list.isNotEmpty())
     }
 
     @Test
@@ -78,10 +77,10 @@ class WebManhuaguiTest {
         val hashState = HashMap<String, Any>().apply {
             this[STATE_SEARCH_QUERYTEXT] = "a"
         }
-        val list = wbp.getSearchingList(hashState)
+        val list = wbp.getSearchingList(hashState)!!
         println(list.first())
         println(hashState)
-        assertTrue(list.size > 0)
+        assertTrue(list.isNotEmpty())
     }
 
     @Test

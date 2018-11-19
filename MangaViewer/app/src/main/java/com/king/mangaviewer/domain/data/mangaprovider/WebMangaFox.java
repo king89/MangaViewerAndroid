@@ -3,6 +3,7 @@ package com.king.mangaviewer.domain.data.mangaprovider;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 
+import java.util.Collections;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -21,10 +22,10 @@ public class WebMangaFox extends MangaProvider {
     private static String LOG_TAG = "WebMangaFox";
 
     public WebMangaFox() {
-        setWEBSITE_URL("http://mangafox.me/");
-        setLatestMangaUrl("http://mangafox.me/");
-        setWEB_SEARCH_URL("http://mangafox.me/search.php?name_method=cw&name=%s&page=%d%s");
-        setWEB_ALL_MANGA_BASE_URL("http://mangafox.me/directory/%d.htm");
+        setWEBSITE_URL("https://fanfox.net/");
+        setLatestMangaUrl("https://fanfox.net/releases/");
+        setWEB_SEARCH_URL("https://fanfox.net/search.php?name_method=cw&name=%s&page=%d%s");
+        setWEB_ALL_MANGA_BASE_URL("https://fanfox.net/directory/%d.htm");
         setCHARSET("utf8");
     }
 
@@ -34,11 +35,11 @@ public class WebMangaFox extends MangaProvider {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
 
         Document doc = Jsoup.parse(html);
-        Elements el = doc.select(".title");
+        Elements el = doc.select(".manga-list-4-list > li > a");
         for (Element e : el) {
-            String url = checkUrl(e.select("a").attr("href"));
-            String title = e.select("a").text();
-            String imageUrl = "";
+            String url = checkUrl(e.attr("title"));
+            String title = e.text();
+            String imageUrl = e.select("img").attr("src");
             topMangaList.add(new TitleAndUrl(title, url, imageUrl));
         }
 
@@ -46,13 +47,6 @@ public class WebMangaFox extends MangaProvider {
 
     }
 
-    @Override
-    public String getMenuCover(MangaMenuItem menu) {
-        String html = getHtml(menu.getUrl());
-        Document doc = Jsoup.parse(html);
-        String url = doc.select(".cover img").attr("src");
-        return url;
-    }
 
     @Override
     protected List<TitleAndUrl> getAllMangaList(String html) {
@@ -105,31 +99,19 @@ public class WebMangaFox extends MangaProvider {
 
     @Override
     public List<TitleAndUrl> getChapterList(String chapterUrl) {
-        List<TitleAndUrl> chapterList = new ArrayList<>();
-
         String html = getHtml(chapterUrl);
+        List<TitleAndUrl> list = new ArrayList<>();
+
         Document doc = Jsoup.parse(html);
-        Elements el = doc.select(".chlist");
-
-        for (int i = 0; i < el.size(); i++) {
-            Elements els = el.get(i).select(".tips");
-            String vol = el.get(i).previousElementSibling().select(".volume").first().textNodes().get(0).text();
-
-            for (Element e : els) {
-                String url = e.attr("href");
-                String title = e.text();
-                if (!vol.toLowerCase().contains("not")) {
-                    title = title + " - " + vol;
-                }
-                url = checkUrl(url);
-                if (url.endsWith("/")) {
-                    url = url + "1.htm";
-                }
-                chapterList.add(new TitleAndUrl(title, url));
-            }
+        Elements els = doc.select(".detail-main-list li a");
+        for (Element e : els) {
+            String url = checkUrl(e.attr("href"));
+            String title = e.attr("title");
+            list.add(new TitleAndUrl(title, url));
         }
+        Collections.reverse(list);
+        return list;
 
-        return chapterList;
     }
 
 

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
+    android:id="@+id/constrainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
@@ -56,7 +56,8 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       />
-  <android.support.constraint.ConstraintLayout
+  <include
+      layout="@layout/layout_load_page_error_retry"
       android:id="@+id/clError"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -67,29 +68,6 @@
       app:layout_constraintTop_toTopOf="parent"
       tools:visibility="visible"
       >
-    <TextView
-        android:id="@+id/tvError"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="Error"
-        android:textColor="@color/red_over_lay"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Retry"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvError"
-        />
-  </android.support.constraint.ConstraintLayout>
+  </include>
 </android.support.constraint.ConstraintLayout>
 
