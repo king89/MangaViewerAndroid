@@ -78,7 +78,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
 
     private val MAX_WIDTH: Int = 2560
     private val MAX_HEIGHT: Int = 1920
-    var newBitmap: Bitmap? = null
+//    var newBitmap: Bitmap? = null
     var target = object : SimpleTarget<Bitmap>() {
         override fun onResourceReady(resource: Bitmap,
                 transition: Transition<in Bitmap>?) {
@@ -99,9 +99,6 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
                 }
                 Logger.d(TAG, "screen width: $screenWidth, image width: $width")
 
-                newBitmap = resource.copy(resource.config, false)
-                newBitmap ?: return
-
                 if (context.resources.configuration.orientation == ORIENTATION_PORTRAIT) {
                     if (width > height) {
                         val factor = screenWidth / (width / 2)
@@ -111,7 +108,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
                         }
                         imageView.minScale = factor
                         imageView.maxScale = max(factor * 2, 2f)
-                        imageView.setImage(ImageSource.bitmap(newBitmap!!), imageState)
+                        imageView.setImage(ImageSource.cachedBitmap(resource), imageState)
                     } else {
                         val factor = screenWidth / width
                         val imageState = if (height > screenHeight) {
@@ -121,7 +118,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
                         }
                         imageView.minScale = factor
                         imageView.maxScale = max(factor * 2, 2f)
-                        imageView.setImage(ImageSource.bitmap(newBitmap!!),imageState)
+                        imageView.setImage(ImageSource.cachedBitmap(resource),imageState)
 
                     }
                 } else {
@@ -130,13 +127,12 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
 
                     imageView.minScale = factor
                     imageView.maxScale = max(factor * 2, 2f)
-                    imageView.setImage(ImageSource.bitmap(newBitmap!!), imageState)
+                    imageView.setImage(ImageSource.cachedBitmap(resource), imageState)
                 }
             } catch (e: OutOfMemoryError) {
                 Logger.e(TAG, e, "Out of memory when setting image")
                 showError()
             }
-
         }
 
         override fun onLoadFailed(errorDrawable: Drawable?) {
@@ -210,7 +206,6 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
         Logger.d(TAG, "recycled $mData")
 //        imageView.setImageDrawable(null)
         imageView.recycle()
-        newBitmap?.recycle()
         disposable.clear()
         GlideApp.with(this).clear(target)
     }
