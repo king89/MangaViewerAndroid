@@ -22,6 +22,8 @@ import android.widget.TextView
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.HistoryChapterItemAdapter
 import com.king.mangaviewer.base.BaseFragment
+import com.king.mangaviewer.base.ViewModelFactory
+import com.king.mangaviewer.di.annotation.FragmentScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.ui.chapter.MangaChapterActivity
@@ -43,6 +45,10 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
     lateinit var tv: TextView
     lateinit var viewModel: HistoryFragmentViewModel
     private var fab: FloatingActionButton? = null
+
+    @Inject
+    @field:FragmentScopedFactory
+    lateinit var fragmentViewModelFactory: ViewModelFactory
 
     @Inject
     lateinit var appNavigator: AppNavigator

@@ -23,7 +23,7 @@ import com.king.mangaviewer.R.string
 import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.component.HasFullScreenControl
-import com.king.mangaviewer.component.ReaderListener
+import com.king.mangaviewer.component.ReaderCallback
 import com.king.mangaviewer.di.annotation.ActivityScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
@@ -47,7 +47,7 @@ import javax.inject.Inject
 
 class MangaPageActivityV2 : BaseActivity(),
         HasFullScreenControl,
-        ReaderListener {
+        ReaderCallback {
     @Inject
     @field:ActivityScopedFactory
     lateinit var activityScopedFactory: ViewModelFactory

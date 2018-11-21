@@ -27,4 +27,6 @@
   <color name="color_read_banner">@color/grey</color>
   <color name="color_unread_banner">@color/colorAccent</color>
 
+  <color name="dim_color">#cc000000</color>
+
 </resources>

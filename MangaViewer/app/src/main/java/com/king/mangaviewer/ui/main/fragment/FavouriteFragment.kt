@@ -19,6 +19,8 @@ import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.FavouriteMangaItemAdapter
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
 import com.king.mangaviewer.base.BaseFragment
+import com.king.mangaviewer.base.ViewModelFactory
+import com.king.mangaviewer.di.annotation.FragmentScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaMenuItem
@@ -37,6 +39,10 @@ class FavouriteFragment : BaseFragment() {
     private lateinit var tv: TextView
 
     lateinit var viewModel: FavouriteFragmentViewModel
+
+    @Inject
+    @field:FragmentScopedFactory
+    lateinit var fragmentViewModelFactory: ViewModelFactory
 
     @Inject
     lateinit var appNavigator: AppNavigator

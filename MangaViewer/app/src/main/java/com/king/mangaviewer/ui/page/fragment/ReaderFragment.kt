@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import com.king.mangaviewer.R
 import com.king.mangaviewer.base.BaseFragment
 import com.king.mangaviewer.component.HasFullScreenControl
-import com.king.mangaviewer.component.ReaderListener
+import com.king.mangaviewer.component.ReaderCallback
 import com.king.mangaviewer.component.ReaderPanel
 import com.king.mangaviewer.model.MangaUri
 
 abstract class ReaderFragment : BaseFragment(), ReaderPanel {
 
-    var readerListener: ReaderListener? = null
+    var readerListener: ReaderCallback? = null
     protected var mangaList: List<MangaUri>? = null
     var startPage = 0
 

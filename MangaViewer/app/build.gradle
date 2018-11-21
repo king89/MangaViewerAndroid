@@ -106,6 +106,7 @@ dependencies {
     implementation "org.jsoup:jsoup:1.8.2"
     implementation "me.grantland:autofittextview:0.2.1"
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
+    implementation 'me.everything:overscroll-decor-android:1.0.4'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
 
     implementation libraries.butterKnife

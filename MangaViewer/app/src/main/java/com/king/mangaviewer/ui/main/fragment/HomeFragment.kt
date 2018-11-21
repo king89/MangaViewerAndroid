@@ -20,7 +20,9 @@ import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
 import com.king.mangaviewer.base.BaseFragment
 import com.king.mangaviewer.base.ErrorMessage.NoError
+import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.component.MangaGridView
+import com.king.mangaviewer.di.annotation.FragmentScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.ui.main.HasFloatActionButton
@@ -41,6 +43,10 @@ open class HomeFragment : BaseFragment(), HasFloatActionButton {
     private var snackbar: Snackbar? = null
     private var rootView: View? = null
     private var fab: FloatingActionButton? = null
+
+    @Inject
+    @field:FragmentScopedFactory
+    lateinit var fragmentViewModelFactory: ViewModelFactory
 
     @Inject
     lateinit var appNavigator: AppNavigator

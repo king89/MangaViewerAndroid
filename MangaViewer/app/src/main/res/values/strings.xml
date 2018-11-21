@@ -124,6 +124,12 @@
   <string name="clear">Clear</string>
   <string name="no_description">No decription</string>
   <string name="load_page_fail_message">Load image failed</string>
+  <string name="pull_to_next_chapter">Pull to next chapter</string>
+  <string name="pull_to_prev_chapter">Pull to previous chapter</string>
+  <string name="next_chapter">Next chapter</string>
+  <string name="prev_chapter">Previous chapter</string>
+  <string name="release_to_prev_chapter">Release to go</string>
+  <string name="release_to_next_chapter">Release to go</string>
 
 
 </resources>
