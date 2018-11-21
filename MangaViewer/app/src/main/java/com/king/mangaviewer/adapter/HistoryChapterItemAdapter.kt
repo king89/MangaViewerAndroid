@@ -43,17 +43,17 @@ class HistoryChapterItemAdapter(private val context: Context,
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
-        val item = getItem(position).menu
-        GlideImageHelper.getMenuCover(holder.imageView, item, CropImageTransformation())
+        val item = getItem(position)
+        GlideImageHelper.getMenuCover(holder.imageView, item.menu, CropImageTransformation())
                 .subscribe()
                 .apply { holder.disposable.add(this) }
 
-        holder.titleTextView.text = getItem(position).menu.title
-        holder.chapterTextView.text = getItem(position).title
-        holder.dateTextView.text = getItem(position).lastReadDate
-        holder.sourceTextView.text = getItem(position).mangaWebSource.displayName
+        holder.titleTextView.text = item.menu.title
+        holder.chapterTextView.text = item.title
+        holder.dateTextView.text = item.lastReadDate
+        holder.sourceTextView.text = item.mangaWebSource.displayName
         holder.itemView.setOnClickListener {
-            onClickListener?.invoke(holder.imageView, getItem(position), showAsChapter)
+            onClickListener?.invoke(holder.imageView, getItem(holder.adapterPosition), showAsChapter)
         }
     }
 
@@ -76,7 +76,6 @@ class HistoryChapterItemAdapter(private val context: Context,
     fun getItemByPos(position: Int): HistoryMangaChapterItem =
             getItem(position)
 
-
     fun changeShowType(showAsChapter: Boolean) {
         this.showAsChapter = showAsChapter
     }
@@ -92,6 +91,8 @@ class HistoryChapterItemAdapter(private val context: Context,
         val disposable = CompositeDisposable()
         var foregroundView: View
         fun recycle() {
+            imageView.setImageResource(R.mipmap.ic_preloader_background)
+            itemView.setOnClickListener {}
             disposable.clear()
         }
 
