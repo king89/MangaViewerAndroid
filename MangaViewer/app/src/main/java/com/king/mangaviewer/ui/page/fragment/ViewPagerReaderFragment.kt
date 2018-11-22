@@ -1,5 +1,6 @@
 package com.king.mangaviewer.ui.page.fragment
 
+import android.arch.lifecycle.Observer
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.view.ViewPager.OnPageChangeListener
@@ -10,16 +11,17 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
-import com.google.gson.reflect.TypeToken
 import com.king.mangaviewer.R
+import com.king.mangaviewer.R.string
 import com.king.mangaviewer.adapter.MangaPageItemAdapterV2
 import com.king.mangaviewer.component.ReaderCallback
 import com.king.mangaviewer.model.MangaUri
+import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel
 import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment.ShouldChangeChapter.Idle
 import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment.ShouldChangeChapter.NextChapter
 import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment.ShouldChangeChapter.PrevChapter
-import com.king.mangaviewer.util.GsonHelper
 import com.king.mangaviewer.util.Logger
+import com.king.mangaviewer.util.withViewModel
 import kotlinx.android.synthetic.main.fragment_viewpager_reader.clMask
 import kotlinx.android.synthetic.main.fragment_viewpager_reader.groupLeft
 import kotlinx.android.synthetic.main.fragment_viewpager_reader.groupRight
@@ -41,14 +43,8 @@ open class ViewPagerReaderFragment : ReaderFragment() {
     private var shouldChangeChapter: ShouldChangeChapter = Idle
     protected open val isLeftToRight = true
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            val type = object : TypeToken<List<MangaUri>>() {}.type
-            mangaList = GsonHelper.fromJson(it.getString(
-                    INTENT_EXTRA_MANGA_LIST_JSON), type)
-        }
-    }
+    var leftChapterName = ""
+    var rightChapterName = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?): View {
@@ -75,11 +71,35 @@ open class ViewPagerReaderFragment : ReaderFragment() {
             createOnOverScrollListener(this)
         }
 
-        mangaList?.run {
-            setupAdapter(this, GestureDetector(context, TapDetector()))
-            setPage(startPage)
-        }
+        //init view model
+        initViewModel()
 
+    }
+
+    private fun initViewModel() {
+        withViewModel<MangaPageActivityV2ViewModel>(activityScopedFactory) {
+            prevAndNextChapterName.observe(this@ViewPagerReaderFragment, Observer {
+                setPrevAndNextChapterTitle(it)
+            })
+
+            dataList.observe(this@ViewPagerReaderFragment, Observer {
+                setupAdapter(dataList.value!!, GestureDetector(context, TapDetector()))
+                setPage(startPage)
+            })
+
+        }
+    }
+
+    fun setPrevAndNextChapterTitle(it: Pair<String?, String?>?) {
+        leftChapterName = if (isLeftToRight)
+            it?.first ?: getString(string.no_more_prev_chapter)
+        else
+            it?.second ?: getString(string.no_more_next_chapter)
+
+        rightChapterName = if (isLeftToRight)
+            it?.second ?: getString(string.no_more_next_chapter)
+        else
+            it?.first ?: getString(string.no_more_prev_chapter)
     }
 
     sealed class ShouldChangeChapter {
@@ -98,8 +118,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
                 R.string.prev_chapter) else getString(R.string.next_chapter)
         val toChapterStringEnd = if (isLeftToRight) getString(R.string.next_chapter) else getString(
                 R.string.prev_chapter)
-        val leftChapterName = if (isLeftToRight) "Prev chapter title" else "Next chapter title"
-        val rightChapterName = if (isLeftToRight) "Next chapter title" else "Prev chapter title"
+
 
         decro.setOverScrollStateListener { decor, oldState, newState ->
             Logger.d(TAG, "oldState:$oldState, newState:$newState")
@@ -149,21 +168,21 @@ open class ViewPagerReaderFragment : ReaderFragment() {
         }
         decro.setOverScrollUpdateListener { decor, state, offset ->
             val alpha = min(abs(offset) / decor.view.width, THRESHOLD_SCROLL) / THRESHOLD_SCROLL
-            Logger.d(TAG,
-                    "OverScrollUpdate alpha: $alpha, percent: ${abs(offset) / decor.view.width}")
+//            Logger.d(TAG,
+//                    "OverScrollUpdate alpha: $alpha, percent: ${abs(offset) / decor.view.width}")
             clMask.alpha = alpha
             when {
                 //change text to release
-                alpha >= 1 && state == STATE_DRAG_START_SIDE -> {
+                alpha >= 1 && (state == STATE_DRAG_START_SIDE || state == STATE_DRAG_END_SIDE) -> {
                     tvStart.text = getString(R.string.release_to_prev_chapter)
-                }
-                alpha >= 1 && state == STATE_DRAG_END_SIDE -> {
                     tvEnd.text = getString(R.string.release_to_next_chapter)
                 }
                 alpha < 1 && state == STATE_DRAG_START_SIDE -> {
                     tvStart.text = getString(R.string.pull_to_prev_chapter)
+                    tvEnd.text = getString(R.string.pull_to_next_chapter)
                 }
                 alpha < 1 && state == STATE_DRAG_END_SIDE -> {
+                    tvStart.text = getString(R.string.pull_to_prev_chapter)
                     tvEnd.text = getString(R.string.pull_to_next_chapter)
                 }
             }
@@ -196,7 +215,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
     }
 
     override fun getTotalPageNum(): Int {
-        return mangaList?.size ?: 0
+        return viewPager?.adapter?.count ?: 0
     }
 
     override fun setPageMode(mode: Int) {
@@ -218,12 +237,8 @@ open class ViewPagerReaderFragment : ReaderFragment() {
         val THRESHOLD_SCROLL = 0.18f
 
         @JvmStatic
-        fun newInstance(dataJson: String) =
-                ViewPagerReaderFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(
-                                INTENT_EXTRA_MANGA_LIST_JSON, dataJson)
-                    }
-                }
+        fun newInstance() =
+                ViewPagerReaderFragment()
+
     }
 }

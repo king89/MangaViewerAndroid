@@ -1,7 +1,9 @@
 package com.king.mangaviewer.ui.page
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Transformations
 import com.king.mangaviewer.base.BaseActivityViewModel
 import com.king.mangaviewer.base.ErrorMessage
 import com.king.mangaviewer.base.ErrorMessage.GenericError
@@ -17,6 +19,8 @@ import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoNextChapter
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoPrevChapter
+import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment
+import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment.Companion
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.MangaHelperV2
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -25,7 +29,6 @@ import javax.inject.Inject
 
 class MangaPageActivityV2ViewModel @Inject constructor(
         private val appRepository: AppRepository,
-        private val getChapterListUseCase: GetChapterListUseCase,
         private val getPageListUseCase: GetPageListUseCase,
         private val selectMangaChapterUseCase: SelectMangaChapterUseCase
 ) :
@@ -34,11 +37,20 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     private val mDataList = MutableLiveData<List<MangaUri>>()
     val dataList: LiveData<List<MangaUri>> = mDataList
 
+    val currentPageNum = MutableLiveData<Int>().apply { value = 0 }
+    val totalPageNum = Transformations.map(dataList) {
+        it!!.size
+    }
+
     val errorMessage = MutableLiveData<ErrorMessage>().apply { value = NoError }
-    val mSelectedChapterName = MutableLiveData<String>()
+
+    private val mSelectedChapterName = MutableLiveData<String>()
     val selectedChapterName: LiveData<String> = mSelectedChapterName
 
+    val prevAndNextChapterName = MutableLiveData<Pair<String?, String?>>()
+
     init {
+        Logger.d(TAG, "MangaPageActivityV2ViewModel init")
         mDataList.value = emptyList()
         mSelectedChapterName.value = appRepository.appViewModel.Manga.selectedMangaChapterItem.title
     }
@@ -64,6 +76,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
                 .doAfterTerminate { mLoadingState.value = Idle }
                 .subscribe({
                     mDataList.value = it
+                    prevAndNextChapterName.value = (getPrevChapter()?.title to getNextChapter()?.title)
                 }, {
                     Logger.e(TAG, it)
                 })
@@ -72,29 +85,43 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     }
 
     fun nextChapter() {
-        val chapterList = appRepository.appViewModel.Manga.mangaChapterList
-        val currentChapter = appRepository.appViewModel.Manga.selectedMangaChapterItem
-
-        val pos = chapterList.indexOf(currentChapter)
-        if (pos - 1 >= 0) {
-            selectChapter(chapterList[pos - 1])
+        val chapter = getNextChapter()
+        if (chapter != null) {
+            selectChapter(chapter)
         } else {
             errorMessage.value = NoNextChapter
         }
-
     }
 
     fun prevChapter() {
-        val chapterList = appRepository.appViewModel.Manga.mangaChapterList
-        val currentChapter = appRepository.appViewModel.Manga.selectedMangaChapterItem
-
-        val pos = chapterList.indexOf(currentChapter)
-        if (pos + 1 < chapterList.size) {
-            selectChapter(chapterList[pos + 1])
+        val chapter = getPrevChapter()
+        if (chapter != null) {
+            selectChapter(chapter)
         } else {
             errorMessage.value = NoPrevChapter
         }
+    }
 
+    private fun getPrevChapter(): MangaChapterItem? {
+        val chapterList = appRepository.appViewModel.Manga.mangaChapterList
+        val currentChapter = appRepository.appViewModel.Manga.selectedMangaChapterItem
+        val pos = chapterList.indexOf(currentChapter)
+        return if (pos + 1 < chapterList.size) {
+            chapterList[pos + 1]
+        } else {
+            null
+        }
+    }
+
+    private fun getNextChapter(): MangaChapterItem? {
+        val chapterList = appRepository.appViewModel.Manga.mangaChapterList
+        val currentChapter = appRepository.appViewModel.Manga.selectedMangaChapterItem
+        val pos = chapterList.indexOf(currentChapter)
+        return if (pos - 1 >= 0) {
+            chapterList[pos - 1]
+        } else {
+            null
+        }
     }
 
     private fun selectChapter(chapter: MangaChapterItem) {
@@ -119,7 +146,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
         const val TAG = "MangaChapterActivityViewModel"
     }
 
-    sealed class SubError : ViewModelError(){
+    sealed class SubError : ViewModelError() {
         object NoNextChapter : SubError()
         object NoPrevChapter : SubError()
     }

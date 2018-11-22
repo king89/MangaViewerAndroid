@@ -1,21 +1,37 @@
 package com.king.mangaviewer.ui.page.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.king.mangaviewer.R
 import com.king.mangaviewer.base.BaseFragment
+import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.component.HasFullScreenControl
 import com.king.mangaviewer.component.ReaderCallback
 import com.king.mangaviewer.component.ReaderPanel
+import com.king.mangaviewer.di.annotation.ActivityScopedFactory
 import com.king.mangaviewer.model.MangaUri
+import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 abstract class ReaderFragment : BaseFragment(), ReaderPanel {
 
     var readerListener: ReaderCallback? = null
-    protected var mangaList: List<MangaUri>? = null
     var startPage = 0
+
+    @Inject
+    @field:ActivityScopedFactory
+    lateinit var activityScopedFactory: ViewModelFactory
+
+    lateinit var viewModel: MangaPageActivityV2ViewModel
+
+    override fun onAttach(context: Context?) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?): View {
@@ -30,14 +46,14 @@ abstract class ReaderFragment : BaseFragment(), ReaderPanel {
 
     override fun nextPage() {
         val newPos = getCurrentPageNum() + 1
-        if (newPos in 0 until getTotalPageNum()){
+        if (newPos in 0 until getTotalPageNum()) {
             smoothScrollToPage(newPos)
         }
     }
 
     override fun prevPage() {
         val newPos = getCurrentPageNum() - 1
-        if (newPos in 0 until getTotalPageNum()){
+        if (newPos in 0 until getTotalPageNum()) {
             smoothScrollToPage(newPos)
         }
     }

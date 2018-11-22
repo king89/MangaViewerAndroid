@@ -1,10 +1,8 @@
 package com.king.mangaviewer.ui.page.fragment
 
 import android.graphics.Bitmap
-import android.os.Bundle
 import android.view.GestureDetector
 import com.king.mangaviewer.adapter.RtlMangaPageItemAdapterV2
-import com.king.mangaviewer.component.ReaderCallback
 import com.king.mangaviewer.model.MangaUri
 import kotlinx.android.synthetic.main.fragment_viewpager_reader.viewPager
 import kotlin.math.max
@@ -23,10 +21,6 @@ class RtlViewPagerReaderFragment : ViewPagerReaderFragment() {
 
     override fun getCurrentPageNum(): Int {
         return super.getCurrentPageNum().invertIndex()
-    }
-
-    override fun getTotalPageNum(): Int {
-        return mangaList?.size ?: 0
     }
 
     override fun showThumbnail(pageNum: Int): Bitmap? {
@@ -49,20 +43,11 @@ class RtlViewPagerReaderFragment : ViewPagerReaderFragment() {
         return max(getTotalPageNum() - this - 1, -1)
     }
 
-    override fun createOnOverScrollListener(callback: ReaderCallback) {
-
-        super.createOnOverScrollListener(callback)
-    }
 
     companion object {
         val TAG = "RtlViewPagerReaderFragment"
         @JvmStatic
-        fun newInstance(dataJson: String) =
-                RtlViewPagerReaderFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(
-                                INTENT_EXTRA_MANGA_LIST_JSON, dataJson)
-                    }
-                }
+        fun newInstance() =
+                RtlViewPagerReaderFragment()
     }
 }

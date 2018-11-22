@@ -62,7 +62,6 @@ class MangaPageActivityV2 : BaseActivity(),
     val mSettingViewModel: SettingViewModel by lazy { appViewModel.Setting }
 
     internal var mIsLoadFromHistory: Boolean = false
-    internal var mUpdateConsumer: Consumer<Any> = Consumer { update(null) }
 
     private val mFFImageButton by lazy { findViewById<View>(R.id.ffButton) as ImageButton }
     private val mFRImageButton by lazy { findViewById<View>(R.id.frButton) as ImageButton }
@@ -70,7 +69,6 @@ class MangaPageActivityV2 : BaseActivity(),
 
     protected var mReaderFragment: ReaderFragment? = null
 
-    private var mMangaList: List<MangaUri>? = null
     private var delayFullScreenDispose: Disposable? = null
     private val DELAY = 5000L
 
@@ -186,15 +184,20 @@ class MangaPageActivityV2 : BaseActivity(),
                 }
             })
 
+            totalPageNum.observe(this@MangaPageActivityV2, Observer {
+                syncTextView()
+            })
+
             selectedChapterName.observe(this@MangaPageActivityV2, Observer {
                 supportActionBar!!.title = it
             })
 
             dataList.observe(this@MangaPageActivityV2, Observer {
-                setupReader(it!!)
+                setupReader()
             })
 
             attachToView()
+
         }
     }
 
@@ -219,14 +222,11 @@ class MangaPageActivityV2 : BaseActivity(),
         tvProgress.text = "$currentPage / $totalNum"
     }
 
-    private fun setupReader(mangaList: List<MangaUri>) {
-        mMangaList = mangaList
-        val json = GsonHelper.toJson(mangaList)
-
+    private fun setupReader() {
         val fragment = if (mSettingViewModel.getIsFromLeftToRight(this)) {
-            ViewPagerReaderFragment.newInstance(json)
+            ViewPagerReaderFragment.newInstance()
         } else {
-            RtlViewPagerReaderFragment.newInstance(json)
+            RtlViewPagerReaderFragment.newInstance()
         }
 
         fragment.readerListener = this
@@ -294,9 +294,8 @@ class MangaPageActivityV2 : BaseActivity(),
         isFTRSwitch.isChecked = mSettingViewModel.getIsFromLeftToRight(this)
         isFTRSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             mSettingViewModel.setIsFromLeftToRight(this, isChecked)
-            mMangaList?.run {
-                setupReader(this)
-            }
+            setupReader()
+
         }
         splitPageSwitch.isChecked = mSettingViewModel.getIsSplitPage(this)
         splitPageSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
