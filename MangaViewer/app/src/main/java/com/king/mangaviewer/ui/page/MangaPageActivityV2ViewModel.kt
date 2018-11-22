@@ -23,6 +23,7 @@ import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment
 import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment.Companion
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.MangaHelperV2
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -60,7 +61,16 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     }
 
     fun getPageList() {
-        getPageListUseCase.execute()
+        getPageListObservable()
+                .ignoreElement()
+                .onErrorComplete()
+                .subscribe()
+                .apply { disposable.add(this) }
+
+    }
+
+    private fun getPageListObservable(): Single<MutableList<MangaUri>> {
+        return getPageListUseCase.execute()
                 .subscribeOn(Schedulers.io())
                 .toObservable()
                 .flatMapIterable { it }
@@ -74,14 +84,15 @@ class MangaPageActivityV2ViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { mLoadingState.value = Loading }
                 .doAfterTerminate { mLoadingState.value = Idle }
-                .subscribe({
+                .doAfterSuccess {
                     mDataList.value = it
                     prevAndNextChapterName.value = (getPrevChapter()?.title to getNextChapter()?.title)
-                }, {
+                    Logger.d(TAG, "getPageListObservable doAfterSuccess")
+                }
+                .doOnError {
                     Logger.e(TAG, it)
-                })
-                .apply { disposable.add(this) }
-
+                    errorMessage.value = GenericError
+                }
     }
 
     fun nextChapter() {
@@ -130,15 +141,18 @@ class MangaPageActivityV2ViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { mLoadingState.value = Loading }
                 .doAfterTerminate { mLoadingState.value = Idle }
-                .subscribe(
-                        {
-                            mSelectedChapterName.value = chapter.title
-                            getPageList()
-                        },
-                        {
-                            Logger.e(TAG, it)
-                            errorMessage.value = GenericError
-                        })
+                .doOnComplete {
+                    Logger.d(TAG, "selectChapter on complete")
+                    mSelectedChapterName.value = chapter.title
+                }
+                .andThen(getPageListObservable())
+                .doOnError {
+                    Logger.e(TAG, it)
+                    errorMessage.value = GenericError
+                }
+                .ignoreElement()
+                .onErrorComplete()
+                .subscribe()
                 .apply { disposable.add(this) }
     }
 

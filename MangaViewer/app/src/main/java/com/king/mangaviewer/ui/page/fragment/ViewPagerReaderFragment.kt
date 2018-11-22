@@ -15,6 +15,7 @@ import com.king.mangaviewer.R
 import com.king.mangaviewer.R.string
 import com.king.mangaviewer.adapter.MangaPageItemAdapterV2
 import com.king.mangaviewer.component.ReaderCallback
+import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel
 import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment.ShouldChangeChapter.Idle
@@ -78,6 +79,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
 
     private fun initViewModel() {
         withViewModel<MangaPageActivityV2ViewModel>(activityScopedFactory) {
+            viewModel = this
             prevAndNextChapterName.observe(this@ViewPagerReaderFragment, Observer {
                 setPrevAndNextChapterTitle(it)
             })
@@ -121,7 +123,12 @@ open class ViewPagerReaderFragment : ReaderFragment() {
 
 
         decro.setOverScrollStateListener { decor, oldState, newState ->
-            Logger.d(TAG, "oldState:$oldState, newState:$newState")
+            clMask ?: return@setOverScrollStateListener
+            groupLeft ?: return@setOverScrollStateListener
+            groupRight ?: return@setOverScrollStateListener
+            if (viewModel.loadingState.value is Loading) return@setOverScrollStateListener
+            if (isDetached) return@setOverScrollStateListener
+
             when (newState) {
                 STATE_IDLE -> {
                     clMask.visibility = GONE
@@ -167,6 +174,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
             }
         }
         decro.setOverScrollUpdateListener { decor, state, offset ->
+            clMask ?: return@setOverScrollUpdateListener
             val alpha = min(abs(offset) / decor.view.width, THRESHOLD_SCROLL) / THRESHOLD_SCROLL
 //            Logger.d(TAG,
 //                    "OverScrollUpdate alpha: $alpha, percent: ${abs(offset) / decor.view.width}")
@@ -234,7 +242,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
 
     companion object {
         val TAG = "ViewPagerReaderFragment"
-        val THRESHOLD_SCROLL = 0.18f
+        val THRESHOLD_SCROLL = 0.12f
 
         @JvmStatic
         fun newInstance() =
