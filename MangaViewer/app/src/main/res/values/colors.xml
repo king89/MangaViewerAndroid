@@ -28,5 +28,6 @@
   <color name="color_unread_banner">@color/colorAccent</color>
 
   <color name="dim_color">#cc000000</color>
+  <color name="background_control_panel">#cc111111</color>
 
 </resources>

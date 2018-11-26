@@ -1,6 +1,7 @@
 package com.king.mangaviewer.ui.page
 
 import android.arch.lifecycle.Observer
+import android.graphics.Rect
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.Snackbar.LENGTH_SHORT
@@ -9,6 +10,7 @@ import android.support.v7.widget.TooltipCompat
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -27,20 +29,17 @@ import com.king.mangaviewer.component.ReaderCallback
 import com.king.mangaviewer.di.annotation.ActivityScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
-import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoNextChapter
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoPrevChapter
 import com.king.mangaviewer.ui.page.fragment.ReaderFragment
 import com.king.mangaviewer.ui.page.fragment.RtlViewPagerReaderFragment
 import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment
-import com.king.mangaviewer.util.GsonHelper
 import com.king.mangaviewer.util.withViewModel
 import com.king.mangaviewer.viewmodel.MangaViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.activity_manga_page_v2.progressBar
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.inject.Inject
@@ -66,6 +65,11 @@ class MangaPageActivityV2 : BaseActivity(),
     private val mFFImageButton by lazy { findViewById<View>(R.id.ffButton) as ImageButton }
     private val mFRImageButton by lazy { findViewById<View>(R.id.frButton) as ImageButton }
     private val tvProgress by lazy { findViewById<View>(R.id.textView_pageNum) as TextView }
+    private val controlsView by lazy { findViewById<View>(R.id.fullscreen_content_controls) }
+    private val fabBrightness by lazy { findViewById<View>(R.id.fabBrightness) }
+    private val fabChapters by lazy { findViewById<View>(R.id.fabChapters) }
+    private val fabDirection by lazy { findViewById<View>(R.id.fabDirection) }
+    private val fabRotation by lazy { findViewById<View>(R.id.fabRotation) }
 
     protected var mReaderFragment: ReaderFragment? = null
 
@@ -74,19 +78,31 @@ class MangaPageActivityV2 : BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        hideSystemUI()
+        delayFullScreen()
     }
 
     override fun getActionBarTitle(): String {
         return mMangaViewModel.selectedMangaChapterItem.title
     }
 
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        stopAutoHideIfNecessary(ev)
+        return super.dispatchTouchEvent(ev)
+    }
+
+    private fun stopAutoHideIfNecessary(ev: MotionEvent) {
+        val editTextRect = Rect()
+        controlsView.getHitRect(editTextRect)
+
+        if (editTextRect.contains(ev.x.toInt(), ev.y.toInt())) {
+            delayFullScreenDispose?.dispose()
+        }
+    }
+
     override fun initControl() {
         mIsLoadFromHistory = intent.getBooleanExtra(
                 INTENT_EXTRA_FROM_HISTORY, false)
         setContentView(R.layout.activity_manga_page_v2)
-
-        val controlsView = findViewById<View>(R.id.fullscreen_content_controls)
 
         mDecorView = window.decorView
         mDecorView.setOnSystemUiVisibilityChangeListener { visibility ->
@@ -106,7 +122,6 @@ class MangaPageActivityV2 : BaseActivity(),
                 isFullScreen = false
                 controlsView.animate()
                         .translationY(0f).duration = mShortAnimTime.toLong()
-                controlsView.visibility = View.VISIBLE
                 supportActionBar!!.show()
 
                 delayFullScreen()
@@ -117,9 +132,9 @@ class MangaPageActivityV2 : BaseActivity(),
                 // other navigational controls.
                 isFullScreen = true
 
-                controlsView.animate()
-                        .translationY(mControlsHeight.toFloat()).duration = mShortAnimTime.toLong()
-                controlsView.visibility = View.GONE
+                controlsView.animate().apply {
+                    translationY(mControlsHeight.toFloat()).duration = mShortAnimTime.toLong()
+                }.start()
                 supportActionBar!!.hide()
             }
         }
@@ -156,8 +171,16 @@ class MangaPageActivityV2 : BaseActivity(),
             }
         })
 
+        initButtons()
         initViewModel()
 
+    }
+
+    private fun initButtons() {
+        fabBrightness.setOnClickListener { }
+        fabChapters.setOnClickListener { }
+        fabDirection.setOnClickListener { }
+        fabRotation.setOnClickListener { }
     }
 
     private fun initViewModel() {
@@ -210,10 +233,12 @@ class MangaPageActivityV2 : BaseActivity(),
 
     override fun prevChapter() {
         viewModel.prevChapter()
+        delayFullScreen()
     }
 
     override fun nextChapter() {
         viewModel.nextChapter()
+        delayFullScreen()
     }
 
     fun syncTextView() {
@@ -273,11 +298,8 @@ class MangaPageActivityV2 : BaseActivity(),
 
 
         if (id == R.id.menu_setting) {
-
-//            mViewFlipper!!.stopAutoFullscreen()
             val v = findViewById<View>(R.id.menu_setting)
             displayPopupWindow(v)
-
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -316,16 +338,16 @@ class MangaPageActivityV2 : BaseActivity(),
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) hideSystemUI()
+        if (hasFocus) showSystemUI()
         window.decorView.invalidate()
     }
 
-    private fun delayFullScreen() {
+    private fun delayFullScreen(delayInMill: Long = DELAY) {
         delayFullScreenDispose?.dispose()
         delayFullScreenDispose = Single.just("")
-                .delay(DELAY, MILLISECONDS)
+                .delay(delayInMill, MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { it: String ->
+                .subscribe { _ ->
                     hideSystemUI()
                 }
     }

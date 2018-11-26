@@ -116,7 +116,7 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
                                 MangaChapterItemWrapper(getString(R.string.chapter_last_read),
                                         CATEGORY,
                                         null))
-                        dataList.add(MangaChapterItemWrapper(title, LAST_READ, this))
+                        dataList.add(MangaChapterItemWrapper(title, LAST_READ, this, true))
                     }
                     mList.run {
                         if (mList.isEmpty()) return@run

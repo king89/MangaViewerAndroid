@@ -130,6 +130,10 @@
   <string name="prev_chapter">Previous chapter</string>
   <string name="release_to_prev_chapter">Release to go</string>
   <string name="release_to_next_chapter">Release to go</string>
+  <string name="page_setting_brightness">Brightness</string>
+  <string name="page_setting_chapters">Chapters</string>
+  <string name="page_setting_rotation">Rotation</string>
+  <string name="page_setting_direction">Direction</string>
 
 
 </resources>

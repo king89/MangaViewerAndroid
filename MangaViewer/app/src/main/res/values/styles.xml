@@ -40,7 +40,6 @@
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
-
   </style>
 
   <style name="ExpandedTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
@@ -52,4 +51,15 @@
     <item name="elevation">0dp</item>
     <item name="fabSize">mini</item>
   </style>
+  <style name="PlainFabText" parent="@android:style/Widget.TextView">
+    <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:maxWidth">70dp</item>
+    <item name="android:maxLines">2</item>
+    <item name="android:gravity">center</item>
+    <item name="android:layout_gravity">center</item>
+    <item name="android:textAlignment" tools:ignore="NewApi">center</item>
+    <item name="android:ellipsize">end</item>
+  </style>
+
 </resources>
