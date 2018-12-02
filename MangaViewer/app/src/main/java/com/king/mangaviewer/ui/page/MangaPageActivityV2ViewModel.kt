@@ -4,11 +4,15 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Transformations
+import com.king.mangaviewer.MyApplication
 import com.king.mangaviewer.base.BaseActivityViewModel
 import com.king.mangaviewer.base.ErrorMessage
 import com.king.mangaviewer.base.ErrorMessage.GenericError
 import com.king.mangaviewer.base.ErrorMessage.NoError
 import com.king.mangaviewer.base.ErrorMessage.ViewModelError
+import com.king.mangaviewer.component.ReadingDirection
+import com.king.mangaviewer.component.ReadingDirection.LTR
+import com.king.mangaviewer.component.ReadingDirection.RTL
 import com.king.mangaviewer.domain.data.AppRepository
 import com.king.mangaviewer.domain.usecase.GetChapterListUseCase
 import com.king.mangaviewer.domain.usecase.GetPageListUseCase
@@ -48,6 +52,19 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     private val mSelectedChapterName = MutableLiveData<String>()
     val selectedChapterName: LiveData<String> = mSelectedChapterName
 
+    private val mReadingDirection = MutableLiveData<Boolean>().apply {
+        //TODO should not use context here
+        value = appRepository.appViewModel.Setting.getIsFromLeftToRight(MyApplication.context)
+    }
+    val readingDirection: LiveData<ReadingDirection> = Transformations.map(mReadingDirection) {
+        Logger.d(TAG, "MangaPageActivityV2ViewModel readingDirection update")
+
+        if (it)
+            LTR
+        else
+            RTL
+    }
+
     val prevAndNextChapterName = MutableLiveData<Pair<String?, String?>>()
 
     init {
@@ -57,6 +74,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     }
 
     override fun attachToView() {
+        showChapterLoading()
         getPageList()
     }
 
@@ -82,8 +100,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
                 }
                 .toList()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mLoadingState.value = Loading }
-                .doAfterTerminate { mLoadingState.value = Idle }
+                .doAfterTerminate { hideChapterLoading() }
                 .doAfterSuccess {
                     mDataList.value = it
                     prevAndNextChapterName.value = (getPrevChapter()?.title to getNextChapter()?.title)
@@ -96,20 +113,24 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     }
 
     fun nextChapter() {
+        showChapterLoading()
         val chapter = getNextChapter()
         if (chapter != null) {
             selectChapter(chapter)
         } else {
             errorMessage.value = NoNextChapter
+            hideChapterLoading()
         }
     }
 
     fun prevChapter() {
+        showChapterLoading()
         val chapter = getPrevChapter()
         if (chapter != null) {
             selectChapter(chapter)
         } else {
             errorMessage.value = NoPrevChapter
+            hideChapterLoading()
         }
     }
 
@@ -139,8 +160,6 @@ class MangaPageActivityV2ViewModel @Inject constructor(
         selectMangaChapterUseCase.execute(chapter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mLoadingState.value = Loading }
-                .doAfterTerminate { mLoadingState.value = Idle }
                 .doOnComplete {
                     Logger.d(TAG, "selectChapter on complete")
                     mSelectedChapterName.value = chapter.title
@@ -154,6 +173,20 @@ class MangaPageActivityV2ViewModel @Inject constructor(
                 .onErrorComplete()
                 .subscribe()
                 .apply { disposable.add(this) }
+    }
+
+    fun showChapterLoading() {
+        mLoadingState.value = Loading
+    }
+
+    fun hideChapterLoading() {
+        mLoadingState.value = Idle
+    }
+
+    fun toggleDirection() {
+        //TODO should not use context here
+        mReadingDirection.value = mReadingDirection.value!!.not()
+        appRepository.appViewModel.Setting.setIsFromLeftToRight(MyApplication.context, mReadingDirection.value!!)
     }
 
     companion object {

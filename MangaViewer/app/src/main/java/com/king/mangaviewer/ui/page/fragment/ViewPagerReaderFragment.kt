@@ -242,7 +242,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
 
     companion object {
         val TAG = "ViewPagerReaderFragment"
-        val THRESHOLD_SCROLL = 0.12f
+        val THRESHOLD_SCROLL = 0.10f
 
         @JvmStatic
         fun newInstance() =

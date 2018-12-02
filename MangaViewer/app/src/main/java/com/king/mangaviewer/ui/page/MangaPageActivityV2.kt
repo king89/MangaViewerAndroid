@@ -3,8 +3,10 @@ package com.king.mangaviewer.ui.page
 import android.arch.lifecycle.Observer
 import android.graphics.Rect
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.design.widget.Snackbar.LENGTH_SHORT
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SwitchCompat
 import android.support.v7.widget.TooltipCompat
 import android.view.Gravity
@@ -26,6 +28,9 @@ import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.component.HasFullScreenControl
 import com.king.mangaviewer.component.ReaderCallback
+import com.king.mangaviewer.component.ReadingDirection
+import com.king.mangaviewer.component.ReadingDirection.LTR
+import com.king.mangaviewer.component.ReadingDirection.RTL
 import com.king.mangaviewer.di.annotation.ActivityScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
@@ -41,6 +46,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_manga_page_v2.progressBar
+import kotlinx.android.synthetic.main.list_manga_page_item_v2.clLoading
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.inject.Inject
 
@@ -66,10 +72,10 @@ class MangaPageActivityV2 : BaseActivity(),
     private val mFRImageButton by lazy { findViewById<View>(R.id.frButton) as ImageButton }
     private val tvProgress by lazy { findViewById<View>(R.id.textView_pageNum) as TextView }
     private val controlsView by lazy { findViewById<View>(R.id.fullscreen_content_controls) }
-    private val fabBrightness by lazy { findViewById<View>(R.id.fabBrightness) }
-    private val fabChapters by lazy { findViewById<View>(R.id.fabChapters) }
-    private val fabDirection by lazy { findViewById<View>(R.id.fabDirection) }
-    private val fabRotation by lazy { findViewById<View>(R.id.fabRotation) }
+    private val fabBrightness by lazy { findViewById<FloatingActionButton>(R.id.fabBrightness) }
+    private val fabChapters by lazy { findViewById<FloatingActionButton>(R.id.fabChapters) }
+    private val fabDirection by lazy { findViewById<FloatingActionButton>(R.id.fabDirection) }
+    private val fabRotation by lazy { findViewById<FloatingActionButton>(R.id.fabRotation) }
 
     protected var mReaderFragment: ReaderFragment? = null
 
@@ -179,7 +185,10 @@ class MangaPageActivityV2 : BaseActivity(),
     private fun initButtons() {
         fabBrightness.setOnClickListener { }
         fabChapters.setOnClickListener { }
-        fabDirection.setOnClickListener { }
+        fabDirection.setOnClickListener {
+            viewModel.toggleDirection()
+            setupReader()
+        }
         fabRotation.setOnClickListener { }
     }
 
@@ -219,6 +228,20 @@ class MangaPageActivityV2 : BaseActivity(),
                 setupReader()
             })
 
+            readingDirection.observe(this@MangaPageActivityV2, Observer {
+                when (it!!) {
+                    LTR -> {
+                        fabDirection.setImageDrawable(
+                                ContextCompat.getDrawable(this@MangaPageActivityV2,
+                                        R.drawable.ic_reading_ltr))
+                    }
+                    RTL -> {
+                        fabDirection.setImageDrawable(
+                                ContextCompat.getDrawable(this@MangaPageActivityV2,
+                                        R.drawable.ic_reading_rtl))
+                    }
+                }
+            })
             attachToView()
 
         }
@@ -242,9 +265,13 @@ class MangaPageActivityV2 : BaseActivity(),
     }
 
     fun syncTextView() {
-        val totalNum = sb.max + 1
-        val currentPage = sb.progress + 1
-        tvProgress.text = "$currentPage / $totalNum"
+        if (sb.max > 0) {
+            val totalNum = sb.max + 1
+            val currentPage = sb.progress + 1
+            tvProgress.text = "$currentPage / $totalNum"
+        }else{
+            tvProgress.text = "- / -"
+        }
     }
 
     private fun setupReader() {
@@ -278,62 +305,9 @@ class MangaPageActivityV2 : BaseActivity(),
     }
 
     override fun goBack() {
-        mMangaViewModel.nowPagePosition = 0
-        mMangaViewModel.mangaPageList = null
+//        mMangaViewModel.nowPagePosition = 0
+//        mMangaViewModel.mangaPageList = null
         super.goBack()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-
-        menuInflater.inflate(R.menu.page_menu, menu)
-
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-
-        if (id == R.id.menu_setting) {
-            val v = findViewById<View>(R.id.menu_setting)
-            displayPopupWindow(v)
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun displayPopupWindow(anchorView: View) {
-        val popup = PopupWindow(this)
-        val layout = layoutInflater.inflate(R.layout.menu_page_setting, null)
-
-        //Init Switch
-        val isFTRSwitch = layout.findViewById<View>(R.id.LTRSwitch) as SwitchCompat
-        val splitPageSwitch = layout.findViewById<View>(R.id.splitPageSwitch) as SwitchCompat
-
-        isFTRSwitch.isChecked = mSettingViewModel.getIsFromLeftToRight(this)
-        isFTRSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            mSettingViewModel.setIsFromLeftToRight(this, isChecked)
-            setupReader()
-
-        }
-        splitPageSwitch.isChecked = mSettingViewModel.getIsSplitPage(this)
-        splitPageSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            mSettingViewModel.setIsSplitPage(this@MangaPageActivityV2, isChecked)
-//            mViewFlipper!!.refresh()
-        }
-
-        popup.contentView = layout
-        // Set content width and height
-        popup.height = WindowManager.LayoutParams.WRAP_CONTENT
-        popup.width = WindowManager.LayoutParams.WRAP_CONTENT
-        // Closes the popup window when touch outside of it - when looses focus
-        popup.isOutsideTouchable = true
-        popup.isFocusable = true
-        // Show anchored to button
-        popup.showAsDropDown(anchorView)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -353,12 +327,11 @@ class MangaPageActivityV2 : BaseActivity(),
     }
 
     override fun showLoading() {
-        progressBar.visibility = VISIBLE
+        clLoading.visibility = VISIBLE
     }
 
     override fun hideLoading() {
-        progressBar.visibility = GONE
-
+        clLoading.visibility = GONE
     }
 
     override fun toggleUI() {

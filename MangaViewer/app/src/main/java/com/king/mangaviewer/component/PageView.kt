@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.GestureDetector
 import android.view.View
+import android.widget.Button
 import android.widget.FrameLayout
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
@@ -58,6 +59,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
 
             override fun onReady() {
                 onLoadingComplete()
+
             }
 
             override fun onImageLoadError(e: Exception?) {
@@ -65,6 +67,9 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
             }
         })
 
+        findViewById<Button>(R.id.btRetry).setOnClickListener {
+            refresh()
+        }
     }
 
     private fun onImageDisplayFailed(e: Exception?) {
@@ -74,10 +79,11 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
 
     private fun onLoadingComplete() {
         Logger.d(TAG, "onLoadingComplete")
+        hideLoading()
     }
 
-    private val MAX_WIDTH: Int = 2560
-    private val MAX_HEIGHT: Int = 1920
+    //    private val MAX_WIDTH: Int = 2560
+//    private val MAX_HEIGHT: Int = 1920
 //    var newBitmap: Bitmap? = null
     var target = object : SimpleTarget<Bitmap>() {
         override fun onResourceReady(resource: Bitmap,
@@ -118,7 +124,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
                         }
                         imageView.minScale = factor
                         imageView.maxScale = max(factor * 2, 2f)
-                        imageView.setImage(ImageSource.cachedBitmap(resource),imageState)
+                        imageView.setImage(ImageSource.cachedBitmap(resource), imageState)
 
                     }
                 } else {
@@ -156,7 +162,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
             GlideApp.with(this)
                     .asBitmap()
                     .load(glideUrl)
-                    .override(MAX_WIDTH, MAX_HEIGHT)
+//                    .override(MAX_WIDTH, MAX_HEIGHT)
                     .downsample(DownsampleStrategy.AT_MOST)
                     .into(target)
         }.delay(500, MILLISECONDS)
@@ -177,12 +183,14 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
         imageView.visibility = View.GONE
     }
 
+    private fun hideLoading() {
+        clLoading.visibility = View.GONE
+    }
+
     private fun showImage() {
         Logger.d(TAG,
                 "show image")
-
         clError.visibility = View.GONE
-        clLoading.visibility = View.GONE
         imageView.visibility = View.VISIBLE
     }
 
@@ -221,12 +229,3 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
     }
 }
 
-enum class ReadingDirection {
-    LTR,
-    RTL
-}
-
-enum class ReadingOrientation {
-    PORTRAIT,
-    LANDSCAPE
-}

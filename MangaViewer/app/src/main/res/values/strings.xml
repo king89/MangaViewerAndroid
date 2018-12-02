@@ -134,6 +134,7 @@
   <string name="page_setting_chapters">Chapters</string>
   <string name="page_setting_rotation">Rotation</string>
   <string name="page_setting_direction">Direction</string>
+  <string name="loading_chapter">Loading Chapter</string>
 
 
 </resources>
