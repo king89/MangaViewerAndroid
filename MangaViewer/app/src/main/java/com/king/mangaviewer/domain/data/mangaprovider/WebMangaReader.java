@@ -63,7 +63,7 @@ public class WebMangaReader extends MangaProvider {
         List<TitleAndUrl> list = new ArrayList<>();
 
         Document doc = Jsoup.parse(html);
-        Elements els = doc.select(".chico_manga");
+        Elements els = doc.select("#chapterlist .chico_manga");
         for (Element e : els) {
             String url = checkUrl(e.nextElementSibling().attr("href"));
             String title = e.nextElementSibling().text();
