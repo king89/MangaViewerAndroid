@@ -6,9 +6,9 @@ import android.arch.persistence.room.RoomDatabase
 @Database(entities = [
     FavouriteManga::class,
     HistoryManga::class],
-        version = 1)
+        version = 2)
 abstract class MangaDataBase : RoomDatabase() {
-    abstract fun favourtieMangaDAO(): FavouriteMangaDAO
+    abstract fun favouriteMangaDAO(): FavouriteMangaDAO
     abstract fun historyMangaDAO(): HistoryMangaDAO
 
 }

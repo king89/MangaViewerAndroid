@@ -1,5 +1,6 @@
 package com.king.mangaviewer.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -8,6 +9,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import com.king.mangaviewer.R;
+import com.king.mangaviewer.ui.main.MainActivity;
+import com.king.mangaviewer.util.Logger;
 import com.king.mangaviewer.viewmodel.AppViewModel;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
@@ -18,6 +21,7 @@ import javax.inject.Inject;
 public class BaseActivity extends DaggerAppCompatActivity {
 
     private static final String KEY_MANGA_VIEW_MODEL = "key_manga_view_model";
+    private static final String TAG = "BaseActivity";
     public Handler handler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message msg) {
             update(msg);
@@ -31,13 +35,6 @@ public class BaseActivity extends DaggerAppCompatActivity {
 
     protected void onCreate(android.os.Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //if (savedInstanceState != null) {
-        //    String mangaViewModelJson = savedInstanceState.getString(KEY_MANGA_VIEW_MODEL, "");
-        //    if (!TextUtils.isEmpty(mangaViewModelJson)) {
-        //        getAppViewModel().Manga = GsonHelper.INSTANCE.fromJson(mangaViewModelJson,
-        //                MangaViewModel.class);
-        //    }
-        //}
         initControl();
         initActionBar();
 

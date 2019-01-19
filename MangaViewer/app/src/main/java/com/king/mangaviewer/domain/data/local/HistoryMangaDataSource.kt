@@ -10,8 +10,12 @@ import javax.inject.Inject
 
 interface HistoryMangaDataSource {
     fun addToHistory(item: HistoryMangaChapterItem): Completable
+    fun getHistoryMangaItem(chapterHash: String): Single<HistoryMangaChapterItem>
     fun getAllHistoryMangaItem(
             menu: MangaMenuItem? = null): Single<List<HistoryMangaChapterItem>>
+
+    fun getLastReadMangaItem(
+            menu: MangaMenuItem? = null): Single<HistoryMangaChapterItem>
 
     fun removeHistory(item: HistoryMangaChapterItem): Completable
     fun removeRelatedHistory(item: HistoryMangaChapterItem): Completable
@@ -28,6 +32,11 @@ class HistoryMangaLocalDataSource @Inject constructor(
         historyMangaDAO.insert(item.toHistoryManga())
     }
 
+    override fun getHistoryMangaItem(chapterHash: String): Single<HistoryMangaChapterItem> {
+        return historyMangaDAO.getItem(chapterHash)
+                .map { it.toHistoryChapterItem() }
+    }
+
     override fun getAllHistoryMangaItem(
             menu: MangaMenuItem?): Single<List<HistoryMangaChapterItem>> {
         return historyMangaDAO.getList()
@@ -40,6 +49,20 @@ class HistoryMangaLocalDataSource @Inject constructor(
                     menu.hash == it.menu.hash
                 }
                 .toList()
+    }
+
+    override fun getLastReadMangaItem(menu: MangaMenuItem?): Single<HistoryMangaChapterItem> {
+        return if (menu == null) {
+            historyMangaDAO.getLastReadItem()
+                    .map {
+                        it.toHistoryChapterItem()
+                    }
+        } else {
+            historyMangaDAO.getLastReadItem(menu.hash)
+                    .map {
+                        it.toHistoryChapterItem()
+                    }
+        }
     }
 
     override fun removeHistory(item: HistoryMangaChapterItem): Completable =
@@ -66,7 +89,7 @@ class HistoryMangaLocalDataSource @Inject constructor(
         val historyMenu = HistoryMangaMenu(menu.hash, menu.title, menu.description, menu.imagePath,
                 menu.url)
         return HistoryManga(hash, title, description, imagePath, url, mangaWebSource.id,
-                lastReadDate,
+                lastReadDate, lastReadPageNum,
                 historyMenu)
 
     }
@@ -78,6 +101,6 @@ class HistoryMangaLocalDataSource @Inject constructor(
         val menu = MangaMenuItem(menu.hash, menu.title, menu.description, menu.imagePath,
                 menu.url, source)
         val chapter = MangaChapterItem(hash, title, description, imagePath, url, menu)
-        return HistoryMangaChapterItem(chapter, last_read_time)
+        return HistoryMangaChapterItem(chapter, last_read_page_num, last_read_time)
     }
 }

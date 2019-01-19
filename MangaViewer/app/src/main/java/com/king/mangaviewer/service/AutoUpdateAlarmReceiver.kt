@@ -70,7 +70,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
 
     private fun checkManga(context: Context): Boolean {
         Log.i("AutoNotify", "checkManga")
-        val dataSource = RepositoryModule.provideDb(context).favourtieMangaDAO()
+        val dataSource = RepositoryModule.provideDb(context).favouriteMangaDAO()
         val svm = SettingViewModel.loadSetting(context)
         val sources = svm.mangaWebSources
         val dataList = dataSource.getFavouriteList().blockingGet()

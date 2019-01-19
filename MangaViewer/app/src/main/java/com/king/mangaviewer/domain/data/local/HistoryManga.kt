@@ -47,6 +47,9 @@ class HistoryManga(
         @ColumnInfo(name = "last_read_time")
         var last_read_time: String,
 
+        @ColumnInfo(name = "last_read_page_num")
+        var last_read_page_num: Int,
+
         @Embedded(prefix = "menu_")
         var menu: HistoryMangaMenu
 

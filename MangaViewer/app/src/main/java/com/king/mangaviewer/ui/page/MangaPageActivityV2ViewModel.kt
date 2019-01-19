@@ -1,7 +1,6 @@
 package com.king.mangaviewer.ui.page
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Transformations
 import com.king.mangaviewer.MyApplication
@@ -14,7 +13,7 @@ import com.king.mangaviewer.component.ReadingDirection
 import com.king.mangaviewer.component.ReadingDirection.LTR
 import com.king.mangaviewer.component.ReadingDirection.RTL
 import com.king.mangaviewer.domain.data.AppRepository
-import com.king.mangaviewer.domain.usecase.GetChapterListUseCase
+import com.king.mangaviewer.domain.usecase.AddToHistoryUseCase
 import com.king.mangaviewer.domain.usecase.GetPageListUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaChapterUseCase
 import com.king.mangaviewer.model.LoadingState.Idle
@@ -23,8 +22,6 @@ import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoNextChapter
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoPrevChapter
-import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment
-import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment.Companion
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.MangaHelperV2
 import io.reactivex.Single
@@ -35,14 +32,15 @@ import javax.inject.Inject
 class MangaPageActivityV2ViewModel @Inject constructor(
         private val appRepository: AppRepository,
         private val getPageListUseCase: GetPageListUseCase,
-        private val selectMangaChapterUseCase: SelectMangaChapterUseCase
+        private val selectMangaChapterUseCase: SelectMangaChapterUseCase,
+        private val addToHistoryUseCase: AddToHistoryUseCase
 ) :
         BaseActivityViewModel() {
 
     private val mDataList = MutableLiveData<List<MangaUri>>()
     val dataList: LiveData<List<MangaUri>> = mDataList
 
-    val currentPageNum = MutableLiveData<Int>().apply { value = 0 }
+    var currentPageNum = 0
     val totalPageNum = Transformations.map(dataList) {
         it!!.size
     }
@@ -71,6 +69,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
         Logger.d(TAG, "MangaPageActivityV2ViewModel init")
         mDataList.value = emptyList()
         mSelectedChapterName.value = appRepository.appViewModel.Manga.selectedMangaChapterItem.title
+
     }
 
     override fun attachToView() {
@@ -102,6 +101,8 @@ class MangaPageActivityV2ViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .doAfterTerminate { hideChapterLoading() }
                 .doAfterSuccess {
+                    currentPageNum = appRepository.appViewModel.Manga.nowPagePosition
+                    Logger.d(TAG, "start with page: ${currentPageNum}")
                     mDataList.value = it
                     prevAndNextChapterName.value = (getPrevChapter()?.title to getNextChapter()?.title)
                     Logger.d(TAG, "getPageListObservable doAfterSuccess")
@@ -186,11 +187,21 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     fun toggleDirection() {
         //TODO should not use context here
         mReadingDirection.value = mReadingDirection.value!!.not()
-        appRepository.appViewModel.Setting.setIsFromLeftToRight(MyApplication.context, mReadingDirection.value!!)
+        appRepository.appViewModel.Setting.setIsFromLeftToRight(MyApplication.context,
+                mReadingDirection.value!!)
+    }
+
+    fun saveCurrentReadPage() {
+        addToHistoryUseCase.execute(appRepository.appViewModel.Manga.selectedMangaChapterItem,
+                currentPageNum)
+                .subscribeOn(Schedulers.newThread())
+                .doOnError { Logger.e(TAG, it) }
+                .onErrorComplete()
+                .subscribe()
     }
 
     companion object {
-        const val TAG = "MangaChapterActivityViewModel"
+        const val TAG = "MangaPageActivityV2ViewModel"
     }
 
     sealed class SubError : ViewModelError() {

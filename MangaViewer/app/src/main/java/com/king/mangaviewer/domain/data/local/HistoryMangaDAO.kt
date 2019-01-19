@@ -27,4 +27,9 @@ interface HistoryMangaDAO {
     @Query("select * from history_manga where hash = :hash")
     fun getItem(hash: String): Single<HistoryManga>
 
+    @Query("select * from history_manga where menu_hash = :menuHash")
+    fun getLastReadItem(menuHash: String): Single<HistoryManga>
+
+    @Query("select * from history_manga order by last_read_time desc limit 1")
+    fun getLastReadItem(): Single<HistoryManga>
 }

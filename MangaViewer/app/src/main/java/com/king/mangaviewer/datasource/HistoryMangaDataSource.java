@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Created by KinG on 9/10/2015.
  */
+@Deprecated
 public class HistoryMangaDataSource extends MangaDataSourceBase {
     public final static String TABLE_NAME = "history_manga";
     //column

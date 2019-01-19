@@ -179,10 +179,11 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
     }
 
     override fun onClick(chapter: MangaChapterItem) {
-        viewModel.selectChapter(chapter)
-        startActivity(Intent(this, MangaPageActivityV2::class.java))
-        overridePendingTransition(R.anim.in_rightleft,
-                R.anim.out_rightleft)
+        viewModel.selectChapter(chapter) {
+            startActivity(Intent(this, MangaPageActivityV2::class.java))
+            overridePendingTransition(R.anim.in_rightleft,
+                    R.anim.out_rightleft)
+        }
     }
 
     override fun showLoading() {

@@ -123,11 +123,11 @@ class MangaChapterActivityViewModel @Inject constructor(
                 .apply { disposable.add(this) }
     }
 
-    fun selectChapter(chapter: MangaChapterItem) {
+    fun selectChapter(chapter: MangaChapterItem, callback: () -> Unit) {
         selectMangaChapterUseCase.execute(chapter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({},
+                .subscribe({ callback() },
                         { Logger.e(TAG, it) })
                 .apply { disposable.add(this) }
     }

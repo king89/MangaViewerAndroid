@@ -1,6 +1,5 @@
 package com.king.mangaviewer.di
 
-import android.app.Application
 import android.arch.persistence.room.Room
 import android.content.Context
 import com.king.mangaviewer.domain.data.local.FavouriteMangaDAO
@@ -79,7 +78,7 @@ abstract class RepositoryModule {
         @Provides
         @JvmStatic
         fun provideFavouriteMangaDao(db: MangaDataBase): FavouriteMangaDAO {
-            return db.favourtieMangaDAO()
+            return db.favouriteMangaDAO()
         }
 
         @ApplicationScope

@@ -1,6 +1,7 @@
 package com.king.mangaviewer.ui.page
 
 import android.arch.lifecycle.Observer
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -34,11 +35,13 @@ import com.king.mangaviewer.component.ReadingDirection.RTL
 import com.king.mangaviewer.di.annotation.ActivityScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
+import com.king.mangaviewer.ui.main.MainActivity
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoNextChapter
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoPrevChapter
 import com.king.mangaviewer.ui.page.fragment.ReaderFragment
 import com.king.mangaviewer.ui.page.fragment.RtlViewPagerReaderFragment
 import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment
+import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.withViewModel
 import com.king.mangaviewer.viewmodel.MangaViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
@@ -84,7 +87,22 @@ class MangaPageActivityV2 : BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //TODO recover from last read
+        if (savedInstanceState != null) {
+            Logger.i(TAG, "Start from beginning")
+            //start from the beginning
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NO_ANIMATION
+            startActivity(intent)
+            finish()
+            return
+        }
         delayFullScreen()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.saveCurrentReadPage()
     }
 
     override fun getActionBarTitle(): String {
@@ -268,8 +286,9 @@ class MangaPageActivityV2 : BaseActivity(),
         if (sb.max > 0) {
             val totalNum = sb.max + 1
             val currentPage = sb.progress + 1
+            viewModel.currentPageNum = sb.progress
             tvProgress.text = "$currentPage / $totalNum"
-        }else{
+        } else {
             tvProgress.text = "- / -"
         }
     }

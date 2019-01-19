@@ -86,7 +86,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
 
             dataList.observe(this@ViewPagerReaderFragment, Observer {
                 setupAdapter(dataList.value!!, GestureDetector(context, TapDetector()))
-                setPage(startPage)
+                setPage(viewModel.currentPageNum)
             })
 
         }

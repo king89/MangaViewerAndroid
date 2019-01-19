@@ -1,23 +1,26 @@
 package com.king.mangaviewer.domain.usecase
 
 import com.king.mangaviewer.domain.data.HistoryMangaRepository
-import com.king.mangaviewer.model.HistoryMangaChapterItem
-import com.king.mangaviewer.model.MangaChapterItem
+import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.viewmodel.AppViewModel
 import io.reactivex.Completable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class SelectMangaChapterUseCase @Inject constructor(private val appViewModel: AppViewModel,
+class SelectLastReadChapterUseCase @Inject constructor(private val appViewModel: AppViewModel,
         private val historyMangaRepository: HistoryMangaRepository) {
-    fun execute(chapter: MangaChapterItem): Completable {
-        return Completable.fromCallable {
+    fun execute(menuItem: MangaMenuItem? = null): Completable {
+        return Single.fromCallable {
+            val chapter = historyMangaRepository.getLastReadMangaItem(menuItem).blockingGet()
             appViewModel.Manga.selectedMangaChapterItem = chapter
             appViewModel.Manga.selectedMangaMenuItem = chapter.menu
-            appViewModel.Manga.nowPagePosition = 0
-            Any()
-        }.andThen(historyMangaRepository.addToHistory(HistoryMangaChapterItem(chapter)))
+            appViewModel.Manga.nowPagePosition = chapter.lastReadPageNum
+            chapter
+        }.doOnSuccess {
+            historyMangaRepository.addToHistory(it)
+        }.ignoreElement()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
