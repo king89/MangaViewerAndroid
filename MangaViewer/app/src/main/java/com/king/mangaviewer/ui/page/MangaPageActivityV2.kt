@@ -87,11 +87,11 @@ class MangaPageActivityV2 : BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //TODO recover from last read
         if (savedInstanceState != null) {
-            Logger.i(TAG, "Start from beginning")
+            Logger.i(TAG, "recover from last read")
+            viewModel.recoverFromLastRead()
             //start from the beginning
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, MangaPageActivityV2::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NO_ANIMATION
             startActivity(intent)
             finish()

@@ -15,6 +15,7 @@ import com.king.mangaviewer.component.ReadingDirection.RTL
 import com.king.mangaviewer.domain.data.AppRepository
 import com.king.mangaviewer.domain.usecase.AddToHistoryUseCase
 import com.king.mangaviewer.domain.usecase.GetPageListUseCase
+import com.king.mangaviewer.domain.usecase.SelectLastReadChapterUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaChapterUseCase
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
@@ -33,7 +34,8 @@ class MangaPageActivityV2ViewModel @Inject constructor(
         private val appRepository: AppRepository,
         private val getPageListUseCase: GetPageListUseCase,
         private val selectMangaChapterUseCase: SelectMangaChapterUseCase,
-        private val addToHistoryUseCase: AddToHistoryUseCase
+        private val addToHistoryUseCase: AddToHistoryUseCase,
+        private val selectLastReadChapterUseCase: SelectLastReadChapterUseCase
 ) :
         BaseActivityViewModel() {
 
@@ -198,6 +200,10 @@ class MangaPageActivityV2ViewModel @Inject constructor(
                 .doOnError { Logger.e(TAG, it) }
                 .onErrorComplete()
                 .subscribe()
+    }
+
+    fun recoverFromLastRead() {
+        selectLastReadChapterUseCase.execute().subscribe()
     }
 
     companion object {
