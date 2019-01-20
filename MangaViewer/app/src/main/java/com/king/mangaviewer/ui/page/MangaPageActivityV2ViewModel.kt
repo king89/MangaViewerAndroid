@@ -70,7 +70,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     init {
         Logger.d(TAG, "MangaPageActivityV2ViewModel init")
         mDataList.value = emptyList()
-        mSelectedChapterName.value = appRepository.appViewModel.Manga.selectedMangaChapterItem.title
+        mSelectedChapterName.value = appRepository.appViewModel.Manga.selectedMangaChapterItem?.title ?: ""
 
     }
 
