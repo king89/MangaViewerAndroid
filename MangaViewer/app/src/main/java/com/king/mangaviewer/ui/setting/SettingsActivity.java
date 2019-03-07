@@ -176,7 +176,7 @@ public class SettingsActivity extends BaseActivity {
 
                 }
             });
-            p.setSummary(mSettingViewModel.getMangaFolderSize(ctx));
+            p.setSummary(mSettingViewModel.getCacheFolderSize(ctx));
 
             //Manga Sources
             final ListPreference mangaSourcesPref = (ListPreference) findPreference(

@@ -178,6 +178,12 @@ public class SettingViewModel extends ViewModelBase {
         return FileHelper.calFileSize(size);
     }
 
+    public String getCacheFolderSize(Context context) {
+        String folder = context.getCacheDir().getPath();
+        long size = FileHelper.getFileOrFolderSize(new File(folder));
+        return FileHelper.calFileSize(size);
+    }
+
     public void setSelectedWebSource(MangaWebSource webSite, Context context) {
         mSelectedWebSource = webSite;
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
