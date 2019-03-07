@@ -28,6 +28,8 @@ class HistoryMangaRepositoryImpl @Inject constructor(
             menu: MangaMenuItem?): Single<List<HistoryMangaChapterItem>> = historyMangaDataSource.getAllHistoryMangaItem(
             menu)
 
+    override fun getHistoryMenuList(): Single<List<HistoryMangaChapterItem>> = historyMangaDataSource.getHistoryMenuList()
+
     override fun getLastReadMangaItem(
             menu: MangaMenuItem?): Single<HistoryMangaChapterItem> = historyMangaDataSource.getLastReadMangaItem(
             menu)

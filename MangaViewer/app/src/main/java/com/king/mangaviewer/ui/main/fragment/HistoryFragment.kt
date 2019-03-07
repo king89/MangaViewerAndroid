@@ -37,7 +37,7 @@ import com.king.mangaviewer.util.withViewModel
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
-class HistoryFragment : BaseFragment(), HasFloatActionButton {
+class HistoryFragment : BaseFragment() {
 
     private var recyclerView: RecyclerView? = null
     private var adapter: HistoryChapterItemAdapter? = null
@@ -100,20 +100,19 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView!!.adapter = HistoryChapterItemAdapter(
-                activity as Context) { imageView, item, showAsChapter ->
-            if (showAsChapter) {
+                activity as Context,
+            { imageView, item ->
+                viewModel.selectMenu(item)
+                appNavigator.navigateToChapter(Pair(imageView, "cover"))
+            },
+            { _, item ->
                 viewModel.selectChapter(item)
                 val intent = Intent(context, MangaPageActivityV2::class.java)
                 intent.putExtra(INTENT_EXTRA_FROM_HISTORY, true)
                 this@HistoryFragment.startActivity(intent)
                 this@HistoryFragment.activity?.overridePendingTransition(R.anim.in_rightleft,
-                        R.anim.out_rightleft)
-            } else {
-                viewModel.selectMenu(item)
-                appNavigator.navigateToChapter(Pair(imageView, "cover"))
-
-            }
-        }
+                    R.anim.out_rightleft)
+            })
 
         addItemTouchForRecyclerView()
 
@@ -123,11 +122,7 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
     private fun addItemTouchForRecyclerView() {
         val itemTouchHelperCallback = RecyclerItemTouchHelper(0,
                 ItemTouchHelper.LEFT) { viewHolder, direction, position ->
-            if (adapter!!.showAsChapter) {
-                viewModel.deleteChapter(adapter!!.getItemByPos(viewHolder.adapterPosition))
-            } else {
-                viewModel.deleteMenu(adapter!!.getItemByPos(viewHolder.adapterPosition))
-            }
+            viewModel.deleteMenu(adapter!!.getItemByPos(viewHolder.adapterPosition))
         }
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView)
 
@@ -162,29 +157,6 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
     private fun showLoading() {
     }
 
-    override fun initFab(fab: FloatingActionButton) {
-        this.fab = fab
-        fab.setImageDrawable(ContextCompat.getDrawable(fab.context, R.drawable.ic_unfold))
-        fab.show()
-    }
-
-    override fun onClick() {
-        //toggle list type
-        adapter?.apply {
-            Logger.d(TAG, "showAsChapter 1: $showAsChapter")
-            changeShowType(!showAsChapter)
-            Logger.d(TAG, "showAsChapter 2: $showAsChapter")
-
-            if (showAsChapter) {
-                fab?.setImageDrawable(
-                        ContextCompat.getDrawable(fab?.context!!, R.drawable.ic_unfold))
-            } else {
-                fab?.setImageDrawable(ContextCompat.getDrawable(fab?.context!!, R.drawable.ic_fold))
-            }
-            submitList(viewModel.mangaList.value!!)
-        }
-
-    }
     companion object {
         const val TAG = "HistoryFragment"
     }

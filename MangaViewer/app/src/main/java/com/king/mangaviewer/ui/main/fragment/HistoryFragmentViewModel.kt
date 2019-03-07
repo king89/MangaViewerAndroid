@@ -7,16 +7,12 @@ import com.king.mangaviewer.base.ErrorMessage.NoError
 import com.king.mangaviewer.domain.data.AppRepository
 import com.king.mangaviewer.domain.usecase.DeleteAllHistoryUseCase
 import com.king.mangaviewer.domain.usecase.DeleteHistoryChapterUseCase
-import com.king.mangaviewer.domain.usecase.GetFavoriteMangaListUseCase
-import com.king.mangaviewer.domain.usecase.GetHistoryChapterListUseCase
+import com.king.mangaviewer.domain.usecase.GetHistoryMenuListUseCase
 import com.king.mangaviewer.domain.usecase.SelectHistoryChapterUseCase
-import com.king.mangaviewer.domain.usecase.SelectMangaChapterUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaMenuUseCase
-import com.king.mangaviewer.model.FavouriteMangaMenuItem
 import com.king.mangaviewer.model.HistoryMangaChapterItem
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
-import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.util.Logger
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -24,7 +20,7 @@ import javax.inject.Inject
 
 class HistoryFragmentViewModel @Inject constructor(
         private val appRepository: AppRepository,
-        private val getHistoryChapterListUseCase: GetHistoryChapterListUseCase,
+        private val getHistoryChapterListUseCase: GetHistoryMenuListUseCase,
         private val selectMangaMenuUseCase: SelectMangaMenuUseCase,
         private val selectHistoryChapterUseCase: SelectHistoryChapterUseCase,
         private val deleteHistoryChapterUseCase: DeleteHistoryChapterUseCase,

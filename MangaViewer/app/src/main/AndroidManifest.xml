@@ -77,6 +77,7 @@
         android:theme="@android:style/Theme.Translucent"/>
     <activity
         android:name=".ui.setting.SettingsActivity"
+        android:theme="@style/AppTheme"
         android:label="@string/title_activity_settings">
 
     </activity>

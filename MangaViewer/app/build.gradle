@@ -62,7 +62,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    buildToolsVersion versions.androidBuildTools
+    buildToolsVersion '28.0.3'
 }
 
 dependencies {

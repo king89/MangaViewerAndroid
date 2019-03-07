@@ -14,6 +14,9 @@ interface HistoryMangaDataSource {
     fun getAllHistoryMangaItem(
             menu: MangaMenuItem? = null): Single<List<HistoryMangaChapterItem>>
 
+    //return latest chapter item for every menu item
+    fun getHistoryMenuList(): Single<List<HistoryMangaChapterItem>>
+
     fun getLastReadMangaItem(
             menu: MangaMenuItem? = null): Single<HistoryMangaChapterItem>
 
@@ -35,6 +38,16 @@ class HistoryMangaLocalDataSource @Inject constructor(
     override fun getHistoryMangaItem(chapterHash: String): Single<HistoryMangaChapterItem> {
         return historyMangaDAO.getItem(chapterHash)
                 .map { it.toHistoryChapterItem() }
+    }
+
+    override fun getHistoryMenuList(): Single<List<HistoryMangaChapterItem>> {
+        return historyMangaDAO.getLastReadMangaItem()
+            .toObservable()
+            .flatMapIterable { it }
+            .map {
+                it.toHistoryChapterItem()
+            }
+            .toList()
     }
 
     override fun getAllHistoryMangaItem(
