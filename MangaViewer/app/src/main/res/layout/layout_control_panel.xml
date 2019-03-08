@@ -77,7 +77,7 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="999 / 999 "
         />
-    <ImageButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/frButton"
         android:layout_width="36dp"
         android:layout_height="36dp"
@@ -85,14 +85,13 @@
         android:layout_marginRight="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/button_tooltip_prev_chapter"
-        android:padding="4dp"
-        android:scaleType="fitXY"
-        android:src="@mipmap/ic_fast_rewind_white"
         app:layout_constraintBottom_toBottomOf="@+id/ffButton"
         app:layout_constraintEnd_toStartOf="@+id/ffButton"
+        app:srcCompat="@mipmap/ic_fast_rewind_white"
+        style="@style/AppTheme.PlainFab"
         />
 
-    <ImageButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/ffButton"
         android:layout_width="36dp"
         android:layout_height="36dp"
@@ -101,11 +100,10 @@
         android:layout_marginRight="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/button_tooltip_next_chapter"
-        android:padding="4dp"
-        android:scaleType="fitXY"
-        android:src="@mipmap/ic_fast_forward_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@mipmap/ic_fast_forward_white"
+        style="@style/AppTheme.PlainFab"
 
         />
     <android.support.design.widget.FloatingActionButton
@@ -128,39 +126,39 @@
         android:id="@+id/fabBrightness"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_brightness"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/fabChapters"
         app:layout_constraintEnd_toStartOf="@+id/fabDirection"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/fabChapters"
         app:layout_constraintTop_toTopOf="@+id/fabChapters"
+        app:srcCompat="@drawable/ic_brightness"
         style="@style/AppTheme.PlainFab"
         />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabDirection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_reading_ltr"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/fabChapters"
         app:layout_constraintEnd_toStartOf="@+id/fabRotation"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/fabBrightness"
         app:layout_constraintTop_toTopOf="@+id/fabChapters"
+        app:srcCompat="@drawable/ic_reading_ltr"
         style="@style/AppTheme.PlainFab"
         />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabRotation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_rotation"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/fabChapters"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/fabDirection"
         app:layout_constraintTop_toTopOf="@+id/fabChapters"
+        app:srcCompat="@drawable/ic_rotation"
         style="@style/AppTheme.PlainFab"
         />
     <TextView
