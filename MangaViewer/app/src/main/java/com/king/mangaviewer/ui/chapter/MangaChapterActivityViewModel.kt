@@ -20,23 +20,24 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MangaChapterActivityViewModel @Inject constructor(
-        private val appRepository: AppRepository,
-        private val mangaRepository: HistoryMangaRepository,
-        private val getChapterListUseCase: GetChapterListUseCase,
-        private val getReadChapterUseCase: GetReadChapterUseCase,
-        private val selectMangaChapterUseCase: SelectMangaChapterUseCase,
-        private val addToFavoriteUseCase: AddToFavoriteUseCase,
-        private val removeFromFavoriteUseCase: RemoveFromFavoriteUseCase,
-        private val getFavouriteStateUseCase: GetFavoriteStateUseCase
+    private val appRepository: AppRepository,
+    private val mangaRepository: HistoryMangaRepository,
+    private val getChapterListUseCase: GetChapterListUseCase,
+    private val getReadChapterUseCase: GetReadChapterUseCase,
+    private val selectMangaChapterUseCase: SelectMangaChapterUseCase,
+    private val addToFavoriteUseCase: AddToFavoriteUseCase,
+    private val removeFromFavoriteUseCase: RemoveFromFavoriteUseCase,
+    private val getFavouriteStateUseCase: GetFavoriteStateUseCase
 ) :
-        BaseActivityViewModel() {
+    BaseActivityViewModel() {
 
     private val mChapterPair = MutableLiveData<Pair<List<MangaChapterItem>, List<MangaChapterItem>>>()
     val chapterPair: LiveData<Pair<List<MangaChapterItem>, List<MangaChapterItem>>> = mChapterPair
 
     private val mFavouriteState = MutableLiveData<Boolean>().apply { value = false }
     val favouriteState = mFavouriteState
-
+    // true for default , false for reverse
+    private var order = true
     init {
         mChapterPair.value = Pair(emptyList(), emptyList())
     }
@@ -48,13 +49,32 @@ class MangaChapterActivityViewModel @Inject constructor(
 
     fun getChapterList() {
         getChapterListUseCase.execute()
+            .map {
+                val readList = getReadChapterUseCase.execute().blockingLast()
+                Pair(it, readList)
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { mLoadingState.value = Loading }
+            .doAfterTerminate { mLoadingState.value = Idle }
+            .subscribe({
+                mChapterPair.value = it
+            }, {
+                Logger.e(TAG, it)
+            })
+            .apply { disposable.add(this) }
+
+    }
+
+    fun updateHistoryChapter() {
+        if (mChapterPair.value!!.first.isNotEmpty()) {
+            getReadChapterUseCase.execute()
                 .map {
-                    val readList = getReadChapterUseCase.execute().blockingLast()
-                    Pair(it, readList)
+                    Pair(mChapterPair.value?.first!!, it)
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mLoadingState.value = Loading }
+                .doOnSubscribe { mLoadingState.value = Idle }
                 .doAfterTerminate { mLoadingState.value = Idle }
                 .subscribe({
                     mChapterPair.value = it
@@ -62,74 +82,64 @@ class MangaChapterActivityViewModel @Inject constructor(
                     Logger.e(TAG, it)
                 })
                 .apply { disposable.add(this) }
-
-    }
-
-    fun updateHistoryChapter() {
-        if (mChapterPair.value!!.first.isNotEmpty()) {
-            getReadChapterUseCase.execute()
-                    .map {
-                        Pair(mChapterPair.value?.first!!, it)
-                    }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe { mLoadingState.value = Idle }
-                    .doAfterTerminate { mLoadingState.value = Idle }
-                    .subscribe({
-                        mChapterPair.value = it
-                    }, {
-                        Logger.e(TAG, it)
-                    })
-                    .apply { disposable.add(this) }
         }
     }
 
     fun addToFavorite() {
         val menu = appRepository.appViewModel.Manga.selectedMangaMenuItem
         addToFavoriteUseCase.execute(menu, mChapterPair.value?.first?.size ?: 0)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mFavouriteState.value = true
-                }, {
-                    Logger.e(TAG, it)
-                })
-                .apply { disposable.add(this) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                mFavouriteState.value = true
+            }, {
+                Logger.e(TAG, it)
+            })
+            .apply { disposable.add(this) }
     }
 
     fun removeFromFavorite() {
         val menu = appRepository.appViewModel.Manga.selectedMangaMenuItem
         removeFromFavoriteUseCase.execute(menu)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mFavouriteState.value = false
-                }, {
-                    Logger.e(TAG, it)
-                })
-                .apply { disposable.add(this) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                mFavouriteState.value = false
+            }, {
+                Logger.e(TAG, it)
+            })
+            .apply { disposable.add(this) }
     }
 
     fun getFavoriteState() {
         val menu = appRepository.appViewModel.Manga.selectedMangaMenuItem
         getFavouriteStateUseCase.execute(menu)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mFavouriteState.value = it
-                }, {
-                    Logger.e(TAG, it)
-                })
-                .apply { disposable.add(this) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                mFavouriteState.value = it
+            }, {
+                Logger.e(TAG, it)
+            })
+            .apply { disposable.add(this) }
     }
 
     fun selectChapter(chapter: MangaChapterItem, callback: () -> Unit) {
         selectMangaChapterUseCase.execute(chapter)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ callback() },
-                        { Logger.e(TAG, it) })
-                .apply { disposable.add(this) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ callback() },
+                { Logger.e(TAG, it) })
+            .apply { disposable.add(this) }
+    }
+
+    fun sort() {
+        order = !order
+        var (chapterList, historyList) = mChapterPair.value!!
+        chapterList = chapterList.reversed()
+        appRepository.appViewModel.Manga.mangaChapterList = chapterList
+        mChapterPair.postValue(chapterList to historyList)
+
     }
 
     companion object {
