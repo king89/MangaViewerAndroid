@@ -136,6 +136,8 @@
   <string name="page_setting_direction">Direction</string>
   <string name="loading_chapter">Loading Chapter</string>
   <string name="continue_read">Continue</string>
+  <string name="undo">Undo</string>
+  <string name="history_item_removed">%s removed</string>
 
 
 </resources>

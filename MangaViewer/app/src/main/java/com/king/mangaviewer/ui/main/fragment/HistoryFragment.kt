@@ -4,7 +4,10 @@ import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.BaseTransientBottomBar.BaseCallback
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
+import android.support.design.widget.Snackbar.LENGTH_LONG
 import android.support.v4.content.ContextCompat
 import android.support.v4.util.Pair
 import android.support.v7.app.AlertDialog
@@ -20,6 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.king.mangaviewer.R
+import com.king.mangaviewer.R.string
 import com.king.mangaviewer.adapter.HistoryChapterItemAdapter
 import com.king.mangaviewer.base.BaseFragment
 import com.king.mangaviewer.base.ViewModelFactory
@@ -101,18 +105,18 @@ class HistoryFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         recyclerView!!.adapter = HistoryChapterItemAdapter(
                 activity as Context,
-            { imageView, item ->
-                viewModel.selectMenu(item)
-                appNavigator.navigateToChapter(Pair(imageView, "cover"))
-            },
-            { _, item ->
-                viewModel.selectChapter(item)
-                val intent = Intent(context, MangaPageActivityV2::class.java)
-                intent.putExtra(INTENT_EXTRA_FROM_HISTORY, true)
-                this@HistoryFragment.startActivity(intent)
-                this@HistoryFragment.activity?.overridePendingTransition(R.anim.in_rightleft,
-                    R.anim.out_rightleft)
-            })
+                { imageView, item ->
+                    viewModel.selectMenu(item)
+                    appNavigator.navigateToChapter(Pair(imageView, "cover"))
+                },
+                { _, item ->
+                    viewModel.selectChapter(item)
+                    val intent = Intent(context, MangaPageActivityV2::class.java)
+                    intent.putExtra(INTENT_EXTRA_FROM_HISTORY, true)
+                    this@HistoryFragment.startActivity(intent)
+                    this@HistoryFragment.activity?.overridePendingTransition(R.anim.in_rightleft,
+                            R.anim.out_rightleft)
+                })
 
         addItemTouchForRecyclerView()
 
@@ -122,7 +126,29 @@ class HistoryFragment : BaseFragment() {
     private fun addItemTouchForRecyclerView() {
         val itemTouchHelperCallback = RecyclerItemTouchHelper(0,
                 ItemTouchHelper.LEFT) { viewHolder, direction, position ->
-            viewModel.deleteMenu(adapter!!.getItemByPos(viewHolder.adapterPosition))
+            val item = adapter!!.getItemByPos(viewHolder.adapterPosition)
+            val maxLength = 20
+            val itemTitle = if (item.menu.title.length > maxLength) {
+                item.menu.title.substring(0..20) + "..."
+            } else {
+                item.menu.title
+            }
+            val snackbar = Snackbar.make(this.view!!,
+                    getString(R.string.history_item_removed, itemTitle), LENGTH_LONG)
+            var undo = false
+            snackbar.setAction(getString(R.string.undo)) {
+                undo = true
+                adapter!!.notifyItemChanged(viewHolder.adapterPosition)
+            }
+            snackbar.addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    if (!undo) {
+                        viewModel.deleteMenu(item)
+                    }
+                }
+            })
+            snackbar.show()
         }
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView)
 
