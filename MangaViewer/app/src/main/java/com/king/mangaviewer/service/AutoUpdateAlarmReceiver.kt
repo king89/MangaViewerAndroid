@@ -10,6 +10,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.PowerManager
 import android.preference.PreferenceManager
+import android.provider.Settings.System.DATE_FORMAT
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.Toast
@@ -90,7 +91,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
                     item.chapter_count = chlist.size
                     item.update_count = updatedCount
                     item.updated_date = DateTime.now().toString(
-                            FavouriteMangaMenuItem.DATE_FORMAT)
+                            DATE_FORMAT)
                     dataSource.update(item)
                     sb.append(item.title + ", ")
                     isHaveUpdated = true

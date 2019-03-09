@@ -1,11 +1,8 @@
 package com.king.mangaviewer.model
 
+import com.king.mangaviewer.common.Constants.DATE_FORMAT_LONG
 import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.DateTimeFormatterBuilder
-
-import java.sql.Date
-import java.text.DateFormat
 
 class FavouriteMangaMenuItem : MangaMenuItem, Comparable<FavouriteMangaMenuItem> {
 
@@ -22,14 +19,14 @@ class FavouriteMangaMenuItem : MangaMenuItem, Comparable<FavouriteMangaMenuItem>
             menu.description, menu.imagePath,
             menu.url, menu.mangaWebSource) {
         // TODO Auto-generated constructor stub
-        favouriteDate = DateTime.now().toString(DATE_FORMAT)
+        favouriteDate = DateTime.now().toString(DATE_FORMAT_LONG)
         this.chapterCount = chapterCount
     }
 
     constructor(menu: MangaMenuItem) : super(menu.id, menu.title, menu.description, menu.imagePath,
             menu.url, menu.mangaWebSource) {
         // TODO Auto-generated constructor stub
-        favouriteDate = DateTime.now().toString(DATE_FORMAT)
+        favouriteDate = DateTime.now().toString(DATE_FORMAT_LONG)
         this.chapterCount = 0
     }
 
@@ -40,11 +37,11 @@ class FavouriteMangaMenuItem : MangaMenuItem, Comparable<FavouriteMangaMenuItem>
             var r: DateTime? = null
             if (this.updatedDate.isNotEmpty()) {
                 l = DateTime.parse(updatedDate,
-                        DateTimeFormatterBuilder().appendPattern(DATE_FORMAT).toFormatter())
+                        DateTimeFormatterBuilder().appendPattern(DATE_FORMAT_LONG).toFormatter())
             }
             if (another.updatedDate.isNotEmpty()) {
                 r = DateTime.parse(another.updatedDate,
-                        DateTimeFormatterBuilder().appendPattern(DATE_FORMAT).toFormatter())
+                        DateTimeFormatterBuilder().appendPattern(DATE_FORMAT_LONG).toFormatter())
             }
             //sort by update date
             return if (l != null && r != null) {
@@ -64,7 +61,6 @@ class FavouriteMangaMenuItem : MangaMenuItem, Comparable<FavouriteMangaMenuItem>
     }
 
     companion object {
-        val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
 
         fun createFavouriteMangaMenuItem(menu: MangaMenuItem, favouriteDate: String,
                 updatedDate: String, chapterCount: Int, updateCount: Int): FavouriteMangaMenuItem {

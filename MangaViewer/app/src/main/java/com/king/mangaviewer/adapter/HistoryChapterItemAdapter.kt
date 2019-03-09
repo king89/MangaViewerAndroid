@@ -10,15 +10,17 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.king.mangaviewer.R
+import com.king.mangaviewer.common.Constants.DATE_FORMAT_SHORT
 import com.king.mangaviewer.model.HistoryMangaChapterItem
 import com.king.mangaviewer.util.GlideImageHelper
 import com.king.mangaviewer.util.SwipeViewHolder
 import com.king.mangaviewer.util.glide.CropImageTransformation
+import com.king.mangaviewer.util.toDateTime
 import io.reactivex.disposables.CompositeDisposable
 
 class HistoryChapterItemAdapter(private val context: Context,
         private val onItemClickListener: ((view: View, chapter: HistoryMangaChapterItem) -> Unit)? = null,
-        private val onButtonClickListener: ((view:View, chapter: HistoryMangaChapterItem)-> Unit)? = null) :
+        private val onButtonClickListener: ((view: View, chapter: HistoryMangaChapterItem) -> Unit)? = null) :
         BaseRecyclerViewAdapter<HistoryMangaChapterItem, HistoryChapterItemAdapter.RecyclerViewHolders>(
                 diffCallBack) {
 
@@ -41,7 +43,7 @@ class HistoryChapterItemAdapter(private val context: Context,
 
         holder.titleTextView.text = item.menu.title
         holder.chapterTextView.text = item.title
-        holder.dateTextView.text = item.lastReadDate
+        holder.dateTextView.text = item.lastReadDate.toDateTime().toString(DATE_FORMAT_SHORT)
         holder.sourceTextView.text = item.mangaWebSource.displayName
         holder.btContinue.setOnClickListener {
             onButtonClickListener?.invoke(holder.imageView, getItem(holder.adapterPosition))
