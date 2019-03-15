@@ -31,16 +31,19 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MangaPageActivityV2ViewModel @Inject constructor(
-        private val appRepository: AppRepository,
-        private val getPageListUseCase: GetPageListUseCase,
-        private val selectMangaChapterUseCase: SelectMangaChapterUseCase,
-        private val addToHistoryUseCase: AddToHistoryUseCase,
-        private val selectLastReadChapterUseCase: SelectLastReadChapterUseCase
+    private val appRepository: AppRepository,
+    private val getPageListUseCase: GetPageListUseCase,
+    private val selectMangaChapterUseCase: SelectMangaChapterUseCase,
+    private val addToHistoryUseCase: AddToHistoryUseCase,
+    private val selectLastReadChapterUseCase: SelectLastReadChapterUseCase
 ) :
-        BaseActivityViewModel() {
+    BaseActivityViewModel() {
 
     private val mDataList = MutableLiveData<List<MangaUri>>()
     val dataList: LiveData<List<MangaUri>> = mDataList
+
+    val chapterList get() = appRepository.appViewModel.Manga.mangaChapterList
+    val currentChapter get() = appRepository.appViewModel.Manga.selectedMangaChapterItem
 
     var currentPageNum = 0
     val totalPageNum = Transformations.map(dataList) {
@@ -70,7 +73,8 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     init {
         Logger.d(TAG, "MangaPageActivityV2ViewModel init")
         mDataList.value = emptyList()
-        mSelectedChapterName.value = appRepository.appViewModel.Manga.selectedMangaChapterItem?.title ?: ""
+        mSelectedChapterName.value = appRepository.appViewModel.Manga.selectedMangaChapterItem?.title
+            ?: ""
 
     }
 
@@ -81,38 +85,38 @@ class MangaPageActivityV2ViewModel @Inject constructor(
 
     fun getPageList() {
         getPageListObservable()
-                .ignoreElement()
-                .onErrorComplete()
-                .subscribe()
-                .apply { disposable.add(this) }
+            .ignoreElement()
+            .onErrorComplete()
+            .subscribe()
+            .apply { disposable.add(this) }
 
     }
 
     private fun getPageListObservable(): Single<MutableList<MangaUri>> {
         return getPageListUseCase.execute()
-                .subscribeOn(Schedulers.io())
-                .toObservable()
-                .flatMapIterable { it }
-                .map {
-                    it.apply {
-                        webImageUrl = MangaHelperV2.getWebImageUrl(it)
-                    }
-                    MangaUri(it.webImageUrl, it.referUrl)
+            .subscribeOn(Schedulers.io())
+            .toObservable()
+            .flatMapIterable { it }
+            .map {
+                it.apply {
+                    webImageUrl = MangaHelperV2.getWebImageUrl(it)
                 }
-                .toList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate { hideChapterLoading() }
-                .doAfterSuccess {
-                    currentPageNum = appRepository.appViewModel.Manga.nowPagePosition
-                    Logger.d(TAG, "start with page: ${currentPageNum}")
-                    mDataList.value = it
-                    prevAndNextChapterName.value = (getPrevChapter()?.title to getNextChapter()?.title)
-                    Logger.d(TAG, "getPageListObservable doAfterSuccess")
-                }
-                .doOnError {
-                    Logger.e(TAG, it)
-                    errorMessage.value = GenericError
-                }
+                MangaUri(it.webImageUrl, it.referUrl)
+            }
+            .toList()
+            .observeOn(AndroidSchedulers.mainThread())
+            .doAfterTerminate { hideChapterLoading() }
+            .doAfterSuccess {
+                currentPageNum = appRepository.appViewModel.Manga.nowPagePosition
+                Logger.d(TAG, "start with page: ${currentPageNum}")
+                mDataList.value = it
+                prevAndNextChapterName.value = (getPrevChapter()?.title to getNextChapter()?.title)
+                Logger.d(TAG, "getPageListObservable doAfterSuccess")
+            }
+            .doOnError {
+                Logger.e(TAG, it)
+                errorMessage.value = GenericError
+            }
     }
 
     fun nextChapter() {
@@ -138,9 +142,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     }
 
     private fun getPrevChapter(): MangaChapterItem? {
-        val chapterList = appRepository.appViewModel.Manga.mangaChapterList
-        val currentChapter = appRepository.appViewModel.Manga.selectedMangaChapterItem
-        val pos = chapterList.indexOf(currentChapter)
+        val pos = getCurrentChapterPos()
         return if (pos + 1 < chapterList.size) {
             chapterList[pos + 1]
         } else {
@@ -149,9 +151,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     }
 
     private fun getNextChapter(): MangaChapterItem? {
-        val chapterList = appRepository.appViewModel.Manga.mangaChapterList
-        val currentChapter = appRepository.appViewModel.Manga.selectedMangaChapterItem
-        val pos = chapterList.indexOf(currentChapter)
+        val pos = getCurrentChapterPos()
         return if (pos - 1 >= 0) {
             chapterList[pos - 1]
         } else {
@@ -159,23 +159,27 @@ class MangaPageActivityV2ViewModel @Inject constructor(
         }
     }
 
-    private fun selectChapter(chapter: MangaChapterItem) {
+    fun getCurrentChapterPos(): Int {
+        return chapterList.indexOf(currentChapter)
+    }
+
+    fun selectChapter(chapter: MangaChapterItem) {
         selectMangaChapterUseCase.execute(chapter)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete {
-                    Logger.d(TAG, "selectChapter on complete")
-                    mSelectedChapterName.value = chapter.title
-                }
-                .andThen(getPageListObservable())
-                .doOnError {
-                    Logger.e(TAG, it)
-                    errorMessage.value = GenericError
-                }
-                .ignoreElement()
-                .onErrorComplete()
-                .subscribe()
-                .apply { disposable.add(this) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnComplete {
+                Logger.d(TAG, "selectChapter on complete")
+                mSelectedChapterName.value = chapter.title
+            }
+            .andThen(getPageListObservable())
+            .doOnError {
+                Logger.e(TAG, it)
+                errorMessage.value = GenericError
+            }
+            .ignoreElement()
+            .onErrorComplete()
+            .subscribe()
+            .apply { disposable.add(this) }
     }
 
     fun showChapterLoading() {
@@ -190,16 +194,16 @@ class MangaPageActivityV2ViewModel @Inject constructor(
         //TODO should not use context here
         mReadingDirection.value = mReadingDirection.value!!.not()
         appRepository.appViewModel.Setting.setIsFromLeftToRight(MyApplication.context,
-                mReadingDirection.value!!)
+            mReadingDirection.value!!)
     }
 
     fun saveCurrentReadPage() {
         addToHistoryUseCase.execute(appRepository.appViewModel.Manga.selectedMangaChapterItem,
-                currentPageNum)
-                .subscribeOn(Schedulers.newThread())
-                .doOnError { Logger.e(TAG, it) }
-                .onErrorComplete()
-                .subscribe()
+            currentPageNum)
+            .subscribeOn(Schedulers.newThread())
+            .doOnError { Logger.e(TAG, it) }
+            .onErrorComplete()
+            .subscribe()
     }
 
     fun recoverFromLastRead() {

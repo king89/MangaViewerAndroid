@@ -7,13 +7,20 @@ import android.content.pm.ActivityInfo
 import android.graphics.Rect
 import android.os.Bundle
 import android.provider.Settings
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED
+import android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED
+import android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.design.widget.Snackbar.LENGTH_SHORT
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.TooltipCompat
 import android.view.Gravity
 import android.view.MotionEvent
+import android.view.MotionEvent.ACTION_DOWN
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -23,8 +30,13 @@ import android.widget.TextView
 import android.widget.Toast
 import com.king.mangaviewer.R
 import com.king.mangaviewer.R.string
+import com.king.mangaviewer.adapter.MangaChapterItemAdapter
+import com.king.mangaviewer.adapter.MangaChapterItemAdapter.OnItemClickListener
+import com.king.mangaviewer.adapter.MangaChapterItemWrapper
+import com.king.mangaviewer.adapter.WrapperType.CHAPTER
 import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
+import com.king.mangaviewer.component.ChapterListBottomSheetBehavior
 import com.king.mangaviewer.component.HasFullScreenControl
 import com.king.mangaviewer.component.ReaderCallback
 import com.king.mangaviewer.component.ReadingDirection.LTR
@@ -32,6 +44,7 @@ import com.king.mangaviewer.component.ReadingDirection.RTL
 import com.king.mangaviewer.di.annotation.ActivityScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
+import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoNextChapter
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoPrevChapter
 import com.king.mangaviewer.ui.page.fragment.ReaderFragment
@@ -45,6 +58,9 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_manga_page_v2.brightnessBar
+import kotlinx.android.synthetic.main.activity_manga_page_v2.bsChapters
+import kotlinx.android.synthetic.main.bottom_sheet_chapter_list.bottomSheetTopView
+import kotlinx.android.synthetic.main.bottom_sheet_chapter_list.rvChapterList
 import kotlinx.android.synthetic.main.list_manga_page_item_v2.clLoading
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.inject.Inject
@@ -78,6 +94,10 @@ class MangaPageActivityV2 : BaseActivity(),
 
     protected var mReaderFragment: ReaderFragment? = null
 
+    private val bottomSheetBehavior by lazy {
+        BottomSheetBehavior.from(bsChapters) as ChapterListBottomSheetBehavior
+    }
+
     private var delayFullScreenDispose: Disposable? = null
     private val DELAY = 5000L
     private var portaitMode = true
@@ -107,14 +127,25 @@ class MangaPageActivityV2 : BaseActivity(),
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         stopAutoHideIfNecessary(ev)
+        hideBottomSheetIfNecessary(ev)
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun stopAutoHideIfNecessary(ev: MotionEvent) {
-        val editTextRect = Rect()
-        controlsView.getHitRect(editTextRect)
+    private fun hideBottomSheetIfNecessary(ev: MotionEvent) {
+        val rect = Rect()
+        bsChapters.getHitRect(rect)
+        if (ev.action == ACTION_DOWN &&
+            bottomSheetBehavior.state != STATE_HIDDEN
+            && !rect.contains(ev.x.toInt(), ev.y.toInt())) {
+            bottomSheetBehavior.state = STATE_HIDDEN
+        }
+    }
 
-        if (editTextRect.contains(ev.x.toInt(), ev.y.toInt())) {
+    private fun stopAutoHideIfNecessary(ev: MotionEvent) {
+        val controlPanelRect = Rect()
+        controlsView.getHitRect(controlPanelRect)
+
+        if (controlPanelRect.contains(ev.x.toInt(), ev.y.toInt())) {
             delayFullScreenDispose?.dispose()
         }
     }
@@ -201,6 +232,12 @@ class MangaPageActivityV2 : BaseActivity(),
     var diff = 0f
     @SuppressLint("ClickableViewAccessibility")
     private fun initButtons() {
+
+        // set hideable or not
+        bottomSheetBehavior.skipCollapsed = true
+        bottomSheetBehavior.isHideable = true
+        bottomSheetBehavior.state = STATE_HIDDEN
+        bottomSheetBehavior.setTopView(bottomSheetTopView)
         fabBrightness.setOnTouchListener { view, motionEvent ->
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -229,7 +266,7 @@ class MangaPageActivityV2 : BaseActivity(),
                     lp.screenBrightness = tmpBrightness
                     window.attributes = lp
                     brightnessBar.setProgress((tmpBrightness * 100).toInt())
-                    if (tmpBrightness >= 1.0f || tmpBrightness <= 0f){
+                    if (tmpBrightness >= 1.0f || tmpBrightness <= 0f) {
                         oldX = newX
                         brightness = tmpBrightness
                     }
@@ -243,7 +280,10 @@ class MangaPageActivityV2 : BaseActivity(),
             }
             true
         }
-        fabChapters.setOnClickListener { }
+        fabChapters.setOnClickListener {
+            initChapterListIfNecessary()
+            bottomSheetBehavior.state = STATE_EXPANDED
+        }
         fabDirection.setOnClickListener {
             viewModel.toggleDirection()
             setupReader()
@@ -255,6 +295,30 @@ class MangaPageActivityV2 : BaseActivity(),
             } else {
                 ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
             }
+        }
+    }
+
+    private fun initChapterListIfNecessary() {
+
+        if (rvChapterList.adapter == null) {
+            val adapter = MangaChapterItemAdapter(this, object : OnItemClickListener {
+                override fun onClick(chapter: MangaChapterItem) {
+                    viewModel.selectChapter(chapter)
+                    bottomSheetBehavior.state = STATE_HIDDEN
+                    hideSystemUI()
+                }
+            })
+            rvChapterList.layoutManager = LinearLayoutManager(this)
+            rvChapterList.adapter = adapter
+            ViewCompat.setNestedScrollingEnabled(rvChapterList, false)
+            val list = viewModel.chapterList.map {
+                MangaChapterItemWrapper(it.title, CHAPTER, it, false)
+            }
+            (rvChapterList.adapter as MangaChapterItemAdapter).submitList(list)
+        }
+        //locate current chapter
+        rvChapterList.post {
+            rvChapterList.scrollToPosition(viewModel.getCurrentChapterPos())
         }
     }
 
