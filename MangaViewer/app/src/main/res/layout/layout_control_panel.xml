@@ -27,6 +27,8 @@
 
   <android.support.constraint.ConstraintLayout
       android:id="@+id/fullscreen_content_controls"
+      android:focusable="true"
+      android:clickable="true"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal|bottom"
@@ -44,6 +46,8 @@
 
     <SeekBar
         android:id="@+id/seekBar"
+        android:focusable="true"
+        android:clickable="true"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -126,6 +130,8 @@
         android:id="@+id/fabBrightness"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:clickable="true"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/fabChapters"
         app:layout_constraintEnd_toStartOf="@+id/fabDirection"
