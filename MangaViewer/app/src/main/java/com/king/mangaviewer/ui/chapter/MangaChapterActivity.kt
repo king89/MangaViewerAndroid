@@ -86,6 +86,7 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
         fabShare.setOnClickListener { }
         fabSort.setOnClickListener {
             viewModel.sort()
+            (listView.adapter as? MangaChapterItemAdapter)?.submitList(emptyList())
         }
     }
 
