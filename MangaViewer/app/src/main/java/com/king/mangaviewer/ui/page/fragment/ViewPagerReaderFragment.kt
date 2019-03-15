@@ -22,6 +22,7 @@ import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment.ShouldChang
 import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment.ShouldChangeChapter.NextChapter
 import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment.ShouldChangeChapter.PrevChapter
 import com.king.mangaviewer.util.Logger
+import com.king.mangaviewer.util.Util
 import com.king.mangaviewer.util.withViewModel
 import kotlinx.android.synthetic.main.fragment_viewpager_reader.clMask
 import kotlinx.android.synthetic.main.fragment_viewpager_reader.groupLeft
@@ -48,7 +49,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
     var rightChapterName = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?): View {
+        savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_viewpager_reader, container, false)
     }
 
@@ -59,7 +60,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
             }
 
             override fun onPageScrolled(position: Int, positionOffset: Float,
-                    positionOffsetPixels: Int) {
+                positionOffsetPixels: Int) {
             }
 
             override fun onPageSelected(position: Int) {
@@ -111,15 +112,15 @@ open class ViewPagerReaderFragment : ReaderFragment() {
     }
 
     protected open fun createOnOverScrollListener(
-            callback: ReaderCallback) {
+        callback: ReaderCallback) {
         val decro = OverScrollDecoratorHelper.setUpOverScroll(viewPager)
 
         val tvStart = if (isLeftToRight) tvLeft else tvRight
         val tvEnd = if (isLeftToRight) tvRight else tvLeft
         val toChapterStringStart = if (isLeftToRight) getString(
-                R.string.prev_chapter) else getString(R.string.next_chapter)
+            R.string.prev_chapter) else getString(R.string.next_chapter)
         val toChapterStringEnd = if (isLeftToRight) getString(R.string.next_chapter) else getString(
-                R.string.prev_chapter)
+            R.string.prev_chapter)
 
 
         decro.setOverScrollStateListener { decor, oldState, newState ->
@@ -162,7 +163,8 @@ open class ViewPagerReaderFragment : ReaderFragment() {
 
                 }
                 STATE_BOUNCE_BACK -> {
-                    if (abs(decor.view.translationX / decor.view.width) > THRESHOLD_SCROLL) {
+                    if (Util.dpFromPx(context,
+                            abs(decor.view.translationX )) > THRESHOLD_SCROLL_DP) {
                         shouldChangeChapter = when (oldState) {
                             STATE_DRAG_START_SIDE -> if (isLeftToRight) PrevChapter else NextChapter
                             STATE_DRAG_END_SIDE -> if (isLeftToRight) NextChapter else PrevChapter
@@ -175,9 +177,10 @@ open class ViewPagerReaderFragment : ReaderFragment() {
         }
         decro.setOverScrollUpdateListener { decor, state, offset ->
             clMask ?: return@setOverScrollUpdateListener
-            val alpha = min(abs(offset) / decor.view.width, THRESHOLD_SCROLL) / THRESHOLD_SCROLL
+            val maxScrollThresholdPx = Util.pxFromDp(context, THRESHOLD_SCROLL_DP)
+            val alpha = min(abs(offset) / maxScrollThresholdPx, 1f)
 //            Logger.d(TAG,
-//                    "OverScrollUpdate alpha: $alpha, percent: ${abs(offset) / decor.view.width}")
+//                    "OverScrollUpdate alpha: $alpha, offset: ${abs(offset)}, threshldPx: $maxScrollThresholdPx")
             clMask.alpha = alpha
             when {
                 //change text to release
@@ -227,7 +230,8 @@ open class ViewPagerReaderFragment : ReaderFragment() {
     }
 
     override fun setPageMode(mode: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO(
+            "not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun showThumbnail(pageNum: Int): Bitmap? {
@@ -242,11 +246,11 @@ open class ViewPagerReaderFragment : ReaderFragment() {
 
     companion object {
         val TAG = "ViewPagerReaderFragment"
-        val THRESHOLD_SCROLL = 0.10f
+        val THRESHOLD_SCROLL_DP = 32f
 
         @JvmStatic
         fun newInstance() =
-                ViewPagerReaderFragment()
+            ViewPagerReaderFragment()
 
     }
 }
