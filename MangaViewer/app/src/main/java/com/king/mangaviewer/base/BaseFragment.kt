@@ -25,10 +25,6 @@ import javax.inject.Inject
  */
 open class BaseFragment : Fragment() {
 
-    @Inject
-    @field:FragmentScopedFactory
-    lateinit var fragmentViewModelFactory: ViewModelFactory
-
     protected val disposable = CompositeDisposable()
 
     protected val settingViewModel: SettingViewModel

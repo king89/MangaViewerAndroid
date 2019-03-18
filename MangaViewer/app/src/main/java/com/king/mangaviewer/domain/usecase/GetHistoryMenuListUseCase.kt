@@ -8,18 +8,18 @@ import com.king.mangaviewer.viewmodel.AppViewModel
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class GetHistoryChapterListUseCase @Inject constructor(
+class GetHistoryMenuListUseCase @Inject constructor(
         private val appViewModel: AppViewModel,
         private val historyMangaRepository: HistoryMangaRepository
 ) {
     @SuppressLint("CheckResult")
     fun execute(menuItem: MangaMenuItem?): Observable<List<HistoryMangaChapterItem>> {
-        return historyMangaRepository.getAllHistoryMangaItem(menuItem)
+        return historyMangaRepository.getHistoryMenuList()
                 .toObservable()
                 .share()
     }
 
     companion object {
-        const val TAG = "GetHistoryChapterListUseCase"
+        const val TAG = "GetHistoryMenuListUseCase"
     }
 }

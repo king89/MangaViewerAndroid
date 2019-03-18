@@ -31,6 +31,12 @@ android {
             storeFile file(jks_path)
             storePassword 'mangaviewer'
         }
+        debug {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file("../debug.keystore")
+            storePassword 'android'
+        }
     }
     compileSdkVersion sdk_version
     defaultConfig {
@@ -44,9 +50,6 @@ android {
 
     }
     buildTypes {
-        //        applicationVariants.all { variant ->
-        //            appendVersionNameVersionCode(variant, defaultConfig)
-        //        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -62,7 +65,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    buildToolsVersion versions.androidBuildTools
+    buildToolsVersion '28.0.3'
 }
 
 dependencies {
@@ -106,6 +109,7 @@ dependencies {
     implementation "org.jsoup:jsoup:1.8.2"
     implementation "me.grantland:autofittextview:0.2.1"
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
+    implementation 'me.everything:overscroll-decor-android:1.0.4'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
 
     implementation libraries.butterKnife

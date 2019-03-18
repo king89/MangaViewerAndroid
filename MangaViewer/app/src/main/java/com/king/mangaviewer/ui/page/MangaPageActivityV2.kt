@@ -1,53 +1,73 @@
 package com.king.mangaviewer.ui.page
 
+import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
+import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.graphics.Rect
 import android.os.Bundle
+import android.provider.Settings
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED
+import android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED
+import android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.design.widget.Snackbar.LENGTH_SHORT
-import android.support.v7.widget.SwitchCompat
+import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.TooltipCompat
 import android.view.Gravity
-import android.view.Menu
-import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.MotionEvent.ACTION_DOWN
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.WindowManager
 import android.widget.ImageButton
-import android.widget.PopupWindow
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import com.king.mangaviewer.R
 import com.king.mangaviewer.R.string
+import com.king.mangaviewer.adapter.MangaChapterItemAdapter
+import com.king.mangaviewer.adapter.MangaChapterItemAdapter.OnItemClickListener
+import com.king.mangaviewer.adapter.MangaChapterItemWrapper
+import com.king.mangaviewer.adapter.WrapperType.CHAPTER
 import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
+import com.king.mangaviewer.component.ChapterListBottomSheetBehavior
 import com.king.mangaviewer.component.HasFullScreenControl
-import com.king.mangaviewer.component.ReaderListener
+import com.king.mangaviewer.component.ReaderCallback
+import com.king.mangaviewer.component.ReadingDirection.LTR
+import com.king.mangaviewer.component.ReadingDirection.RTL
 import com.king.mangaviewer.di.annotation.ActivityScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
-import com.king.mangaviewer.model.MangaUri
+import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoNextChapter
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoPrevChapter
 import com.king.mangaviewer.ui.page.fragment.ReaderFragment
 import com.king.mangaviewer.ui.page.fragment.RtlViewPagerReaderFragment
 import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment
-import com.king.mangaviewer.util.GsonHelper
+import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.withViewModel
 import com.king.mangaviewer.viewmodel.MangaViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
-import kotlinx.android.synthetic.main.activity_manga_page_v2.progressBar
+import kotlinx.android.synthetic.main.activity_manga_page_v2.brightnessBar
+import kotlinx.android.synthetic.main.activity_manga_page_v2.bsChapters
+import kotlinx.android.synthetic.main.bottom_sheet_chapter_list.bottomSheetTopView
+import kotlinx.android.synthetic.main.bottom_sheet_chapter_list.rvChapterList
+import kotlinx.android.synthetic.main.list_manga_page_item_v2.clLoading
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.inject.Inject
 
 class MangaPageActivityV2 : BaseActivity(),
-        HasFullScreenControl,
-        ReaderListener {
+    HasFullScreenControl,
+    ReaderCallback {
     @Inject
     @field:ActivityScopedFactory
     lateinit var activityScopedFactory: ViewModelFactory
@@ -62,33 +82,78 @@ class MangaPageActivityV2 : BaseActivity(),
     val mSettingViewModel: SettingViewModel by lazy { appViewModel.Setting }
 
     internal var mIsLoadFromHistory: Boolean = false
-    internal var mUpdateConsumer: Consumer<Any> = Consumer { update(null) }
 
     private val mFFImageButton by lazy { findViewById<View>(R.id.ffButton) as ImageButton }
     private val mFRImageButton by lazy { findViewById<View>(R.id.frButton) as ImageButton }
     private val tvProgress by lazy { findViewById<View>(R.id.textView_pageNum) as TextView }
+    private val controlsView by lazy { findViewById<View>(R.id.fullscreen_content_controls) }
+    private val fabBrightness by lazy { findViewById<FloatingActionButton>(R.id.fabBrightness) }
+    private val fabChapters by lazy { findViewById<FloatingActionButton>(R.id.fabChapters) }
+    private val fabDirection by lazy { findViewById<FloatingActionButton>(R.id.fabDirection) }
+    private val fabRotation by lazy { findViewById<FloatingActionButton>(R.id.fabRotation) }
 
     protected var mReaderFragment: ReaderFragment? = null
 
-    private var mMangaList: List<MangaUri>? = null
+    private val bottomSheetBehavior by lazy {
+        BottomSheetBehavior.from(bsChapters) as ChapterListBottomSheetBehavior
+    }
+
     private var delayFullScreenDispose: Disposable? = null
     private val DELAY = 5000L
-
+    private var portaitMode = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        hideSystemUI()
+        if (savedInstanceState != null) {
+            Logger.i(TAG, "recover from last read")
+            viewModel.recoverFromLastRead()
+            //start from the beginning
+            val intent = Intent(this, MangaPageActivityV2::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NO_ANIMATION
+            startActivity(intent)
+            finish()
+            return
+        }
+        delayFullScreen()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.saveCurrentReadPage()
     }
 
     override fun getActionBarTitle(): String {
-        return mMangaViewModel.selectedMangaChapterItem.title
+        return mMangaViewModel.selectedMangaChapterItem?.title ?: ""
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        stopAutoHideIfNecessary(ev)
+        hideBottomSheetIfNecessary(ev)
+        return super.dispatchTouchEvent(ev)
+    }
+
+    private fun hideBottomSheetIfNecessary(ev: MotionEvent) {
+        val rect = Rect()
+        bsChapters.getHitRect(rect)
+        if (ev.action == ACTION_DOWN &&
+            bottomSheetBehavior.state != STATE_HIDDEN
+            && !rect.contains(ev.x.toInt(), ev.y.toInt())) {
+            bottomSheetBehavior.state = STATE_HIDDEN
+        }
+    }
+
+    private fun stopAutoHideIfNecessary(ev: MotionEvent) {
+        val controlPanelRect = Rect()
+        controlsView.getHitRect(controlPanelRect)
+
+        if (controlPanelRect.contains(ev.x.toInt(), ev.y.toInt())) {
+            delayFullScreenDispose?.dispose()
+        }
     }
 
     override fun initControl() {
         mIsLoadFromHistory = intent.getBooleanExtra(
-                INTENT_EXTRA_FROM_HISTORY, false)
+            INTENT_EXTRA_FROM_HISTORY, false)
         setContentView(R.layout.activity_manga_page_v2)
-
-        val controlsView = findViewById<View>(R.id.fullscreen_content_controls)
 
         mDecorView = window.decorView
         mDecorView.setOnSystemUiVisibilityChangeListener { visibility ->
@@ -99,7 +164,7 @@ class MangaPageActivityV2 : BaseActivity(),
             }
             if (mShortAnimTime == 0) {
                 mShortAnimTime = resources.getInteger(
-                        android.R.integer.config_shortAnimTime)
+                    android.R.integer.config_shortAnimTime)
             }
             if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
                 // TODO: The system bars are visible. Make any desired
@@ -107,8 +172,7 @@ class MangaPageActivityV2 : BaseActivity(),
                 // other navigational controls.
                 isFullScreen = false
                 controlsView.animate()
-                        .translationY(0f).duration = mShortAnimTime.toLong()
-                controlsView.visibility = View.VISIBLE
+                    .translationY(0f).duration = mShortAnimTime.toLong()
                 supportActionBar!!.show()
 
                 delayFullScreen()
@@ -119,17 +183,17 @@ class MangaPageActivityV2 : BaseActivity(),
                 // other navigational controls.
                 isFullScreen = true
 
-                controlsView.animate()
-                        .translationY(mControlsHeight.toFloat()).duration = mShortAnimTime.toLong()
-                controlsView.visibility = View.GONE
+                controlsView.animate().apply {
+                    translationY(mControlsHeight.toFloat()).duration = mShortAnimTime.toLong()
+                }.start()
                 supportActionBar!!.hide()
             }
         }
 
         TooltipCompat.setTooltipText(mFFImageButton,
-                getString(R.string.button_tooltip_next_chapter))
+            getString(R.string.button_tooltip_next_chapter))
         TooltipCompat.setTooltipText(mFRImageButton,
-                getString(R.string.button_tooltip_prev_chapter))
+            getString(R.string.button_tooltip_prev_chapter))
 
         mFFImageButton.setOnClickListener {
             nextChapter()
@@ -158,8 +222,104 @@ class MangaPageActivityV2 : BaseActivity(),
             }
         })
 
+        initButtons()
         initViewModel()
 
+    }
+
+    var oldX = 0f
+    var brightness = 0f
+    var diff = 0f
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initButtons() {
+
+        // set hideable or not
+        bottomSheetBehavior.skipCollapsed = true
+        bottomSheetBehavior.isHideable = true
+        bottomSheetBehavior.state = STATE_HIDDEN
+        bottomSheetBehavior.setTopView(bottomSheetTopView)
+        fabBrightness.setOnTouchListener { view, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    oldX = motionEvent.x
+                    val lp = window.attributes
+                    brightness = if (lp.screenBrightness <= -1) {
+                        Settings.System.getInt(this.contentResolver,
+                            Settings.System.SCREEN_BRIGHTNESS).toFloat() / 255.0f
+                    } else {
+                        lp.screenBrightness
+                    }
+                    brightnessBar.visibility = VISIBLE
+                    brightnessBar.setProgress((brightness * 100).toInt())
+
+                    Logger.d(TAG, "down brightness: $brightness")
+
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    Logger.d(TAG, "before move brightness: ${brightness}")
+
+                    val newX = motionEvent.x
+                    diff = (newX - oldX)
+                    var tmpBrightness = brightness * 255f + diff
+                    tmpBrightness = Math.max(0f, Math.min(tmpBrightness, 255f)) / 255.0f
+                    val lp = window.attributes
+                    lp.screenBrightness = tmpBrightness
+                    window.attributes = lp
+                    brightnessBar.setProgress((tmpBrightness * 100).toInt())
+                    if (tmpBrightness >= 1.0f || tmpBrightness <= 0f) {
+                        oldX = newX
+                        brightness = tmpBrightness
+                    }
+                    Logger.d(TAG,
+                        "move brightness: ${lp.screenBrightness}, $tmpBrightness, diff: ${newX - oldX}")
+                }
+                MotionEvent.ACTION_UP -> {
+                    brightnessBar.visibility = GONE
+                    brightness += diff
+                }
+            }
+            true
+        }
+        fabChapters.setOnClickListener {
+            initChapterListIfNecessary()
+            bottomSheetBehavior.state = STATE_EXPANDED
+        }
+        fabDirection.setOnClickListener {
+            viewModel.toggleDirection()
+            setupReader()
+        }
+        fabRotation.setOnClickListener {
+            portaitMode = !portaitMode
+            requestedOrientation = if (portaitMode) {
+                ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+            } else {
+                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            }
+        }
+    }
+
+    private fun initChapterListIfNecessary() {
+
+        if (rvChapterList.adapter == null) {
+            val adapter = MangaChapterItemAdapter(this, object : OnItemClickListener {
+                override fun onClick(chapter: MangaChapterItem) {
+                    viewModel.selectChapter(chapter)
+                    bottomSheetBehavior.state = STATE_HIDDEN
+                    hideSystemUI()
+                }
+            })
+            rvChapterList.layoutManager = LinearLayoutManager(this)
+            rvChapterList.adapter = adapter
+            ViewCompat.setNestedScrollingEnabled(rvChapterList, false)
+            val list = viewModel.chapterList.map {
+                MangaChapterItemWrapper(it.title, CHAPTER, it, false)
+            }
+            (rvChapterList.adapter as MangaChapterItemAdapter).submitList(list)
+        }
+        //locate current chapter
+        rvChapterList.post {
+            rvChapterList.scrollToPosition(viewModel.getCurrentChapterPos())
+        }
     }
 
     private fun initViewModel() {
@@ -181,9 +341,13 @@ class MangaPageActivityV2 : BaseActivity(),
                         showErrorMessage(resources.getString(string.no_more_next_chapter))
                     else -> {
                         Snackbar.make(this@MangaPageActivityV2.mDecorView,
-                                R.string.oops_error_message, LENGTH_SHORT)
+                            R.string.oops_error_message, LENGTH_SHORT)
                     }
                 }
+            })
+
+            totalPageNum.observe(this@MangaPageActivityV2, Observer {
+                syncTextView()
             })
 
             selectedChapterName.observe(this@MangaPageActivityV2, Observer {
@@ -191,49 +355,68 @@ class MangaPageActivityV2 : BaseActivity(),
             })
 
             dataList.observe(this@MangaPageActivityV2, Observer {
-                setupReader(it!!)
+                setupReader()
             })
 
+            readingDirection.observe(this@MangaPageActivityV2, Observer {
+                when (it!!) {
+                    LTR -> {
+                        fabDirection.setImageDrawable(
+                            ContextCompat.getDrawable(this@MangaPageActivityV2,
+                                R.drawable.ic_reading_ltr))
+                    }
+                    RTL -> {
+                        fabDirection.setImageDrawable(
+                            ContextCompat.getDrawable(this@MangaPageActivityV2,
+                                R.drawable.ic_reading_rtl))
+                    }
+                }
+            })
             attachToView()
+
         }
     }
 
     private fun showErrorMessage(s: String) {
         Toast.makeText(this, s,
-                Toast.LENGTH_SHORT)
-                .apply { setGravity(Gravity.CENTER, 0, 0) }
-                .show()
+            Toast.LENGTH_SHORT)
+            .apply { setGravity(Gravity.CENTER, 0, 0) }
+            .show()
     }
 
     override fun prevChapter() {
         viewModel.prevChapter()
+        delayFullScreen()
     }
 
     override fun nextChapter() {
         viewModel.nextChapter()
+        delayFullScreen()
     }
 
     fun syncTextView() {
-        val totalNum = sb.max + 1
-        val currentPage = sb.progress + 1
-        tvProgress.text = "$currentPage / $totalNum"
+        if (sb.max > 0) {
+            val totalNum = sb.max + 1
+            val currentPage = sb.progress + 1
+            viewModel.currentPageNum = sb.progress
+            tvProgress.text = "$currentPage / $totalNum"
+        } else {
+            tvProgress.text = "- / -"
+        }
     }
 
-    private fun setupReader(mangaList: List<MangaUri>) {
-        mMangaList = mangaList
-        val json = GsonHelper.toJson(mangaList)
-
+    private fun setupReader() {
         val fragment = if (mSettingViewModel.getIsFromLeftToRight(this)) {
-            ViewPagerReaderFragment.newInstance(json)
+            ViewPagerReaderFragment.newInstance()
         } else {
-            RtlViewPagerReaderFragment.newInstance(json)
+            RtlViewPagerReaderFragment.newInstance()
         }
 
         fragment.readerListener = this
         fragment.startPage = 0
         supportFragmentManager?.beginTransaction()
-                ?.replace(R.id.readerFragment, fragment)
-                ?.commitNow()
+            ?.replace(R.id.readerFragment, fragment)
+            ?.commitNow()
         mReaderFragment = fragment
         syncControlPanel()
     }
@@ -253,91 +436,33 @@ class MangaPageActivityV2 : BaseActivity(),
     }
 
     override fun goBack() {
-        mMangaViewModel.nowPagePosition = 0
-        mMangaViewModel.mangaPageList = null
+//        mMangaViewModel.nowPagePosition = 0
+//        mMangaViewModel.mangaPageList = null
         super.goBack()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-
-        menuInflater.inflate(R.menu.page_menu, menu)
-
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-
-        if (id == R.id.menu_setting) {
-
-//            mViewFlipper!!.stopAutoFullscreen()
-            val v = findViewById<View>(R.id.menu_setting)
-            displayPopupWindow(v)
-
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun displayPopupWindow(anchorView: View) {
-        val popup = PopupWindow(this)
-        val layout = layoutInflater.inflate(R.layout.menu_page_setting, null)
-
-        //Init Switch
-        val isFTRSwitch = layout.findViewById<View>(R.id.LTRSwitch) as SwitchCompat
-        val splitPageSwitch = layout.findViewById<View>(R.id.splitPageSwitch) as SwitchCompat
-
-        isFTRSwitch.isChecked = mSettingViewModel.getIsFromLeftToRight(this)
-        isFTRSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            mSettingViewModel.setIsFromLeftToRight(this, isChecked)
-            mMangaList?.run {
-                setupReader(this)
-            }
-        }
-        splitPageSwitch.isChecked = mSettingViewModel.getIsSplitPage(this)
-        splitPageSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            mSettingViewModel.setIsSplitPage(this@MangaPageActivityV2, isChecked)
-//            mViewFlipper!!.refresh()
-        }
-
-        popup.contentView = layout
-        // Set content width and height
-        popup.height = WindowManager.LayoutParams.WRAP_CONTENT
-        popup.width = WindowManager.LayoutParams.WRAP_CONTENT
-        // Closes the popup window when touch outside of it - when looses focus
-        popup.isOutsideTouchable = true
-        popup.isFocusable = true
-        // Show anchored to button
-        popup.showAsDropDown(anchorView)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) hideSystemUI()
+        if (hasFocus) showSystemUI()
         window.decorView.invalidate()
     }
 
-    private fun delayFullScreen() {
+    private fun delayFullScreen(delayInMill: Long = DELAY) {
         delayFullScreenDispose?.dispose()
         delayFullScreenDispose = Single.just("")
-                .delay(DELAY, MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { it: String ->
-                    hideSystemUI()
-                }
+            .delay(delayInMill, MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { _ ->
+                hideSystemUI()
+            }
     }
 
     override fun showLoading() {
-        progressBar.visibility = VISIBLE
+        clLoading.visibility = VISIBLE
     }
 
     override fun hideLoading() {
-        progressBar.visibility = GONE
-
+        clLoading.visibility = GONE
     }
 
     override fun toggleUI() {
@@ -354,22 +479,22 @@ class MangaPageActivityV2 : BaseActivity(),
         // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
         // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
-                // Set the content to appear under the system bars so that the
-                // content doesn't resize when the system bars hide and show.
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                // Hide the nav bar and status bar
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+            // Set the content to appear under the system bars so that the
+            // content doesn't resize when the system bars hide and show.
+            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            // Hide the nav bar and status bar
+            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
 
     // Shows the system bars by removing all the flags
 // except for the ones that make the content appear under the system bars.
     override fun showSystemUI() {
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
 
     }
 

@@ -28,9 +28,9 @@
 
   <!-- Nav Drawer Menu Items -->
   <string-array name="nav_drawer_items">
+    <item>@string/nav_favourite</item>
     <item>@string/nav_latest_update</item>
     <item>@string/nav_all_manga</item>
-    <item>@string/nav_favourite</item>
     <item>@string/nav_history</item>
     <item>@string/nav_local</item>
     <item>@string/nav_setting</item>
@@ -124,6 +124,20 @@
   <string name="clear">Clear</string>
   <string name="no_description">No decription</string>
   <string name="load_page_fail_message">Load image failed</string>
+  <string name="pull_to_next_chapter">Pull to next chapter</string>
+  <string name="pull_to_prev_chapter">Pull to previous chapter</string>
+  <string name="next_chapter">Next chapter</string>
+  <string name="prev_chapter">Previous chapter</string>
+  <string name="release_to_prev_chapter">Release to go</string>
+  <string name="release_to_next_chapter">Release to go</string>
+  <string name="page_setting_brightness">Brightness</string>
+  <string name="page_setting_chapters">Chapters</string>
+  <string name="page_setting_rotation">Rotation</string>
+  <string name="page_setting_direction">Direction</string>
+  <string name="loading_chapter">Loading Chapter</string>
+  <string name="continue_read">Continue</string>
+  <string name="undo">Undo</string>
+  <string name="history_item_removed">%s removed</string>
 
 
 </resources>

@@ -15,6 +15,7 @@ class SelectMangaChapterUseCase @Inject constructor(private val appViewModel: Ap
         return Completable.fromCallable {
             appViewModel.Manga.selectedMangaChapterItem = chapter
             appViewModel.Manga.selectedMangaMenuItem = chapter.menu
+            appViewModel.Manga.nowPagePosition = 0
             Any()
         }.andThen(historyMangaRepository.addToHistory(HistoryMangaChapterItem(chapter)))
                 .subscribeOn(Schedulers.io())

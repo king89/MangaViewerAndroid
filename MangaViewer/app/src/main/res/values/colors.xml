@@ -17,6 +17,8 @@
   <color name="colorPrimaryLight">#757de8</color>
   <color name="colorPrimaryDark">#002984</color>
   <color name="colorAccent">#FF4081</color>
+  <color name="colorAccentLight">#ff79b0</color>
+  <color name="colorAccentDark">#c60055</color>
   <color name="lightGrey">#eeeeee</color>
   <color name="default_background">#e3e3e3</color>
   <color name="bgCounter">#bbff0000</color>
@@ -26,5 +28,8 @@
 
   <color name="color_read_banner">@color/grey</color>
   <color name="color_unread_banner">@color/colorAccent</color>
+
+  <color name="dim_color">#cc000000</color>
+  <color name="background_control_panel">#cc111111</color>
 
 </resources>

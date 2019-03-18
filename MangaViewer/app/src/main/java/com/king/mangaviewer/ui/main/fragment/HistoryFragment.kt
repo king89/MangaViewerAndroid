@@ -4,7 +4,10 @@ import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.BaseTransientBottomBar.BaseCallback
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
+import android.support.design.widget.Snackbar.LENGTH_LONG
 import android.support.v4.content.ContextCompat
 import android.support.v4.util.Pair
 import android.support.v7.app.AlertDialog
@@ -20,8 +23,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.king.mangaviewer.R
+import com.king.mangaviewer.R.string
 import com.king.mangaviewer.adapter.HistoryChapterItemAdapter
 import com.king.mangaviewer.base.BaseFragment
+import com.king.mangaviewer.base.ViewModelFactory
+import com.king.mangaviewer.di.annotation.FragmentScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.ui.chapter.MangaChapterActivity
@@ -35,7 +41,7 @@ import com.king.mangaviewer.util.withViewModel
 import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
-class HistoryFragment : BaseFragment(), HasFloatActionButton {
+class HistoryFragment : BaseFragment() {
 
     private var recyclerView: RecyclerView? = null
     private var adapter: HistoryChapterItemAdapter? = null
@@ -43,6 +49,10 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
     lateinit var tv: TextView
     lateinit var viewModel: HistoryFragmentViewModel
     private var fab: FloatingActionButton? = null
+
+    @Inject
+    @field:FragmentScopedFactory
+    lateinit var fragmentViewModelFactory: ViewModelFactory
 
     @Inject
     lateinit var appNavigator: AppNavigator
@@ -94,20 +104,19 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView!!.adapter = HistoryChapterItemAdapter(
-                activity as Context) { imageView, item, showAsChapter ->
-            if (showAsChapter) {
-                viewModel.selectChapter(item)
-                val intent = Intent(context, MangaPageActivityV2::class.java)
-                intent.putExtra(INTENT_EXTRA_FROM_HISTORY, true)
-                this@HistoryFragment.startActivity(intent)
-                this@HistoryFragment.activity?.overridePendingTransition(R.anim.in_rightleft,
-                        R.anim.out_rightleft)
-            } else {
-                viewModel.selectMenu(item)
-                appNavigator.navigateToChapter(Pair(imageView, "cover"))
-
-            }
-        }
+                activity as Context,
+                { imageView, item ->
+                    viewModel.selectMenu(item)
+                    appNavigator.navigateToChapter(Pair(imageView, "cover"))
+                },
+                { _, item ->
+                    viewModel.selectChapter(item)
+                    val intent = Intent(context, MangaPageActivityV2::class.java)
+                    intent.putExtra(INTENT_EXTRA_FROM_HISTORY, true)
+                    this@HistoryFragment.startActivity(intent)
+                    this@HistoryFragment.activity?.overridePendingTransition(R.anim.in_rightleft,
+                            R.anim.out_rightleft)
+                })
 
         addItemTouchForRecyclerView()
 
@@ -117,11 +126,29 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
     private fun addItemTouchForRecyclerView() {
         val itemTouchHelperCallback = RecyclerItemTouchHelper(0,
                 ItemTouchHelper.LEFT) { viewHolder, direction, position ->
-            if (adapter!!.showAsChapter) {
-                viewModel.deleteChapter(adapter!!.getItemByPos(viewHolder.adapterPosition))
+            val item = adapter!!.getItemByPos(viewHolder.adapterPosition)
+            val maxLength = 20
+            val itemTitle = if (item.menu.title.length > maxLength) {
+                item.menu.title.substring(0..20) + "..."
             } else {
-                viewModel.deleteMenu(adapter!!.getItemByPos(viewHolder.adapterPosition))
+                item.menu.title
             }
+            val snackbar = Snackbar.make(this.view!!,
+                    getString(R.string.history_item_removed, itemTitle), LENGTH_LONG)
+            var undo = false
+            snackbar.setAction(getString(R.string.undo)) {
+                undo = true
+                adapter!!.notifyItemChanged(viewHolder.adapterPosition)
+            }
+            snackbar.addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    if (!undo) {
+                        viewModel.deleteMenu(item)
+                    }
+                }
+            })
+            snackbar.show()
         }
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView)
 
@@ -156,29 +183,6 @@ class HistoryFragment : BaseFragment(), HasFloatActionButton {
     private fun showLoading() {
     }
 
-    override fun initFab(fab: FloatingActionButton) {
-        this.fab = fab
-        fab.setImageDrawable(ContextCompat.getDrawable(fab.context, R.drawable.ic_unfold))
-        fab.show()
-    }
-
-    override fun onClick() {
-        //toggle list type
-        adapter?.apply {
-            Logger.d(TAG, "showAsChapter 1: $showAsChapter")
-            changeShowType(!showAsChapter)
-            Logger.d(TAG, "showAsChapter 2: $showAsChapter")
-
-            if (showAsChapter) {
-                fab?.setImageDrawable(
-                        ContextCompat.getDrawable(fab?.context!!, R.drawable.ic_unfold))
-            } else {
-                fab?.setImageDrawable(ContextCompat.getDrawable(fab?.context!!, R.drawable.ic_fold))
-            }
-            submitList(viewModel.mangaList.value!!)
-        }
-
-    }
     companion object {
         const val TAG = "HistoryFragment"
     }

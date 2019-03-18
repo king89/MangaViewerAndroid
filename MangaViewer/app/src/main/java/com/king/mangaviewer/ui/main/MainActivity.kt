@@ -111,9 +111,9 @@ class MainActivity : BaseActivity() {
         navigationView = findViewById<View>(R.id.navigation_view) as NavigationView
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.menu_latest_manga -> mViewPager.currentItem = 0
-                R.id.menu_all_manga -> mViewPager.currentItem = 1
-                R.id.menu_favorite -> mViewPager.currentItem = 2
+                R.id.menu_favorite -> mViewPager.currentItem = 0
+                R.id.menu_latest_manga -> mViewPager.currentItem = 1
+                R.id.menu_all_manga -> mViewPager.currentItem = 2
                 R.id.menu_history -> mViewPager.currentItem = 3
                 R.id.menu_local -> mViewPager.currentItem = 4
                 R.id.menu_all_settings -> startActivity(

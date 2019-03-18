@@ -16,7 +16,11 @@ object Logger {
     @JvmStatic
     @JvmOverloads
     fun i(tag: String, message: String, e: Throwable? = null) {
-
+        try {
+            Log.i(tag, message, e)
+        } catch (ex: Throwable) {
+            println("$tag $message ${e}")
+        }
     }
 
     @JvmStatic

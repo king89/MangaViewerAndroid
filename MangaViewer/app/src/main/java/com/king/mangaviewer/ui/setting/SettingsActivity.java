@@ -167,7 +167,7 @@ public class SettingsActivity extends BaseActivity {
                                 @Override
                                 public void accept(Object o) throws Exception {
                                     Glide.get(ctx).clearMemory();
-                                    p.setSummary(mSettingViewModel.getMangaFolderSize(ctx));
+                                    p.setSummary(mSettingViewModel.getCacheFolderSize(ctx));
                                     makeText(ctx, getString(R.string.setting_msg_cache_cleared),
                                             LENGTH_SHORT).show();
                                 }
@@ -176,7 +176,7 @@ public class SettingsActivity extends BaseActivity {
 
                 }
             });
-            p.setSummary(mSettingViewModel.getMangaFolderSize(ctx));
+            p.setSummary(mSettingViewModel.getCacheFolderSize(ctx));
 
             //Manga Sources
             final ListPreference mangaSourcesPref = (ListPreference) findPreference(

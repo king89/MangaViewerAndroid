@@ -18,6 +18,7 @@ import java.util.List;
 /**
  * Created by KinG on 9/10/2015.
  */
+@Deprecated
 public class FavouriteMangaDataSource extends MangaDataSourceBase {
     public static String FAVOURITE_MANGA_TABLE = "favourite_manga";
 

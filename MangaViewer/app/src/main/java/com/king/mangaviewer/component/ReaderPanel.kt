@@ -14,7 +14,7 @@ interface ReaderPanel {
     fun setPageMode(mode: Int)
 }
 
-interface ReaderListener {
+interface ReaderCallback {
     fun nextChapter()
     fun prevChapter()
     fun onPageChanged(currentPage: Int)

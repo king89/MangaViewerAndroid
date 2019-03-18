@@ -84,7 +84,10 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
 
     private fun initButtons() {
         fabShare.setOnClickListener { }
-        fabSort.setOnClickListener { }
+        fabSort.setOnClickListener {
+            viewModel.sort()
+            (listView.adapter as? MangaChapterItemAdapter)?.submitList(emptyList())
+        }
     }
 
     private fun initViewModel() {
@@ -113,21 +116,21 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
 
                     lastReadItem?.run {
                         dataList.add(
-                                MangaChapterItemWrapper(getString(R.string.chapter_last_read),
-                                        CATEGORY,
-                                        null))
-                        dataList.add(MangaChapterItemWrapper(title, LAST_READ, this))
+                            MangaChapterItemWrapper(getString(R.string.chapter_last_read),
+                                CATEGORY,
+                                null))
+                        dataList.add(MangaChapterItemWrapper(title, LAST_READ, this, true))
                     }
                     mList.run {
                         if (mList.isEmpty()) return@run
                         dataList.add(
-                                MangaChapterItemWrapper(getString(R.string.chapter_list), CATEGORY,
-                                        null))
+                            MangaChapterItemWrapper(getString(R.string.chapter_list), CATEGORY,
+                                null))
                         forEach {
                             dataList.add(MangaChapterItemWrapper(it.title, CHAPTER, it,
-                                    historyItem.any { history ->
-                                        history.hash == it.hash
-                                    }
+                                historyItem.any { history ->
+                                    history.hash == it.hash
+                                }
                             ))
                         }
 
@@ -135,10 +138,10 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
 
                     dataList
                 }.subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
-                            (listView.adapter as? MangaChapterItemAdapter)?.submitList(it)
-                        })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        (listView.adapter as? MangaChapterItemAdapter)?.submitList(it)
+                    })
             })
 
             this.favouriteState.observe(this@MangaChapterActivity, Observer {
@@ -169,20 +172,21 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
             null
         }
         GlideImageHelper.getMenuCover(imageView, item, transformation)
-                .subscribe()
-                .apply { compositeDisposable.add(this) }
+            .subscribe()
+            .apply { compositeDisposable.add(this) }
 
         GlideImageHelper.getMenuCover(ivCover, item, CropImageTransformation())
-                .subscribe()
-                .apply { compositeDisposable.add(this) }
+            .subscribe()
+            .apply { compositeDisposable.add(this) }
 
     }
 
     override fun onClick(chapter: MangaChapterItem) {
-        viewModel.selectChapter(chapter)
-        startActivity(Intent(this, MangaPageActivityV2::class.java))
-        overridePendingTransition(R.anim.in_rightleft,
+        viewModel.selectChapter(chapter) {
+            startActivity(Intent(this, MangaPageActivityV2::class.java))
+            overridePendingTransition(R.anim.in_rightleft,
                 R.anim.out_rightleft)
+        }
     }
 
     override fun showLoading() {
@@ -196,7 +200,7 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
 
     private fun setupChapterList() {
         val adapter = MangaChapterItemAdapter(this,
-                this)
+            this)
         listView.layoutManager = LinearLayoutManager(this)
         listView.adapter = adapter
     }

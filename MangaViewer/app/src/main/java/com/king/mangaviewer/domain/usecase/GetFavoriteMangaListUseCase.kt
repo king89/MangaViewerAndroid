@@ -15,7 +15,7 @@ class GetFavoriteMangaListUseCase @Inject constructor(
     fun execute(): Observable<List<FavouriteMangaMenuItem>> {
         return favouriteMangaRepository.getFavouriteMangaList()
                 .map {
-                    it.sorted().reversed()
+                    it.sortedDescending()
                 }.toObservable()
                 .share()
     }

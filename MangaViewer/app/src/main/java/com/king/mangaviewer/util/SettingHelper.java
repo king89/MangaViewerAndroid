@@ -55,10 +55,10 @@ public class SettingHelper {
         // Check if have external storage
         if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
             return context.getExternalFilesDir(null) + File.separator
-                    + Constants.SETTINGFOLDER;
+                    + Constants.INSTANCE.getSETTINGFOLDER();
         } else {
             return context.getFilesDir() + File.separator
-                    + Constants.SETTINGFOLDER;
+                    + Constants.INSTANCE.getSETTINGFOLDER();
         }
     }
 
@@ -66,10 +66,10 @@ public class SettingHelper {
         // Check if have external storage
         if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
             return context.getExternalFilesDir(null) + File.separator
-                    + Constants.MANGAFOLDER;
+                    + Constants.INSTANCE.getMANGAFOLDER();
         } else {
             return context.getFilesDir() + File.separator
-                    + Constants.MANGAFOLDER;
+                    + Constants.INSTANCE.getMANGAFOLDER();
         }
     }
 

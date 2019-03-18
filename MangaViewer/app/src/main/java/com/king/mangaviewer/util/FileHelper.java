@@ -36,7 +36,7 @@ public class FileHelper {
                     }
 
                 } catch (Exception e) {
-                    Log.e(Constants.LOGTAG, "ERROR", e);
+                    Log.e(Constants.INSTANCE.getLOGTAG(), "ERROR", e);
                 } finally {
                     if (fos != null) {
                         try {
@@ -52,7 +52,7 @@ public class FileHelper {
 
         } catch (Exception e) {
             // TODO: handle exception
-            Log.e(Constants.LOGTAG, "error saveFile", e);
+            Log.e(Constants.INSTANCE.getLOGTAG(), "error saveFile", e);
 
         }
         return null;
@@ -75,7 +75,7 @@ public class FileHelper {
                     fos = new FileOutputStream(file);
                     fos.write(data);
                 } catch (Exception e) {
-                    Log.e(Constants.LOGTAG, "ERROR", e);
+                    Log.e(Constants.INSTANCE.getLOGTAG(), "ERROR", e);
                 } finally {
                     if (fos != null) {
                         try {
@@ -91,7 +91,7 @@ public class FileHelper {
 
         } catch (Exception e) {
             // TODO: handle exception
-            Log.e(Constants.LOGTAG, "error saveFile", e);
+            Log.e(Constants.INSTANCE.getLOGTAG(), "error saveFile", e);
 
         }
         return null;

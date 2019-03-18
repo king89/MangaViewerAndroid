@@ -11,6 +11,7 @@ import java.sql.SQLException;
 /**
  * Created by KinG on 9/10/2015.
  */
+@Deprecated
 public class MangaDataSourceBase {
     protected final static String DB_NAME = "manga.db";
     protected final static int DB_VERSION = 1;

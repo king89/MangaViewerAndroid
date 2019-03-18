@@ -20,8 +20,18 @@ class HistoryMangaRepositoryImpl @Inject constructor(
     override fun addToHistory(
             item: HistoryMangaChapterItem): Completable = historyMangaDataSource.addToHistory(item)
 
+    override fun getHistoryMangaItem(
+            chapterHash: String): Single<HistoryMangaChapterItem> = historyMangaDataSource.getHistoryMangaItem(
+            chapterHash)
+
     override fun getAllHistoryMangaItem(
             menu: MangaMenuItem?): Single<List<HistoryMangaChapterItem>> = historyMangaDataSource.getAllHistoryMangaItem(
+            menu)
+
+    override fun getHistoryMenuList(): Single<List<HistoryMangaChapterItem>> = historyMangaDataSource.getHistoryMenuList()
+
+    override fun getLastReadMangaItem(
+            menu: MangaMenuItem?): Single<HistoryMangaChapterItem> = historyMangaDataSource.getLastReadMangaItem(
             menu)
 
     override fun removeHistory(
