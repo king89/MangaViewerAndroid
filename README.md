@@ -8,29 +8,28 @@ This app just fetched those resources and show them
 
 ## Screenshots
 
-**Main Menu, Menu, Chapter, Page and Page Setting**  
+**v0.3.8**
+New Feature
+* Select chapter or continue with last read page in history screen
+* New page setting, you can select chapter, change brigtness, change reading direction and oriantation 
+
+Bugs
+* All Manga section not work yet
+* Local Manga section not work yet
+
+**Main Menu, Chapter, Page and Setting**  
   
 <div>
-<img src="/Screenshot/v0.1.0/main_menu.png" width="200" style="float: left;">
-<img src="/Screenshot/v0.1.0/menu.png" width="200" style="float: left;">
-<img src="/Screenshot/v0.1.0/chapter.png" width="200" style="float: left;">
-<img src="/Screenshot/v0.1.0/page_setting.png" width="200" style="float: left;margin-right: 10px">
+<img src="/Screenshot/v0.3.8/menu.png" width="200" style="float: left;">
+<img src="/Screenshot/v0.3.8/chapter.png" width="200" style="float: left;">
+<img src="/Screenshot/v0.3.8/page.png" width="200" style="float: left;">
+<img src="/Screenshot/v0.3.8/setting.png" width="200" style="float: left;margin-right: 10px">
 </div>
   
-  
-**History, Favourite, Local, Setting**  
-  
-<div>  
-<img src="/Screenshot/v0.1.0/history.png" width="200" style="float: left;">
-<img src="/Screenshot/v0.1.0/favourite.png" width="200" style="float: left;">
-<img src="/Screenshot/v0.1.0/local.png" width="200" style="float: left;">
-<img src="/Screenshot/v0.1.0/setting.png" width="200" style="float: left;">
-</div>
-
-
-**v0.2.0 beta**
+**Favorite, History**  
 
 <div>
-<img src="/Screenshot/menu1.png" width="200" style="float: left;">
-<img src="/Screenshot/menu2.png" width="200" style="float: left;">
+<img src="/Screenshot/v0.3.8/favorite.png" width="200" style="float: left;">
+<img src="/Screenshot/v0.3.8/history.png" width="200" style="float: left;">
+
 </div>
