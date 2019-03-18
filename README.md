@@ -17,12 +17,19 @@ Bugs
 * All Manga section not work yet
 * Local Manga section not work yet
 
-**Main Menu, Menu, Chapter, Page and Page Setting**  
+**Main Menu, Chapter, Page and Setting**  
   
 <div>
-<img src="/Screenshot/menu1.png" width="200" style="float: left;">
-<img src="/Screenshot/menu2.png" width="200" style="float: left;">
+<img src="/Screenshot/v0.3.8/menu.png" width="200" style="float: left;">
 <img src="/Screenshot/v0.3.8/chapter.png" width="200" style="float: left;">
-<img src="/Screenshot/v0.3.8/page.png" width="200" style="float: left;margin-right: 10px">
+<img src="/Screenshot/v0.3.8/page.png" width="200" style="float: left;>
+<img src="/Screenshot/v0.3.8/setting.png" width="200" style="float: left;margin-right: 10px"">
 </div>
   
+**Favorite, History**  
+
+<div>
+<img src="/Screenshot/v0.3.8/favorite.png" width="200" style="float: left;">
+<img src="/Screenshot/v0.3.8/history.png" width="200" style="float: left;">
+
+</div>
