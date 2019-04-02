@@ -10,26 +10,23 @@ import android.content.Intent
 import android.os.Handler
 import android.os.PowerManager
 import android.preference.PreferenceManager
-import android.provider.Settings.System.DATE_FORMAT
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.Toast
-
 import com.king.mangaviewer.R
-import com.king.mangaviewer.ui.main.MainActivity
+import com.king.mangaviewer.common.Constants
 import com.king.mangaviewer.di.RepositoryModule
-import com.king.mangaviewer.model.FavouriteMangaMenuItem
 import com.king.mangaviewer.model.MangaMenuItem
+import com.king.mangaviewer.ui.main.MainActivity
+import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.MangaHelperV2
 import com.king.mangaviewer.util.NotificationHelper
 import com.king.mangaviewer.viewmodel.SettingViewModel
-
-import java.util.Locale
 import org.joda.time.DateTime
-
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 /**
  * Created by KinG on 9/16/2015.
@@ -83,7 +80,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
                 var updatedCount = item.update_count
                 val source = sources.firstOrNull { it.id == item.manga_websource_id }!!
                 val menu = MangaMenuItem(item.hash, item.title, item.description, item.imagePath,
-                        item.url, source)
+                    item.url, source)
                 val chlist = MangaHelperV2.getChapterList(menu)
                 //have updated manga
                 if (chlist.size > chapterCount) {
@@ -91,7 +88,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
                     item.chapter_count = chlist.size
                     item.update_count = updatedCount
                     item.updated_date = DateTime.now().toString(
-                            DATE_FORMAT)
+                        Constants.DATE_FORMAT_LONG)
                     dataSource.update(item)
                     sb.append(item.title + ", ")
                     isHaveUpdated = true
@@ -99,15 +96,16 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            Logger.e(TAG, e, e.message ?: "")
         }
 
         svm.saveSetting(context)
-        if (isHaveUpdated) {
+        return if (isHaveUpdated) {
             updatedNames = sb.toString()
-            return true
+            true
         } else {
             updatedNames = ""
-            return false
+            false
         }
 
     }
@@ -121,17 +119,17 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
 
         val pendingIntent = PendingIntent.getActivity(context,
-                Intent.FLAG_ACTIVITY_NEW_TASK, intent,
-                PendingIntent.FLAG_ONE_SHOT)
+            Intent.FLAG_ACTIVITY_NEW_TASK, intent,
+            PendingIntent.FLAG_ONE_SHOT)
 
         val updatedContentText = updatedNames
         val builder = NotificationCompat.Builder(context)
-                .setContentTitle(context.getString(R.string.msg_notify_updated_service_title))
-                .setContentText(updatedContentText)
-                .setContentIntent(pendingIntent)
-                .setSmallIcon(R.mipmap.ic_icon_pure)
-                .setChannelId(NotificationHelper.CHANNEL_ID)
-                .setAutoCancel(true)
+            .setContentTitle(context.getString(R.string.msg_notify_updated_service_title))
+            .setContentText(updatedContentText)
+            .setContentIntent(pendingIntent)
+            .setSmallIcon(R.mipmap.ic_icon_pure)
+            .setChannelId(NotificationHelper.CHANNEL_ID)
+            .setAutoCancel(true)
         nm!!.notify(0, builder.build())
     }
 
@@ -141,7 +139,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
         if (t < 0) {
             val sp = PreferenceManager.getDefaultSharedPreferences(context)
             val hour = Integer.parseInt(sp.getString(
-                    context.resources.getString(R.string.pref_key_auto_update_hours), "6"))
+                context.resources.getString(R.string.pref_key_auto_update_hours), "6"))
             t = AlarmManager.INTERVAL_HOUR * hour
         }
 
@@ -178,6 +176,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
     companion object {
         val ONE_TIME = "onetime"
         val AUTO_UPDATE_SERVICE = "AUTO_UPDATE_SERVICE"
+        const val TAG = "AutoUpdateAlarm"
     }
 
 }
