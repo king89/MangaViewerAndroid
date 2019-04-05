@@ -20,7 +20,11 @@ import com.king.mangaviewer.domain.usecase.SelectMangaChapterUseCase
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
+import com.king.mangaviewer.model.MangaPageItem
 import com.king.mangaviewer.model.MangaUri
+import com.king.mangaviewer.model.MangaUriType
+import com.king.mangaviewer.model.MangaUriType.ZIP
+import com.king.mangaviewer.model.MangaUriType.WEB
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoNextChapter
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoPrevChapter
 import com.king.mangaviewer.util.Logger
@@ -101,7 +105,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
                 it.apply {
                     webImageUrl = MangaHelperV2.getWebImageUrl(it)
                 }
-                MangaUri(it.webImageUrl, it.referUrl)
+                MangaUri(it.webImageUrl, it.referUrl, it.getMangaLoaderType())
             }
             .toList()
             .observeOn(AndroidSchedulers.mainThread())
@@ -208,6 +212,14 @@ class MangaPageActivityV2ViewModel @Inject constructor(
 
     fun recoverFromLastRead() {
         selectLastReadChapterUseCase.execute().subscribe()
+    }
+
+    private fun MangaPageItem.getMangaLoaderType(): MangaUriType {
+        return if (this.mangaWebSource.id == -1) {
+            ZIP
+        } else {
+            WEB
+        }
     }
 
     companion object {

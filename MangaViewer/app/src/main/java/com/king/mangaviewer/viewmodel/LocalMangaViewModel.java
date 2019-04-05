@@ -25,11 +25,11 @@ public class LocalMangaViewModel extends MangaViewModel {
 
         MangaChapterItem tSelectedChapter = null;
 
-        MangaMenuItem tmenu = new MangaMenuItem(null,null,null,null,null, new MangaWebSource(-1,null,null,LocalManga.class.getName(),-1,null,-1));
+        MangaMenuItem tmenu = new MangaMenuItem("","","","","", new MangaWebSource(-1,"","",LocalManga.class.getName(),-1,null,-1));
         List<MangaChapterItem> list = new ArrayList<MangaChapterItem>();
         for (int i = 0; i < chapterList.size(); i++) {
             MangaChapterItem item = new MangaChapterItem("Chapter-" + i, chapterList.get(i)
-                    .getTitle(), null, chapterList.get(i).getImagePath(),
+                    .getTitle(), "", chapterList.get(i).getImagePath(),
                     chapterList.get(i).getUrl(), tmenu);
             list.add(item);
             if (item.getTitle().equalsIgnoreCase(fileName))

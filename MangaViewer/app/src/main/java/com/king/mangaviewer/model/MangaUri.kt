@@ -1,9 +1,14 @@
 package com.king.mangaviewer.model
 
-import com.google.gson.annotations.SerializedName
+import com.king.mangaviewer.model.MangaUriType.WEB
 
 data class MangaUri(
-        @SerializedName("imageUri")
-        val imageUri: String,
-        @SerializedName("referUri")
-        val referUri: String)
+    val imageUri: String,
+    val referUri: String,
+    val type: MangaUriType = WEB
+)
+
+enum class MangaUriType {
+    WEB,
+    ZIP
+}

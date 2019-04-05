@@ -197,6 +197,7 @@ class MainActivity : BaseActivity() {
         val source = ArrayList<String>()
         if (mws != null) {
             for ((i, m) in mws.withIndex()) {
+                if (m.id < 0) continue
                 source.add(m.displayName)
                 if (m.id == appViewModel.Setting.selectedWebSource.id) {
                     tSelectWebSourcePos = i

@@ -29,7 +29,12 @@ import com.king.mangaviewer.component.ReadingDirection.LTR
 import com.king.mangaviewer.component.ReadingDirection.RTL
 import com.king.mangaviewer.di.GlideApp
 import com.king.mangaviewer.model.MangaUri
+import com.king.mangaviewer.model.MangaUriType.WEB
+import com.king.mangaviewer.model.MangaUriType.ZIP
 import com.king.mangaviewer.util.Logger
+import com.king.mangaviewer.util.imageloader.GlideImageLoader
+import com.king.mangaviewer.util.imageloader.ImageLoader
+import com.king.mangaviewer.util.imageloader.ZipImageLoader
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.list_manga_page_item_v2.view.clError
@@ -37,8 +42,8 @@ import kotlinx.android.synthetic.main.list_manga_page_item_v2.view.clLoading
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import kotlin.math.max
 
-class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0) : FrameLayout(ctx, attrs, defStyleAttr), View.OnClickListener {
+class PageView @JvmOverloads constructor(ctx: Context, attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0) : FrameLayout(ctx, attrs, defStyleAttr), View.OnClickListener {
 
     private var mData: MangaUri? = null
     private val disposable = CompositeDisposable()
@@ -46,6 +51,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
         findViewById<SubsamplingScaleImageView>(R.id.imageView)
     }
     var readingDirection: ReadingDirection = LTR
+    private var imageLoader: ImageLoader? = null
 
     init {
         View.inflate(ctx, R.layout.list_manga_page_item_v2, this)
@@ -55,7 +61,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
         imageView.setMinimumTileDpi(180)
         imageView.setDoubleTapZoomStyle(ZOOM_FOCUS_FIXED)
         imageView.setOnImageEventListener(object :
-                SubsamplingScaleImageView.DefaultOnImageEventListener() {
+            SubsamplingScaleImageView.DefaultOnImageEventListener() {
 
             override fun onReady() {
                 onLoadingComplete()
@@ -82,92 +88,78 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
         hideLoading()
     }
 
-    //    private val MAX_WIDTH: Int = 2560
-//    private val MAX_HEIGHT: Int = 1920
-//    var newBitmap: Bitmap? = null
-    var target = object : SimpleTarget<Bitmap>() {
-        override fun onResourceReady(resource: Bitmap,
-                transition: Transition<in Bitmap>?) {
+    fun setData(data: MangaUri) {
+        mData = data
+        imageLoader = getImageLoader(data)
+        imageLoader?.loadImage(imageView, data, readingDirection, {
+            showLoading()
+        }, { resource ->
             showImage()
-            try {
-                val width = resource.width.toFloat()
-                val height = resource.height.toFloat()
-
-                val displayMetrics = DisplayMetrics()
-                (context as? Activity)?.windowManager
-                        ?.defaultDisplay
-                        ?.getMetrics(displayMetrics)
-                val (screenWidth, screenHeight) = if (displayMetrics.widthPixels == 0) {
-                    Pair(width, height)
-                } else {
-                    Pair(displayMetrics.widthPixels.toFloat(),
-                            displayMetrics.heightPixels.toFloat())
-                }
-                Logger.d(TAG, "screen width: $screenWidth, image width: $width")
-
-                if (context.resources.configuration.orientation == ORIENTATION_PORTRAIT) {
-                    if (width > height) {
-                        val factor = screenWidth / (width / 2)
-                        val imageState = when (readingDirection) {
-                            LTR -> ImageViewState(factor, PointF(0f, 0f), 0)
-                            RTL -> ImageViewState(factor, PointF(width, 0f), 0)
-                        }
-                        imageView.minScale = factor
-                        imageView.maxScale = max(factor * 2, 2f)
-                        imageView.setImage(ImageSource.cachedBitmap(resource), imageState)
-                    } else {
-                        val factor = screenWidth / width
-                        val imageState = if (height > screenHeight) {
-                            ImageViewState(factor, PointF(0f, -height), 0)
-                        } else {
-                            ImageViewState(factor, PointF(0f, 0f), 0)
-                        }
-                        imageView.minScale = factor
-                        imageView.maxScale = max(factor * 2, 2f)
-                        imageView.setImage(ImageSource.cachedBitmap(resource), imageState)
-
-                    }
-                } else {
-                    val factor = screenWidth / width
-                    val imageState = ImageViewState(factor, PointF(0f, 0f), 0)
-
-                    imageView.minScale = factor
-                    imageView.maxScale = max(factor * 2, 2f)
-                    imageView.setImage(ImageSource.cachedBitmap(resource), imageState)
-                }
-            } catch (e: OutOfMemoryError) {
-                Logger.e(TAG, e, "Out of memory when setting image")
-                showError()
-            }
-        }
-
-        override fun onLoadFailed(errorDrawable: Drawable?) {
+            setImage(resource)
+        }, { e ->
+            Logger.e(TAG, e, "Out of memory when setting image")
             showError()
+        })
+    }
+
+    private fun getImageLoader(
+        data: MangaUri): ImageLoader {
+        return when (data.type) {
+            WEB -> {
+                GlideImageLoader(context)
+            }
+            ZIP -> {
+                ZipImageLoader()
+            }
         }
     }
 
-    fun setData(data: MangaUri) {
-        mData = data
-        val webImageUrl = data.imageUri
-        val UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5"
-        val builder = LazyHeaders.Builder()
-        builder.addHeader("Referer", data.referUri)
-        builder.addHeader("User-Agent", UserAgent)
-        val glideUrl = GlideUrl(webImageUrl, builder.build())
-        Logger.d(TAG,
-                "Download Image Url: " + "\n Referrer Url: " + data.referUri)
+    private fun setImage(resource: Bitmap) {
+        val width = resource.width.toFloat()
+        val height = resource.height.toFloat()
 
-        Observable.fromCallable {
-            showLoading()
-            GlideApp.with(this)
-                    .asBitmap()
-                    .load(glideUrl)
-//                    .override(MAX_WIDTH, MAX_HEIGHT)
-                    .downsample(DownsampleStrategy.AT_MOST)
-                    .into(target)
-        }.delay(500, MILLISECONDS)
-                .subscribe()
-                .apply { disposable.add(this) }
+        val displayMetrics = DisplayMetrics()
+        (context as? Activity)?.windowManager
+            ?.defaultDisplay
+            ?.getMetrics(displayMetrics)
+        val (screenWidth, screenHeight) = if (displayMetrics.widthPixels == 0) {
+            Pair(width, height)
+        } else {
+            Pair(displayMetrics.widthPixels.toFloat(),
+                displayMetrics.heightPixels.toFloat())
+        }
+        Logger.d(TAG, "screen width: $screenWidth, image width: $width")
+
+        if (context.resources.configuration.orientation == ORIENTATION_PORTRAIT) {
+            if (width > height) {
+                val factor = screenWidth / (width / 2)
+                val imageState = when (readingDirection) {
+                    LTR -> ImageViewState(factor, PointF(0f, 0f), 0)
+                    RTL -> ImageViewState(factor, PointF(width, 0f), 0)
+                }
+                imageView.minScale = factor
+                imageView.maxScale = max(factor * 2, 2f)
+                imageView.setImage(ImageSource.cachedBitmap(resource), imageState)
+            } else {
+                val factor = screenWidth / width
+                val imageState = if (height > screenHeight) {
+                    ImageViewState(factor, PointF(0f, -height), 0)
+                } else {
+                    ImageViewState(factor, PointF(0f, 0f), 0)
+                }
+                imageView.minScale = factor
+                imageView.maxScale = max(factor * 2, 2f)
+                imageView.setImage(ImageSource.cachedBitmap(resource), imageState)
+
+            }
+        } else {
+            val factor = screenWidth / width
+            val imageState = ImageViewState(factor, PointF(0f, 0f), 0)
+
+            imageView.minScale = factor
+            imageView.maxScale = max(factor * 2, 2f)
+            imageView.setImage(ImageSource.cachedBitmap(resource), imageState)
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -177,7 +169,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
 
     private fun showLoading() {
         Logger.d(TAG,
-                "show Loading")
+            "show Loading")
         clError.visibility = View.GONE
         clLoading.visibility = View.VISIBLE
         imageView.visibility = View.GONE
@@ -189,7 +181,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
 
     private fun showImage() {
         Logger.d(TAG,
-                "show image")
+            "show image")
         clError.visibility = View.GONE
         imageView.visibility = View.VISIBLE
     }
@@ -202,7 +194,8 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
     }
 
     override fun onClick(v: View?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO(
+            "not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -215,7 +208,7 @@ class PageView @JvmOverloads constructor(val ctx: Context, attrs: AttributeSet? 
 //        imageView.setImageDrawable(null)
         imageView.recycle()
         disposable.clear()
-        GlideApp.with(this).clear(target)
+        imageLoader?.clear()
     }
 
     companion object {

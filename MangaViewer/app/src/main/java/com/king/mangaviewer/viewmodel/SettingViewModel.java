@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import android.support.annotation.Nullable;
+import com.king.mangaviewer.domain.data.mangaprovider.LocalManga;
 import com.king.mangaviewer.util.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
@@ -141,7 +142,8 @@ public class SettingViewModel extends ViewModelBase {
             e.printStackTrace();
         }
 
-        // mws.add(new MangaWebSource(3, "manga3", "manga3", "WebHHComic", 2, "manga", 1));
+        //add local manga source
+        mws.add(new MangaWebSource(-1, "LocalManga", "LocalManga", LocalManga.class.getName(), -1, "manga", 0));
         Collections.sort(mws);
         return mws;
     }

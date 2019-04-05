@@ -41,9 +41,9 @@ public class LocalFileItemAdapter extends RecyclerView.Adapter<LocalFileItemAdap
 
     @Override
     public void onBindViewHolder(LocalFileItemAdapter.RecyclerViewHolders holder, int position) {
-        holder.textView.setText(list.get(position).file);
+        holder.textView.setText(list.get(position).getFile());
         // put the image on the text view
-        holder.imageView.setImageResource(list.get(position).icon);
+        holder.imageView.setImageResource(list.get(position).getIcon());
     }
 
     @Override

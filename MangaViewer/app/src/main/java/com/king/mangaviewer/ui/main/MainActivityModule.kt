@@ -14,6 +14,8 @@ import com.king.mangaviewer.ui.main.fragment.HistoryFragment
 import com.king.mangaviewer.ui.main.fragment.HistoryFragmentModule
 import com.king.mangaviewer.ui.main.fragment.HomeFragment
 import com.king.mangaviewer.ui.main.fragment.HomeFragmentModule
+import com.king.mangaviewer.ui.main.fragment.LocalFragment
+import com.king.mangaviewer.ui.main.fragment.LocalFragmentModule
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -38,12 +40,17 @@ abstract class MainActivityModule {
     @ContributesAndroidInjector(modules = [HistoryFragmentModule::class])
     abstract fun historyFragment(): HistoryFragment
 
+
+    @FragmentScoped
+    @ContributesAndroidInjector(modules = [LocalFragmentModule::class])
+    abstract fun localFragment(): LocalFragment
+
     @Binds
     @IntoMap
     @ActivityScoped
     @ActivityViewModelKey(MainActivityViewModel::class)
     abstract fun provideMainActivityViewModel(
-            viewModel: MainActivityViewModel): BaseActivityViewModel
+        viewModel: MainActivityViewModel): BaseActivityViewModel
 
     @Binds
     @ActivityScoped
