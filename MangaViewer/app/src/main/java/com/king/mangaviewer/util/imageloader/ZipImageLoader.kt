@@ -6,6 +6,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.king.mangaviewer.component.ReadingDirection
 import com.king.mangaviewer.model.MangaUri
 import java.io.IOException
+import java.lang.Exception
 import java.util.zip.ZipFile
 
 class ZipImageLoader : ImageLoader {
@@ -24,7 +25,7 @@ class ZipImageLoader : ImageLoader {
             bitmap = BitmapFactory.decodeStream(zf.getInputStream(ze))
             //show image
             onSuccess(bitmap)
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             onError(e)
         }
     }

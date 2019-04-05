@@ -20,6 +20,7 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
     mavenCentral()
     maven { url 'http://dl.bintray.com/piasy/maven' }
+    maven { url 'https://jitpack.io' }
 }
 
 
@@ -110,6 +111,8 @@ dependencies {
     implementation "me.grantland:autofittextview:0.2.1"
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
     implementation 'me.everything:overscroll-decor-android:1.0.4'
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
 
     implementation libraries.butterKnife

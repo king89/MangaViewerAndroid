@@ -1,6 +1,7 @@
 package com.king.mangaviewer.ui.main.fragment
 
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -25,7 +26,9 @@ import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.di.annotation.FragmentScopedFactory
 import com.king.mangaviewer.ui.main.MainActivity
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
+import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.withViewModel
+import com.tbruyelle.rxpermissions2.RxPermissions
 import dagger.android.support.AndroidSupportInjection
 import java.io.File
 import java.io.FilenameFilter
@@ -99,7 +102,6 @@ class LocalFragment : BaseFragment() {
         recyclerView!!.layoutManager = LinearLayoutManager(context)
         recyclerView!!.adapter = LocalFileItemAdapter(context, null, null)
         tv.text = extraPath
-        startAsyncTask()
         //showDialog(DIALOG_LOAD_FILE);
         Log.d(TAG, path!!.absolutePath)
 
@@ -109,6 +111,19 @@ class LocalFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
+        RxPermissions(this).apply {
+            request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe({ granted ->
+                    if (granted) {
+                        // All requested permissions are granted
+                        startAsyncTask()
+                    }
+
+                }, { e ->
+                    Logger.e(TAG, e)
+                })
+
+        }
     }
 
     private fun initViewModel() {
@@ -124,7 +139,6 @@ class LocalFragment : BaseFragment() {
 
     override fun updateContent() {
         super.updateContent()
-
         listener = LocalFileItemAdapter.OnLocalFileItemClickListener { view, pos ->
             chosenFile = fileList!![pos].file
             val sel = File(path.toString() + "/" + chosenFile)
