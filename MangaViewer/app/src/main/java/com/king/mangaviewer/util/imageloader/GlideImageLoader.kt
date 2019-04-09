@@ -61,16 +61,18 @@ class GlideImageLoader(private val context: Context) : ImageLoader {
             }
         }
 
-        val webImageUrl = mangaUri.imageUri
-        val UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5"
-        val builder = LazyHeaders.Builder()
-        builder.addHeader("Referer", mangaUri.referUri)
-        builder.addHeader("User-Agent", UserAgent)
-        val glideUrl = GlideUrl(webImageUrl, builder.build())
-        Logger.d(PageView.TAG,
-            "Download Image Url: " + "\n Referrer Url: " + mangaUri.referUri)
-
         Observable.fromCallable {
+
+            val webImageUrl = mangaUri.imageUri
+            val UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.56 Safari/536.5"
+            val builder = LazyHeaders.Builder()
+            builder.addHeader("Referer", mangaUri.referUri)
+            builder.addHeader("User-Agent", UserAgent)
+            assert(webImageUrl.isNotEmpty())
+            val glideUrl = GlideUrl(webImageUrl, builder.build())
+            Logger.d(PageView.TAG,
+                "Download Image Url: " + "\n Referrer Url: " + mangaUri.referUri)
+
             onProcessing()
             GlideApp.with(context)
                 .asBitmap()
@@ -79,7 +81,7 @@ class GlideImageLoader(private val context: Context) : ImageLoader {
                 .downsample(DownsampleStrategy.AT_MOST)
                 .into(target!!)
         }.delay(500, MILLISECONDS)
-            .subscribe()
+            .subscribe({},{onError(it)})
             .apply { disposable.add(this) }
     }
 }
