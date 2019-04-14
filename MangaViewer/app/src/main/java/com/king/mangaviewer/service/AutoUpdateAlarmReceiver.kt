@@ -68,6 +68,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
 
     private fun checkManga(context: Context): Boolean {
         Log.i("AutoNotify", "checkManga")
+        val delayTimeMillis = 5000L
         val dataSource = RepositoryModule.provideDb(context).favouriteMangaDAO()
         val svm = SettingViewModel.loadSetting(context)
         val sources = svm.mangaWebSources
@@ -93,6 +94,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
                     sb.append(item.title + ", ")
                     isHaveUpdated = true
                 }
+                Thread.sleep(delayTimeMillis)
             }
         } catch (e: Exception) {
             e.printStackTrace()
