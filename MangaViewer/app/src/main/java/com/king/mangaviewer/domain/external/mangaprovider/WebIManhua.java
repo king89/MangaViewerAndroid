@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Deprecated
 public class WebIManhua extends MangaProvider {
     String LOG_TAG = "WebIManhua";
     String param = "p";

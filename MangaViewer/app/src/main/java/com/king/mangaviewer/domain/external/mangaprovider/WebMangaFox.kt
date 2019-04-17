@@ -7,11 +7,12 @@ import java.util.regex.Pattern
 import org.jsoup.Jsoup
 
 import java.util.ArrayList
+import javax.inject.Inject
 
 /**
  * Created by KinG on 8/31/2015.
  */
-class WebMangaFox : MangaProvider() {
+class WebMangaFox @Inject constructor(): MangaProvider() {
     init {
         WEBSITE_URL = "https://fanfox.net/"
         latestMangaUrl = "https://fanfox.net/releases/"

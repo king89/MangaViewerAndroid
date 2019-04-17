@@ -3,6 +3,7 @@ package com.king.mangaviewer.domain.external.mangaprovider;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 
+import javax.inject.Inject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -21,6 +22,7 @@ public class WebMangaReader extends MangaProvider {
     private final static int PAGE_SIZE = 30;
     public static final int SEARCH_LIST_PAGE_SIZE = 30;
 
+    @Inject
     public WebMangaReader() {
         setWEBSITE_URL("http://www.mangareader.net/");
         setLatestMangaUrl("http://www.mangareader.net/");

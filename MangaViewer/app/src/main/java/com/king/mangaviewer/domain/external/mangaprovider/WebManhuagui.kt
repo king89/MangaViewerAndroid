@@ -7,8 +7,9 @@ import com.king.mangaviewer.util.Logger
 import org.jsoup.Jsoup
 import java.util.ArrayList
 import java.util.regex.Pattern
+import javax.inject.Inject
 
-class WebManhuagui() : MangaProvider() {
+class WebManhuagui @Inject constructor() : MangaProvider() {
 
     init {
         WEBSITE_URL = "https://www.manhuagui.com/"
@@ -168,14 +169,14 @@ class WebManhuagui() : MangaProvider() {
                     if (s !in pattern) {
                         if (charToParse.isNotEmpty()) {
                             stringBuilder.append(
-                                    decodedStringList[getInt(charToParse.toString(), num1,
-                                            num2)].let {
-                                        if (it.isEmpty()) {
-                                            charToParse.toString()
-                                        } else {
-                                            it
-                                        }
-                                    })
+                                decodedStringList[getInt(charToParse.toString(), num1,
+                                    num2)].let {
+                                    if (it.isEmpty()) {
+                                        charToParse.toString()
+                                    } else {
+                                        it
+                                    }
+                                })
                         }
 
                         stringBuilder.append(s)
@@ -189,7 +190,7 @@ class WebManhuagui() : MangaProvider() {
 //                Logger.d(TAG, "$stringBuilder")
 
                 val imageInfo = GsonHelper.fromJson<ImageInfo>(stringBuilder.toString(),
-                        ImageInfo::class.java)
+                    ImageInfo::class.java)
                 val resultList = mutableListOf<String>()
                 for (i in imageInfo.files!!) {
                     resultList.add(i.let {
@@ -229,22 +230,22 @@ class WebManhuagui() : MangaProvider() {
 }
 
 data class ImageInfo(
-        val bid: Int? = null,
-        val bname: String? = null,
-        val bpic: String? = null,
-        val cid: Int? = null,
-        val cname: String? = null,
-        val files: List<String>? = null,
-        val finished: Boolean? = null,
-        val len: Int? = null,
-        val path: String? = null,
-        val status: Int? = null,
-        val blockCc: String? = null,
-        val nextId: Int? = null,
-        val prevId: Int? = null,
-        val sl: Sl? = null
+    val bid: Int? = null,
+    val bname: String? = null,
+    val bpic: String? = null,
+    val cid: Int? = null,
+    val cname: String? = null,
+    val files: List<String>? = null,
+    val finished: Boolean? = null,
+    val len: Int? = null,
+    val path: String? = null,
+    val status: Int? = null,
+    val blockCc: String? = null,
+    val nextId: Int? = null,
+    val prevId: Int? = null,
+    val sl: Sl? = null
 )
 
 data class Sl(
-        val md5: String? = null
+    val md5: String? = null
 )

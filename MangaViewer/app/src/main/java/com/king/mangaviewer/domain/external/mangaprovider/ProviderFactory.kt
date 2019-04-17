@@ -3,17 +3,19 @@ package com.king.mangaviewer.domain.external.mangaprovider
 import com.king.mangaviewer.model.MangaWebSource
 import okhttp3.OkHttpClient
 import javax.inject.Inject
+import javax.inject.Provider
 
 interface ProviderFactory {
     fun getPattern(type: MangaWebSource): MangaProvider
 }
 
 class ProviderFactoryImpl @Inject constructor(
-        private val okHttpClient: OkHttpClient
+    private val okHttpClient: OkHttpClient,
+    private val providerMap: MutableMap<Class<out MangaProvider>, Provider<MangaProvider>>
 ) : ProviderFactory {
     override fun getPattern(type: MangaWebSource): MangaProvider {
         try {
-            val provider = Class.forName(type.className).newInstance() as MangaProvider
+            val provider = providerMap[Class.forName(type.className)]!!.get()
             provider.okHttpClient = okHttpClient
             return provider
         } catch (e: InstantiationException) {

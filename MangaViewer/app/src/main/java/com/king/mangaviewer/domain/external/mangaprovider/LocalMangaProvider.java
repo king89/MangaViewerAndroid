@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import javax.inject.Inject;
 
 /**
  * Created by KinG on 12/24/2014.
@@ -20,6 +21,7 @@ import java.util.zip.ZipFile;
 public class LocalMangaProvider extends MangaProvider {
     String LOG_TAG = "LocalManga";
 
+    @Inject
     public LocalMangaProvider() {
 
         // TODO Auto-generated constructor stub

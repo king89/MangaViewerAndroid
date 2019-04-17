@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.king.mangaviewer.model.TitleAndUrl;
 
+import javax.inject.Inject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +33,7 @@ public class WebDMZJ extends MangaProvider {
     private static final String TAG = WebDMZJ.class.getSimpleName();
     String IMAGEURL = "https://images.dmzj.com/";
 
+    @Inject
     public WebDMZJ() {
         setWEBSITE_URL("https://manhua.dmzj.com/");
         setWEB_SEARCH_URL("http://s.acg.dmzj.com/comicsum/search.php?s=%s&p=%s");

@@ -23,7 +23,7 @@ import java.util.HashMap
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-open class MangaProvider {
+abstract class MangaProvider {
     var WEBSITE_URL = ""
     var WEB_SEARCH_URL = ""
     var WEB_ALL_MANGA_BASE_URL = ""

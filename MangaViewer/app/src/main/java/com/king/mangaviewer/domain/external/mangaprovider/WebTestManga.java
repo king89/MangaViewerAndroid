@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import javax.inject.Inject;
 
 /**
  * Created by KinG on 12/24/2014.
@@ -15,6 +16,7 @@ import java.util.Random;
 public class WebTestManga extends MangaProvider {
     String LOG_TAG = "WebTestManga";
 
+    @Inject
     public WebTestManga() {
         // TODO Auto-generated constructor stub
         setWEBSITE_URL("");

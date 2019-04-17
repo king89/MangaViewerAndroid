@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 /**
  * Created by KinG on 12/24/2014.
  */
+@Deprecated
 public class WebHHComic extends MangaProvider {
     String LOG_TAG = "WebHHComic";
     String[] ServerList = new String[]{
