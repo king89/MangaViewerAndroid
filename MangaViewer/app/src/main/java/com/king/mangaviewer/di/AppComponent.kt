@@ -3,8 +3,8 @@ package com.king.mangaviewer.di
 import android.app.Application
 import com.king.mangaviewer.MyApplication
 import com.king.mangaviewer.di.annotation.ApplicationScope
-import com.king.mangaviewer.domain.data.AppRepository
-import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
+import com.king.mangaviewer.domain.repository.AppRepository
+import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector

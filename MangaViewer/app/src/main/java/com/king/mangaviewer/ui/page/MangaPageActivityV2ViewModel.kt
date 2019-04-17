@@ -12,7 +12,7 @@ import com.king.mangaviewer.base.ErrorMessage.ViewModelError
 import com.king.mangaviewer.component.ReadingDirection
 import com.king.mangaviewer.component.ReadingDirection.LTR
 import com.king.mangaviewer.component.ReadingDirection.RTL
-import com.king.mangaviewer.domain.data.AppRepository
+import com.king.mangaviewer.domain.repository.AppRepository
 import com.king.mangaviewer.domain.usecase.AddToHistoryUseCase
 import com.king.mangaviewer.domain.usecase.GetPageListUseCase
 import com.king.mangaviewer.domain.usecase.SelectLastReadChapterUseCase

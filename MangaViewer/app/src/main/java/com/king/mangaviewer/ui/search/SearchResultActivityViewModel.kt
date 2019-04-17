@@ -3,9 +3,9 @@ package com.king.mangaviewer.ui.search
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseActivityViewModel
-import com.king.mangaviewer.domain.data.AppRepository
-import com.king.mangaviewer.domain.data.HistoryMangaRepository
-import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider
+import com.king.mangaviewer.domain.repository.AppRepository
+import com.king.mangaviewer.domain.repository.HistoryMangaRepository
+import com.king.mangaviewer.domain.external.mangaprovider.MangaProvider
 import com.king.mangaviewer.domain.usecase.SearchMangaMenuUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaMenuUseCase
 import com.king.mangaviewer.model.LoadingState.Idle

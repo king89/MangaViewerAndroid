@@ -1,25 +1,23 @@
-package com.king.mangaviewer.domain.data.mangaprovider
+package com.king.mangaviewer.domain.external.mangaprovider
 
 import android.os.Environment
 import android.util.Log
 import com.king.mangaviewer.MyApplication
 import com.king.mangaviewer.common.Constants
 import com.king.mangaviewer.common.Constants.SaveType
+import com.king.mangaviewer.di.AppComponent
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.model.MangaPageItem
 import com.king.mangaviewer.model.TitleAndUrl
 import com.king.mangaviewer.util.FileHelper
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.NetworkHelper
-import com.king.mangaviewer.util.StringUtils
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
 import java.io.IOException
 import java.io.UnsupportedEncodingException
-import java.net.HttpURLConnection
 import java.net.MalformedURLException
-import java.net.URL
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.regex.Matcher

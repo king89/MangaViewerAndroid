@@ -1,10 +1,8 @@
 package com.king.mangaviewer
 
-import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider
-import com.king.mangaviewer.domain.data.mangaprovider.WebMangaFox
-import com.king.mangaviewer.domain.data.mangaprovider.WebMangaReader
+import com.king.mangaviewer.domain.external.mangaprovider.MangaProvider
+import com.king.mangaviewer.domain.external.mangaprovider.WebMangaFox
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.runners.MockitoJUnitRunner

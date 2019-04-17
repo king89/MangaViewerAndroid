@@ -3,7 +3,7 @@
     <Source id="0">
         <Name>HHComic</Name>
         <DisplayName>HHComic</DisplayName>
-        <ClassName>com.king.mangaviewer.domain.data.mangaprovider.WebHHComic</ClassName>
+        <ClassName>com.king.mangaviewer.domain.external.mangaprovider.WebHHComic</ClassName>
         <Order>2</Order>
         <Language></Language>
         <Enable>0</Enable>
@@ -11,7 +11,7 @@
     <Source id="1">
         <Name>MangaFox</Name>
         <DisplayName>MangaFox</DisplayName>
-        <ClassName>com.king.mangaviewer.domain.data.mangaprovider.WebMangaFox</ClassName>
+        <ClassName>com.king.mangaviewer.domain.external.mangaprovider.WebMangaFox</ClassName>
         <Order>0</Order>
         <Language></Language>
         <Enable>1</Enable>
@@ -20,7 +20,7 @@
     <Source id="2">
         <Name>MangaReader</Name>
         <DisplayName>MangaReader</DisplayName>
-        <ClassName>com.king.mangaviewer.domain.data.mangaprovider.WebMangaReader</ClassName>
+        <ClassName>com.king.mangaviewer.domain.external.mangaprovider.WebMangaReader</ClassName>
         <Order>1</Order>
         <Language></Language>
         <Enable>1</Enable>
@@ -28,7 +28,7 @@
     <Source id="3">
         <Name>DMZJ</Name>
         <DisplayName>DMZJ</DisplayName>
-        <ClassName>com.king.mangaviewer.domain.data.mangaprovider.WebDMZJ</ClassName>
+        <ClassName>com.king.mangaviewer.domain.external.mangaprovider.WebDMZJ</ClassName>
         <Order>2</Order>
         <Language></Language>
         <Enable>1</Enable>
@@ -36,7 +36,7 @@
     <Source id="4">
         <Name>Manhuagui</Name>
         <DisplayName>Manhuagui</DisplayName>
-        <ClassName>com.king.mangaviewer.domain.data.mangaprovider.WebManhuagui</ClassName>
+        <ClassName>com.king.mangaviewer.domain.external.mangaprovider.WebManhuagui</ClassName>
         <Order>3</Order>
         <Language></Language>
         <Enable>1</Enable>
@@ -44,7 +44,7 @@
     <Source id="999">
         <Name>TestManga</Name>
         <DisplayName>TestManga</DisplayName>
-        <ClassName>com.king.mangaviewer.domain.data.mangaprovider.WebTestManga</ClassName>
+        <ClassName>com.king.mangaviewer.domain.external.mangaprovider.WebTestManga</ClassName>
         <Order>999</Order>
         <Language></Language>
         <Enable>1</Enable>

@@ -1,4 +1,4 @@
-package com.king.mangaviewer.domain.data.mangaprovider
+package com.king.mangaviewer.domain.external.mangaprovider
 
 import com.king.mangaviewer.model.TitleAndUrl
 import com.king.mangaviewer.util.GsonHelper

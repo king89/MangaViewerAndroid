@@ -1,7 +1,7 @@
 package com.king.mangaviewer.domain.usecase
 
-import com.king.mangaviewer.domain.data.FavoriteMangaRepository
-import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
+import com.king.mangaviewer.domain.repository.FavoriteMangaRepository
+import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.viewmodel.AppViewModel
 import io.reactivex.Single

@@ -1,4 +1,4 @@
-package com.king.mangaviewer.domain.data.mangaprovider;
+package com.king.mangaviewer.domain.external.mangaprovider;
 
 import android.util.Log;
 

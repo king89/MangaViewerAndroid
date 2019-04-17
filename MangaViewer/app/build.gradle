@@ -67,6 +67,12 @@ android {
         }
     }
     buildToolsVersion '28.0.3'
+
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas".toString())
+        }
+    }
 }
 
 dependencies {

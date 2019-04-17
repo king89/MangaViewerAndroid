@@ -1,15 +1,10 @@
-package com.king.mangaviewer.domain.data.mangaprovider
+package com.king.mangaviewer.domain.external.mangaprovider
 
-import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.model.TitleAndUrl
 
 import java.util.Collections
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
-import org.jsoup.select.Elements
 
 import java.util.ArrayList
 

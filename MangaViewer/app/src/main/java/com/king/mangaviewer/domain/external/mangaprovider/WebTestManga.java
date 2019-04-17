@@ -1,4 +1,4 @@
-package com.king.mangaviewer.domain.data.mangaprovider;
+package com.king.mangaviewer.domain.external.mangaprovider;
 
 import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.model.MangaPageItem;

@@ -1,4 +1,4 @@
-package com.king.mangaviewer.domain.data
+package com.king.mangaviewer.domain.repository
 
 import com.king.mangaviewer.domain.data.local.HistoryMangaDataSource
 import com.king.mangaviewer.model.HistoryMangaChapterItem

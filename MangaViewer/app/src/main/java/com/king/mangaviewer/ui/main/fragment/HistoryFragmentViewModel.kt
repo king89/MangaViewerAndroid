@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseFragmentViewModel
 import com.king.mangaviewer.base.ErrorMessage.NoError
-import com.king.mangaviewer.domain.data.AppRepository
+import com.king.mangaviewer.domain.repository.AppRepository
 import com.king.mangaviewer.domain.usecase.DeleteAllHistoryUseCase
 import com.king.mangaviewer.domain.usecase.DeleteHistoryChapterUseCase
 import com.king.mangaviewer.domain.usecase.GetHistoryMenuListUseCase

@@ -3,8 +3,8 @@ package com.king.mangaviewer.ui.chapter
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseActivityViewModel
-import com.king.mangaviewer.domain.data.AppRepository
-import com.king.mangaviewer.domain.data.HistoryMangaRepository
+import com.king.mangaviewer.domain.repository.AppRepository
+import com.king.mangaviewer.domain.repository.HistoryMangaRepository
 import com.king.mangaviewer.domain.usecase.AddToFavoriteUseCase
 import com.king.mangaviewer.domain.usecase.GetChapterListUseCase
 import com.king.mangaviewer.domain.usecase.GetFavoriteStateUseCase

@@ -2,7 +2,7 @@ package com.king.mangaviewer.util
 
 import android.support.annotation.WorkerThread
 import com.king.mangaviewer.MyApplication
-import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
+import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.model.MangaPageItem

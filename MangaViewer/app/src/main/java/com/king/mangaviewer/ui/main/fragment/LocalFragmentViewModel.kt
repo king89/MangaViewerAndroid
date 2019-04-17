@@ -3,8 +3,8 @@ package com.king.mangaviewer.ui.main.fragment
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseFragmentViewModel
-import com.king.mangaviewer.domain.data.AppRepository
-import com.king.mangaviewer.domain.data.mangaprovider.LocalManga
+import com.king.mangaviewer.domain.repository.AppRepository
+import com.king.mangaviewer.domain.external.mangaprovider.LocalMangaProvider
 import com.king.mangaviewer.domain.usecase.SelectMangaChapterUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaMenuUseCase
 import com.king.mangaviewer.model.MangaChapterItem
@@ -28,13 +28,13 @@ class LocalFragmentViewModel @Inject constructor(
 
     fun selectChapter(path: File, fileName: String) {
 
-        val tLocalManga = LocalManga()
+        val tLocalManga = LocalMangaProvider()
         val chapterList = tLocalManga.getChapterList(path.getAbsolutePath())
 
         var tSelectedChapter: MangaChapterItem? = null
 
         val tmenu = MangaMenuItem("${path.absolutePath}", "${path.name}", "", "", "${path.absolutePath}",
-            MangaWebSource(-1, "LocalManga", "LocalManga", LocalManga::class.java.name, -1, null, -1))
+            MangaWebSource(-1, "LocalManga", "LocalManga", LocalMangaProvider::class.java.name, -1, null, -1))
         val list = ArrayList<MangaChapterItem>()
         for (i in chapterList!!.indices) {
             val item = MangaChapterItem("Chapter-$i", chapterList[i]

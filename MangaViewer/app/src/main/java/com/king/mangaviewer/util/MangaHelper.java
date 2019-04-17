@@ -7,14 +7,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.WorkerThread;
 import android.widget.ImageView;
 
-import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider;
+import com.king.mangaviewer.domain.external.mangaprovider.MangaProvider;
 import com.king.mangaviewer.MyApplication;
 import com.king.mangaviewer.common.Constants.SaveType;
-import com.king.mangaviewer.domain.data.mangaprovider.LocalManga;
-import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory;
+import com.king.mangaviewer.domain.external.mangaprovider.LocalMangaProvider;
+import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaPageItem;
@@ -81,7 +80,7 @@ public class MangaHelper {
     public Drawable getPageImage(final MangaPageItem page, final ImageView imageView,
             final GetImageCallback imageCallback) {
         //For Local Manga
-        if (page.getMangaWebSource().getClassName() == LocalManga.class.getName()) {
+        if (page.getMangaWebSource().getClassName() == LocalMangaProvider.class.getName()) {
             ZipFile zf = null;
             try {
                 zf = new ZipFile(page.getChapter().getUrl());

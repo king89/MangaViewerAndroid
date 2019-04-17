@@ -1,4 +1,4 @@
-package com.king.mangaviewer.domain.data
+package com.king.mangaviewer.domain.repository
 
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.viewmodel.AppViewModel
@@ -9,7 +9,7 @@ interface AppRepository {
 }
 
 class AppRepositoryImpl @Inject constructor(override val appViewModel: AppViewModel) :
-        AppRepository {
+    AppRepository {
     init {
         Logger.d("-=-=", "create AppRepositoryImpl ")
 

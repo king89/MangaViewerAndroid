@@ -1,4 +1,4 @@
-package com.king.mangaviewer.domain.data.mangaprovider;
+package com.king.mangaviewer.domain.external.mangaprovider;
 
 import android.util.Log;
 
@@ -17,10 +17,10 @@ import java.util.zip.ZipFile;
 /**
  * Created by KinG on 12/24/2014.
  */
-public class LocalManga extends MangaProvider {
+public class LocalMangaProvider extends MangaProvider {
     String LOG_TAG = "LocalManga";
 
-    public LocalManga() {
+    public LocalMangaProvider() {
 
         // TODO Auto-generated constructor stub
         setWEBSITE_URL("");

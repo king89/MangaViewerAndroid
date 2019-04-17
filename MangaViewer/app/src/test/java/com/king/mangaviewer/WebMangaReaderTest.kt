@@ -1,7 +1,7 @@
 package com.king.mangaviewer
 
-import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider
-import com.king.mangaviewer.domain.data.mangaprovider.WebMangaReader
+import com.king.mangaviewer.domain.external.mangaprovider.MangaProvider
+import com.king.mangaviewer.domain.external.mangaprovider.WebMangaReader
 import org.junit.runner.RunWith
 import org.mockito.runners.MockitoJUnitRunner
 

@@ -1,10 +1,7 @@
 package com.king.mangaviewer
 
-import android.content.Context
-import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider
-import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider.Companion.STATE_SEARCH_QUERYTEXT
-import com.king.mangaviewer.domain.data.mangaprovider.WebManhuagui
-import com.king.mangaviewer.util.LZString
+import com.king.mangaviewer.domain.external.mangaprovider.MangaProvider
+import com.king.mangaviewer.domain.external.mangaprovider.MangaProvider.Companion.STATE_SEARCH_QUERYTEXT
 import junit.framework.Assert.assertTrue
 import okhttp3.OkHttpClient
 import org.junit.Before

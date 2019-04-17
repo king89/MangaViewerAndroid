@@ -1,8 +1,8 @@
 package com.king.mangaviewer.common
 
-import com.king.mangaviewer.domain.data.mangaprovider.WebHHComic
-import com.king.mangaviewer.domain.data.mangaprovider.WebIManhua
-import com.king.mangaviewer.domain.data.mangaprovider.WebTestManga
+import com.king.mangaviewer.domain.external.mangaprovider.WebHHComic
+import com.king.mangaviewer.domain.external.mangaprovider.WebIManhua
+import com.king.mangaviewer.domain.external.mangaprovider.WebTestManga
 
 object Constants {
     const val DATE_FORMAT_LONG = "yyyy-MM-dd HH:mm:ss"

@@ -6,18 +6,21 @@ import com.king.mangaviewer.domain.data.local.FavouriteMangaDAO
 import com.king.mangaviewer.domain.data.local.HistoryMangaDAO
 import com.king.mangaviewer.domain.data.local.MangaDataBase
 import com.king.mangaviewer.di.annotation.ApplicationScope
-import com.king.mangaviewer.domain.data.AppRepository
-import com.king.mangaviewer.domain.data.AppRepositoryImpl
-import com.king.mangaviewer.domain.data.FavoriteMangaRepository
-import com.king.mangaviewer.domain.data.FavoriteMangaRepositoryImpl
-import com.king.mangaviewer.domain.data.HistoryMangaRepository
-import com.king.mangaviewer.domain.data.HistoryMangaRepositoryImpl
+import com.king.mangaviewer.domain.data.local.DownloadedMangaDAO
+import com.king.mangaviewer.domain.data.local.DownloadedMangaDataSource
+import com.king.mangaviewer.domain.data.local.DownloadedMangaDataSourceImpl
+import com.king.mangaviewer.domain.repository.AppRepository
+import com.king.mangaviewer.domain.repository.AppRepositoryImpl
+import com.king.mangaviewer.domain.repository.FavoriteMangaRepository
+import com.king.mangaviewer.domain.repository.FavoriteMangaRepositoryImpl
+import com.king.mangaviewer.domain.repository.HistoryMangaRepository
+import com.king.mangaviewer.domain.repository.HistoryMangaRepositoryImpl
 import com.king.mangaviewer.domain.data.local.FavouriteMangaDataSource
 import com.king.mangaviewer.domain.data.local.FavouriteMangaLocalDataSource
 import com.king.mangaviewer.domain.data.local.HistoryMangaDataSource
 import com.king.mangaviewer.domain.data.local.HistoryMangaLocalDataSource
-import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
-import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactoryImpl
+import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory
+import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactoryImpl
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.viewmodel.AppViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
@@ -43,22 +46,28 @@ abstract class RepositoryModule {
     @ApplicationScope
     @Binds
     abstract fun provideHistoryMangaRepository(
-            impl: HistoryMangaRepositoryImpl): HistoryMangaRepository
+        impl: HistoryMangaRepositoryImpl): HistoryMangaRepository
 
     @ApplicationScope
     @Binds
     abstract fun provideHistoryMangaDataSource(
-            impl: HistoryMangaLocalDataSource): HistoryMangaDataSource
+        impl: HistoryMangaLocalDataSource): HistoryMangaDataSource
 
     @ApplicationScope
     @Binds
     abstract fun provideFavoriteMangaDataSource(
-            impl: FavouriteMangaLocalDataSource): FavouriteMangaDataSource
+        impl: FavouriteMangaLocalDataSource): FavouriteMangaDataSource
 
     @ApplicationScope
     @Binds
     abstract fun provideFavoriteMangaRepository(
-            impl: FavoriteMangaRepositoryImpl): FavoriteMangaRepository
+        impl: FavoriteMangaRepositoryImpl): FavoriteMangaRepository
+
+    @ApplicationScope
+    @Binds
+    abstract fun provideDownloadedMangaDataSource(
+        impl: DownloadedMangaDataSourceImpl): DownloadedMangaDataSource
+
 
     @Module
     companion object {
@@ -67,11 +76,12 @@ abstract class RepositoryModule {
         @JvmStatic
         fun provideDb(context: Context): MangaDataBase {
             return Room.databaseBuilder(
-                    context,
-                    MangaDataBase::class.java,
-                    "manga.db")
-                    .fallbackToDestructiveMigration()
-                    .build()
+                context,
+                MangaDataBase::class.java,
+                "manga.db")
+                .fallbackToDestructiveMigration()
+                .addMigrations(MangaDataBase.MIGRATION_2_3)
+                .build()
         }
 
         @ApplicationScope
@@ -91,13 +101,20 @@ abstract class RepositoryModule {
         @ApplicationScope
         @Provides
         @JvmStatic
+        fun provideDownloadedMangaDao(db: MangaDataBase): DownloadedMangaDAO {
+            return db.downloadedMangaDAO()
+        }
+
+        @ApplicationScope
+        @Provides
+        @JvmStatic
         fun providerOkHttpClient(): OkHttpClient {
             val timeout = 15L
             return OkHttpClient().newBuilder()
-                    .connectTimeout(timeout, SECONDS)
-                    .readTimeout(timeout, SECONDS)
-                    .writeTimeout(timeout, SECONDS)
-                    .build()
+                .connectTimeout(timeout, SECONDS)
+                .readTimeout(timeout, SECONDS)
+                .writeTimeout(timeout, SECONDS)
+                .build()
         }
 
         @Provides

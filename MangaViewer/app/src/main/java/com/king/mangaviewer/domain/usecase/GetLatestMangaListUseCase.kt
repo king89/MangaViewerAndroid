@@ -1,10 +1,9 @@
 package com.king.mangaviewer.domain.usecase
 
 import android.annotation.SuppressLint
-import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
+import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.viewmodel.AppViewModel
-import io.reactivex.BackpressureStrategy
 import io.reactivex.BackpressureStrategy.LATEST
 import io.reactivex.Flowable
 import io.reactivex.Observable
