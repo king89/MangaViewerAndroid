@@ -3,6 +3,7 @@ package com.king.mangaviewer.util
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.widget.ImageView
+import android.widget.ImageView.ScaleType.CENTER
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
@@ -53,9 +54,10 @@ object GlideImageHelper {
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess { it: Any ->
+                .doOnSuccess {
                     (it as? GlideUrl) ?: apply {
-                        imageView.setImageResource(R.color.manga_place_holder)
+                        imageView.setImageResource(R.drawable.ic_manga_cover_placeholder)
+                        imageView.scaleType = CENTER
                         return@doOnSuccess
                     }
                     val call = GlideApp.with(imageView)
