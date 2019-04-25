@@ -141,7 +141,9 @@ public class SettingViewModel extends ViewModelBase {
 
         //add local manga source
         Collections.sort(mws);
-        mws.add(new MangaWebSource(-1, "LocalManga", "LocalManga", LocalMangaProvider.class.getName(), -1, "manga", 0));
+        mws.add(MangaWebSource.Companion.getLOCAL());
+        mws.add(MangaWebSource.Companion.getDOWNLOAD());
+
         return mws;
     }
 

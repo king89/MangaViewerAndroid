@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "422451b7cbf054801773653ed9ef260a",
+    "identityHash": "80efe7731269b8f82d6e403de852e7ab",
     "entities": [
       {
         "tableName": "favourite_manga",
@@ -172,14 +172,8 @@
       },
       {
         "tableName": "downloaded_manga",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `menu_hash` TEXT NOT NULL, `chapter_hash` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `chapter_name` TEXT NOT NULL, `menu_cover_image_base64` TEXT NOT NULL, `menu_url` TEXT NOT NULL, `chapter_url` TEXT NOT NULL, `genre` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`menu_hash` TEXT NOT NULL, `chapter_hash` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `chapter_name` TEXT NOT NULL, `menu_cover_image_base64` TEXT NOT NULL, `menu_url` TEXT NOT NULL, `chapter_url` TEXT NOT NULL, `genre` TEXT NOT NULL, `created_date_time` TEXT NOT NULL, `origin_menu_hash` TEXT NOT NULL, `origin_chapter_hash` TEXT NOT NULL, PRIMARY KEY(`menu_hash`, `chapter_hash`))",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
           {
             "fieldPath": "menuHash",
             "columnName": "menu_hash",
@@ -233,13 +227,32 @@
             "columnName": "genre",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "createdDateTime",
+            "columnName": "created_date_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "originMenuHash",
+            "columnName": "origin_menu_hash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "originChapterHash",
+            "columnName": "origin_chapter_hash",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "id"
+            "menu_hash",
+            "chapter_hash"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -247,7 +260,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"422451b7cbf054801773653ed9ef260a\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"80efe7731269b8f82d6e403de852e7ab\")"
     ]
   }
 }

@@ -46,7 +46,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     private val mDataList = MutableLiveData<List<MangaUri>>()
     val dataList: LiveData<List<MangaUri>> = mDataList
 
-    val chapterList get() = appRepository.appViewModel.Manga.mangaChapterList
+    val chapterList get() = appRepository.appViewModel.Manga.mangaChapterList ?: emptyList()
     val currentChapter get() = appRepository.appViewModel.Manga.selectedMangaChapterItem
 
     var currentPageNum = 0

@@ -16,7 +16,7 @@ open class MangaMenuItem
 
     val hash: String
         get() {
-            val tx = this.mangaWebSource.getClassName() + "|" + this.url
+            val tx = this.mangaWebSource.className + "|" + this.url
             return StringUtils.getHash(tx)
         }
 

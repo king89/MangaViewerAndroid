@@ -34,7 +34,7 @@ class LocalFragmentViewModel @Inject constructor(
         var tSelectedChapter: MangaChapterItem? = null
 
         val tmenu = MangaMenuItem("${path.absolutePath}", "${path.name}", "", "", "${path.absolutePath}",
-            MangaWebSource(-1, "LocalManga", "LocalManga", LocalMangaProvider::class.java.name, -1, null, -1))
+            MangaWebSource.LOCAL)
         val list = ArrayList<MangaChapterItem>()
         for (i in chapterList!!.indices) {
             val item = MangaChapterItem("Chapter-$i", chapterList[i]

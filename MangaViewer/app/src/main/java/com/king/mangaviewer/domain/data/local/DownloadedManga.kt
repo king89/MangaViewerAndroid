@@ -2,9 +2,8 @@ package com.king.mangaviewer.domain.data.local
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
 
-@Entity(tableName = "downloaded_manga")
+@Entity(tableName = "downloaded_manga", primaryKeys = ["menu_hash", "chapter_hash"])
 data class DownloadedManga(
     @ColumnInfo(name = "menu_hash")
     var menuHash: String,
@@ -31,10 +30,15 @@ data class DownloadedManga(
     var chapterUrl: String,
 
     @ColumnInfo(name = "genre")
-    var genre: String
+    var genre: String,
 
-) {
-    @PrimaryKey(autoGenerate = true)
-    var id: Long? = null
+    @ColumnInfo(name = "created_date_time")
+    var createdDateTime: String,
 
-}
+    @ColumnInfo(name = "origin_menu_hash")
+    var originMenuHash: String,
+
+    @ColumnInfo(name = "origin_chapter_hash")
+    var originChapterHash: String
+
+)

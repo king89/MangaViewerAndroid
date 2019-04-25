@@ -89,6 +89,7 @@ dependencies {
     implementation libraries.gson
     implementation libraries.jodaTime
     implementation libraries.okHttp
+    implementation libraries.okHttpInterceptor
     implementation libraries.glide
 
     implementation libraries.retrofit2
