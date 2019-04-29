@@ -8,22 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
 import com.king.mangaviewer.R
-import com.king.mangaviewer.di.GlideApp
 import com.king.mangaviewer.model.LoadingState
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.util.GlideImageHelper
-import com.king.mangaviewer.util.Logger
-import com.king.mangaviewer.util.MangaHelperV2
 import com.king.mangaviewer.util.glide.CropImageTransformation
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 
 open class MangaMenuItemAdapter(
         private val listener: ((view: View, menu: MangaMenuItem) -> Unit)? = null) :

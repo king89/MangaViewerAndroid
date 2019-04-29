@@ -145,26 +145,6 @@ public class MangaHelper {
         return list;
     }
 
-    /* Menu */
-    public List<MangaMenuItem> getLatestMangeList(List<MangaMenuItem> mangaList,
-            HashMap<String, Object> state) {
-        MangaProvider mPattern = providerFactory.getPattern(
-                getSettingViewModel().getSelectedWebSource());
-        List<TitleAndUrl> pageUrlList = mPattern.getLatestMangaList(state);
-        if (mangaList == null) {
-            mangaList = new ArrayList<>();
-        }
-        if (pageUrlList != null) {
-            for (int i = 0; i < pageUrlList.size(); i++) {
-                mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
-                        .getTitle(), "", pageUrlList.get(i).getImagePath(),
-                        pageUrlList.get(i).getUrl(),
-                        getSettingViewModel().getSelectedWebSource()));
-            }
-        }
-        return mangaList;
-    }
-
     public List<MangaMenuItem> getAllManga(List<MangaMenuItem> mangaList,
             HashMap<String, Object> state) {
         MangaProvider mPattern = providerFactory.getPattern(

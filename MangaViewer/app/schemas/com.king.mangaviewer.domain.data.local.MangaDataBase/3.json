@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "80efe7731269b8f82d6e403de852e7ab",
+    "identityHash": "fc79c68f24ceae50df1e87f513754266",
     "entities": [
       {
         "tableName": "favourite_manga",
@@ -172,7 +172,7 @@
       },
       {
         "tableName": "downloaded_manga",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`menu_hash` TEXT NOT NULL, `chapter_hash` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `chapter_name` TEXT NOT NULL, `menu_cover_image_base64` TEXT NOT NULL, `menu_url` TEXT NOT NULL, `chapter_url` TEXT NOT NULL, `genre` TEXT NOT NULL, `created_date_time` TEXT NOT NULL, `origin_menu_hash` TEXT NOT NULL, `origin_chapter_hash` TEXT NOT NULL, PRIMARY KEY(`menu_hash`, `chapter_hash`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`menu_hash` TEXT NOT NULL, `chapter_hash` TEXT NOT NULL, `menu_title` TEXT NOT NULL, `description` TEXT NOT NULL, `chapter_title` TEXT NOT NULL, `menu_cover_image_base64` TEXT NOT NULL, `menu_url` TEXT NOT NULL, `chapter_url` TEXT NOT NULL, `genre` TEXT NOT NULL, `created_date_time` TEXT NOT NULL, `origin_menu_hash` TEXT NOT NULL, `origin_chapter_hash` TEXT NOT NULL, PRIMARY KEY(`menu_hash`, `chapter_hash`))",
         "fields": [
           {
             "fieldPath": "menuHash",
@@ -187,8 +187,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "title",
-            "columnName": "title",
+            "fieldPath": "menuTitle",
+            "columnName": "menu_title",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -199,8 +199,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "chapterName",
-            "columnName": "chapter_name",
+            "fieldPath": "chapterTitle",
+            "columnName": "chapter_title",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -260,7 +260,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"80efe7731269b8f82d6e403de852e7ab\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"fc79c68f24ceae50df1e87f513754266\")"
     ]
   }
 }

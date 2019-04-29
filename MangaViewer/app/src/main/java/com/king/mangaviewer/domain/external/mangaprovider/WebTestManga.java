@@ -1,6 +1,7 @@
 package com.king.mangaviewer.domain.external.mangaprovider;
 
 import com.king.mangaviewer.common.Constants;
+import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaPageItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by KinG on 12/24/2014.
@@ -57,8 +59,8 @@ public class WebTestManga extends MangaProvider {
         return chapterList;
     }
 
-    @Override
-    public List<TitleAndUrl> getLatestMangaList(HashMap<String, Object> state) {
+    @NotNull @Override
+    public List<MangaMenuItem> getLatestMangaList(@NotNull HashMap<String, Object> state) {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
         try {
             for (int i = 0; i < 10; i++) {
@@ -72,7 +74,7 @@ public class WebTestManga extends MangaProvider {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return topMangaList;
+        return toMenuItem(topMangaList);
     }
 
     @Override

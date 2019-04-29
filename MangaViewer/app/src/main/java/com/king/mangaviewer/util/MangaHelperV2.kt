@@ -10,6 +10,7 @@ import com.king.mangaviewer.model.MangaWebSource
 import java.util.ArrayList
 import java.util.HashMap
 
+@Deprecated("Should use usecase")
 object MangaHelperV2 {
     private var providerFactory: ProviderFactory = MyApplication.INSTANCE.component.providerFactory()
 

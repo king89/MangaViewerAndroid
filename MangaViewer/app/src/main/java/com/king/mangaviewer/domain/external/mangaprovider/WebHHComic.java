@@ -2,8 +2,10 @@ package com.king.mangaviewer.domain.external.mangaprovider;
 
 import android.util.Log;
 
+import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -137,8 +139,8 @@ public class WebHHComic extends MangaProvider {
         return chapterList;
     }
 
-    @Override
-    protected List<TitleAndUrl> getLatestMangaList(String html) {
+    @NotNull @Override
+    protected List<MangaMenuItem> getLatestMangaList(@NotNull String html) {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
         try {
             Pattern rGetUl = Pattern
@@ -155,7 +157,7 @@ public class WebHHComic extends MangaProvider {
             e.printStackTrace();
             Log.e(LOG_TAG, "getLatestMangaList");
         }
-        return topMangaList;
+        return toMenuItem(topMangaList);
     }
 
 

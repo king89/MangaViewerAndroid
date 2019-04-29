@@ -5,9 +5,10 @@ import android.util.Log
 import com.king.mangaviewer.MyApplication
 import com.king.mangaviewer.common.Constants
 import com.king.mangaviewer.common.Constants.SaveType
-import com.king.mangaviewer.di.AppComponent
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.model.MangaPageItem
+import com.king.mangaviewer.model.MangaUriType.WEB
+import com.king.mangaviewer.model.MangaWebSource
 import com.king.mangaviewer.model.TitleAndUrl
 import com.king.mangaviewer.util.FileHelper
 import com.king.mangaviewer.util.Logger
@@ -29,11 +30,13 @@ abstract class MangaProvider {
     var WEB_ALL_MANGA_BASE_URL = ""
     var latestMangaUrl = ""
     var CHARSET = "utf8"
+
     protected var startNum = 1
     protected var totalNum = 1
     protected var firstPageHtml: String? = null
 
     lateinit var okHttpClient: OkHttpClient
+    lateinit var mangaWebSource: MangaWebSource
 
     // Check if have external storage
     val mangaFolder: String
@@ -41,12 +44,12 @@ abstract class MangaProvider {
             val context = MyApplication.context
             return if (Environment.getExternalStorageState() === Environment.MEDIA_MOUNTED) {
                 (context.getExternalFilesDir(null).toString() + File.separator
-                        + Constants.MANGAFOLDER + File.separator
-                        + this.javaClass.simpleName)
+                    + Constants.MANGAFOLDER + File.separator
+                    + this.javaClass.simpleName)
             } else {
                 (context.filesDir.toString() + File.separator
-                        + Constants.MANGAFOLDER + File.separator
-                        + this.javaClass.simpleName)
+                    + Constants.MANGAFOLDER + File.separator
+                    + this.javaClass.simpleName)
             }
         }
 
@@ -120,35 +123,35 @@ abstract class MangaProvider {
     fun getHtml(urlString: String): String {
         val userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
         val request = Request.Builder()
-                .addHeader("User-Agent", userAgent)
-                .url(urlString)
-                .get()
-                .build()
+            .addHeader("User-Agent", userAgent)
+            .url(urlString)
+            .get()
+            .build()
         val response = okHttpClient.newCall(request).execute()
         return response.body()!!.string()
     }
 
     fun getPrePageImageFilePath(imgUrl: String, pageItem: MangaPageItem): String {
         val folderName = (mangaFolder + File.separator
-                + pageItem.folderPath)
+            + pageItem.folderPath)
         val fileName = FileHelper.getFileName(imgUrl)
         val dir = File(folderName)
         if (!dir.exists()) {
             dir.mkdirs()
         }
         val file = File(dir.absolutePath + File.separator
-                + fileName)
+            + fileName)
         return file.absolutePath
     }
 
     open fun DownloadImgPage(imgUrl: String, pageItem: MangaPageItem,
-            saveType: SaveType, refer: String?): String? {
+        saveType: SaveType, refer: String?): String? {
         var refer = refer
         if (refer == null || refer === "") {
             refer = this.WEBSITE_URL
         }
         val folderName = (mangaFolder + File.separator
-                + pageItem.folderPath)
+            + pageItem.folderPath)
         val fileName = FileHelper.getFileName(imgUrl)
         try {
             val inputStream = NetworkHelper.downLoadFromUrl(imgUrl, refer)
@@ -175,17 +178,19 @@ abstract class MangaProvider {
     /*
      * // // Menu //
      */
-    open fun getLatestMangaList(state: HashMap<String, Any>): List<TitleAndUrl>? {
+    open fun getLatestMangaList(
+        state: HashMap<String, Any>): List<MangaMenuItem> {
         val html = getHtml(latestMangaUrl)
-        if (html == null || html.isEmpty()) {
-            return null
+        if (html.isEmpty()) {
+            return emptyList()
         }
         state[STATE_NO_MORE] = true
         return getLatestMangaList(html)
     }
 
-    protected open fun getLatestMangaList(html: String): List<TitleAndUrl>? {
-        return null
+    protected open fun getLatestMangaList(
+        html: String): List<MangaMenuItem> {
+        return emptyList()
     }
 
     fun GetNewMangaList(html: String): List<TitleAndUrl>? {
@@ -315,6 +320,23 @@ abstract class MangaProvider {
 
     open fun getMenuCover(menu: MangaMenuItem): String {
         return menu.imagePath
+    }
+
+    open fun getLoaderType() = WEB
+
+    //TODO should be remove later
+    fun toMenuItem(pageList: List<TitleAndUrl>): List<MangaMenuItem> {
+        val mangaList = mutableListOf<MangaMenuItem>()
+        pageList.forEach {
+            mangaList.add(MangaMenuItem(
+                "Menu-$it",
+                it.title,
+                "",
+                it.imagePath,
+                it.url,
+                mangaWebSource))
+        }
+        return mangaList
     }
 
     companion object {

@@ -82,6 +82,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
                 val source = sources.firstOrNull { it.id == item.manga_websource_id }!!
                 val menu = MangaMenuItem(item.hash, item.title, item.description, item.imagePath,
                     item.url, source)
+                //TODO change MangaHelperV2 to inject factory
                 val chlist = MangaHelperV2.getChapterList(menu)
                 //have updated manga
                 if (chlist.size > chapterCount) {

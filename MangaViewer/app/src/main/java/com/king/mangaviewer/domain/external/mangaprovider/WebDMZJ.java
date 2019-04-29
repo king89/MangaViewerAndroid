@@ -6,9 +6,11 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
+import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,8 +80,8 @@ public class WebDMZJ extends MangaProvider {
         }
     }
 
-    @Override
-    protected List<TitleAndUrl> getLatestMangaList(String html) {
+    @NotNull @Override
+    protected List<MangaMenuItem> getLatestMangaList(@NotNull String html) {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
         Document doc = Jsoup.parse(html);
         Elements el = doc.select(".boxdiv1");
@@ -91,7 +93,7 @@ public class WebDMZJ extends MangaProvider {
             String imageUrl = e.select(".picborder a img").attr("src");
             topMangaList.add(new TitleAndUrl(title, url, imageUrl));
         }
-        return topMangaList;
+        return toMenuItem(topMangaList);
     }
 
     @Override

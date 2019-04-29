@@ -20,7 +20,7 @@ abstract class MangaDataBase : RoomDatabase() {
     const val DATABASE_NAME = "manga.db"
     val MIGRATION_2_3 = object : Migration(2, 3) {
       override fun migrate(database: SupportSQLiteDatabase) {
-        val sql = """CREATE TABLE IF NOT EXISTS `downloaded_manga` (`menu_hash` TEXT NOT NULL, `chapter_hash` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `chapter_name` TEXT NOT NULL, `menu_cover_image_base64` TEXT NOT NULL, `menu_url` TEXT NOT NULL, `chapter_url` TEXT NOT NULL, `genre` TEXT NOT NULL, `created_date_time` TEXT NOT NULL,`origin_menu_hash` TEXT NOT NULL, `origin_chapter_hash` TEXT NOT NULL, PRIMARY KEY(`menu_hash`, `chapter_hash`))""".trimMargin()
+        val sql = """CREATE TABLE IF NOT EXISTS `downloaded_manga` (`menu_hash` TEXT NOT NULL, `chapter_hash` TEXT NOT NULL, `menu_title` TEXT NOT NULL, `description` TEXT NOT NULL, `chapter_title` TEXT NOT NULL, `menu_cover_image_base64` TEXT NOT NULL, `menu_url` TEXT NOT NULL, `chapter_url` TEXT NOT NULL, `genre` TEXT NOT NULL, `created_date_time` TEXT NOT NULL, `origin_menu_hash` TEXT NOT NULL, `origin_chapter_hash` TEXT NOT NULL, PRIMARY KEY(`menu_hash`, `chapter_hash`))""".trimMargin()
         database.execSQL(sql)
       }
 

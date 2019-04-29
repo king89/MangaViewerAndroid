@@ -19,6 +19,8 @@ import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory
 import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactoryImpl
 import com.king.mangaviewer.domain.repository.AppRepository
 import com.king.mangaviewer.domain.repository.AppRepositoryImpl
+import com.king.mangaviewer.domain.repository.DownloadedMangaRepository
+import com.king.mangaviewer.domain.repository.DownloadedMangaRepositoryImpl
 import com.king.mangaviewer.domain.repository.FavoriteMangaRepository
 import com.king.mangaviewer.domain.repository.FavoriteMangaRepositoryImpl
 import com.king.mangaviewer.domain.repository.HistoryMangaRepository
@@ -71,6 +73,11 @@ abstract class RepositoryModule {
   @Binds
   abstract fun provideDownloadedMangaDataSource(
       impl: DownloadedMangaDataSourceImpl): DownloadedMangaDataSource
+
+  @ApplicationScope
+  @Binds
+  abstract fun provideDownloadedMangaRepository(
+      impl: DownloadedMangaRepositoryImpl): DownloadedMangaRepository
 
 
   @Module

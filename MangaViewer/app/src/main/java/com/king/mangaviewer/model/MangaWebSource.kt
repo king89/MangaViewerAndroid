@@ -15,11 +15,31 @@ class MangaWebSource(val id: Int,
     var enable: Int) : Comparable<MangaWebSource> {
 
   override fun compareTo(another: MangaWebSource): Int {
-    return if (this.order < another.order) {
-      -1
-    } else {
-      1
+    return when{
+      this.order >= 0 && another.order >= 0 -> {
+        if (this.order < another.order) {
+          -1
+        } else {
+          1
+        }
+      }
+      this.order < 0 && another.order < 0 -> {
+        if (this.order > another.order) {
+          -1
+        } else {
+          1
+        }
+      }
+      else -> {
+        if (this.order > another.order) {
+          -1
+        } else {
+          1
+        }
+      }
     }
+
+
   }
 
   companion object {
@@ -27,7 +47,7 @@ class MangaWebSource(val id: Int,
         LocalMangaProvider::class.java.name,
         -1, "en", 0)
     val DOWNLOAD = MangaWebSource(-2, "DownloadManga", "DownloadManga",
-        DownloadedMangaProvider::class.java.simpleName, -2, "en", 0)
+        DownloadedMangaProvider::class.java.name, -2, "en", 0)
 
   }
 

@@ -2,9 +2,7 @@ package com.king.mangaviewer.ui.chapter
 
 import android.arch.lifecycle.Observer
 import android.content.Intent
-import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
@@ -21,21 +19,17 @@ import com.king.mangaviewer.adapter.WrapperType.CHAPTER
 import com.king.mangaviewer.adapter.WrapperType.LAST_READ
 import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
-import com.king.mangaviewer.di.GlideApp
 import com.king.mangaviewer.di.annotation.ActivityScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
 import com.king.mangaviewer.util.GlideImageHelper
-import com.king.mangaviewer.util.MangaHelperV2
 import com.king.mangaviewer.util.VersionUtil
-import com.king.mangaviewer.util.VersionUtil.isGreaterOrEqualApi19
 import com.king.mangaviewer.util.glide.BlurTransformation
 import com.king.mangaviewer.util.glide.CropImageTransformation
 import com.king.mangaviewer.util.withViewModel
 import io.reactivex.Flowable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_manga_chapter.fabShare

@@ -1,5 +1,6 @@
 package com.king.mangaviewer.domain.external.mangaprovider
 
+import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.model.TitleAndUrl
 import com.king.mangaviewer.util.GsonHelper
 import com.king.mangaviewer.util.LZString
@@ -19,7 +20,8 @@ class WebManhuagui @Inject constructor() : MangaProvider() {
         CHARSET = "utf-8"
     }
 
-    override fun getLatestMangaList(html: String): MutableList<TitleAndUrl>? {
+    override fun getLatestMangaList(
+        html: String): List<MangaMenuItem> {
         val topMangaList = ArrayList<TitleAndUrl>()
 
         val doc = Jsoup.parse(html)
@@ -43,7 +45,7 @@ class WebManhuagui @Inject constructor() : MangaProvider() {
             topMangaList.add(TitleAndUrl(title, url, imageUrl))
         }
 
-        return topMangaList
+        return toMenuItem(topMangaList)
 
     }
 

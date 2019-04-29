@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.king.mangaviewer.domain.external.mangaprovider.LocalMangaProvider;
+import com.king.mangaviewer.domain.repository.SettingRepository;
+import com.king.mangaviewer.domain.repository.SettingRepositoryImpl;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
@@ -42,12 +44,13 @@ public class SettingViewModel extends ViewModelBase {
     public SettingViewModel(Context context) {
         super(context);
         this.context = context;
+        //this.mMangaWebSources = new SettingRepositoryImpl(context).getMangaProviderList();
     }
 
     public static SettingViewModel loadSetting(Context context) {
         SettingViewModel svm = new SettingViewModel(context);
         //Manga Sources
-        svm.setMangaWebSources(loadMangaSource(context));
+        svm.setMangaWebSources(new SettingRepositoryImpl(context).getMangaProviderList());
 
         //ensure get the latest manga source
         int id = svm.getSelectedWebSource().getId();
@@ -94,57 +97,6 @@ public class SettingViewModel extends ViewModelBase {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         mIsSplitPage = sp.getBoolean(context.getString(R.string.pref_key_split_page), true);
         return mIsSplitPage;
-    }
-
-    private static List<MangaWebSource> loadMangaSource(Context context) {
-        List<MangaWebSource> mws = new ArrayList<MangaWebSource>();
-        try {
-            InputStream is = context.getResources().openRawResource(R.raw.manga_source);
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(is);
-
-            doc.getDocumentElement().normalize();
-            NodeList nList = doc.getElementsByTagName("Source");
-
-            for (int temp = 0; temp < nList.getLength(); temp++) {
-
-                Node nNode = nList.item(temp);
-
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-                    Element eElement = (Element) nNode;
-
-                    int id = Integer.parseInt(eElement.getAttribute("id"));
-                    String name = eElement.getElementsByTagName("Name").item(0).getTextContent();
-                    String displayName = eElement.getElementsByTagName("DisplayName").item(
-                            0).getTextContent();
-                    String className = eElement.getElementsByTagName("ClassName").item(
-                            0).getTextContent();
-                    int order = Integer.parseInt(
-                            eElement.getElementsByTagName("Order").item(0).getTextContent());
-                    String language = eElement.getElementsByTagName("Language").item(
-                            0).getTextContent();
-                    int enable = Integer.parseInt(
-                            eElement.getElementsByTagName("Enable").item(0).getTextContent());
-                    //dont need the disable source
-                    if (enable > 0) {
-                        mws.add(new MangaWebSource(id, name, displayName, className, order,
-                                language, enable));
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //add local manga source
-        Collections.sort(mws);
-        mws.add(MangaWebSource.Companion.getLOCAL());
-        mws.add(MangaWebSource.Companion.getDOWNLOAD());
-
-        return mws;
     }
 
     public List<MangaWebSource> getMangaWebSources() {

@@ -2,6 +2,8 @@ package com.king.mangaviewer.domain.external.mangaprovider;
 
 import android.util.Log;
 
+import com.king.mangaviewer.model.MangaMenuItem;
+import com.king.mangaviewer.model.MangaUriType;
 import com.king.mangaviewer.model.TitleAndUrl;
 
 import java.io.File;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by KinG on 12/24/2014.
@@ -98,8 +101,8 @@ public class LocalMangaProvider extends MangaProvider {
     }
 
 
-    @Override
-    public List<TitleAndUrl> getLatestMangaList(HashMap<String, Object> state) {
+    @NotNull @Override
+    public List<MangaMenuItem> getLatestMangaList(@NotNull HashMap<String, Object> state) {
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
 
         for (int i = 0; i < 10; i++) {
@@ -110,6 +113,10 @@ public class LocalMangaProvider extends MangaProvider {
 
         }
 
-        return topMangaList;
+        return toMenuItem(topMangaList);
+    }
+
+    @NotNull @Override public MangaUriType getLoaderType() {
+        return MangaUriType.ZIP;
     }
 }

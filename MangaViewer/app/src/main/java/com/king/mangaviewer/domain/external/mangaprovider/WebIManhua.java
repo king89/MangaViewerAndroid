@@ -2,8 +2,10 @@ package com.king.mangaviewer.domain.external.mangaprovider;
 
 import android.util.Log;
 
+import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -49,8 +51,8 @@ public class WebIManhua extends MangaProvider {
         }
     }
 
-    @Override
-    public List<TitleAndUrl> getLatestMangaList(HashMap<String, Object> state) {
+    @NotNull @Override
+    public List<MangaMenuItem> getLatestMangaList(@NotNull HashMap<String, Object> state) {
         // TODO Auto-generated method stub
         String html = getHtml(getLatestMangaUrl());
         List<TitleAndUrl> topMangaList = new ArrayList<TitleAndUrl>();
@@ -79,7 +81,7 @@ public class WebIManhua extends MangaProvider {
             e.printStackTrace();
             Log.e(LOG_TAG, "getLatestMangaList");
         }
-        return topMangaList;
+        return toMenuItem(topMangaList);
 
     }
 

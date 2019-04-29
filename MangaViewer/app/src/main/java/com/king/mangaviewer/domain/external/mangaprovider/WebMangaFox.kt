@@ -1,5 +1,6 @@
 package com.king.mangaviewer.domain.external.mangaprovider
 
+import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.model.TitleAndUrl
 
 import java.util.Collections
@@ -22,7 +23,8 @@ class WebMangaFox @Inject constructor(): MangaProvider() {
     }
 
     //Menu
-    override fun getLatestMangaList(html: String): List<TitleAndUrl>? {
+    override fun getLatestMangaList(
+        html: String): List<MangaMenuItem> {
         val topMangaList = ArrayList<TitleAndUrl>()
 
         val doc = Jsoup.parse(html)
@@ -34,7 +36,7 @@ class WebMangaFox @Inject constructor(): MangaProvider() {
             topMangaList.add(TitleAndUrl(title, url, imageUrl))
         }
 
-        return topMangaList
+        return toMenuItem(topMangaList)
 
     }
 

@@ -12,8 +12,9 @@ interface DownloadedMangaDataSource {
   fun addDownloadedManga(manga: DownloadedManga): Completable
   fun removeDownloadedMangaByMenu(menuHash: String): Completable
   fun removeDownloadedMangaByChapter(chapterHash: String): Completable
-  fun getMangaMenuList(): Single<List<MangaMenuItem>>
-  fun getMangaChapterList(menu: MangaMenuItem): Single<List<MangaChapterItem>>
+  fun getMangaMenuList(): Single<List<DownloadedManga>>
+  fun getMangaChapterList(
+      menu: MangaMenuItem): Single<List<DownloadedManga>>
 }
 
 class DownloadedMangaDataSourceImpl @Inject constructor(
@@ -43,30 +44,21 @@ class DownloadedMangaDataSourceImpl @Inject constructor(
     }
   }
 
-  override fun getMangaMenuList(): Single<List<MangaMenuItem>> {
+  override fun getMangaMenuList(): Single<List<DownloadedManga>> {
     return downloadedMangaDAO.getMenuList()
-        .toObservable()
-        .flatMapIterable { it }
-        .map { it.toMangaMenu() }
-        .toList()
   }
 
-  override fun getMangaChapterList(menu: MangaMenuItem): Single<List<MangaChapterItem>> {
+  override fun getMangaChapterList(
+      menu: MangaMenuItem): Single<List<DownloadedManga>> {
     return downloadedMangaDAO.getChapterList(menu.hash)
-        .toObservable()
-        .flatMapIterable { it }
-        .map { it.toChapterItem(menu) }
-        .toList()
+
   }
 
 
-  private fun DownloadedManga.toMangaMenu(): MangaMenuItem {
-    val imagePath = ""
-    return MangaMenuItem(menuHash, title, description, imagePath, menuUrl, MangaWebSource.DOWNLOAD)
-  }
+
 
   private fun DownloadedManga.toChapterItem(menu: MangaMenuItem): MangaChapterItem {
-    return MangaChapterItem(chapterHash, chapterName, description, "", chapterUrl, menu)
+    return MangaChapterItem(chapterHash, chapterTitle, description, "", chapterUrl, menu)
   }
 }
 

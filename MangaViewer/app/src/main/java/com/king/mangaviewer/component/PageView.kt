@@ -97,7 +97,7 @@ class PageView @JvmOverloads constructor(ctx: Context, attrs: AttributeSet? = nu
             showImage()
             setImage(resource)
         }, { e ->
-            Logger.e(TAG, e, "Out of memory when setting image")
+            Logger.e(TAG, e, "fail to setting image")
             showError()
         })
     }

@@ -23,12 +23,11 @@ import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.model.MangaPageItem
 import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.model.MangaUriType
-import com.king.mangaviewer.model.MangaUriType.ZIP
 import com.king.mangaviewer.model.MangaUriType.WEB
+import com.king.mangaviewer.model.MangaUriType.ZIP
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoNextChapter
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoPrevChapter
 import com.king.mangaviewer.util.Logger
-import com.king.mangaviewer.util.MangaHelperV2
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -60,7 +59,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     val selectedChapterName: LiveData<String> = mSelectedChapterName
 
     private val mReadingDirection = MutableLiveData<Boolean>().apply {
-        //TODO should not use context here
+        //TODO should not use context here, try refactor setting view model to setting repository
         value = appRepository.appViewModel.Setting.getIsFromLeftToRight(MyApplication.context)
     }
     val readingDirection: LiveData<ReadingDirection> = Transformations.map(mReadingDirection) {
@@ -102,9 +101,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
             .toObservable()
             .flatMapIterable { it }
             .map {
-                it.apply {
-                    webImageUrl = MangaHelperV2.getWebImageUrl(it)
-                }
+
                 MangaUri(it.webImageUrl, it.referUrl, it.getMangaLoaderType())
             }
             .toList()

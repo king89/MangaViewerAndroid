@@ -4,6 +4,7 @@ import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -32,8 +33,8 @@ public class WebMangaReader extends MangaProvider {
     }
 
     //Menu
-    @Override
-    protected List<TitleAndUrl> getLatestMangaList(String html) {
+    @NotNull @Override
+    protected List<MangaMenuItem> getLatestMangaList(@NotNull String html) {
         List<TitleAndUrl> list = new ArrayList<>();
         Document doc = Jsoup.parse(html);
         Elements els = doc.select(".chapter");
@@ -46,7 +47,7 @@ public class WebMangaReader extends MangaProvider {
             String imageUrl = "";
             list.add(new TitleAndUrl(title, url, imageUrl));
         }
-        return list;
+        return toMenuItem(list);
     }
 
     @Override

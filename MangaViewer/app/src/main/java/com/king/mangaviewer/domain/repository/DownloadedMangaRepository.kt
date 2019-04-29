@@ -1,9 +1,7 @@
 package com.king.mangaviewer.domain.repository
 
 import com.king.mangaviewer.domain.data.local.DownloadedManga
-import com.king.mangaviewer.domain.data.local.DownloadedMangaDAO
 import com.king.mangaviewer.domain.data.local.DownloadedMangaDataSource
-import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.model.MangaMenuItem
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -29,9 +27,9 @@ class DownloadedMangaRepositoryImpl @Inject constructor(
   override fun removeDownloadedMangaByChapter(
       chapterHash: String): Completable = dataSource.removeDownloadedMangaByChapter(chapterHash)
 
-  override fun getMangaMenuList(): Single<List<MangaMenuItem>> = dataSource.getMangaMenuList()
+  override fun getMangaMenuList(): Single<List<DownloadedManga>> = dataSource.getMangaMenuList()
 
   override fun getMangaChapterList(
-      menu: MangaMenuItem): Single<List<MangaChapterItem>> = dataSource.getMangaChapterList(menu)
+      menu: MangaMenuItem): Single<List<DownloadedManga>> = dataSource.getMangaChapterList(menu)
 
 }

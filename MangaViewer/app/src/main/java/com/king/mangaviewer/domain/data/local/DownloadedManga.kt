@@ -11,14 +11,14 @@ data class DownloadedManga(
     @ColumnInfo(name = "chapter_hash")
     var chapterHash: String,
 
-    @ColumnInfo(name = "title")
-    var title: String,
+    @ColumnInfo(name = "menu_title")
+    var menuTitle: String,
 
     @ColumnInfo(name = "description")
     var description: String,
 
-    @ColumnInfo(name = "chapter_name")
-    var chapterName: String,
+    @ColumnInfo(name = "chapter_title")
+    var chapterTitle: String,
 
     @ColumnInfo(name = "menu_cover_image_base64")
     var menuCoverImageBase64: String,

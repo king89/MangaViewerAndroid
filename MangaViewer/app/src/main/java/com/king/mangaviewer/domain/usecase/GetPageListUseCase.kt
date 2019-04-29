@@ -22,6 +22,7 @@ class GetPageListUseCase @Inject constructor(private val appViewModel: AppViewMo
                         i,
                         pageUrlList.size)
                 item.referUrl = chapterItem.url
+                item.webImageUrl = mPattern.getImageUrl(item.url, item.nowNum)
                 mangaPageList.add(item)
             }
 
