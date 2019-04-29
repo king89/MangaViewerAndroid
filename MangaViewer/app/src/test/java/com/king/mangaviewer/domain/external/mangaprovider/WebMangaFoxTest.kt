@@ -1,7 +1,6 @@
-package com.king.mangaviewer
+package com.king.mangaviewer.domain.external.mangaprovider
 
-import com.king.mangaviewer.domain.external.mangaprovider.MangaProvider
-import com.king.mangaviewer.domain.external.mangaprovider.WebMangaFox
+import com.king.mangaviewer.model.MangaMenuItem
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -10,7 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class WebMangaFoxTest : MangaProviderTestBase() {
 
-    override fun getMangaChapterUrl(): String = "https://fanfox.net/manga/dragon_and_the_phoenix/"
+    override fun getMangaMenu(): MangaMenuItem = getMangaMenu().apply { url = "https://fanfox.net/manga/dragon_and_the_phoenix/" }
     override fun getMangaPageUrl(): String = "https://fanfox.net/manga/dragon_and_the_phoenix/c001/1.html"
     override fun getProvider(): MangaProvider = WebMangaFox()
 

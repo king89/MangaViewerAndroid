@@ -17,6 +17,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by KinG on 12/24/2014.
@@ -62,9 +63,9 @@ public class LocalMangaProvider extends MangaProvider {
     }
 
 
-    @Override
-    public List<TitleAndUrl> getChapterList(String chapterUrl) {
-        File path = new File(chapterUrl);
+    @Nullable @Override
+    public List<TitleAndUrl> getChapterList(@NotNull MangaMenuItem menu) {
+        File path = new File(menu.getUrl());
         List<String> fileList = null;
         List<TitleAndUrl> chapterList = new ArrayList<TitleAndUrl>();
         try {

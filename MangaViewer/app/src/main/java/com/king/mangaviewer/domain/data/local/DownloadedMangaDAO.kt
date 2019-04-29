@@ -21,7 +21,7 @@ interface DownloadedMangaDAO {
     @Query("SELECT * FROM downloaded_manga where menu_hash = :hash")
     fun getMenuByHash(hash: String): Single<DownloadedManga>
 
-    @Query("SELECT * FROM downloaded_manga where chapter_hash = :chapterHash")
+    @Query("SELECT * FROM downloaded_manga where hash = :chapterHash")
     fun getChapterByHash(chapterHash: String): Single<DownloadedManga>
 
     @Query("SELECT * FROM downloaded_manga where menu_hash = :menuHash")

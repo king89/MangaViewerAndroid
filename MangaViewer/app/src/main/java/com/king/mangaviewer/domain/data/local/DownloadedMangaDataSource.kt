@@ -53,13 +53,6 @@ class DownloadedMangaDataSourceImpl @Inject constructor(
     return downloadedMangaDAO.getChapterList(menu.hash)
 
   }
-
-
-
-
-  private fun DownloadedManga.toChapterItem(menu: MangaMenuItem): MangaChapterItem {
-    return MangaChapterItem(chapterHash, chapterTitle, description, "", chapterUrl, menu)
-  }
 }
 
 

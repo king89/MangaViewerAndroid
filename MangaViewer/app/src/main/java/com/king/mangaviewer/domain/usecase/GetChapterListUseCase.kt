@@ -19,7 +19,7 @@ class GetChapterListUseCase @Inject constructor(
             val menu = appViewModel.Manga.selectedMangaMenuItem
             val mPattern = providerFactory.getPattern(menu.mangaWebSource)
 
-            val tauList = mPattern.getChapterList(menu.url)
+            val tauList = mPattern.getChapterList(menu)
             val list = ArrayList<MangaChapterItem>()
             if (tauList != null) {
                 for (i in tauList.indices) {

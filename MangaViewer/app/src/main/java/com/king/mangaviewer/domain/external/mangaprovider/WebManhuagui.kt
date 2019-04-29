@@ -92,10 +92,10 @@ class WebManhuagui @Inject constructor() : MangaProvider() {
         return index
     }
 
-    override fun getChapterList(chapterUrl: String): MutableList<TitleAndUrl> {
+    override fun getChapterList(menu: MangaMenuItem): MutableList<TitleAndUrl> {
         val chapterList = ArrayList<TitleAndUrl>()
 
-        val html = getHtml(chapterUrl)
+        val html = getHtml(menu.url)
         var doc = Jsoup.parse(html)
         val hidden = doc.select("#__VIEWSTATE").`val`()
         if (hidden.isNotEmpty()) {

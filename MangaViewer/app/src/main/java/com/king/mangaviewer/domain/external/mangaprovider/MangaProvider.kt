@@ -171,7 +171,7 @@ abstract class MangaProvider {
     /*
      * // // Chapter //
      */
-    open fun getChapterList(chapterUrl: String): List<TitleAndUrl>? {
+    open fun getChapterList(menu: MangaMenuItem): List<TitleAndUrl>? {
         return null
     }
 

@@ -85,8 +85,8 @@ class WebMangaFox @Inject constructor(): MangaProvider() {
 
     //Chapter
 
-    override fun getChapterList(chapterUrl: String): List<TitleAndUrl>? {
-        val html = getHtml(chapterUrl)
+    override fun getChapterList(menu: MangaMenuItem): List<TitleAndUrl>? {
+        val html = getHtml(menu.url)
         val list = ArrayList<TitleAndUrl>()
 
         val doc = Jsoup.parse(html)

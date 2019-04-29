@@ -1,44 +1,56 @@
 package com.king.mangaviewer.domain.data.local
 
 import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 
-@Entity(tableName = "downloaded_manga", primaryKeys = ["menu_hash", "chapter_hash"])
+@Entity(tableName = "downloaded_manga")
 data class DownloadedManga(
-    @ColumnInfo(name = "menu_hash")
-    var menuHash: String,
-
-    @ColumnInfo(name = "chapter_hash")
-    var chapterHash: String,
-
-    @ColumnInfo(name = "menu_title")
-    var menuTitle: String,
+    @PrimaryKey
+    @ColumnInfo(name = "hash")
+    var hash: String,
 
     @ColumnInfo(name = "description")
     var description: String,
 
-    @ColumnInfo(name = "chapter_title")
-    var chapterTitle: String,
+    @ColumnInfo(name = "title")
+    var title: String,
 
-    @ColumnInfo(name = "menu_cover_image_base64")
-    var menuCoverImageBase64: String,
-
-    @ColumnInfo(name = "menu_url")
-    var menuUrl: String,
-
-    @ColumnInfo(name = "chapter_url")
-    var chapterUrl: String,
-
-    @ColumnInfo(name = "genre")
-    var genre: String,
+    @ColumnInfo(name = "url")
+    var url: String,
 
     @ColumnInfo(name = "created_date_time")
     var createdDateTime: String,
 
-    @ColumnInfo(name = "origin_menu_hash")
-    var originMenuHash: String,
+    @ColumnInfo(name = "origin_hash")
+    var originHash: String,
 
-    @ColumnInfo(name = "origin_chapter_hash")
-    var originChapterHash: String
+    @Embedded(prefix = "menu_")
+    var menu: DownloadedMangaMenu
 
+)
+
+
+class DownloadedMangaMenu(
+    @ColumnInfo(name = "hash")
+    var hash: String,
+
+    @ColumnInfo(name = "title")
+    var title: String,
+
+    @ColumnInfo(name = "description")
+    var description: String,
+
+    @ColumnInfo(name = "cover_image_base64")
+    var coverImageBase64: String,
+
+    @ColumnInfo(name = "url")
+    var url: String,
+
+    @ColumnInfo(name = "genre")
+    var genre: String,
+
+    @ColumnInfo(name = "origin_hash")
+    var originHash: String
 )

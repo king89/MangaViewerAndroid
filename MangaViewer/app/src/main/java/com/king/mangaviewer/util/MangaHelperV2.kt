@@ -41,7 +41,7 @@ object MangaHelperV2 {
     fun getChapterList(menu: MangaMenuItem): List<MangaChapterItem> {
         val mPattern = providerFactory.getPattern(menu.mangaWebSource)
 
-        val tauList = mPattern.getChapterList(menu.url)
+        val tauList = mPattern.getChapterList(menu)
         val list = ArrayList<MangaChapterItem>()
         if (tauList != null) {
             for (i in tauList.indices) {

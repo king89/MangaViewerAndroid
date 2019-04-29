@@ -29,12 +29,12 @@ class LocalFragmentViewModel @Inject constructor(
     fun selectChapter(path: File, fileName: String) {
 
         val tLocalManga = LocalMangaProvider()
-        val chapterList = tLocalManga.getChapterList(path.getAbsolutePath())
-
-        var tSelectedChapter: MangaChapterItem? = null
-
         val tmenu = MangaMenuItem("${path.absolutePath}", "${path.name}", "", "", "${path.absolutePath}",
             MangaWebSource.LOCAL)
+
+        val chapterList = tLocalManga.getChapterList(tmenu)
+        var tSelectedChapter: MangaChapterItem? = null
+
         val list = ArrayList<MangaChapterItem>()
         for (i in chapterList!!.indices) {
             val item = MangaChapterItem("Chapter-$i", chapterList[i]

@@ -5,6 +5,7 @@ import com.king.mangaviewer.model.TitleAndUrl;
 
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -60,9 +61,9 @@ public class WebMangaReader extends MangaProvider {
 
     //Chapter
 
-    @Override
-    public List<TitleAndUrl> getChapterList(String chapterUrl) {
-        String html = getHtml(chapterUrl);
+    @Nullable @Override
+    public List<TitleAndUrl> getChapterList(@NotNull MangaMenuItem menu) {
+        String html = getHtml(menu.getUrl());
         List<TitleAndUrl> list = new ArrayList<>();
 
         Document doc = Jsoup.parse(html);

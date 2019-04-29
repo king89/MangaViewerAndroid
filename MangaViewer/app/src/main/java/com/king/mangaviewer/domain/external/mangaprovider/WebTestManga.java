@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by KinG on 12/24/2014.
@@ -43,8 +44,8 @@ public class WebTestManga extends MangaProvider {
     }
 
 
-    @Override
-    public List<TitleAndUrl> getChapterList(String chapterUrl) {
+    @Nullable @Override
+    public List<TitleAndUrl> getChapterList(@NotNull MangaMenuItem menu) {
 
         List<TitleAndUrl> chapterList = new ArrayList<TitleAndUrl>();
 
@@ -70,7 +71,7 @@ public class WebTestManga extends MangaProvider {
                 topMangaList.add(new TitleAndUrl(title, url, imageUrl));
 
             }
-            Thread.sleep(3000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -88,7 +89,7 @@ public class WebTestManga extends MangaProvider {
                 topMangaList.add(new TitleAndUrl(title, url, imageUrl));
 
             }
-            Thread.sleep(3000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

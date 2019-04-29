@@ -6,6 +6,7 @@ import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.TitleAndUrl;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -85,11 +86,11 @@ public class WebIManhua extends MangaProvider {
 
     }
 
-    @Override
-    public List<TitleAndUrl> getChapterList(String chapterUrl) {
+    @Nullable @Override
+    public List<TitleAndUrl> getChapterList(@NotNull MangaMenuItem menu) {
         // TODO Auto-generated method stub
         // http://comic.131.com/content/shaonian/2104.html
-        String html = getHtml(chapterUrl);
+        String html = getHtml(menu.getUrl());
         // Rex1 = <ul class="mh_fj" .+<li>.+</li></ul>
         Pattern rGetUl = Pattern.compile("id=[\"']subBookList[\"']>.+?</ul>");
         // Rex2 = <li>.*?</li>

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "fc79c68f24ceae50df1e87f513754266",
+    "identityHash": "0d565d1ebf22b2661b9ad1f8e442cd44",
     "entities": [
       {
         "tableName": "favourite_manga",
@@ -172,23 +172,11 @@
       },
       {
         "tableName": "downloaded_manga",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`menu_hash` TEXT NOT NULL, `chapter_hash` TEXT NOT NULL, `menu_title` TEXT NOT NULL, `description` TEXT NOT NULL, `chapter_title` TEXT NOT NULL, `menu_cover_image_base64` TEXT NOT NULL, `menu_url` TEXT NOT NULL, `chapter_url` TEXT NOT NULL, `genre` TEXT NOT NULL, `created_date_time` TEXT NOT NULL, `origin_menu_hash` TEXT NOT NULL, `origin_chapter_hash` TEXT NOT NULL, PRIMARY KEY(`menu_hash`, `chapter_hash`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hash` TEXT NOT NULL, `description` TEXT NOT NULL, `title` TEXT NOT NULL, `url` TEXT NOT NULL, `created_date_time` TEXT NOT NULL, `origin_hash` TEXT NOT NULL, `menu_hash` TEXT NOT NULL, `menu_title` TEXT NOT NULL, `menu_description` TEXT NOT NULL, `menu_cover_image_base64` TEXT NOT NULL, `menu_url` TEXT NOT NULL, `menu_genre` TEXT NOT NULL, `menu_origin_hash` TEXT NOT NULL, PRIMARY KEY(`hash`))",
         "fields": [
           {
-            "fieldPath": "menuHash",
-            "columnName": "menu_hash",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "chapterHash",
-            "columnName": "chapter_hash",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "menuTitle",
-            "columnName": "menu_title",
+            "fieldPath": "hash",
+            "columnName": "hash",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -199,32 +187,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "chapterTitle",
-            "columnName": "chapter_title",
+            "fieldPath": "title",
+            "columnName": "title",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "menuCoverImageBase64",
-            "columnName": "menu_cover_image_base64",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "menuUrl",
-            "columnName": "menu_url",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "chapterUrl",
-            "columnName": "chapter_url",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "genre",
-            "columnName": "genre",
+            "fieldPath": "url",
+            "columnName": "url",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -235,22 +205,57 @@
             "notNull": true
           },
           {
-            "fieldPath": "originMenuHash",
-            "columnName": "origin_menu_hash",
+            "fieldPath": "originHash",
+            "columnName": "origin_hash",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "originChapterHash",
-            "columnName": "origin_chapter_hash",
+            "fieldPath": "menu.hash",
+            "columnName": "menu_hash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "menu.title",
+            "columnName": "menu_title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "menu.description",
+            "columnName": "menu_description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "menu.coverImageBase64",
+            "columnName": "menu_cover_image_base64",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "menu.url",
+            "columnName": "menu_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "menu.genre",
+            "columnName": "menu_genre",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "menu.originHash",
+            "columnName": "menu_origin_hash",
             "affinity": "TEXT",
             "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "menu_hash",
-            "chapter_hash"
+            "hash"
           ],
           "autoGenerate": false
         },
@@ -260,7 +265,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"fc79c68f24ceae50df1e87f513754266\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0d565d1ebf22b2661b9ad1f8e442cd44\")"
     ]
   }
 }

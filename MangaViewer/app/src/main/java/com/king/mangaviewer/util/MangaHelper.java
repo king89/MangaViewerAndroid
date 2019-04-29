@@ -133,7 +133,7 @@ public class MangaHelper {
     public List<MangaChapterItem> getChapterList(MangaMenuItem menu) {
         MangaProvider mPattern = providerFactory.getPattern(menu.getMangaWebSource());
 
-        List<TitleAndUrl> tauList = mPattern.getChapterList(menu.getUrl());
+        List<TitleAndUrl> tauList = mPattern.getChapterList(menu);
         List<MangaChapterItem> list = new ArrayList<MangaChapterItem>();
         if (tauList != null) {
             for (int i = 0; i < tauList.size(); i++) {

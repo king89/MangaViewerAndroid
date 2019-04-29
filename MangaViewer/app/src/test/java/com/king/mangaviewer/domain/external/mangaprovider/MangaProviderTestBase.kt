@@ -1,7 +1,9 @@
-package com.king.mangaviewer
+package com.king.mangaviewer.domain.external.mangaprovider
 
-import com.king.mangaviewer.domain.external.mangaprovider.MangaProvider
 import com.king.mangaviewer.domain.external.mangaprovider.MangaProvider.Companion.STATE_SEARCH_QUERYTEXT
+import com.king.mangaviewer.model.MangaMenuItem
+import com.king.mangaviewer.model.MangaWebSource
+import com.king.mangaviewer.model.MangaWebSource.Companion
 import junit.framework.Assert.assertTrue
 import okhttp3.OkHttpClient
 import org.junit.Before
@@ -20,13 +22,14 @@ abstract class MangaProviderTestBase {
     lateinit var wbp: MangaProvider
 
     @Before
-    fun setup() {
+    open fun setup() {
         wbp = getProvider()
         wbp.okHttpClient = OkHttpClient.Builder().build()
+        wbp.mangaWebSource = MangaWebSource.LOCAL
     }
 
     abstract fun getProvider(): MangaProvider
-    abstract fun getMangaChapterUrl(): String
+    abstract fun getMangaMenu(): MangaMenuItem
     abstract fun getMangaPageUrl(): String
 
     @Test
@@ -40,8 +43,8 @@ abstract class MangaProviderTestBase {
     @Test
     fun getChapterList() {
 
-        val url = getMangaChapterUrl()
-        val list = wbp.getChapterList(url)!!
+        val menu = getMangaMenu()
+        val list = wbp.getChapterList(menu)!!
         println(list.first())
         assertTrue(list.isNotEmpty())
     }
@@ -79,5 +82,10 @@ abstract class MangaProviderTestBase {
         println(hashState)
         assertTrue(list.isNotEmpty())
     }
+
+    fun generateMenu(): MangaMenuItem {
+        return MangaMenuItem("", "", "", "", "", MangaWebSource.LOCAL)
+    }
 }
+
 

@@ -11,6 +11,7 @@ import com.king.mangaviewer.model.TitleAndUrl;
 
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,10 +97,10 @@ public class WebDMZJ extends MangaProvider {
         return toMenuItem(topMangaList);
     }
 
-    @Override
-    public List<TitleAndUrl> getChapterList(String chapterUrl) {
+    @Nullable @Override
+    public List<TitleAndUrl> getChapterList(@NotNull MangaMenuItem menu) {
         List<TitleAndUrl> list = new ArrayList<TitleAndUrl>();
-        String html = getHtml(chapterUrl);
+        String html = getHtml(menu.getUrl());
         Document doc = Jsoup.parse(html);
         Elements el = doc.select(".cartoon_online_border ul li");
         Iterator i = el.iterator();
