@@ -2,6 +2,7 @@ package com.king.mangaviewer.model
 
 import java.io.Serializable
 
+@Deprecated("")
 open class BaseItem
 /**
  * @param id

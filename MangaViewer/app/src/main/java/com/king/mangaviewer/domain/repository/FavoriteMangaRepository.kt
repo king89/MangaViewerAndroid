@@ -15,6 +15,7 @@ interface FavoriteMangaRepository : FavouriteMangaDataSource {
 
 class FavoriteMangaRepositoryImpl @Inject constructor(
         private val favoriteMangaDataSource: FavouriteMangaDataSource) : FavoriteMangaRepository {
+    override fun updateAllHash(): Completable = favoriteMangaDataSource.updateAllHash()
 
     override fun checkIsFavorite(
             manga: MangaMenuItem?): Single<Boolean> = favoriteMangaDataSource.checkIsFavorite(manga)

@@ -17,6 +17,8 @@ class HistoryMangaRepositoryImpl @Inject constructor(
         private val historyMangaDataSource: HistoryMangaDataSource
 ) : HistoryMangaRepository {
 
+    override fun updateAllHash(): Completable = historyMangaDataSource.updateAllHash()
+
     override fun addToHistory(
             item: HistoryMangaChapterItem): Completable = historyMangaDataSource.addToHistory(item)
 

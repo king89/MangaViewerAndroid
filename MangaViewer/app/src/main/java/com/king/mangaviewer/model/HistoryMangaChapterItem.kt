@@ -1,6 +1,7 @@
 package com.king.mangaviewer.model
 
 import com.king.mangaviewer.common.Constants.DATE_FORMAT_LONG
+import com.king.mangaviewer.util.StringUtils
 import org.joda.time.DateTime
 
 /**

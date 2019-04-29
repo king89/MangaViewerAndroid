@@ -1,6 +1,7 @@
 package com.king.mangaviewer.di
 
 import android.arch.persistence.room.Room
+import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import com.king.mangaviewer.BuildConfig
 import com.king.mangaviewer.di.annotation.ApplicationScope
@@ -25,6 +26,7 @@ import com.king.mangaviewer.domain.repository.FavoriteMangaRepository
 import com.king.mangaviewer.domain.repository.FavoriteMangaRepositoryImpl
 import com.king.mangaviewer.domain.repository.HistoryMangaRepository
 import com.king.mangaviewer.domain.repository.HistoryMangaRepositoryImpl
+import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.viewmodel.AppViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
 import dagger.Binds
@@ -122,7 +124,7 @@ abstract class RepositoryModule {
     fun providerOkHttpClient(): OkHttpClient {
       val timeout = 15L
       val logging = HttpLoggingInterceptor()
-      logging.level = Level.HEADERS
+      logging.level = Level.BASIC
       return OkHttpClient().newBuilder()
           .addInterceptor {
             if (BuildConfig.DEBUG) {

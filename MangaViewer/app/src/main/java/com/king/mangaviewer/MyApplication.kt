@@ -10,13 +10,18 @@ import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.king.mangaviewer.di.AppComponent
 import com.king.mangaviewer.di.DaggerAppComponent
+import com.king.mangaviewer.domain.data.local.MangaDataBase
+import com.king.mangaviewer.domain.repository.FavoriteMangaRepository
+import com.king.mangaviewer.domain.repository.HistoryMangaRepository
 import com.king.mangaviewer.service.AutoUpdateAlarmReceiver
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.viewmodel.AppViewModel
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import io.fabric.sdk.android.Fabric
+import io.reactivex.Completable
 import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MyApplication : DaggerApplication() {
@@ -35,10 +40,19 @@ class MyApplication : DaggerApplication() {
     @Inject
     lateinit var appViewModel: AppViewModel
 
+    @Inject
+    lateinit var dataBase: MangaDataBase
+
+    @Inject
+    lateinit var favoriteMangaRepository: FavoriteMangaRepository
+
+    @Inject
+    lateinit var historyMangaRepository: HistoryMangaRepository
+
     val isMyAlarmRunning: Boolean
         get() = PendingIntent.getBroadcast(this, 0,
-                Intent(this, AutoUpdateAlarmReceiver::class.java),
-                PendingIntent.FLAG_NO_CREATE) != null
+            Intent(this, AutoUpdateAlarmReceiver::class.java),
+            PendingIntent.FLAG_NO_CREATE) != null
 
     override fun onCreate() {
         super.onCreate()
@@ -54,11 +68,25 @@ class MyApplication : DaggerApplication() {
         }
         MyApplication.context = applicationContext
         INSTANCE = this
+        updateHashWhenVersion3()
     }
 
     private fun setupRxExceptionHandler() {
         RxJavaPlugins.setErrorHandler {
             Logger.e(TAG, it)
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun updateHashWhenVersion3() {
+        if (dataBase.openHelper.writableDatabase.version == 3) {
+            historyMangaRepository.updateAllHash()
+                .andThen(favoriteMangaRepository.updateAllHash())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    { Logger.i(TAG, "Updating url hash") },
+                    { Logger.e(TAG, it) })
+
         }
     }
 
