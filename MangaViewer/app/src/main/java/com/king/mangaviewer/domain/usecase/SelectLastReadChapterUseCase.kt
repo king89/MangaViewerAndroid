@@ -9,8 +9,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class SelectLastReadChapterUseCase @Inject constructor(private val appViewModel: AppViewModel,
-        private val historyMangaRepository: HistoryMangaRepository) {
+class SelectLastReadChapterUseCase @Inject constructor(
+    private val appViewModel: AppViewModel,
+    private val historyMangaRepository: HistoryMangaRepository,
+    private val getChapterListUseCase: GetChapterListUseCase) {
     fun execute(menuItem: MangaMenuItem? = null): Completable {
         return Single.fromCallable {
             val chapter = historyMangaRepository.getLastReadMangaItem(menuItem).blockingGet()
@@ -21,7 +23,8 @@ class SelectLastReadChapterUseCase @Inject constructor(private val appViewModel:
         }.doOnSuccess {
             historyMangaRepository.addToHistory(it)
         }.ignoreElement()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .andThen(getChapterListUseCase.execute().ignoreElement())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 }
