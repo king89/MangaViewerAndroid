@@ -4,73 +4,59 @@ import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.RecyclerViewHolders
-import com.king.mangaviewer.adapter.WrapperType.CATEGORY
-import com.king.mangaviewer.adapter.WrapperType.CHAPTER
-import com.king.mangaviewer.adapter.WrapperType.LAST_READ
 import com.king.mangaviewer.model.MangaChapterItem
 
 class MangaChapterItemAdapter(private val context: Context,
-        private val onItemClickListener: OnItemClickListener) :
-        BaseRecyclerViewAdapter<MangaChapterItemWrapper, RecyclerViewHolders>(diffCallBack) {
+    private val onItemClickListener: OnItemClickListener) :
+    BaseRecyclerViewAdapter<MangaChapterItem, RecyclerViewHolders>(diffCallBack) {
 
     private val MAX_TITLE_LENGTH = 20
-
+    private val isReadArray = SparseBooleanArray()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolders {
-        return when (viewType) {
-            LAST_READ,
-            CHAPTER -> {
-                val layoutView = LayoutInflater.from(parent.context).inflate(
-                        R.layout.list_manga_chapter_item, parent, false)
-                ChapterViewHolders(layoutView)
-            }
-            CATEGORY -> {
-                val view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1,
-                        parent, false)
-                CategoryViewHolders(view)
-            }
-            else -> {
-                RecyclerViewHolders(View(context))
-            }
-        }
+        val layoutView = LayoutInflater.from(parent.context).inflate(
+            R.layout.list_manga_chapter_item, parent, false)
+        return ChapterViewHolders(layoutView)
 
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
         val item = getItem(position)
-        when (getItemViewType(position)) {
-            LAST_READ,
-            CHAPTER -> {
-                holder as ChapterViewHolders
-                item.chapter?.apply {
-                    var chapterTitle = title
-                    if (menu.title.length > MAX_TITLE_LENGTH) {
-                        chapterTitle = chapterTitle.replace(menu.title,
-                                context.getString(R.string.prefix_chapter_title))
-                        title = chapterTitle
-                    }
-                    holder.textView.text = chapterTitle
-                    holder.itemView.setOnClickListener { onItemClickListener.onClick(this) }
-                    holder.setRead(item.isRead)
-                }
+        holder as ChapterViewHolders
+        item?.apply {
+            var chapterTitle = title
+            if (menu.title.length > MAX_TITLE_LENGTH) {
+                chapterTitle = chapterTitle.replace(menu.title,
+                    context.getString(R.string.prefix_chapter_title))
+                title = chapterTitle
             }
-            CATEGORY -> {
-                holder as CategoryViewHolders
-                holder.textView.text = getItem(position).displayName
-            }
-
-            else -> {
-            }
+            holder.textView.text = chapterTitle
+            holder.itemView.setOnClickListener { onItemClickListener.onClick(this) }
+            holder.setRead(isReadArray[position])
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return getItem(position).type
+    fun setRead(pos: Int, value: Boolean = true) {
+        if (pos < this.itemCount && pos >= 0) {
+            isReadArray.put(pos, value)
+            notifyItemChanged(pos)
+        }
+    }
+
+    fun submitStateList(list: List<MangaChapterStateItem>) {
+        if (list.size != itemCount) return
+
+        list.forEachIndexed { index, item ->
+            if (item.isRead) {
+                setRead(index)
+            }
+        }
     }
 
     open class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -88,35 +74,20 @@ class MangaChapterItemAdapter(private val context: Context,
         }
     }
 
-    inner class CategoryViewHolders(itemView: View) : RecyclerViewHolders(itemView) {
-        val textView: TextView by lazy {
-            itemView.findViewById<View>(android.R.id.text1) as TextView
-        }
-    }
-
     interface OnItemClickListener {
         fun onClick(chapter: MangaChapterItem)
     }
 
     companion object {
-        val diffCallBack = object : DiffUtil.ItemCallback<MangaChapterItemWrapper>() {
-            override fun areItemsTheSame(oldItem: MangaChapterItemWrapper?,
-                    newItem: MangaChapterItemWrapper?): Boolean {
+        val diffCallBack = object : DiffUtil.ItemCallback<MangaChapterItem>() {
+            override fun areItemsTheSame(oldItem: MangaChapterItem?,
+                newItem: MangaChapterItem?): Boolean {
+                return oldItem?.hash == newItem?.hash
 
-                return when {
-                    oldItem?.type == newItem?.type -> {
-                        if (oldItem?.type == CHAPTER) {
-                            oldItem.chapter?.hash == newItem?.chapter?.hash
-                        } else {
-                            oldItem?.displayName == newItem?.displayName
-                        }
-                    }
-                    else -> false
-                }
             }
 
-            override fun areContentsTheSame(oldItem: MangaChapterItemWrapper?,
-                    newItem: MangaChapterItemWrapper?): Boolean {
+            override fun areContentsTheSame(oldItem: MangaChapterItem?,
+                newItem: MangaChapterItem?): Boolean {
                 return oldItem == newItem
             }
         }

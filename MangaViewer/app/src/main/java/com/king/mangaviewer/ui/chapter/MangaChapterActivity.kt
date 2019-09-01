@@ -3,20 +3,18 @@ package com.king.mangaviewer.ui.chapter
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.ProgressBar
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.OnItemClickListener
-import com.king.mangaviewer.adapter.MangaChapterItemWrapper
-import com.king.mangaviewer.adapter.WrapperType.CATEGORY
-import com.king.mangaviewer.adapter.WrapperType.CHAPTER
-import com.king.mangaviewer.adapter.WrapperType.LAST_READ
 import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.di.annotation.ActivityScopedFactory
@@ -29,12 +27,12 @@ import com.king.mangaviewer.util.VersionUtil
 import com.king.mangaviewer.util.glide.BlurTransformation
 import com.king.mangaviewer.util.glide.CropImageTransformation
 import com.king.mangaviewer.util.withViewModel
-import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_manga_chapter.fabShare
 import kotlinx.android.synthetic.main.activity_manga_chapter.fabSort
 import kotlinx.android.synthetic.main.activity_manga_chapter.ivCover
+import kotlinx.android.synthetic.main.activity_manga_chapter.rvChapterList
+import kotlinx.android.synthetic.main.activity_manga_chapter.rvLastRead
+import kotlinx.android.synthetic.main.activity_manga_chapter.tvLastRead
 import kotlinx.android.synthetic.main.activity_manga_chapter.tvTitle
 import javax.inject.Inject
 
@@ -45,9 +43,7 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
     lateinit var activityScopedFactory: ViewModelFactory
     lateinit var viewModel: MangaChapterActivityViewModel
 
-    private val listView: RecyclerView by lazy {
-        findViewById<RecyclerView>(R.id.viewPager)
-    }
+
     private val imageView: ImageView by lazy {
         findViewById<ImageView>(R.id.imageView)
     }
@@ -64,6 +60,9 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
         setContentView(R.layout.activity_manga_chapter)
 
         tvTitle.text = this.appViewModel.Manga.selectedMangaMenuItem.title
+        ViewCompat.setNestedScrollingEnabled(rvChapterList, false)
+        ViewCompat.setNestedScrollingEnabled(rvLastRead, false)
+
         loadChapterCover()
         setupChapterList()
         initButtons()
@@ -73,14 +72,14 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
 
     override fun onResume() {
         super.onResume()
-        viewModel.updateHistoryChapter()
+        viewModel.getHistoryChapter()
     }
 
     private fun initButtons() {
         fabShare.setOnClickListener { }
         fabSort.setOnClickListener {
             viewModel.sort()
-            (listView.adapter as? MangaChapterItemAdapter)?.submitList(emptyList())
+            (rvChapterList.adapter as? MangaChapterItemAdapter)?.submitList(emptyList())
         }
     }
 
@@ -99,43 +98,31 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
                 }
             })
 
-            this.chapterPair.observe(this@MangaChapterActivity, Observer { chapterPair ->
-                compositeDisposable.add(Flowable.fromCallable {
+            this.chapterList.observe(this@MangaChapterActivity, Observer {
+                (rvChapterList.adapter as? MangaChapterItemAdapter)?.submitList(it)
+            })
 
-                    val mList = chapterPair!!.first
-                    val historyItem = chapterPair.second
-                    val dataList = ArrayList<MangaChapterItemWrapper>()
-
-                    val lastReadItem = historyItem.firstOrNull()
-
-                    lastReadItem?.run {
-                        dataList.add(
-                            MangaChapterItemWrapper(getString(R.string.chapter_last_read),
-                                CATEGORY,
-                                null))
-                        dataList.add(MangaChapterItemWrapper(title, LAST_READ, this, true))
+            this.chapterHistoryList.observe(this@MangaChapterActivity, Observer {
+                it?.run {
+                    if (it.isEmpty()) return@run
+                    (rvLastRead.adapter as? MangaChapterItemAdapter)?.apply {
+                        submitList(listOf(it.first()))
+                        setRead(0)
                     }
-                    mList.run {
-                        if (mList.isEmpty()) return@run
-                        dataList.add(
-                            MangaChapterItemWrapper(getString(R.string.chapter_list), CATEGORY,
-                                null))
-                        forEach {
-                            dataList.add(MangaChapterItemWrapper(it.title, CHAPTER, it,
-                                historyItem.any { history ->
-                                    history.hash == it.hash
-                                }
-                            ))
-                        }
-
+                }
+                tvLastRead.postDelayed({
+                    if (it?.isNotEmpty() == true) {
+                        tvLastRead.visibility = VISIBLE
+                    } else {
+                        tvLastRead.visibility = GONE
                     }
+                }, 100)
+            })
 
-                    dataList
-                }.subscribeOn(Schedulers.computation())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        (listView.adapter as? MangaChapterItemAdapter)?.submitList(it)
-                    })
+            this.chapterStateList.observe(this@MangaChapterActivity, Observer {
+                it?.run {
+                    (rvChapterList.adapter as? MangaChapterItemAdapter)?.submitStateList(it)
+                }
             })
 
             this.favouriteState.observe(this@MangaChapterActivity, Observer {
@@ -195,8 +182,13 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
     private fun setupChapterList() {
         val adapter = MangaChapterItemAdapter(this,
             this)
-        listView.layoutManager = LinearLayoutManager(this)
-        listView.adapter = adapter
+        rvChapterList.layoutManager = LinearLayoutManager(this)
+        rvChapterList.adapter = adapter
+
+        val lastReadAdapter = MangaChapterItemAdapter(this,
+            this)
+        rvLastRead.layoutManager = LinearLayoutManager(this)
+        rvLastRead.adapter = lastReadAdapter
     }
 
     override fun getActionBarTitle(): String {

@@ -1,7 +1,8 @@
 package com.king.mangaviewer.ui.chapter
 
-import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
+import com.king.mangaviewer.adapter.MangaChapterStateItem
 import com.king.mangaviewer.base.BaseActivityViewModel
 import com.king.mangaviewer.domain.repository.AppRepository
 import com.king.mangaviewer.domain.repository.HistoryMangaRepository
@@ -15,6 +16,7 @@ import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.util.Logger
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -31,34 +33,65 @@ class MangaChapterActivityViewModel @Inject constructor(
 ) :
     BaseActivityViewModel() {
 
-    private val mChapterPair = MutableLiveData<Pair<List<MangaChapterItem>, List<MangaChapterItem>>>()
-    val chapterPair: LiveData<Pair<List<MangaChapterItem>, List<MangaChapterItem>>> = mChapterPair
+    val chapterList = MutableLiveData<List<MangaChapterItem>>()
+    val chapterHistoryList = MutableLiveData<List<MangaChapterItem>>()
+
+    val chapterStateList: MutableLiveData<List<MangaChapterStateItem>> =
+        MediatorLiveData<List<MangaChapterStateItem>>().apply {
+            this.value = emptyList()
+            addSource(chapterList) {
+                updateChapterStateList()
+            }
+            addSource(chapterHistoryList) {
+                updateChapterStateList()
+            }
+        }
 
     private val mFavouriteState = MutableLiveData<Boolean>().apply { value = false }
     val favouriteState = mFavouriteState
     // true for default , false for reverse
     private var order = true
-    init {
-        mChapterPair.value = Pair(emptyList(), emptyList())
-    }
 
     override fun attachToView() {
         getChapterList()
+        getHistoryChapter()
         getFavoriteState()
+    }
+
+    private fun updateChapterStateList() {
+        Single.fromCallable {
+            val list = mutableListOf<MangaChapterStateItem>()
+            if (chapterList.value?.isNotEmpty() == true
+                && chapterHistoryList.value?.isNotEmpty() == true) {
+
+                val cList = chapterList.value!!
+                val hList = chapterHistoryList.value!!
+
+                cList.forEachIndexed { index, item ->
+                    val isRead = hList.find { it.hash == item.hash } != null
+                    list.add(MangaChapterStateItem(isRead = isRead))
+                }
+            }
+            list
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                chapterStateList.value = it
+            }, {
+                Logger.e(TAG, it)
+            })
+            .apply { disposable.add(this) }
     }
 
     fun getChapterList() {
         getChapterListUseCase.execute()
-            .map {
-                val readList = getReadChapterUseCase.execute().blockingLast()
-                Pair(it, readList)
-            }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { mLoadingState.value = Loading }
             .doAfterTerminate { mLoadingState.value = Idle }
             .subscribe({
-                mChapterPair.value = it
+                chapterList.value = it
             }, {
                 Logger.e(TAG, it)
             })
@@ -66,28 +99,25 @@ class MangaChapterActivityViewModel @Inject constructor(
 
     }
 
-    fun updateHistoryChapter() {
-        if (mChapterPair.value!!.first.isNotEmpty()) {
-            getReadChapterUseCase.execute()
-                .map {
-                    Pair(mChapterPair.value?.first!!, it)
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mLoadingState.value = Idle }
-                .doAfterTerminate { mLoadingState.value = Idle }
-                .subscribe({
-                    mChapterPair.value = it
-                }, {
-                    Logger.e(TAG, it)
-                })
-                .apply { disposable.add(this) }
-        }
+    fun getHistoryChapter() {
+        getReadChapterUseCase.execute()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doAfterTerminate {
+                if (mLoadingState.value == Loading) return@doAfterTerminate
+                mLoadingState.value = Idle
+            }
+            .subscribe({
+                chapterHistoryList.value = it
+            }, {
+                Logger.e(TAG, it)
+            })
+            .apply { disposable.add(this) }
     }
 
     fun addToFavorite() {
         val menu = appRepository.appViewModel.Manga.selectedMangaMenuItem
-        addToFavoriteUseCase.execute(menu, mChapterPair.value?.first?.size ?: 0)
+        addToFavoriteUseCase.execute(menu, chapterList.value?.size ?: 0)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -135,11 +165,10 @@ class MangaChapterActivityViewModel @Inject constructor(
 
     fun sort() {
         order = !order
-        var (chapterList, historyList) = mChapterPair.value!!
+        var chapterList = chapterList.value!!
         chapterList = chapterList.reversed()
         appRepository.appViewModel.Manga.mangaChapterList = chapterList
-        mChapterPair.postValue(chapterList to historyList)
-
+        this.chapterList.postValue(chapterList)
     }
 
     companion object {
