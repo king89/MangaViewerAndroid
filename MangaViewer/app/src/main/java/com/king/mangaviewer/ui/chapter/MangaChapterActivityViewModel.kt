@@ -91,11 +91,14 @@ class MangaChapterActivityViewModel @Inject constructor(
             .doOnSubscribe { mLoadingState.value = Loading }
             .doAfterTerminate { mLoadingState.value = Idle }
             .subscribe({
-                chapterList.value = it
+                chapterList.postValue(it)
             }, {
                 Logger.e(TAG, it)
             })
             .apply { disposable.add(this) }
+            .also {
+                Logger.d(TAG, "getChapterList")
+            }
 
     }
 
