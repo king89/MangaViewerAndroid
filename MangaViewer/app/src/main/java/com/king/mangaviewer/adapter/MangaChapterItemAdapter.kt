@@ -4,21 +4,31 @@ import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
-import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.ImageView
 import android.widget.TextView
 import com.king.mangaviewer.R
+import com.king.mangaviewer.adapter.DownloadState.Downloaded
+import com.king.mangaviewer.adapter.DownloadState.None
+import com.king.mangaviewer.adapter.DownloadState.Pending
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.RecyclerViewHolders
 import com.king.mangaviewer.model.MangaChapterItem
 
 class MangaChapterItemAdapter(private val context: Context,
-    private val onItemClickListener: OnItemClickListener) :
+    private val onItemClickListener: OnItemClickListener,
+    private val onSelectedChangeListener: OnSelectedChangeListener? = null) :
     BaseRecyclerViewAdapter<MangaChapterItem, RecyclerViewHolders>(diffCallBack) {
 
     private val MAX_TITLE_LENGTH = 20
-    private val isReadArray = SparseBooleanArray()
+    private var stateMap: Map<String, MangaChapterStateItem> = emptyMap()
+    private var selectableMode = false
+    private val selectedMap: MutableMap<Int, Boolean> = hashMapOf()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolders {
         val layoutView = LayoutInflater.from(parent.context).inflate(
             R.layout.list_manga_chapter_item, parent, false)
@@ -38,31 +48,49 @@ class MangaChapterItemAdapter(private val context: Context,
             }
             holder.textView.text = chapterTitle
             holder.itemView.setOnClickListener { onItemClickListener.onClick(this) }
-            holder.setRead(isReadArray[position])
+            holder.setRead(stateMap[item.hash]?.isRead ?: false)
+            holder.setDownloadState(stateMap[item.hash]?.downloaded ?: None)
+            holder.setSelectable(selectableMode)
         }
     }
 
-    fun setRead(pos: Int, value: Boolean = true) {
-        if (pos < this.itemCount && pos >= 0) {
-            isReadArray.put(pos, value)
-            notifyItemChanged(pos)
-        }
+    fun submitStateMap(map: Map<String, MangaChapterStateItem>) {
+        stateMap = map
+        notifyDataSetChanged()
     }
 
-    fun submitStateList(list: List<MangaChapterStateItem>) {
-        if (list.size != itemCount) return
+    fun toggleSelectableMode() {
+        selectableMode = selectableMode.not()
+        notifyDataSetChanged()
+    }
 
-        list.forEachIndexed { index, item ->
-            if (item.isRead) {
-                setRead(index)
-            }
+    private fun toggleSelected(position: Int) {
+        val value = selectedMap[position] ?: false
+
+        if (value) {
+            selectedMap.remove(position)
+        } else {
+            selectedMap[position] = true
         }
+
+        onSelectedChangeListener?.onChange(
+            selectedMap.filter { it.value }
+                .map { getItem(it.key) }
+        )
     }
 
     open class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView)
     inner class ChapterViewHolders(itemView: View) : RecyclerViewHolders(itemView) {
         val textView: TextView by lazy { itemView.findViewById<View>(R.id.textView) as TextView }
         val viewHeader: View by lazy { itemView.findViewById<View>(R.id.viewHeader) as View }
+        val ivState by lazy { itemView.findViewById<ImageView>(R.id.ivState) }
+        val cbDownload by lazy { itemView.findViewById<CheckBox>(R.id.cbDownload) }
+
+        init {
+            cbDownload.setOnCheckedChangeListener { button, selected ->
+                toggleSelected(adapterPosition)
+            }
+        }
 
         fun setRead(read: Boolean) {
             val bannerColor = if (read) {
@@ -72,10 +100,36 @@ class MangaChapterItemAdapter(private val context: Context,
             }
             viewHeader.setBackgroundColor(bannerColor)
         }
+
+        fun setDownloadState(state: DownloadState) {
+            when (state) {
+                None -> ivState.visibility = GONE
+                Downloaded -> {
+                    ivState.visibility = VISIBLE
+                    ivState.setImageResource(R.drawable.ic_downloaded)
+                }
+                Pending -> {
+                    ivState.visibility = VISIBLE
+                    ivState.setImageResource(R.drawable.ic_pending)
+                }
+            }
+        }
+
+        fun setSelectable(selectable: Boolean) {
+            if (selectable) {
+                cbDownload.visibility = VISIBLE
+            } else {
+                cbDownload.visibility = GONE
+            }
+        }
     }
 
     interface OnItemClickListener {
         fun onClick(chapter: MangaChapterItem)
+    }
+
+    interface OnSelectedChangeListener {
+        fun onChange(chapterList: List<MangaChapterItem>)
     }
 
     companion object {

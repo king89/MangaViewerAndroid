@@ -2,6 +2,7 @@ package com.king.mangaviewer.ui.chapter
 
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
+import com.king.mangaviewer.adapter.DownloadState
 import com.king.mangaviewer.adapter.MangaChapterStateItem
 import com.king.mangaviewer.base.BaseActivityViewModel
 import com.king.mangaviewer.domain.repository.AppRepository
@@ -36,9 +37,9 @@ class MangaChapterActivityViewModel @Inject constructor(
     val chapterList = MutableLiveData<List<MangaChapterItem>>()
     val chapterHistoryList = MutableLiveData<List<MangaChapterItem>>()
 
-    val chapterStateList: MutableLiveData<List<MangaChapterStateItem>> =
-        MediatorLiveData<List<MangaChapterStateItem>>().apply {
-            this.value = emptyList()
+    val chapterStateList: MutableLiveData<Map<String, MangaChapterStateItem>> =
+        MediatorLiveData<Map<String, MangaChapterStateItem>>().apply {
+            this.value = emptyMap()
             addSource(chapterList) {
                 updateChapterStateList()
             }
@@ -46,6 +47,7 @@ class MangaChapterActivityViewModel @Inject constructor(
                 updateChapterStateList()
             }
         }
+
 
     private val mFavouriteState = MutableLiveData<Boolean>().apply { value = false }
     val favouriteState = mFavouriteState
@@ -60,19 +62,26 @@ class MangaChapterActivityViewModel @Inject constructor(
 
     private fun updateChapterStateList() {
         Single.fromCallable {
-            val list = mutableListOf<MangaChapterStateItem>()
+            val stateMap = hashMapOf<String, MangaChapterStateItem>()
             if (chapterList.value?.isNotEmpty() == true
                 && chapterHistoryList.value?.isNotEmpty() == true) {
 
-                val cList = chapterList.value!!
-                val hList = chapterHistoryList.value!!
+                val chapterList = chapterList.value!!
+                val historyMap = chapterHistoryList.value!!.let {
+                    val hMap = hashMapOf<String, MangaChapterItem>()
+                    it.forEach { chapter ->
+                        hMap[chapter.hash] = chapter
+                    }
+                    hMap
+                }
 
-                cList.forEachIndexed { index, item ->
-                    val isRead = hList.find { it.hash == item.hash } != null
-                    list.add(MangaChapterStateItem(isRead = isRead))
+                chapterList.forEach { item ->
+                    val isRead = historyMap.containsKey(item.hash)
+                    val downloadState = DownloadState.None
+                    stateMap[item.hash] = MangaChapterStateItem(downloadState, isRead)
                 }
             }
-            list
+            stateMap
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -110,6 +119,7 @@ class MangaChapterActivityViewModel @Inject constructor(
                 if (mLoadingState.value == Loading) return@doAfterTerminate
                 mLoadingState.value = Idle
             }
+
             .subscribe({
                 chapterHistoryList.value = it
             }, {

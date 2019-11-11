@@ -7,7 +7,6 @@ import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
@@ -15,6 +14,8 @@ import android.widget.ProgressBar
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.OnItemClickListener
+import com.king.mangaviewer.adapter.MangaChapterItemAdapter.OnSelectedChangeListener
+import com.king.mangaviewer.adapter.MangaChapterStateItem
 import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.di.annotation.ActivityScopedFactory
@@ -23,10 +24,12 @@ import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.ui.page.MangaPageActivityV2
 import com.king.mangaviewer.util.GlideImageHelper
+import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.VersionUtil
 import com.king.mangaviewer.util.glide.BlurTransformation
 import com.king.mangaviewer.util.glide.CropImageTransformation
 import com.king.mangaviewer.util.withViewModel
+import kotlinx.android.synthetic.main.activity_manga_chapter.btDownload
 import kotlinx.android.synthetic.main.activity_manga_chapter.fabShare
 import kotlinx.android.synthetic.main.activity_manga_chapter.fabSort
 import kotlinx.android.synthetic.main.activity_manga_chapter.ivCover
@@ -36,7 +39,7 @@ import kotlinx.android.synthetic.main.activity_manga_chapter.tvLastRead
 import kotlinx.android.synthetic.main.activity_manga_chapter.tvTitle
 import javax.inject.Inject
 
-class MangaChapterActivity : BaseActivity(), OnItemClickListener {
+class MangaChapterActivity : BaseActivity(), OnItemClickListener, OnSelectedChangeListener {
 
     @Inject
     @field:ActivityScopedFactory
@@ -81,10 +84,13 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
             viewModel.sort()
             (rvChapterList.adapter as? MangaChapterItemAdapter)?.submitList(emptyList())
         }
+        btDownload.setOnClickListener {
+            (rvChapterList.adapter as? MangaChapterItemAdapter)?.toggleSelectableMode()
+        }
     }
 
     private fun initViewModel() {
-        progressBar.visibility = View.VISIBLE
+        progressBar.visibility = VISIBLE
         withViewModel<MangaChapterActivityViewModel>(activityScopedFactory) {
             viewModel = this
             this.loadingState.observe(this@MangaChapterActivity, Observer {
@@ -106,8 +112,10 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
                 it?.run {
                     if (it.isEmpty()) return@run
                     (rvLastRead.adapter as? MangaChapterItemAdapter)?.apply {
-                        submitList(listOf(it.first()))
-                        setRead(0)
+                        val item = it.first()
+                        submitList(listOf(item))
+                        submitStateMap(mapOf(
+                            Pair(item.hash, MangaChapterStateItem(isRead = true))))
                     }
                 }
                 tvLastRead.postDelayed({
@@ -121,7 +129,7 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
 
             this.chapterStateList.observe(this@MangaChapterActivity, Observer {
                 it?.run {
-                    (rvChapterList.adapter as? MangaChapterItemAdapter)?.submitStateList(it)
+                    (rvChapterList.adapter as? MangaChapterItemAdapter)?.submitStateMap(it)
                 }
             })
 
@@ -170,18 +178,22 @@ class MangaChapterActivity : BaseActivity(), OnItemClickListener {
         }
     }
 
+    override fun onChange(chapterList: List<MangaChapterItem>) {
+        Logger.d("-=-=", "chapterList: ${chapterList.map { it.title }}")
+    }
+
     override fun showLoading() {
-        progressBar.visibility = View.VISIBLE
+        progressBar.visibility = VISIBLE
     }
 
     override fun hideLoading() {
-        progressBar.visibility = View.GONE
+        progressBar.visibility = GONE
 
     }
 
     private fun setupChapterList() {
         val adapter = MangaChapterItemAdapter(this,
-            this)
+            this, this)
         rvChapterList.layoutManager = LinearLayoutManager(this)
         rvChapterList.adapter = adapter
 

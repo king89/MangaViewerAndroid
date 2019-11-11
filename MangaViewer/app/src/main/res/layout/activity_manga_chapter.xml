@@ -226,23 +226,24 @@
           android:id="@+id/tvChapter"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginEnd="16dp"
+          android:layout_marginEnd="8dp"
           android:layout_marginLeft="16dp"
-          android:layout_marginRight="16dp"
+          android:layout_marginRight="8dp"
           android:layout_marginStart="16dp"
           android:layout_marginTop="8dp"
           android:text="@string/chapter_list"
           android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintEnd_toStartOf="@+id/btDownload"
           app:layout_constraintHorizontal_bias="0.0"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/rvLastRead"
+          app:layout_constraintTop_toBottomOf="@+id/rvLastRead"
           />
 
       <android.support.v7.widget.RecyclerView
           android:id="@+id/rvChapterList"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
           android:clipToPadding="false"
           android:scrollbarStyle="outsideOverlay"
           android:scrollbars="vertical"
@@ -267,6 +268,21 @@
           app:layout_constraintTop_toBottomOf="@+id/tvChapter"
           tools:visibility="visible"
           style="@style/Widget.AppCompat.ProgressBar"
+          />
+      <ImageButton
+          android:id="@+id/btDownload"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="16dp"
+          android:layout_marginRight="16dp"
+          android:background="?attr/selectableItemBackgroundBorderless"
+          android:contentDescription="@string/download"
+          android:padding="4dp"
+          android:tint="@color/colorAccent"
+          app:layout_constraintBottom_toBottomOf="@+id/tvChapter"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="@+id/tvChapter"
+          app:srcCompat="@drawable/ic_downloaded"
           />
     </android.support.constraint.ConstraintLayout>
 
