@@ -69,6 +69,7 @@ class FavouriteMangaLocalDataSource @Inject constructor(
             val list = favouriteMangaDAO.getFavouriteByHash(manga.hash).blockingGet()
             list.forEach {
                 it.chapter_count = chapterCount
+                it.update_count = 0
                 favouriteMangaDAO.update(it)
 
             }
