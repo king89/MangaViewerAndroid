@@ -6,7 +6,6 @@ import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED
 import android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN
 import android.support.design.widget.FloatingActionButton
-import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
@@ -40,6 +39,7 @@ import kotlinx.android.synthetic.main.activity_manga_chapter.groupLastRead
 import kotlinx.android.synthetic.main.activity_manga_chapter.ivCover
 import kotlinx.android.synthetic.main.activity_manga_chapter.rvChapterList
 import kotlinx.android.synthetic.main.activity_manga_chapter.rvLastRead
+import kotlinx.android.synthetic.main.activity_manga_chapter.swipeRefreshLayout
 import kotlinx.android.synthetic.main.activity_manga_chapter.tvLastRead
 import kotlinx.android.synthetic.main.activity_manga_chapter.tvTitle
 import kotlinx.android.synthetic.main.bottom_sheet_download.bsDownload
@@ -72,8 +72,8 @@ class MangaChapterActivity : BaseActivity() {
         setContentView(R.layout.activity_manga_chapter)
 
         tvTitle.text = this.appViewModel.Manga.selectedMangaMenuItem.title
-        ViewCompat.setNestedScrollingEnabled(rvChapterList, false)
-        ViewCompat.setNestedScrollingEnabled(rvLastRead, false)
+//        ViewCompat.setNestedScrollingEnabled(rvChapterList, false)
+//        ViewCompat.setNestedScrollingEnabled(rvLastRead, false)
 
         loadChapterCover()
         setupChapterList()
@@ -99,6 +99,11 @@ class MangaChapterActivity : BaseActivity() {
             toggleSelectableMode()
         }
 
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel?.getChapterList()
+            swipeRefreshLayout.isRefreshing = false
+        }
+
     }
 
     private fun toggleSelectableMode() {
@@ -112,7 +117,10 @@ class MangaChapterActivity : BaseActivity() {
             toggleSelectableMode()
         }
         btStartDownload.setOnClickListener {
+            Logger.d(TAG,
+                "Selected item: ${viewModel?.selectedDownloadList?.value?.map { it.title }}")
             viewModel?.startDownload()
+            toggleSelectableMode()
         }
     }
 
@@ -223,7 +231,6 @@ class MangaChapterActivity : BaseActivity() {
     }
     private val onSelectedChangeListener = object : OnSelectedChangeListener {
         override fun onChange(chapterList: List<MangaChapterItem>) {
-            Logger.d(TAG, "chapterList: ${chapterList.map { it.title }}")
             viewModel?.selectedDownloadList?.value = chapterList
         }
     }

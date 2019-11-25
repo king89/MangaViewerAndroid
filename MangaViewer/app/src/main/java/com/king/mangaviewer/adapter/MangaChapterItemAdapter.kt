@@ -32,13 +32,12 @@ class MangaChapterItemAdapter(private val context: Context,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolders {
         val layoutView = LayoutInflater.from(parent.context).inflate(
             R.layout.list_manga_chapter_item, parent, false)
-        return ChapterViewHolders(layoutView)
+        return RecyclerViewHolders(layoutView)
 
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
         val item = getItem(position)
-        holder as ChapterViewHolders
         item?.apply {
             var chapterTitle = title
             if (menu.title.length > MAX_TITLE_LENGTH) {
@@ -50,13 +49,17 @@ class MangaChapterItemAdapter(private val context: Context,
             holder.itemView.setOnClickListener {
                 if (selectableMode) {
                     holder.cbDownload.toggle()
+                    toggleSelected(position)
                 } else {
                     onItemClickListener.onClick(this)
                 }
             }
+            holder.cbDownload.setOnClickListener {
+                toggleSelected(position)
+            }
             holder.setRead(stateMap[item.hash]?.isRead ?: false)
             holder.setDownloadState(stateMap[item.hash]?.downloaded ?: None)
-            holder.setSelectable(selectableMode)
+            holder.setSelectable(selectableMode, selectedMap[position] ?: false)
         }
     }
 
@@ -93,18 +96,11 @@ class MangaChapterItemAdapter(private val context: Context,
         )
     }
 
-    open class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView)
-    inner class ChapterViewHolders(itemView: View) : RecyclerViewHolders(itemView) {
+    inner class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView by lazy { itemView.findViewById<View>(R.id.textView) as TextView }
         val viewHeader: View by lazy { itemView.findViewById<View>(R.id.viewHeader) as View }
         val ivState by lazy { itemView.findViewById<ImageView>(R.id.ivState) }
         val cbDownload by lazy { itemView.findViewById<CheckBox>(R.id.cbDownload) }
-
-        init {
-            cbDownload.setOnCheckedChangeListener { button, selected ->
-                toggleSelected(adapterPosition)
-            }
-        }
 
         fun setRead(read: Boolean) {
             val bannerColor = if (read) {
@@ -129,12 +125,13 @@ class MangaChapterItemAdapter(private val context: Context,
             }
         }
 
-        fun setSelectable(selectable: Boolean) {
+        fun setSelectable(selectable: Boolean, selected: Boolean) {
             if (selectable) {
                 cbDownload.visibility = VISIBLE
             } else {
                 cbDownload.visibility = GONE
             }
+            cbDownload.isChecked = selected
         }
     }
 

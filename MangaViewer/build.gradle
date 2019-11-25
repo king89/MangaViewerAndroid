@@ -23,7 +23,7 @@ buildscript {
 ext {
     jks_path = '../../mangaviewer.jks'
     sdk_version = 27
-    VERSION_NAME = "0.3.11-SNAPSHOT"
+    VERSION_NAME = "0.3.12-SNAPSHOT"
 
     /**
      * Builds an Android version code from the version of the project.
