@@ -139,6 +139,12 @@
   <string name="undo">Undo</string>
   <string name="history_item_removed">%s removed</string>
   <string name="download">Download</string>
+  <string name="chapter_start_download">Download</string>
+
+  <plurals name="item_selected">
+    <item quantity="one">%d item selected</item>
+    <item quantity="other">%d items selected</item>
+  </plurals>
 
 
 </resources>

@@ -13,6 +13,7 @@ import com.king.mangaviewer.domain.usecase.GetFavoriteStateUseCase
 import com.king.mangaviewer.domain.usecase.GetReadChapterUseCase
 import com.king.mangaviewer.domain.usecase.RemoveFromFavoriteUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaChapterUseCase
+import com.king.mangaviewer.model.LoadingState
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
@@ -36,6 +37,7 @@ class MangaChapterActivityViewModel @Inject constructor(
 
     val chapterList = MutableLiveData<List<MangaChapterItem>>()
     val chapterHistoryList = MutableLiveData<List<MangaChapterItem>>()
+    val selectedDownloadList = MutableLiveData<List<MangaChapterItem>>().apply { value = emptyList() }
 
     val chapterStateList: MutableLiveData<Map<String, MangaChapterStateItem>> =
         MediatorLiveData<Map<String, MangaChapterStateItem>>().apply {
@@ -86,7 +88,7 @@ class MangaChapterActivityViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                chapterStateList.value = it
+                chapterStateList.postValue(it)
             }, {
                 Logger.e(TAG, it)
             })
@@ -97,8 +99,8 @@ class MangaChapterActivityViewModel @Inject constructor(
         getChapterListUseCase.execute()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { mLoadingState.value = Loading }
-            .doAfterTerminate { mLoadingState.value = Idle }
+            .doOnSubscribe { setLoadingState(Loading) }
+            .doAfterTerminate { setLoadingState(Idle) }
             .subscribe({
                 chapterList.postValue(it)
             }, {
@@ -115,13 +117,8 @@ class MangaChapterActivityViewModel @Inject constructor(
         getReadChapterUseCase.execute()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doAfterTerminate {
-                if (mLoadingState.value == Loading) return@doAfterTerminate
-                mLoadingState.value = Idle
-            }
-
             .subscribe({
-                chapterHistoryList.value = it
+                chapterHistoryList.postValue(it)
             }, {
                 Logger.e(TAG, it)
             })
@@ -182,6 +179,18 @@ class MangaChapterActivityViewModel @Inject constructor(
         chapterList = chapterList.reversed()
         appRepository.appViewModel.Manga.mangaChapterList = chapterList
         this.chapterList.postValue(chapterList)
+    }
+
+    fun startDownload() {
+        if (selectedDownloadList.value!!.isNotEmpty()) {
+            //TODO start download use case
+
+        }
+    }
+
+    @Synchronized
+    private fun setLoadingState(state: LoadingState) {
+        mLoadingState.value = state
     }
 
     companion object {

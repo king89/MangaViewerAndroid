@@ -47,7 +47,13 @@ class MangaChapterItemAdapter(private val context: Context,
                 title = chapterTitle
             }
             holder.textView.text = chapterTitle
-            holder.itemView.setOnClickListener { onItemClickListener.onClick(this) }
+            holder.itemView.setOnClickListener {
+                if (selectableMode) {
+                    holder.cbDownload.toggle()
+                } else {
+                    onItemClickListener.onClick(this)
+                }
+            }
             holder.setRead(stateMap[item.hash]?.isRead ?: false)
             holder.setDownloadState(stateMap[item.hash]?.downloaded ?: None)
             holder.setSelectable(selectableMode)
@@ -61,7 +67,11 @@ class MangaChapterItemAdapter(private val context: Context,
 
     fun toggleSelectableMode() {
         selectableMode = selectableMode.not()
+        if (!selectableMode) {
+            selectedMap.clear()
+        }
         notifyDataSetChanged()
+        notifySelectedChange()
     }
 
     private fun toggleSelected(position: Int) {
@@ -73,6 +83,10 @@ class MangaChapterItemAdapter(private val context: Context,
             selectedMap[position] = true
         }
 
+        notifySelectedChange()
+    }
+
+    private fun notifySelectedChange() {
         onSelectedChangeListener?.onChange(
             selectedMap.filter { it.value }
                 .map { getItem(it.key) }

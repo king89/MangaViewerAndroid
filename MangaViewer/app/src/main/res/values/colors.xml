@@ -31,5 +31,6 @@
 
   <color name="dim_color">#cc000000</color>
   <color name="background_control_panel">#cc111111</color>
+  <color name="background_chapter_download_panel">#ee333333</color>
 
 </resources>
