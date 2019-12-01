@@ -53,7 +53,7 @@ constructor() : MangaProvider() {
 
     private fun isImageType(name: String): Boolean {
         val extName = name.substringAfterLast(".")
-        val imgTypeList = listOf("png", "jpg", "jpeg")
+        val imgTypeList = listOf("png", "jpg", "jpeg", "webp")
 
         return imgTypeList.contains(extName)
     }

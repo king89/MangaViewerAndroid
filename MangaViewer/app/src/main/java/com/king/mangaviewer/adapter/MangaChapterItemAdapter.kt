@@ -7,16 +7,21 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.king.mangaviewer.R
-import com.king.mangaviewer.adapter.DownloadState.Downloaded
-import com.king.mangaviewer.adapter.DownloadState.None
-import com.king.mangaviewer.adapter.DownloadState.Pending
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.RecyclerViewHolders
+import com.king.mangaviewer.domain.data.local.DownloadState
+import com.king.mangaviewer.domain.data.local.DownloadState.DOWNLOADING
+import com.king.mangaviewer.domain.data.local.DownloadState.ERROR
+import com.king.mangaviewer.domain.data.local.DownloadState.FINISHED
+import com.king.mangaviewer.domain.data.local.DownloadState.NONE
+import com.king.mangaviewer.domain.data.local.DownloadState.PENDING
 import com.king.mangaviewer.model.MangaChapterItem
 
 class MangaChapterItemAdapter(private val context: Context,
@@ -33,7 +38,6 @@ class MangaChapterItemAdapter(private val context: Context,
         val layoutView = LayoutInflater.from(parent.context).inflate(
             R.layout.list_manga_chapter_item, parent, false)
         return RecyclerViewHolders(layoutView)
-
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
@@ -57,8 +61,11 @@ class MangaChapterItemAdapter(private val context: Context,
             holder.cbDownload.setOnClickListener {
                 toggleSelected(position)
             }
+            holder.ivState.setOnClickListener {
+                //TODO resume or cancel
+            }
             holder.setRead(stateMap[item.hash]?.isRead ?: false)
-            holder.setDownloadState(stateMap[item.hash]?.downloaded ?: None)
+            holder.setDownloadState(stateMap[item.hash]?.downloaded ?: NONE)
             holder.setSelectable(selectableMode, selectedMap[position] ?: false)
         }
     }
@@ -101,6 +108,7 @@ class MangaChapterItemAdapter(private val context: Context,
         val viewHeader: View by lazy { itemView.findViewById<View>(R.id.viewHeader) as View }
         val ivState by lazy { itemView.findViewById<ImageView>(R.id.ivState) }
         val cbDownload by lazy { itemView.findViewById<CheckBox>(R.id.cbDownload) }
+        val progressBar by lazy { itemView.findViewById<ProgressBar>(R.id.progressBar) }
 
         fun setRead(read: Boolean) {
             val bannerColor = if (read) {
@@ -113,14 +121,29 @@ class MangaChapterItemAdapter(private val context: Context,
 
         fun setDownloadState(state: DownloadState) {
             when (state) {
-                None -> ivState.visibility = GONE
-                Downloaded -> {
-                    ivState.visibility = VISIBLE
-                    ivState.setImageResource(R.drawable.ic_downloaded)
+                NONE -> {
+                    ivState.visibility = INVISIBLE
+                    progressBar.visibility = INVISIBLE
                 }
-                Pending -> {
+                FINISHED -> {
                     ivState.visibility = VISIBLE
+                    progressBar.visibility = INVISIBLE
+                    ivState.setImageResource(R.drawable.ic_checked)
+                }
+                PENDING -> {
+                    ivState.visibility = VISIBLE
+                    progressBar.visibility = INVISIBLE
                     ivState.setImageResource(R.drawable.ic_pending)
+                }
+                DOWNLOADING -> {
+                    ivState.visibility = INVISIBLE
+                    progressBar.visibility = VISIBLE
+                    ivState.setImageResource(R.drawable.ic_downloading)
+                }
+                ERROR -> {
+                    ivState.visibility = VISIBLE
+                    progressBar.visibility = INVISIBLE
+                    ivState.setImageResource(R.drawable.ic_error)
                 }
             }
         }

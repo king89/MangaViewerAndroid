@@ -1,13 +1,9 @@
 package com.king.mangaviewer.adapter
 
-import com.king.mangaviewer.adapter.DownloadState.None
+import com.king.mangaviewer.domain.data.local.DownloadState
+import com.king.mangaviewer.domain.data.local.DownloadState.NONE
+
 
 data class MangaChapterStateItem(
-    val downloaded: DownloadState = None,
+    val downloaded: DownloadState = NONE,
     val isRead: Boolean = false)
-
-enum class DownloadState {
-    Downloaded,
-    Pending,
-    None
-}

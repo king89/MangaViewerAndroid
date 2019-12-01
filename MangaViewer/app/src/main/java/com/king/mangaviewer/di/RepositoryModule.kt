@@ -1,7 +1,6 @@
 package com.king.mangaviewer.di
 
 import android.arch.persistence.room.Room
-import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import com.king.mangaviewer.BuildConfig
 import com.king.mangaviewer.di.annotation.ApplicationScope
@@ -20,13 +19,14 @@ import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory
 import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactoryImpl
 import com.king.mangaviewer.domain.repository.AppRepository
 import com.king.mangaviewer.domain.repository.AppRepositoryImpl
+import com.king.mangaviewer.domain.repository.DownloadTaskRepository
+import com.king.mangaviewer.domain.repository.DownloadTaskRepositoryImpl
 import com.king.mangaviewer.domain.repository.DownloadedMangaRepository
 import com.king.mangaviewer.domain.repository.DownloadedMangaRepositoryImpl
 import com.king.mangaviewer.domain.repository.FavoriteMangaRepository
 import com.king.mangaviewer.domain.repository.FavoriteMangaRepositoryImpl
 import com.king.mangaviewer.domain.repository.HistoryMangaRepository
 import com.king.mangaviewer.domain.repository.HistoryMangaRepositoryImpl
-import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.viewmodel.AppViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
 import dagger.Binds
@@ -81,6 +81,10 @@ abstract class RepositoryModule {
   abstract fun provideDownloadedMangaRepository(
       impl: DownloadedMangaRepositoryImpl): DownloadedMangaRepository
 
+    @ApplicationScope
+    @Binds
+    abstract fun provideDownloadTaskRepository(
+        impl: DownloadTaskRepositoryImpl): DownloadTaskRepository
 
   @Module
   companion object {

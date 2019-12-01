@@ -9,28 +9,33 @@ import javax.inject.Inject
 
 //use for manga local data and remote data
 
-interface FavoriteMangaRepository : FavouriteMangaDataSource {
-
+interface FavoriteMangaRepository {
+    fun checkIsFavorite(manga: MangaMenuItem?): Single<Boolean>
+    fun addFavouriteManga(manga: MangaMenuItem, chapterCount: Int): Completable
+    fun removeFavouriteManga(manga: MangaMenuItem): Completable
+    fun getFavouriteMangaList(): Single<List<FavouriteMangaMenuItem>>
+    fun updateFavouriteManga(manga: MangaMenuItem, chapterCount: Int): Completable
+    fun updateAllHash(): Completable
 }
 
 class FavoriteMangaRepositoryImpl @Inject constructor(
-        private val favoriteMangaDataSource: FavouriteMangaDataSource) : FavoriteMangaRepository {
+    private val favoriteMangaDataSource: FavouriteMangaDataSource) : FavoriteMangaRepository {
     override fun updateAllHash(): Completable = favoriteMangaDataSource.updateAllHash()
 
     override fun checkIsFavorite(
-            manga: MangaMenuItem?): Single<Boolean> = favoriteMangaDataSource.checkIsFavorite(manga)
+        manga: MangaMenuItem?): Single<Boolean> = favoriteMangaDataSource.checkIsFavorite(manga)
 
     override fun addFavouriteManga(manga: MangaMenuItem,
-            chapterCount: Int): Completable = favoriteMangaDataSource.addFavouriteManga(manga,
-            chapterCount)
+        chapterCount: Int): Completable = favoriteMangaDataSource.addFavouriteManga(manga,
+        chapterCount)
 
     override fun removeFavouriteManga(
-            manga: MangaMenuItem): Completable = favoriteMangaDataSource.removeFavouriteManga(manga)
+        manga: MangaMenuItem): Completable = favoriteMangaDataSource.removeFavouriteManga(manga)
 
     override fun getFavouriteMangaList(): Single<List<FavouriteMangaMenuItem>> = favoriteMangaDataSource.getFavouriteMangaList()
 
     override fun updateFavouriteManga(manga: MangaMenuItem,
-            chapterCount: Int): Completable = favoriteMangaDataSource.updateFavouriteManga(manga,
-            chapterCount)
+        chapterCount: Int): Completable = favoriteMangaDataSource.updateFavouriteManga(manga,
+        chapterCount)
 
 }

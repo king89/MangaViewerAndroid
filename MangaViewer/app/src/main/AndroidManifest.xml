@@ -10,6 +10,7 @@
   <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
+
   <application
       android:name=".MyApplication"
       android:allowBackup="true"
@@ -32,9 +33,9 @@
           android:value=".activity.SearchResultActivity"/>
     </activity>
     <activity
-        android:theme="@style/AppThemeTransparent"
         android:name=".ui.chapter.MangaChapterActivity"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        android:theme="@style/AppThemeTransparent">
     </activity>
     <activity
         android:name=".activity.MangaPageActivity"
@@ -46,8 +47,8 @@
         android:name=".ui.page.MangaPageActivityV2"
         android:configChanges="orientation|screenSize"
         android:exported="true"
-        android:theme="@style/ReaderTheme"
-        android:label="@string/title_activity_manga_page">
+        android:label="@string/title_activity_manga_page"
+        android:theme="@style/ReaderTheme">
 
     </activity>
     <activity android:name=".activity.LocalReadActivity"/>
@@ -77,14 +78,18 @@
         android:theme="@android:style/Theme.Translucent"/>
     <activity
         android:name=".ui.setting.SettingsActivity"
-        android:theme="@style/AppTheme"
-        android:label="@string/title_activity_settings">
+        android:label="@string/title_activity_settings"
+        android:theme="@style/AppTheme">
 
     </activity>
 
-    <receiver android:name=".service.AutoUpdateAlarmReceiver">
+    <receiver android:name=".service.AutoUpdateAlarmReceiver"/>
 
-    </receiver>
+    <service
+        android:name=".service.download.MangaDownloadService"
+        android:enabled="true"
+        android:exported="false"/>
+
     <meta-data
         android:name="io.fabric.ApiKey"
         android:value="bef989f7a05b1cb43e20c6c7be9bc7d4fec28956"/>

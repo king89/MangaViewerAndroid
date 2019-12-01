@@ -54,6 +54,19 @@
         app:layout_constraintTop_toTopOf="@+id/cbDownload"
         app:srcCompat="@drawable/ic_checked"
         />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/ivState"
+        app:layout_constraintEnd_toEndOf="@+id/ivState"
+        app:layout_constraintStart_toStartOf="@+id/ivState"
+        app:layout_constraintTop_toTopOf="@+id/ivState"
+        tools:visibility="visible"
+        style="?android:attr/progressBarStyleSmall"
+        />
 
     <CheckBox
         android:id="@+id/cbDownload"
@@ -63,7 +76,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

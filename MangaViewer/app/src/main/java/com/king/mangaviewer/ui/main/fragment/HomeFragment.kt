@@ -1,7 +1,6 @@
 package com.king.mangaviewer.ui.main.fragment
 
 import android.arch.lifecycle.Observer
-import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
@@ -29,7 +28,6 @@ import com.king.mangaviewer.ui.main.HasFloatActionButton
 import com.king.mangaviewer.util.AppNavigator
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.withViewModel
-import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_manga_gridview.layout_error
 import javax.inject.Inject
 
@@ -50,11 +48,6 @@ open class HomeFragment : BaseFragment(), HasFloatActionButton {
 
     @Inject
     lateinit var appNavigator: AppNavigator
-
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
 
     override fun refresh() {
         this.mangaViewModel.mangaMenuList = null

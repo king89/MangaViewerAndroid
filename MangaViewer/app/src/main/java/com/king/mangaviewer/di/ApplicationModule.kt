@@ -2,12 +2,10 @@ package com.king.mangaviewer.di
 
 import android.app.Application
 import android.content.Context
-import com.king.mangaviewer.di.annotation.ApplicationScope
-import com.king.mangaviewer.viewmodel.AppViewModel
-import com.king.mangaviewer.viewmodel.SettingViewModel
+import com.king.mangaviewer.service.download.MangaDownloadService
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
+import dagger.android.ContributesAndroidInjector
 
 /**
  * This is a Dagger module. We use this to bind our Application class as a Context in the AppComponent
@@ -23,4 +21,6 @@ abstract class ApplicationModule {
     @Binds
     internal abstract fun bindContext(application: Application): Context
 
+    @ContributesAndroidInjector
+    internal abstract fun mangaDownloadService(): MangaDownloadService
 }

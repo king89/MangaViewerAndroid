@@ -291,7 +291,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tvChapter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvChapter"
-            app:srcCompat="@drawable/ic_downloaded"
+            app:srcCompat="@drawable/ic_download"
             />
 
         <android.support.constraint.Group

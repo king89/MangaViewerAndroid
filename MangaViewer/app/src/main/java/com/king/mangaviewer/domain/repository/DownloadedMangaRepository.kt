@@ -7,29 +7,35 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
-interface DownloadedMangaRepository : DownloadedMangaDataSource {
-
+interface DownloadedMangaRepository {
+    fun checkIsDownloaded(chapterHash: String): Single<Boolean>
+    fun addDownloadedManga(manga: DownloadedManga): Completable
+    fun removeDownloadedMangaByMenu(menuHash: String): Completable
+    fun removeDownloadedMangaByChapter(chapterHash: String): Completable
+    fun getMangaMenuList(): Single<List<DownloadedManga>>
+    fun getMangaChapterList(
+        menu: MangaMenuItem): Single<List<DownloadedManga>>
 }
 
 class DownloadedMangaRepositoryImpl @Inject constructor(
     private val dataSource: DownloadedMangaDataSource
 
 ) : DownloadedMangaRepository {
-  override fun checkIsDownloaded(
-      chapterHash: String): Single<Boolean> = dataSource.checkIsDownloaded(chapterHash)
+    override fun checkIsDownloaded(
+        chapterHash: String): Single<Boolean> = dataSource.checkIsDownloaded(chapterHash)
 
-  override fun addDownloadedManga(
-      manga: DownloadedManga): Completable = dataSource.addDownloadedManga(manga)
+    override fun addDownloadedManga(
+        manga: DownloadedManga): Completable = dataSource.addDownloadedManga(manga)
 
-  override fun removeDownloadedMangaByMenu(
-      menuHash: String): Completable = dataSource.removeDownloadedMangaByMenu(menuHash)
+    override fun removeDownloadedMangaByMenu(
+        menuHash: String): Completable = dataSource.removeDownloadedMangaByMenu(menuHash)
 
-  override fun removeDownloadedMangaByChapter(
-      chapterHash: String): Completable = dataSource.removeDownloadedMangaByChapter(chapterHash)
+    override fun removeDownloadedMangaByChapter(
+        chapterHash: String): Completable = dataSource.removeDownloadedMangaByChapter(chapterHash)
 
-  override fun getMangaMenuList(): Single<List<DownloadedManga>> = dataSource.getMangaMenuList()
+    override fun getMangaMenuList(): Single<List<DownloadedManga>> = dataSource.getMangaMenuList()
 
-  override fun getMangaChapterList(
-      menu: MangaMenuItem): Single<List<DownloadedManga>> = dataSource.getMangaChapterList(menu)
+    override fun getMangaChapterList(
+        menu: MangaMenuItem): Single<List<DownloadedManga>> = dataSource.getMangaChapterList(menu)
 
 }

@@ -33,4 +33,6 @@
   <color name="background_control_panel">#cc111111</color>
   <color name="background_chapter_download_panel">#ee333333</color>
 
+  <color name="error">#bbff0000</color>
+
 </resources>
