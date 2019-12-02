@@ -12,6 +12,7 @@ import android.os.Environment
 import com.king.mangaviewer.domain.data.local.DownloadTask
 import com.king.mangaviewer.domain.external.fileprovider.DownloadFileProvider
 import com.king.mangaviewer.domain.repository.DownloadTaskRepository
+import com.king.mangaviewer.domain.usecase.FinishDownloadUseCase
 import com.king.mangaviewer.domain.usecase.GetPageListUseCase
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.util.Logger
@@ -34,6 +35,9 @@ class MangaDownloadService : IntentService("MangaDownloadService") {
     @Inject
     lateinit var downloadFileProvider: DownloadFileProvider
 
+    @Inject
+    lateinit var finishDownloadUseCase: FinishDownloadUseCase
+
     private val downloadManager by lazy {
         getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     }
@@ -54,14 +58,15 @@ class MangaDownloadService : IntentService("MangaDownloadService") {
     private fun startDownloadTask(task: DownloadTask) {
         try {
             val chapter = task.chapter
-            val folderName = getFolderName(chapter)
+            val chapterFolderName = getChapterFolderName(chapter)
+            val menuFolderName = getMenuFolderName(chapter)
 
-            val taskList = parseTask(chapter, folderName)
+            val taskList = parseTask(chapter, chapterFolderName)
             Logger.d(TAG, "start download list: ${taskList.map { it.uri }}")
 
             val jobIdList = mutableListOf<Long>()
 
-            deleteFolder(folderName)
+            deleteFolder(chapterFolderName)
 
             taskList.forEach { item ->
                 val request = DownloadManager.Request(Uri.parse(item.uri)).apply {
@@ -76,9 +81,9 @@ class MangaDownloadService : IntentService("MangaDownloadService") {
                 downloadManager.enqueue(request).also { jobIdList.add(it) }
             }
 
-            waitForAllDownloaded(task, folderName, jobIdList)
+            waitForAllDownloaded(task, menuFolderName, chapterFolderName, jobIdList)
 
-            deleteFolder(folderName)
+            deleteFolder(chapterFolderName)
         } catch (e: IllegalArgumentException) {
             Logger.e(TAG, e, "cannot download task: ${task.chapter.url}")
             downloadTaskRepository.finishTaskWithError(task).subscribe()
@@ -86,12 +91,20 @@ class MangaDownloadService : IntentService("MangaDownloadService") {
         startNextTask(this)
     }
 
-    private fun getFolderName(chapter: MangaChapterItem): String {
+    private fun getChapterFolderName(chapter: MangaChapterItem): String {
         val baseFolder = Environment.getExternalStoragePublicDirectory("")
         return File(baseFolder, DownloadFileProvider.FOLDER_NAME)
             .concat(chapter.mangaWebSource.displayName)
             .concat(chapter.menu.hash)
             .concat(chapter.hash)
+            .absolutePath
+    }
+
+    private fun getMenuFolderName(chapter: MangaChapterItem): String {
+        val baseFolder = Environment.getExternalStoragePublicDirectory("")
+        return File(baseFolder, DownloadFileProvider.FOLDER_NAME)
+            .concat(chapter.mangaWebSource.displayName)
+            .concat(chapter.menu.hash)
             .absolutePath
     }
 
@@ -102,14 +115,16 @@ class MangaDownloadService : IntentService("MangaDownloadService") {
         Logger.d(TAG, "delete dir: ${file.absolutePath},$folder")
     }
 
-    private fun waitForAllDownloaded(downloadTask: DownloadTask, downloadFolder: String,
+    private fun waitForAllDownloaded(downloadTask: DownloadTask, menuFolder: String,
+        chapterFolder: String,
         jobIdList: MutableList<Long>) {
         while (true) {
             if (checkAllSuccess(jobIdList)) {
-                val file = File(downloadFolder)
-                downloadFileProvider.zipFolder(file.absolutePath).subscribe()
+                val outputFile = downloadFileProvider.getOutputFileName(chapterFolder)
+                downloadFileProvider.zipFolder(chapterFolder, outputFile).subscribe()
+                finishDownloadUseCase.execute(downloadTask, menuFolder, outputFile).subscribe()
                 Logger.d(TAG, "All task finished")
-                downloadTaskRepository.finishTask(downloadTask).subscribe()
+
                 break
             } else {
                 Thread.sleep(1000)

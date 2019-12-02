@@ -75,8 +75,7 @@ class MangaChapterActivityViewModel @Inject constructor(
     private fun updateChapterStateList() {
         Single.fromCallable {
             val stateMap = hashMapOf<String, MangaChapterStateItem>()
-            if (chapterList.value?.isNotEmpty() == true
-                && chapterHistoryList.value?.isNotEmpty() == true) {
+            if (chapterList.value?.isNotEmpty() == true) {
 
                 val chapterList = chapterList.value!!
                 val historyMap = chapterHistoryList.value!!.let {

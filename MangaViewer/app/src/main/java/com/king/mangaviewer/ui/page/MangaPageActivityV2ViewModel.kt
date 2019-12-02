@@ -25,6 +25,7 @@ import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.model.MangaUriType
 import com.king.mangaviewer.model.MangaUriType.WEB
 import com.king.mangaviewer.model.MangaUriType.ZIP
+import com.king.mangaviewer.model.MangaWebSource
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoNextChapter
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel.SubError.NoPrevChapter
 import com.king.mangaviewer.util.Logger
@@ -212,7 +213,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     }
 
     private fun MangaPageItem.getMangaLoaderType(): MangaUriType {
-        return if (this.mangaWebSource.id == -1) {
+        return if (MangaWebSource.isZipLoader(this.mangaWebSource)) {
             ZIP
         } else {
             WEB

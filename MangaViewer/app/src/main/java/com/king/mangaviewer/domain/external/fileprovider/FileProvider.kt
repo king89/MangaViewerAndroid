@@ -1,5 +1,7 @@
 package com.king.mangaviewer.domain.external.fileprovider
 
+import com.king.mangaviewer.model.MangaChapterItem
+import com.king.mangaviewer.model.MangaMenuItem
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.io.File
@@ -9,7 +11,7 @@ interface FileProvider {
 
     fun saveFile(folderPath: String, fileName: String, data: InputStream): Single<String>
 
-    fun zipFolder(inputFolderPath: String): Completable
+    fun zipFolder(inputFolderPath: String, outputFile: String): Completable
 
     fun moveFile(pathSrc: String, pathDes: String): Completable
 
@@ -20,5 +22,10 @@ interface FileProvider {
 
         fileOrDirectory.delete()
     }
+
+    fun getOutputFileName(folder: String): String
+    fun getMenuDownloadPath(menu: MangaMenuItem): String
+    fun getChapterDownloadPath(chapter: MangaChapterItem): String
+
 }
 

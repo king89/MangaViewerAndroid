@@ -192,12 +192,11 @@ class MainActivity : BaseActivity() {
 
         val lv = layout.findViewById<View>(R.id.listView) as ListView
 
-        val mws = appViewModel.Setting.mangaWebSources
+        val mws = appViewModel.Setting.mangaWebSources.filter { it.visible }
         var tSelectWebSourcePos = 0
         val source = ArrayList<String>()
         if (mws != null) {
             for ((i, m) in mws.withIndex()) {
-                if (m.id < 0) continue
                 source.add(m.displayName)
                 if (m.id == appViewModel.Setting.selectedWebSource.id) {
                     tSelectWebSourcePos = i

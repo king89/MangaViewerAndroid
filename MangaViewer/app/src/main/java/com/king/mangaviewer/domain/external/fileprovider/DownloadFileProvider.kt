@@ -2,7 +2,10 @@ package com.king.mangaviewer.domain.external.fileprovider
 
 import android.content.Context
 import android.os.Environment
+import com.king.mangaviewer.model.MangaChapterItem
+import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.util.Logger
+import com.king.mangaviewer.util.concat
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.io.File
@@ -16,6 +19,7 @@ import javax.inject.Inject
 class DownloadFileProvider @Inject constructor(
     private val context: Context
 ) : FileProvider {
+
     private val externalFolder by lazy {
         File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
             FOLDER_NAME)
@@ -51,9 +55,9 @@ class DownloadFileProvider @Inject constructor(
         }
     }
 
-    override fun zipFolder(inputFolderPath: String): Completable {
+    override fun zipFolder(inputFolderPath: String, outputFile: String): Completable {
         return Completable.fromCallable {
-            val zipFile = File("$inputFolderPath.zip").also {
+            val zipFile = File(outputFile).also {
                 if (!it.exists()) {
                     it.createNewFile()
                 }
@@ -85,6 +89,19 @@ class DownloadFileProvider @Inject constructor(
     override fun moveFile(pathSrc: String, pathDes: String): Completable {
         TODO(
             "not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getOutputFileName(folder: String): String {
+        return "$folder.zip"
+
+    }
+
+    override fun getMenuDownloadPath(menu: MangaMenuItem): String {
+        return File(externalFolder, menu.hash).absolutePath
+    }
+
+    override fun getChapterDownloadPath(chapter: MangaChapterItem): String {
+        return File(externalFolder, chapter.menu.hash).concat(chapter.hash).absolutePath
     }
 
     companion object {

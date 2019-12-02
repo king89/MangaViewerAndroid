@@ -4,6 +4,10 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import com.king.mangaviewer.model.MangaChapterItem
+import com.king.mangaviewer.model.MangaMenuItem
+import com.king.mangaviewer.model.MangaWebSource
+import org.joda.time.DateTime
 
 @Entity(tableName = "downloaded_manga")
 data class DownloadedManga(
@@ -28,11 +32,38 @@ data class DownloadedManga(
 
     @Embedded(prefix = "menu_")
     var menu: DownloadedMangaMenu
+) {
+    companion object {
+        fun createFromTask(downloadTask: DownloadTask, folderPath: String,
+            fileUri: String): DownloadedManga {
+            val originMenu = downloadTask.chapter.menu
 
-)
+            val menu = with(originMenu) {
+                MangaMenuItem(id, title, description, imagePath, folderPath,
+                    MangaWebSource.DOWNLOAD)
+            }
 
+            val originChapter = downloadTask.chapter
+            val chapter = with(originChapter) {
+                MangaChapterItem(id, title, description, imagePath, fileUri, menu)
+            }
 
-class DownloadedMangaMenu(
+            val downloadMenu = with(menu) {
+                DownloadedMangaMenu(hash, title, description, imagePath, url, "", originMenu.hash)
+            }
+            val downloadChapter = with(chapter) {
+                DownloadedManga(hash, description, title, url,
+                    DateTime.now().toString(),
+                    originChapter.hash,
+                    downloadMenu)
+            }
+
+            return downloadChapter
+        }
+    }
+}
+
+data class DownloadedMangaMenu(
     @ColumnInfo(name = "hash")
     var hash: String,
 

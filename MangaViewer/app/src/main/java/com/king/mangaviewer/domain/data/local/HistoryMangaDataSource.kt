@@ -119,7 +119,7 @@ class HistoryMangaLocalDataSource @Inject constructor(
     }
 
     private fun HistoryManga.toHistoryChapterItem(): HistoryMangaChapterItem {
-        val source = appViewModel.Setting.mangaWebSources.first() {
+        val source = appViewModel.Setting.mangaWebSources.first {
             it.id == manga_websource_id
         }
         val menu = MangaMenuItem(menu.hash, menu.title, menu.description, menu.imagePath,

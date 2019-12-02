@@ -12,43 +12,48 @@ class MangaWebSource(val id: Int,
     val className: String,
     val order: Int,
     val language: String,
-    var enable: Int) : Comparable<MangaWebSource> {
+    var enable: Int,
+    val visible: Boolean = true) : Comparable<MangaWebSource> {
 
-  override fun compareTo(another: MangaWebSource): Int {
-    return when{
-      this.order >= 0 && another.order >= 0 -> {
-        if (this.order < another.order) {
-          -1
-        } else {
-          1
+    override fun compareTo(another: MangaWebSource): Int {
+        return when {
+            this.order >= 0 && another.order >= 0 -> {
+                if (this.order < another.order) {
+                    -1
+                } else {
+                    1
+                }
+            }
+            this.order < 0 && another.order < 0 -> {
+                if (this.order > another.order) {
+                    -1
+                } else {
+                    1
+                }
+            }
+            else -> {
+                if (this.order > another.order) {
+                    -1
+                } else {
+                    1
+                }
+            }
         }
-      }
-      this.order < 0 && another.order < 0 -> {
-        if (this.order > another.order) {
-          -1
-        } else {
-          1
-        }
-      }
-      else -> {
-        if (this.order > another.order) {
-          -1
-        } else {
-          1
-        }
-      }
+
+
     }
 
+    companion object {
+        fun isZipLoader(source: MangaWebSource): Boolean {
+            return (source.className == LOCAL.className || source.className == DOWNLOAD.className)
+        }
 
-  }
+        val LOCAL = MangaWebSource(-1, "LocalManga", "LocalManga",
+            LocalMangaProvider::class.java.name,
+            -1, "en", 0, false)
+        val DOWNLOAD = MangaWebSource(-2, "DownloadManga", "DownloadManga",
+            DownloadedMangaProvider::class.java.name, -2, "en", 0, true)
 
-  companion object {
-    val LOCAL = MangaWebSource(-1, "LocalManga", "LocalManga",
-        LocalMangaProvider::class.java.name,
-        -1, "en", 0)
-    val DOWNLOAD = MangaWebSource(-2, "DownloadManga", "DownloadManga",
-        DownloadedMangaProvider::class.java.name, -2, "en", 0)
-
-  }
+    }
 
 }

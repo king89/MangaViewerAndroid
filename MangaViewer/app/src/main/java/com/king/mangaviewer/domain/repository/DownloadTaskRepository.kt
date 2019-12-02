@@ -22,7 +22,8 @@ interface DownloadTaskRepository {
     fun finishTaskWithError(task: DownloadTask): Completable
 }
 
-class DownloadTaskRepositoryImpl @Inject constructor() : DownloadTaskRepository {
+class DownloadTaskRepositoryImpl @Inject constructor(
+) : DownloadTaskRepository {
 
 
     private var downloadTaskQueue = LinkedBlockingQueue<DownloadTask>()

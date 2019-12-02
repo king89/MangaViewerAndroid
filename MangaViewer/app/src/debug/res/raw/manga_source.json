@@ -6,7 +6,8 @@
     "className": "com.king.mangaviewer.domain.external.mangaprovider.WebHHComic",
     "order": "2",
     "language": "",
-    "enable": "0"
+    "enable": "0",
+    "visible": true
   },
   {
     "id": "1",
@@ -15,7 +16,8 @@
     "className": "com.king.mangaviewer.domain.external.mangaprovider.WebMangaFox",
     "order": "0",
     "language": "",
-    "enable": "1"
+    "enable": "1",
+    "visible": true
   },
   {
     "id": "2",
@@ -24,7 +26,8 @@
     "className": "com.king.mangaviewer.domain.external.mangaprovider.WebMangaReader",
     "order": "1",
     "language": "",
-    "enable": "1"
+    "enable": "1",
+    "visible": true
   },
   {
     "id": "3",
@@ -33,7 +36,8 @@
     "className": "com.king.mangaviewer.domain.external.mangaprovider.WebDMZJ",
     "order": "2",
     "language": "",
-    "enable": "1"
+    "enable": "1",
+    "visible": true
   },
   {
     "id": "4",
@@ -42,7 +46,8 @@
     "className": "com.king.mangaviewer.domain.external.mangaprovider.WebManhuagui",
     "order": "3",
     "language": "",
-    "enable": "1"
+    "enable": "1",
+    "visible": true
   },
   {
     "id": "999",
@@ -51,7 +56,8 @@
     "className": "com.king.mangaviewer.domain.external.mangaprovider.WebTestManga",
     "order": "999",
     "language": "",
-    "enable": "1"
+    "enable": "1",
+    "visible": true
   },
   {
     "id": "-1",
@@ -60,6 +66,17 @@
     "className": "com.king.mangaviewer.domain.external.mangaprovider.LocalMangaProvider",
     "order": "-1",
     "language": "",
-    "enable": "1"
+    "enable": "1",
+    "visible": false
+  },
+  {
+    "id": "-2",
+    "name": "Downloaded",
+    "displayName": "Downloaded",
+    "className": "com.king.mangaviewer.domain.external.mangaprovider.DownloadedMangaProvider",
+    "order": "-2",
+    "language": "",
+    "enable": "1",
+    "visible": true
   }
 ]

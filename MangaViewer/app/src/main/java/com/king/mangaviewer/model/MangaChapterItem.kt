@@ -1,7 +1,5 @@
 package com.king.mangaviewer.model
 
-import android.text.TextUtils
-
 import com.king.mangaviewer.util.StringUtils
 
 open class MangaChapterItem(
@@ -17,7 +15,7 @@ open class MangaChapterItem(
         get() = menu.mangaWebSource
 
     init {
-        title = if (!TextUtils.isEmpty(title)) {
+        title = if (title.isNotEmpty()) {
             title.replace(menu.title + "", "")
         } else title
     }
