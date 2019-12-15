@@ -1,4 +1,4 @@
-package com.king.mangaviewer.ui.main.fragment
+package com.king.mangaviewer.ui.main.local
 
 import com.king.mangaviewer.base.BaseFragmentModule
 import com.king.mangaviewer.base.BaseFragmentViewModel

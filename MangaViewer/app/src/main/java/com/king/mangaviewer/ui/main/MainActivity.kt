@@ -36,7 +36,7 @@ import com.king.mangaviewer.ui.main.fragment.AllMangaFragment
 import com.king.mangaviewer.ui.main.fragment.FavouriteFragment
 import com.king.mangaviewer.ui.main.fragment.HistoryFragment
 import com.king.mangaviewer.ui.main.fragment.HomeFragment
-import com.king.mangaviewer.ui.main.fragment.LocalFragment
+import com.king.mangaviewer.ui.main.local.LocalFragment
 import com.king.mangaviewer.ui.search.SearchResultActivity
 import com.king.mangaviewer.ui.setting.SettingsActivity
 import com.king.mangaviewer.util.AppNavigator

@@ -34,5 +34,6 @@
   <color name="background_chapter_download_panel">#ee333333</color>
 
   <color name="error">#bbff0000</color>
+  <color name="selectedPath">@color/colorAccent</color>
 
 </resources>

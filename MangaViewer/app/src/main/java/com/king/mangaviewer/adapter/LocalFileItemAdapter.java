@@ -7,10 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.ui.main.fragment.LocalFragment;
-
+import com.king.mangaviewer.ui.main.local.AddLocalFragment;
 import java.util.List;
 
 /**
@@ -19,10 +17,11 @@ import java.util.List;
 public class LocalFileItemAdapter extends RecyclerView.Adapter<LocalFileItemAdapter.RecyclerViewHolders> {
     private Context context;
     private LayoutInflater mInflater = null;
-    private List<LocalFragment.Item> list;
+  private List<AddLocalFragment.Item> list;
     private OnLocalFileItemClickListener onClickListener;
 
-    public LocalFileItemAdapter(Context context, List<LocalFragment.Item> item, OnLocalFileItemClickListener onClickListener) {
+  public LocalFileItemAdapter(Context context, List<AddLocalFragment.Item> item,
+      OnLocalFileItemClickListener onClickListener) {
         this.context = context;
         this.list = item;
         this.onClickListener = onClickListener;

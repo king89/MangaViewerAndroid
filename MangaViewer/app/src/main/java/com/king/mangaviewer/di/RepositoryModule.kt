@@ -14,6 +14,8 @@ import com.king.mangaviewer.domain.data.local.HistoryMangaDAO
 import com.king.mangaviewer.domain.data.local.HistoryMangaDataSource
 import com.king.mangaviewer.domain.data.local.HistoryMangaLocalDataSource
 import com.king.mangaviewer.domain.data.local.LocalMangaDAO
+import com.king.mangaviewer.domain.data.local.LocalMangaDataSource
+import com.king.mangaviewer.domain.data.local.LocalMangaLocalDataSource
 import com.king.mangaviewer.domain.data.local.MangaDataBase
 import com.king.mangaviewer.domain.data.local.MangaDataBase.Companion.DATABASE_NAME
 import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory
@@ -88,6 +90,11 @@ abstract class RepositoryModule {
     @Binds
     abstract fun provideDownloadTaskRepository(
         impl: DownloadTaskRepositoryImpl): DownloadTaskRepository
+
+    @ApplicationScope
+    @Binds
+    abstract fun provideLocalMangaDataSource(
+        impl: LocalMangaLocalDataSource): LocalMangaDataSource
 
     @ApplicationScope
     @Binds

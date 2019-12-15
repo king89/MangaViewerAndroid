@@ -1,10 +1,12 @@
-package com.king.mangaviewer.ui.main.fragment
+package com.king.mangaviewer.ui.main.local
 
 
 import android.Manifest
-import android.content.Intent
+import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.os.Environment
+import android.support.v4.app.DialogFragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -15,18 +17,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.LocalFileItemAdapter
-import com.king.mangaviewer.base.BaseActivity
-import com.king.mangaviewer.base.BaseFragment
 import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.di.annotation.FragmentScopedFactory
-import com.king.mangaviewer.ui.main.MainActivity
-import com.king.mangaviewer.ui.page.MangaPageActivityV2
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.withViewModel
 import com.tbruyelle.rxpermissions2.RxPermissions
+import dagger.android.support.AndroidSupportInjection
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FilenameFilter
 import java.util.ArrayList
@@ -34,7 +36,9 @@ import java.util.Collections
 import javax.inject.Inject
 
 
-class LocalFragment : BaseFragment() {
+class AddLocalFragment : DialogFragment() {
+    private val disposable = CompositeDisposable()
+
     // Stores names of traversed directories
     internal var str = ArrayList<String>()
     lateinit var adapter: LocalFileItemAdapter
@@ -45,17 +49,39 @@ class LocalFragment : BaseFragment() {
     private var path: File? = null
     private var chosenFile: String = ""
     private var extraPath: String? = null
-    var listener: LocalFileItemAdapter.OnLocalFileItemClickListener? = null
-    lateinit var tv: TextView
+    private var listener: LocalFileItemAdapter.OnLocalFileItemClickListener? = null
+    private var onAddCallback: OnAddLocalMangaCallback? = null
+    private lateinit var tv: TextView
 
     @Inject
     @field:FragmentScopedFactory
     lateinit var fragmentViewModelFactory: ViewModelFactory
 
-    lateinit var viewModel: LocalFragmentViewModel
+    private lateinit var viewModel: LocalFragmentViewModel
 
     init {
         this.setHasOptionsMenu(true)
+        setStyle(STYLE_NO_TITLE, R.style.FullScreenDialog)
+    }
+
+
+    fun setCallback(callback: OnAddLocalMangaCallback) {
+        onAddCallback = callback
+    }
+
+    override fun getDialog(): Dialog {
+        val dialog = super.getDialog()
+        if (dialog != null) {
+            val width = ViewGroup.LayoutParams.MATCH_PARENT
+            val height = ViewGroup.LayoutParams.MATCH_PARENT
+            dialog.window.setLayout(width, height)
+        }
+        return dialog
+    }
+
+    override fun onAttach(context: Context?) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -65,30 +91,31 @@ class LocalFragment : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
-
-        val defalutPaht = (this.activity as MainActivity).appViewModel.Setting.getDefaultLocalMangaPath(
-            activity)
         //TODO
-        path = File(Environment.getExternalStorageDirectory().toString() + defalutPaht)
-        extraPath = defalutPaht
-        val childFolders = extraPath!!.split(
-            "/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        path = File(Environment.getExternalStorageDirectory().toString())
+        val childFolders = extraPath?.split(
+            "/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray() ?: emptyArray()
         for (s in childFolders) {
             if (!s.isEmpty()) {
                 str.add(s)
             }
         }
-        val rootView = inflater.inflate(R.layout.fragment_local, container, false)
-        tv = rootView.findViewById<View>(R.id.textView) as TextView
-        val bt = rootView.findViewById<View>(R.id.button) as Button
-        bt.setOnClickListener {
-            val activity = activity as BaseActivity?
-            if (activity != null) {
-                activity.appViewModel.Setting.setDefaultLocalMangaPath(getActivity(), extraPath)
-                Toast.makeText(getActivity(), getString(R.string.local_set_default_path_successed),
-                    Toast.LENGTH_SHORT).show()
-            }
+        val rootView = inflater.inflate(R.layout.fragment_add_local, container, false)
+        tv = rootView.findViewById<View>(R.id.tvPath) as TextView
+        val btCancel = rootView.findViewById<View>(R.id.btCancel) as Button
+        btCancel.setOnClickListener {
+            dismiss()
         }
+        val btAdd = rootView.findViewById<View>(R.id.btAdd) as Button
+        btAdd.setOnClickListener {
+            val file = File(Environment.getExternalStorageDirectory(), extraPath)
+            viewModel.addLocalMenu(file) {
+                Logger.d(TAG, "Added local manga, finished")
+                onAddCallback?.onAdded()
+            }
+            dismiss()
+        }
+
         recyclerView = rootView.findViewById<View>(R.id.listView) as RecyclerView
         recyclerView!!.layoutManager = LinearLayoutManager(context)
         recyclerView!!.adapter = LocalFileItemAdapter(context, null, null)
@@ -117,6 +144,17 @@ class LocalFragment : BaseFragment() {
         }
     }
 
+    private fun startAsyncTask() {
+        Observable.fromCallable {
+            getContentBackground()
+            1
+        }
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { updateContent() }
+            .apply { disposable.add(this) }
+    }
+
     private fun initViewModel() {
         withViewModel<LocalFragmentViewModel>(fragmentViewModelFactory) {
             viewModel = this
@@ -124,12 +162,11 @@ class LocalFragment : BaseFragment() {
         }
     }
 
-    override fun getContentBackground() {
+    private fun getContentBackground() {
         loadFileList()
     }
 
-    override fun updateContent() {
-        super.updateContent()
+    private fun updateContent() {
         listener = LocalFileItemAdapter.OnLocalFileItemClickListener { view, pos ->
             chosenFile = fileList!![pos].file
             val sel = File(path.toString() + "/" + chosenFile)
@@ -172,16 +209,12 @@ class LocalFragment : BaseFragment() {
             } else {
                 // Perform action with file picked
 
-                viewModel.selectChapter(path!!, chosenFile)
-                activity!!.startActivity(Intent(activity, MangaPageActivityV2::class.java))
-                activity!!.overridePendingTransition(R.anim.in_rightleft, R.anim.out_rightleft)
             }// File picked
             // Checks if 'up' was clicked
         }
 
         adapter.setOnClickListener(listener)
         recyclerView!!.adapter = adapter
-
     }
 
     private fun getFolderPath() {
@@ -262,9 +295,13 @@ class LocalFragment : BaseFragment() {
         }
     }
 
+    interface OnAddLocalMangaCallback {
+        fun onAdded()
+    }
+
     companion object {
 
-        private val TAG = "F_PATH"
+        private val TAG = "AddLocalFragment"
     }
 
 }
