@@ -1,6 +1,7 @@
 package com.king.mangaviewer.domain.external.mangaprovider
 
 
+import com.king.mangaviewer.domain.repository.LocalMangaRepository
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.model.MangaUriType
 import com.king.mangaviewer.model.TitleAndUrl
@@ -17,18 +18,17 @@ import javax.inject.Inject
 /**
  * Created by KinG on 12/24/2014.
  */
-class LocalMangaProvider @Inject
-constructor() : MangaProvider() {
+class LocalMangaProvider @Inject constructor(
+    private val localMangaRepository: LocalMangaRepository
+) : MangaProvider() {
     private var LOG_TAG = "LocalManga"
 
     init {
-
         // TODO Auto-generated constructor stub
         WEBSITE_URL = ""
         WEB_SEARCH_URL = ""
         CHARSET = "utf8"
     }
-
 
     override fun getPageList(firstPageUrl: String): List<String> {
 
@@ -99,17 +99,7 @@ constructor() : MangaProvider() {
 
 
     override fun getLatestMangaList(state: HashMap<String, Any>): List<MangaMenuItem> {
-        val topMangaList = ArrayList<TitleAndUrl>()
-
-        for (i in 0..9) {
-            val url = WEBSITE_URL + i
-            val title = "Test Menu $i"
-            val imageUrl = ""
-            topMangaList.add(TitleAndUrl(title, url, imageUrl))
-
-        }
-
-        return toMenuItem(topMangaList)
+        return localMangaRepository.getMangaList().blockingGet()
     }
 
     override fun getLoaderType(): MangaUriType {
