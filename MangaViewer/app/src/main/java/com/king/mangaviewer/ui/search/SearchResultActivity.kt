@@ -18,6 +18,7 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
+import com.king.mangaviewer.adapter.MangaMenuItemAdapter.MangaMenuAdapterListener
 import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.component.MangaGridView
@@ -66,13 +67,14 @@ class SearchResultActivity : BaseActivity() {
         }
         mangaSourceTv = this.findViewById<View>(R.id.manga_source_textView) as TextView
         gv = findViewById<View>(R.id.gridView) as MangaGridView
-        gv.adapter = MangaMenuItemAdapter { view, item ->
-            viewModel.selectMenu(item)
-            startActivity(Intent(this@SearchResultActivity, MangaChapterActivity::class.java))
-            this@SearchResultActivity.overridePendingTransition(R.anim.in_rightleft,
+        gv.adapter = MangaMenuItemAdapter(object : MangaMenuAdapterListener {
+            override fun onItemClicked(view: View, item: MangaMenuItem) {
+                viewModel.selectMenu(item)
+                startActivity(Intent(this@SearchResultActivity, MangaChapterActivity::class.java))
+                this@SearchResultActivity.overridePendingTransition(R.anim.in_rightleft,
                     R.anim.out_rightleft)
-
-        }
+            }
+        })
     }
 
     private fun initViewModel() {
@@ -104,7 +106,7 @@ class SearchResultActivity : BaseActivity() {
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchView = menu.findItem(R.id.menu_search).actionView as SearchView
         searchView!!.setSearchableInfo(
-                searchManager.getSearchableInfo(componentName))
+            searchManager.getSearchableInfo(componentName))
         return true
     }
 
@@ -150,7 +152,7 @@ class SearchResultActivity : BaseActivity() {
         lv.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_single_choice, source)
         lv.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             appViewModel.Setting.setSelectedWebSource(mws!![position],
-                    this@SearchResultActivity)
+                this@SearchResultActivity)
             appViewModel.Manga.mangaMenuList = null
             getQueryResult(queryString)
             popup.dismiss()

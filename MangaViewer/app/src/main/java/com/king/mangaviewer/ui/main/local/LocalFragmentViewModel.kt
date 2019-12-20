@@ -6,6 +6,7 @@ import com.king.mangaviewer.base.BaseFragmentViewModel
 import com.king.mangaviewer.domain.repository.AppRepository
 import com.king.mangaviewer.domain.usecase.AddLocalMangaMenuUseCase
 import com.king.mangaviewer.domain.usecase.GetLatestMangaListUseCase
+import com.king.mangaviewer.domain.usecase.RemoveLocalMangaMenuUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaMenuUseCase
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
@@ -21,11 +22,14 @@ class LocalFragmentViewModel @Inject constructor(
     private val appRepository: AppRepository,
     private val getLatestMangaListUseCase: GetLatestMangaListUseCase,
     private val selectMangaMenuUseCase: SelectMangaMenuUseCase,
-    private val addLocalMangaMenuUseCase: AddLocalMangaMenuUseCase
+    private val addLocalMangaMenuUseCase: AddLocalMangaMenuUseCase,
+    private val removeLocalMangaMenuUseCase: RemoveLocalMangaMenuUseCase
 ) : BaseFragmentViewModel() {
 
     private val _mangaList = MutableLiveData<List<MangaMenuItem>>()
     val mangaList: LiveData<List<MangaMenuItem>> = _mangaList
+
+    val selectedLocalMenu = MutableLiveData<List<MangaMenuItem>>().apply { value = emptyList() }
 
     override fun attachToView() {
     }
@@ -84,6 +88,15 @@ class LocalFragmentViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .doOnComplete { onSuccess.invoke() }
             .subscribe()
+            .apply { disposable.add(this) }
+    }
+
+    fun removeLocalMenu() {
+        removeLocalMangaMenuUseCase.execute(selectedLocalMenu.value!!)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { refresh(true) }
+            .apply { disposable.add(this) }
     }
 
     companion object {

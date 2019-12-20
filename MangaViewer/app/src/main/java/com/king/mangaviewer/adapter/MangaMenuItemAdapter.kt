@@ -1,5 +1,6 @@
 package com.king.mangaviewer.adapter
 
+import android.annotation.SuppressLint
 import android.support.annotation.LayoutRes
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
@@ -18,8 +19,8 @@ import com.king.mangaviewer.util.glide.CropImageTransformation
 import io.reactivex.disposables.CompositeDisposable
 
 open class MangaMenuItemAdapter(
-        private val listener: ((view: View, menu: MangaMenuItem) -> Unit)? = null) :
-        BaseRecyclerViewAdapter<MangaMenuItem, RecyclerView.ViewHolder>(diffCallBack) {
+    protected val listener: MangaMenuAdapterListener? = null) :
+    BaseRecyclerViewAdapter<MangaMenuItem, RecyclerView.ViewHolder>(diffCallBack) {
 
     private var mLoadingState: LoadingState = Idle
 
@@ -33,15 +34,14 @@ open class MangaMenuItemAdapter(
                 FooterViewHolder.createHolder(parent)
             }
             else -> {
-                DataViewHolder.createHolder(parent, getDataViewHolderRes())
+                createDataViewHolder(parent)
             }
 
         }
     }
 
-    protected open fun getDataViewHolderRes(): Int {
-        return R.layout.list_manga_menu_item
-    }
+    protected open fun createDataViewHolder(
+        parent: ViewGroup) = DataViewHolder.createHolder(parent, R.layout.list_manga_menu_item)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
@@ -50,13 +50,7 @@ open class MangaMenuItemAdapter(
             }
             is DataViewHolder -> {
                 val item = getItem(position)
-                GlideImageHelper.getMenuCover(holder.imageView, item, CropImageTransformation())
-                        .subscribe()
-                        .apply { holder.disposable.add(this) }
-
-                val title = this.getItem(position).title
-                holder.textView.text = title
-                holder.itemView.setOnClickListener { listener?.invoke(holder.imageView, item) }
+                holder.onBind(item, listener)
             }
         }
     }
@@ -95,9 +89,11 @@ open class MangaMenuItemAdapter(
     abstract class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView) {
         open fun recycle() {
         }
+
+        open fun onBind(item: MangaMenuItem, listener: MangaMenuAdapterListener?) {}
     }
 
-    class DataViewHolder(itemView: View) : RecyclerViewHolders(itemView) {
+    open class DataViewHolder(itemView: View) : RecyclerViewHolders(itemView) {
 
         val disposable = CompositeDisposable()
         var textView: TextView
@@ -115,11 +111,25 @@ open class MangaMenuItemAdapter(
             disposable.clear()
         }
 
+        override fun onBind(item: MangaMenuItem, listener: MangaMenuAdapterListener?) {
+            this.also { holder ->
+                GlideImageHelper.getMenuCover(holder.imageView, item, CropImageTransformation())
+                    .subscribe()
+                    .apply { holder.disposable.add(this) }
+
+                val title = item.title
+                holder.textView.text = title
+                holder.itemView.setOnClickListener {
+                    listener?.onItemClicked(holder.imageView, item)
+                }
+            }
+        }
+
         companion object {
             fun createHolder(parent: ViewGroup, @LayoutRes layoutRes: Int): RecyclerViewHolders {
                 val layoutView = LayoutInflater.from(parent.context).inflate(
-                        layoutRes,
-                        parent, false)
+                    layoutRes,
+                    parent, false)
                 return DataViewHolder(layoutView)
             }
         }
@@ -130,11 +140,15 @@ open class MangaMenuItemAdapter(
         companion object {
             fun createHolder(parent: ViewGroup): RecyclerViewHolders {
                 val layoutView = LayoutInflater.from(parent.context).inflate(
-                        R.layout.list_item_loading_footer,
-                        parent, false)
+                    R.layout.list_item_loading_footer,
+                    parent, false)
                 return FooterViewHolder(layoutView)
             }
         }
+    }
+
+    interface MangaMenuAdapterListener {
+        fun onItemClicked(view: View, item: MangaMenuItem) {}
     }
 
     companion object {
@@ -144,12 +158,13 @@ open class MangaMenuItemAdapter(
 
         val diffCallBack = object : DiffUtil.ItemCallback<MangaMenuItem>() {
             override fun areItemsTheSame(oldItem: MangaMenuItem?,
-                    newItem: MangaMenuItem?): Boolean {
+                newItem: MangaMenuItem?): Boolean {
                 return oldItem?.hash == newItem?.hash
             }
 
+            @SuppressLint("DiffUtilEquals")
             override fun areContentsTheSame(oldItem: MangaMenuItem?,
-                    newItem: MangaMenuItem?): Boolean {
+                newItem: MangaMenuItem?): Boolean {
                 return oldItem == newItem
             }
         }

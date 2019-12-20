@@ -143,6 +143,7 @@
   <string name="no_local_manga">No Local Manga</string>
   <string name="add">Add</string>
   <string name="choose_folder">Choose manga folder</string>
+  <string name="bottom_sheet_button_remove">Remove</string>
 
   <plurals name="item_selected">
     <item quantity="one">%d item selected</item>

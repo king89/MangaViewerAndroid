@@ -16,12 +16,16 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.king.mangaviewer.R
 import com.king.mangaviewer.R.integer
+import com.king.mangaviewer.adapter.LocalMangaMenuItemAdapter
+import com.king.mangaviewer.adapter.LocalMangaMenuItemAdapter.OnSelectedChangeListener
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
+import com.king.mangaviewer.adapter.MangaMenuItemAdapter.MangaMenuAdapterListener
 import com.king.mangaviewer.base.BaseFragment
 import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.di.annotation.FragmentScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
+import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.ui.main.HasFloatActionButton
 import com.king.mangaviewer.ui.main.local.AddLocalFragment.OnAddLocalMangaCallback
 import com.king.mangaviewer.util.AppNavigator
@@ -31,11 +35,11 @@ import javax.inject.Inject
 
 class LocalFragment : BaseFragment(), HasFloatActionButton {
     private lateinit var mRecyclerView: RecyclerView
+    private lateinit var localMangaMenuItemAdapter: LocalMangaMenuItemAdapter
     private lateinit var gridLayoutManager: GridLayoutManager
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var tv: TextView
-    private var fab: FloatingActionButton? = null
-
+    private lateinit var fab: FloatingActionButton
     lateinit var viewModel: LocalFragmentViewModel
 
     @Inject
@@ -68,11 +72,19 @@ class LocalFragment : BaseFragment(), HasFloatActionButton {
         gridLayoutManager = GridLayoutManager(activity,
             resources.getInteger(integer.gridvivew_column_num))
         mRecyclerView.layoutManager = gridLayoutManager
-        mRecyclerView.adapter = MangaMenuItemAdapter { view, item ->
-            viewModel.selectMangaMenu(item)
-            appNavigator.navigateToChapter(Pair(view, "cover"))
+        localMangaMenuItemAdapter = LocalMangaMenuItemAdapter(object : MangaMenuAdapterListener {
+            override fun onItemClicked(view: View, item: MangaMenuItem) {
+                viewModel.selectMangaMenu(item)
+                appNavigator.navigateToChapter(Pair(view, "cover"))
+            }
+        }, object : OnSelectedChangeListener {
+            override fun onChange(menuList: List<MangaMenuItem>) {
+                fab.setImageDrawable(ContextCompat.getDrawable(fab.context, R.drawable.ic_remove))
+                viewModel.selectedLocalMenu.postValue(menuList)
+            }
+        })
+        mRecyclerView.adapter = localMangaMenuItemAdapter
 
-        }
         tv = rootView.findViewById<View>(R.id.textView) as TextView
         mSwipeRefreshLayout = rootView.findViewById<View>(
             R.id.swipeRefreshLayout) as SwipeRefreshLayout
@@ -124,14 +136,20 @@ class LocalFragment : BaseFragment(), HasFloatActionButton {
     }
 
     override fun onClick() {
-        AddLocalFragment().apply {
-            setCallback(object : OnAddLocalMangaCallback {
-                override fun onAdded() {
-                    Logger.d(TAG, "Added local manga, refreshing")
-                    viewModel.refresh(true)
-                }
-            })
-        }.show(this.fragmentManager, "")
+        if (localMangaMenuItemAdapter.selectableMode) {
+            viewModel.removeLocalMenu()
+            localMangaMenuItemAdapter.toggleSelectableMode()
+            fab.setImageDrawable(ContextCompat.getDrawable(fab.context, R.drawable.ic_add))
+        } else {
+            AddLocalFragment().apply {
+                setCallback(object : OnAddLocalMangaCallback {
+                    override fun onAdded() {
+                        Logger.d(TAG, "Added local manga, refreshing")
+                        viewModel.refresh(true)
+                    }
+                })
+            }.show(this.fragmentManager, "")
+        }
     }
 
     companion object {

@@ -11,6 +11,7 @@ import javax.inject.Inject
 interface LocalMangaRepository {
     fun addManga(manga: MangaMenuItem): Completable
     fun removeManga(manga: MangaMenuItem): Completable
+    fun removeMangaList(list: List<MangaMenuItem>): Completable
     fun getMangaList(): Single<List<MangaMenuItem>>
 }
 
@@ -18,6 +19,14 @@ class LocalMangaRepositoryImpl @Inject constructor(
     private val dataSource: LocalMangaDataSource) : LocalMangaRepository {
     override fun addManga(manga: MangaMenuItem): Completable = dataSource.addManga(manga)
     override fun removeManga(manga: MangaMenuItem): Completable = dataSource.removeManga(manga)
+    override fun removeMangaList(list: List<MangaMenuItem>): Completable {
+        return Completable.fromAction {
+            list.forEach {
+                dataSource.removeManga(it).blockingGet()
+            }
+        }
+    }
+
     override fun getMangaList(): Single<List<MangaMenuItem>> = dataSource.getMangaList()
 
 }
