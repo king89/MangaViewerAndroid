@@ -1,8 +1,6 @@
 package com.king.mangaviewer.ui.main.fragment
 
 import android.arch.lifecycle.Observer
-import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.util.Pair
@@ -17,18 +15,16 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.FavouriteMangaItemAdapter
-import com.king.mangaviewer.adapter.MangaMenuItemAdapter
+import com.king.mangaviewer.adapter.MangaMenuItemAdapter.MangaMenuAdapterListener
 import com.king.mangaviewer.base.BaseFragment
 import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.di.annotation.FragmentScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaMenuItem
-import com.king.mangaviewer.ui.chapter.MangaChapterActivity
 import com.king.mangaviewer.util.AppNavigator
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.withViewModel
-import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
 class FavouriteFragment : BaseFragment() {
@@ -47,11 +43,6 @@ class FavouriteFragment : BaseFragment() {
     @Inject
     lateinit var appNavigator: AppNavigator
 
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
-
     init {
         this.setHasOptionsMenu(true)
     }
@@ -67,21 +58,23 @@ class FavouriteFragment : BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?): View? {
 
         val rootView = inflater.inflate(R.layout.fragment_favourite, container, false)
         mRecyclerView = rootView.findViewById<View>(R.id.viewPager) as RecyclerView
         gridLayoutManager = GridLayoutManager(activity,
-                resources.getInteger(R.integer.gridvivew_column_num))
+            resources.getInteger(R.integer.gridvivew_column_num))
         mRecyclerView.layoutManager = gridLayoutManager
-        mRecyclerView.adapter = FavouriteMangaItemAdapter { view, item ->
-            viewModel.selectMangaMenu(item)
-            appNavigator.navigateToChapter(Pair(view, "cover"))
+        mRecyclerView.adapter = FavouriteMangaItemAdapter(object : MangaMenuAdapterListener {
+            override fun onItemClicked(view: View, item: MangaMenuItem) {
+                viewModel.selectMangaMenu(item)
+                appNavigator.navigateToChapter(Pair(view, "cover"))
+            }
+        })
 
-        }
         tv = rootView.findViewById<View>(R.id.textView) as TextView
         mSwipeRefreshLayout = rootView.findViewById<View>(
-                R.id.swipeRefreshLayout) as SwipeRefreshLayout
+            R.id.swipeRefreshLayout) as SwipeRefreshLayout
         mSwipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh(false)
         }

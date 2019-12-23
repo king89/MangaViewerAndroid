@@ -27,7 +27,7 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.king.mangaviewer.MyApplication;
-import com.king.mangaviewer.domain.data.mangaprovider.LocalManga;
+import com.king.mangaviewer.domain.external.mangaprovider.LocalMangaProvider;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.base.BaseActivity;
 import com.king.mangaviewer.model.MangaPageItem;
@@ -355,7 +355,7 @@ public class MyViewFlipper extends ViewFlipper {
     private void loadMangaPage(final int curr, final View v, final FitXImageView iv,
             final ProgressBar progressBar, final MangaPageItem pageItem, final int finalNext) {
         if (pageItem.getMangaWebSource().getClassName().equalsIgnoreCase(
-                LocalManga.class.getName())) {
+                LocalMangaProvider.class.getName())) {
             Bitmap bitmap;
             //load zip image
             ZipFile zf;

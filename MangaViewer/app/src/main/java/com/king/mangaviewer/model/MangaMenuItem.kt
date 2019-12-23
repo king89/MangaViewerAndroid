@@ -2,22 +2,14 @@ package com.king.mangaviewer.model
 
 import com.king.mangaviewer.util.StringUtils
 
-open class MangaMenuItem
-/**
- * @param id
- * @param title
- * @param description
- * @param imagePath
- */
-(id: String, title: String, description: String,
-        imagePath: String, url: String,
-        mangaWebSource: MangaWebSource)// TODO Auto-generated constructor stub
-    : BaseItem(id, title, description, imagePath, url, mangaWebSource) {
+open class MangaMenuItem(
+    var id: String,
+    var title: String,
+    var description: String,
+    var imagePath: String,
+    var url: String,
+    var mangaWebSource: MangaWebSource) {
 
-    val hash: String
-        get() {
-            val tx = this.mangaWebSource.getClassName() + "|" + this.url
-            return StringUtils.getHash(tx)
-        }
+    var hash: String = StringUtils.getHash(url.trim())
 
 }

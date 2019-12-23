@@ -8,7 +8,6 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.provider.Settings
 import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED
 import android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED
 import android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN
 import android.support.design.widget.FloatingActionButton
@@ -32,8 +31,6 @@ import com.king.mangaviewer.R
 import com.king.mangaviewer.R.string
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.OnItemClickListener
-import com.king.mangaviewer.adapter.MangaChapterItemWrapper
-import com.king.mangaviewer.adapter.WrapperType.CHAPTER
 import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.component.ChapterListBottomSheetBehavior
@@ -311,9 +308,7 @@ class MangaPageActivityV2 : BaseActivity(),
             rvChapterList.layoutManager = LinearLayoutManager(this)
             rvChapterList.adapter = adapter
             ViewCompat.setNestedScrollingEnabled(rvChapterList, false)
-            val list = viewModel.chapterList.map {
-                MangaChapterItemWrapper(it.title, CHAPTER, it, false)
-            }
+            val list = viewModel.chapterList
             (rvChapterList.adapter as MangaChapterItemAdapter).submitList(list)
         }
         //locate current chapter

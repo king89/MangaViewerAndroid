@@ -1,7 +1,6 @@
 package com.king.mangaviewer.ui.main.fragment
 
 import android.arch.lifecycle.Observer
-import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
@@ -18,6 +17,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
+import com.king.mangaviewer.adapter.MangaMenuItemAdapter.MangaMenuAdapterListener
 import com.king.mangaviewer.base.BaseFragment
 import com.king.mangaviewer.base.ErrorMessage.NoError
 import com.king.mangaviewer.base.ViewModelFactory
@@ -25,11 +25,11 @@ import com.king.mangaviewer.component.MangaGridView
 import com.king.mangaviewer.di.annotation.FragmentScopedFactory
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
+import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.ui.main.HasFloatActionButton
 import com.king.mangaviewer.util.AppNavigator
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.withViewModel
-import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_manga_gridview.layout_error
 import javax.inject.Inject
 
@@ -50,11 +50,6 @@ open class HomeFragment : BaseFragment(), HasFloatActionButton {
 
     @Inject
     lateinit var appNavigator: AppNavigator
-
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
 
     override fun refresh() {
         this.mangaViewModel.mangaMenuList = null
@@ -78,10 +73,12 @@ open class HomeFragment : BaseFragment(), HasFloatActionButton {
         mSwipeRefreshLayout.setOnRefreshListener { refresh() }
 
         gv = rootView.findViewById<View>(R.id.gridView) as MangaGridView
-        gv.adapter = MangaMenuItemAdapter { view, item ->
-            viewModel.selectMangaMenu(item)
-            appNavigator.navigateToChapter(Pair(view, "cover"))
-        }
+        gv.adapter = MangaMenuItemAdapter(object : MangaMenuAdapterListener {
+            override fun onItemClicked(view: View, item: MangaMenuItem) {
+                viewModel.selectMangaMenu(item)
+                appNavigator.navigateToChapter(Pair(view, "cover"))
+            }
+        })
         gv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 if (dy > 0 || dy < 0 && fab?.isShown == true)

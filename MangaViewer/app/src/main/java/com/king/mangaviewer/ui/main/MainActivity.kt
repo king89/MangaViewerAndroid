@@ -36,7 +36,7 @@ import com.king.mangaviewer.ui.main.fragment.AllMangaFragment
 import com.king.mangaviewer.ui.main.fragment.FavouriteFragment
 import com.king.mangaviewer.ui.main.fragment.HistoryFragment
 import com.king.mangaviewer.ui.main.fragment.HomeFragment
-import com.king.mangaviewer.ui.main.fragment.LocalFragment
+import com.king.mangaviewer.ui.main.local.LocalFragment
 import com.king.mangaviewer.ui.search.SearchResultActivity
 import com.king.mangaviewer.ui.setting.SettingsActivity
 import com.king.mangaviewer.util.AppNavigator
@@ -192,12 +192,11 @@ class MainActivity : BaseActivity() {
 
         val lv = layout.findViewById<View>(R.id.listView) as ListView
 
-        val mws = appViewModel.Setting.mangaWebSources
+        val mws = appViewModel.Setting.mangaWebSources.filter { it.visible }
         var tSelectWebSourcePos = 0
         val source = ArrayList<String>()
         if (mws != null) {
             for ((i, m) in mws.withIndex()) {
-                if (m.id < 0) continue
                 source.add(m.displayName)
                 if (m.id == appViewModel.Setting.selectedWebSource.id) {
                     tSelectWebSourcePos = i

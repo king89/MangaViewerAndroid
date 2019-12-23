@@ -2,10 +2,8 @@ package com.king.mangaviewer.util;
 
 import android.content.Context;
 import android.os.Environment;
-
 import com.king.mangaviewer.common.Constants;
 import com.king.mangaviewer.common.Constants.WebSiteEnum;
-
 import java.io.File;
 
 public class SettingHelper {
@@ -16,19 +14,19 @@ public class SettingHelper {
 
 //    public static boolean saveSetting(Context context, SettingViewModel setting) {
 //        String folderName = getSettingFolder(context);
-//        String fileName = SETTINGFILE;
+  //        String fileUri = SETTINGFILE;
 //        String ss = new Gson().toJson(setting);
 //
 //        InputStream inputStream = new ByteArrayInputStream(ss.getBytes());
-//        FileHelper.saveFile(folderName, fileName, inputStream);
+  //        FileHelper.saveFile(folderName, fileUri, inputStream);
 //        return true;
 //    }
 
 //    public static SettingViewModel loadSetting(Context context) {
 //        String folderName = getSettingFolder(context);
-//        String fileName = SETTINGFILE;
-//
-//        byte[] data = FileHelper.loadFile(folderName, fileName);
+  //        String fileUri = SETTINGFILE;
+  //
+  //        byte[] data = FileHelper.loadFile(folderName, fileUri);
 //        SettingViewModel tmp = null;
 //        if (data != null) {
 //            String ss = new String(data);

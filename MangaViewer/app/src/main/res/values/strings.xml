@@ -7,7 +7,7 @@
   <string name="title_activity_manga_chapter">MangaChapterActivity</string>
   <string name="title_activity_manga_page">MangaPageActivity</string>
 
-  <string name="choosefile">Choose Your Manga File(.zip)</string>
+  <string name="choose_file">Choose Your Manga File(.zip)</string>
   <string name="setting_source">Sources</string>
   <string name="setting_folder_size">Cache File Size</string>
   <string name="last_page">Last Page</string>
@@ -138,6 +138,17 @@
   <string name="continue_read">Continue</string>
   <string name="undo">Undo</string>
   <string name="history_item_removed">%s removed</string>
+  <string name="download">Download</string>
+  <string name="chapter_start_download">Download</string>
+  <string name="no_local_manga">No Local Manga</string>
+  <string name="add">Add</string>
+  <string name="choose_folder">Choose manga folder</string>
+  <string name="bottom_sheet_button_remove">Remove</string>
+
+  <plurals name="item_selected">
+    <item quantity="one">%d item selected</item>
+    <item quantity="other">%d items selected</item>
+  </plurals>
 
 
 </resources>

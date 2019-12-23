@@ -21,6 +21,9 @@ interface HistoryMangaDAO {
     @Delete
     fun delete(item: HistoryManga)
 
+    @Update
+    fun update(item: HistoryManga)
+
     @Query("DELETE FROM history_manga")
     fun deleteAll()
 
@@ -33,6 +36,7 @@ interface HistoryMangaDAO {
     @Query("select * from history_manga order by last_read_time desc limit 1")
     fun getLastReadItem(): Single<HistoryManga>
 
-    @Query("select * from (select * from history_manga order by last_read_time) as a group by menu_hash order by last_read_time desc")
-    fun getLastReadMangaItem():Single<List<HistoryManga>>
+    @Query(
+        "select * from (select * from history_manga order by last_read_time) as a group by menu_hash order by last_read_time desc")
+    fun getLastReadMangaItem(): Single<List<HistoryManga>>
 }

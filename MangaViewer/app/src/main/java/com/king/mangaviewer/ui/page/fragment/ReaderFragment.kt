@@ -1,6 +1,5 @@
 package com.king.mangaviewer.ui.page.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +11,7 @@ import com.king.mangaviewer.component.HasFullScreenControl
 import com.king.mangaviewer.component.ReaderCallback
 import com.king.mangaviewer.component.ReaderPanel
 import com.king.mangaviewer.di.annotation.ActivityScopedFactory
-import com.king.mangaviewer.model.MangaUri
 import com.king.mangaviewer.ui.page.MangaPageActivityV2ViewModel
-import dagger.android.support.AndroidSupportInjection
 import javax.inject.Inject
 
 abstract class ReaderFragment : BaseFragment(), ReaderPanel {
@@ -27,11 +24,6 @@ abstract class ReaderFragment : BaseFragment(), ReaderPanel {
     lateinit var activityScopedFactory: ViewModelFactory
 
     lateinit var viewModel: MangaPageActivityV2ViewModel
-
-    override fun onAttach(context: Context?) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?): View {

@@ -67,6 +67,12 @@ android {
         }
     }
     buildToolsVersion '28.0.3'
+
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas".toString())
+        }
+    }
 }
 
 dependencies {
@@ -83,6 +89,7 @@ dependencies {
     implementation libraries.gson
     implementation libraries.jodaTime
     implementation libraries.okHttp
+    implementation libraries.okHttpInterceptor
     implementation libraries.glide
 
     implementation libraries.retrofit2

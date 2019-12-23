@@ -1,6 +1,6 @@
 package com.king.mangaviewer.domain.usecase
 
-import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
+import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.model.MangaPageItem
 import com.king.mangaviewer.viewmodel.AppViewModel
@@ -22,6 +22,7 @@ class GetPageListUseCase @Inject constructor(private val appViewModel: AppViewMo
                         i,
                         pageUrlList.size)
                 item.referUrl = chapterItem.url
+                item.webImageUrl = mPattern.getImageUrl(item.url, item.nowNum)
                 mangaPageList.add(item)
             }
 

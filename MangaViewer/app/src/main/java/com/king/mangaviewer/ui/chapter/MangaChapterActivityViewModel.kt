@@ -1,20 +1,27 @@
 package com.king.mangaviewer.ui.chapter
 
-import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
+import com.king.mangaviewer.adapter.MangaChapterStateItem
 import com.king.mangaviewer.base.BaseActivityViewModel
-import com.king.mangaviewer.domain.data.AppRepository
-import com.king.mangaviewer.domain.data.HistoryMangaRepository
+import com.king.mangaviewer.domain.data.local.DownloadState
+import com.king.mangaviewer.domain.repository.AppRepository
+import com.king.mangaviewer.domain.repository.HistoryMangaRepository
 import com.king.mangaviewer.domain.usecase.AddToFavoriteUseCase
 import com.king.mangaviewer.domain.usecase.GetChapterListUseCase
+import com.king.mangaviewer.domain.usecase.GetDownloadStateUseCase
 import com.king.mangaviewer.domain.usecase.GetFavoriteStateUseCase
 import com.king.mangaviewer.domain.usecase.GetReadChapterUseCase
 import com.king.mangaviewer.domain.usecase.RemoveFromFavoriteUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaChapterUseCase
+import com.king.mangaviewer.domain.usecase.StartDownloadUseCase
+import com.king.mangaviewer.model.LoadingState
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
+import com.king.mangaviewer.model.MangaChapterHash
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.util.Logger
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -27,67 +34,121 @@ class MangaChapterActivityViewModel @Inject constructor(
     private val selectMangaChapterUseCase: SelectMangaChapterUseCase,
     private val addToFavoriteUseCase: AddToFavoriteUseCase,
     private val removeFromFavoriteUseCase: RemoveFromFavoriteUseCase,
-    private val getFavouriteStateUseCase: GetFavoriteStateUseCase
+    private val getFavouriteStateUseCase: GetFavoriteStateUseCase,
+    private val startDownloadUseCase: StartDownloadUseCase,
+    private val getDownloadStateUseCase: GetDownloadStateUseCase
 ) :
     BaseActivityViewModel() {
 
-    private val mChapterPair = MutableLiveData<Pair<List<MangaChapterItem>, List<MangaChapterItem>>>()
-    val chapterPair: LiveData<Pair<List<MangaChapterItem>, List<MangaChapterItem>>> = mChapterPair
+    val chapterList = MutableLiveData<List<MangaChapterItem>>()
+    val chapterHistoryList = MutableLiveData<List<MangaChapterItem>>()
+    val selectedDownloadList = MutableLiveData<List<MangaChapterItem>>().apply { value = emptyList() }
+    private val downloadStateMap = MutableLiveData<Map<MangaChapterHash, DownloadState>>().apply { value = emptyMap() }
+
+    val chapterStateList: MutableLiveData<Map<String, MangaChapterStateItem>> =
+        MediatorLiveData<Map<String, MangaChapterStateItem>>().apply {
+            this.value = emptyMap()
+            addSource(chapterList) {
+                updateChapterStateList()
+            }
+            addSource(chapterHistoryList) {
+                updateChapterStateList()
+            }
+            addSource(downloadStateMap) {
+                updateChapterStateList()
+            }
+        }
+
 
     private val mFavouriteState = MutableLiveData<Boolean>().apply { value = false }
     val favouriteState = mFavouriteState
     // true for default , false for reverse
     private var order = true
-    init {
-        mChapterPair.value = Pair(emptyList(), emptyList())
-    }
 
     override fun attachToView() {
         getChapterList()
+        getHistoryChapter()
         getFavoriteState()
+        bindDownloadState()
     }
 
-    fun getChapterList() {
-        getChapterListUseCase.execute()
-            .map {
-                val readList = getReadChapterUseCase.execute().blockingLast()
-                Pair(it, readList)
+    private fun updateChapterStateList() {
+        Single.fromCallable {
+            val stateMap = hashMapOf<String, MangaChapterStateItem>()
+            if (chapterList.value?.isNotEmpty() == true) {
+
+                val chapterList = chapterList.value!!
+                val historyMap = chapterHistoryList.value!!.let {
+                    val hMap = hashMapOf<String, MangaChapterItem>()
+                    it.forEach { chapter ->
+                        hMap[chapter.hash] = chapter
+                    }
+                    hMap
+                }
+
+                chapterList.forEach { item ->
+                    val isRead = historyMap.containsKey(item.hash)
+                    val downloadState = downloadStateMap.value?.get(item.hash) ?: DownloadState.NONE
+                    stateMap[item.hash] = MangaChapterStateItem(downloadState, isRead)
+                }
             }
+            stateMap
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { mLoadingState.value = Loading }
-            .doAfterTerminate { mLoadingState.value = Idle }
             .subscribe({
-                mChapterPair.value = it
+                chapterStateList.postValue(it)
             }, {
                 Logger.e(TAG, it)
             })
             .apply { disposable.add(this) }
+    }
+
+    fun getChapterList() {
+        getChapterListUseCase.execute()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { setLoadingState(Loading) }
+            .doAfterTerminate { setLoadingState(Idle) }
+            .subscribe({
+                chapterList.postValue(it)
+            }, {
+                Logger.e(TAG, it)
+            })
+            .apply { disposable.add(this) }
+            .also {
+                Logger.d(TAG, "getChapterList")
+            }
 
     }
 
-    fun updateHistoryChapter() {
-        if (mChapterPair.value!!.first.isNotEmpty()) {
-            getReadChapterUseCase.execute()
-                .map {
-                    Pair(mChapterPair.value?.first!!, it)
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mLoadingState.value = Idle }
-                .doAfterTerminate { mLoadingState.value = Idle }
-                .subscribe({
-                    mChapterPair.value = it
-                }, {
-                    Logger.e(TAG, it)
-                })
-                .apply { disposable.add(this) }
-        }
+    fun getHistoryChapter() {
+        getReadChapterUseCase.execute()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                chapterHistoryList.postValue(it)
+            }, {
+                Logger.e(TAG, it)
+            })
+            .apply { disposable.add(this) }
+    }
+
+    private fun bindDownloadState() {
+        val menu = appRepository.appViewModel.Manga.selectedMangaMenuItem
+        getDownloadStateUseCase.execute(menu.hash)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                Logger.d(TAG, "Download state updated: $it")
+                downloadStateMap.value = it
+            }
+            .apply { disposable.add(this) }
     }
 
     fun addToFavorite() {
         val menu = appRepository.appViewModel.Manga.selectedMangaMenuItem
-        addToFavoriteUseCase.execute(menu, mChapterPair.value?.first?.size ?: 0)
+        addToFavoriteUseCase.execute(menu, chapterList.value?.size ?: 0)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -135,11 +196,27 @@ class MangaChapterActivityViewModel @Inject constructor(
 
     fun sort() {
         order = !order
-        var (chapterList, historyList) = mChapterPair.value!!
+        var chapterList = chapterList.value!!
         chapterList = chapterList.reversed()
         appRepository.appViewModel.Manga.mangaChapterList = chapterList
-        mChapterPair.postValue(chapterList to historyList)
+        this.chapterList.postValue(chapterList)
+    }
 
+    fun startDownload() {
+        if (selectedDownloadList.value!!.isNotEmpty()) {
+            startDownloadUseCase.execute(selectedDownloadList.value!!)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    Logger.i(TAG, "startDownload called")
+                }, { Logger.e(TAG, it) })
+                .apply { disposable.add(this) }
+        }
+    }
+
+    @Synchronized
+    private fun setLoadingState(state: LoadingState) {
+        mLoadingState.value = state
     }
 
     companion object {

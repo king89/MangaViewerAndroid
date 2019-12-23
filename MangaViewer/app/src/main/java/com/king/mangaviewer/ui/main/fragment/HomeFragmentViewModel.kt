@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseFragmentViewModel
 import com.king.mangaviewer.base.ErrorMessage.GenericError
 import com.king.mangaviewer.base.ErrorMessage.NoError
-import com.king.mangaviewer.domain.data.AppRepository
+import com.king.mangaviewer.domain.repository.AppRepository
 import com.king.mangaviewer.domain.usecase.GetLatestMangaListUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaMenuUseCase
 import com.king.mangaviewer.model.LoadingState.Idle
@@ -17,9 +17,9 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class HomeFragmentViewModel @Inject constructor(
-        private val appRepository: AppRepository,
-        private val getLatestMangaListUseCase: GetLatestMangaListUseCase,
-        private val selectMangaMenuUseCase: SelectMangaMenuUseCase
+    private val appRepository: AppRepository,
+    private val getLatestMangaListUseCase: GetLatestMangaListUseCase,
+    private val selectMangaMenuUseCase: SelectMangaMenuUseCase
 ) : BaseFragmentViewModel() {
 
     private val _mangaList = MutableLiveData<List<MangaMenuItem>>()
@@ -30,19 +30,19 @@ class HomeFragmentViewModel @Inject constructor(
     }
 
     fun getData() {
-        getLatestMangaListUseCase.execute()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { mLoadingState.value = Loading }
-                .doAfterTerminate { mLoadingState.value = Idle }
-                .subscribe({
-                    _mangaList.value = it
-                    mErrorMessage.value = NoError
-                }, {
-                    Logger.e(TAG, it)
-                    mErrorMessage.value = GenericError
-                })
-                .apply { disposable.add(this) }
+        getLatestMangaListUseCase.execute(appRepository.appViewModel.Setting.selectedWebSource)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { mLoadingState.value = Loading }
+            .doAfterTerminate { mLoadingState.value = Idle }
+            .subscribe({
+                _mangaList.value = it
+                mErrorMessage.value = NoError
+            }, {
+                Logger.e(TAG, it)
+                mErrorMessage.value = GenericError
+            })
+            .apply { disposable.add(this) }
     }
 
     fun selectMangaMenu(menuItem: MangaMenuItem) {

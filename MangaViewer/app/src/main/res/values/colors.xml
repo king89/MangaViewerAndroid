@@ -24,12 +24,17 @@
   <color name="bgCounter">#bbff0000</color>
   <color name="white">#ffffff</color>
   <color name="grey">#6f6f6f</color>
-  <color name="manga_place_holder">#ee626262</color>
+  <color name="manga_place_holder">#e3e3e3</color>
 
   <color name="color_read_banner">@color/grey</color>
   <color name="color_unread_banner">@color/colorAccent</color>
 
   <color name="dim_color">#cc000000</color>
   <color name="background_control_panel">#cc111111</color>
+  <color name="background_chapter_download_panel">#ee333333</color>
+  <color name="background_bottom_sheet_panel">#ee333333</color>
+
+  <color name="error">#bbff0000</color>
+  <color name="selectedPath">@color/colorAccent</color>
 
 </resources>

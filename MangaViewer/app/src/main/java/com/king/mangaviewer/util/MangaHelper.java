@@ -7,14 +7,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.WorkerThread;
 import android.widget.ImageView;
 
-import com.king.mangaviewer.domain.data.mangaprovider.MangaProvider;
+import com.king.mangaviewer.domain.external.mangaprovider.MangaProvider;
 import com.king.mangaviewer.MyApplication;
 import com.king.mangaviewer.common.Constants.SaveType;
-import com.king.mangaviewer.domain.data.mangaprovider.LocalManga;
-import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory;
+import com.king.mangaviewer.domain.external.mangaprovider.LocalMangaProvider;
+import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory;
 import com.king.mangaviewer.model.MangaChapterItem;
 import com.king.mangaviewer.model.MangaMenuItem;
 import com.king.mangaviewer.model.MangaPageItem;
@@ -81,7 +80,7 @@ public class MangaHelper {
     public Drawable getPageImage(final MangaPageItem page, final ImageView imageView,
             final GetImageCallback imageCallback) {
         //For Local Manga
-        if (page.getMangaWebSource().getClassName() == LocalManga.class.getName()) {
+        if (page.getMangaWebSource().getClassName() == LocalMangaProvider.class.getName()) {
             ZipFile zf = null;
             try {
                 zf = new ZipFile(page.getChapter().getUrl());
@@ -134,7 +133,7 @@ public class MangaHelper {
     public List<MangaChapterItem> getChapterList(MangaMenuItem menu) {
         MangaProvider mPattern = providerFactory.getPattern(menu.getMangaWebSource());
 
-        List<TitleAndUrl> tauList = mPattern.getChapterList(menu.getUrl());
+        List<TitleAndUrl> tauList = mPattern.getChapterList(menu);
         List<MangaChapterItem> list = new ArrayList<MangaChapterItem>();
         if (tauList != null) {
             for (int i = 0; i < tauList.size(); i++) {
@@ -144,26 +143,6 @@ public class MangaHelper {
             }
         }
         return list;
-    }
-
-    /* Menu */
-    public List<MangaMenuItem> getLatestMangeList(List<MangaMenuItem> mangaList,
-            HashMap<String, Object> state) {
-        MangaProvider mPattern = providerFactory.getPattern(
-                getSettingViewModel().getSelectedWebSource());
-        List<TitleAndUrl> pageUrlList = mPattern.getLatestMangaList(state);
-        if (mangaList == null) {
-            mangaList = new ArrayList<>();
-        }
-        if (pageUrlList != null) {
-            for (int i = 0; i < pageUrlList.size(); i++) {
-                mangaList.add(new MangaMenuItem("Menu-" + i, pageUrlList.get(i)
-                        .getTitle(), "", pageUrlList.get(i).getImagePath(),
-                        pageUrlList.get(i).getUrl(),
-                        getSettingViewModel().getSelectedWebSource()));
-            }
-        }
-        return mangaList;
     }
 
     public List<MangaMenuItem> getAllManga(List<MangaMenuItem> mangaList,

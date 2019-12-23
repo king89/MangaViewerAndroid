@@ -2,7 +2,7 @@ package com.king.mangaviewer.util
 
 import android.support.annotation.WorkerThread
 import com.king.mangaviewer.MyApplication
-import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
+import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.model.MangaPageItem
@@ -10,6 +10,7 @@ import com.king.mangaviewer.model.MangaWebSource
 import java.util.ArrayList
 import java.util.HashMap
 
+@Deprecated("Should use usecase")
 object MangaHelperV2 {
     private var providerFactory: ProviderFactory = MyApplication.INSTANCE.component.providerFactory()
 
@@ -40,7 +41,7 @@ object MangaHelperV2 {
     fun getChapterList(menu: MangaMenuItem): List<MangaChapterItem> {
         val mPattern = providerFactory.getPattern(menu.mangaWebSource)
 
-        val tauList = mPattern.getChapterList(menu.url)
+        val tauList = mPattern.getChapterList(menu)
         val list = ArrayList<MangaChapterItem>()
         if (tauList != null) {
             for (i in tauList.indices) {

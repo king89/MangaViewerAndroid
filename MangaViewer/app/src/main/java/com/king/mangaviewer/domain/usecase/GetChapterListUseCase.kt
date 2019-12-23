@@ -1,7 +1,7 @@
 package com.king.mangaviewer.domain.usecase
 
-import com.king.mangaviewer.domain.data.FavoriteMangaRepository
-import com.king.mangaviewer.domain.data.mangaprovider.ProviderFactory
+import com.king.mangaviewer.domain.repository.FavoriteMangaRepository
+import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory
 import com.king.mangaviewer.model.MangaChapterItem
 import com.king.mangaviewer.viewmodel.AppViewModel
 import io.reactivex.Single
@@ -19,7 +19,7 @@ class GetChapterListUseCase @Inject constructor(
             val menu = appViewModel.Manga.selectedMangaMenuItem
             val mPattern = providerFactory.getPattern(menu.mangaWebSource)
 
-            val tauList = mPattern.getChapterList(menu.url)
+            val tauList = mPattern.getChapterList(menu)
             val list = ArrayList<MangaChapterItem>()
             if (tauList != null) {
                 for (i in tauList.indices) {

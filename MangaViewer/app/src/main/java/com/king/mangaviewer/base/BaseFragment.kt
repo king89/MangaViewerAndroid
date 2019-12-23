@@ -1,5 +1,6 @@
 package com.king.mangaviewer.base
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -7,18 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.king.mangaviewer.R
-import com.king.mangaviewer.di.annotation.FragmentScopedFactory
 import com.king.mangaviewer.viewmodel.HistoryViewModel
 import com.king.mangaviewer.viewmodel.MangaViewModel
 import com.king.mangaviewer.viewmodel.SettingViewModel
+import dagger.android.support.AndroidSupportInjection
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.Callable
-import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass.
@@ -37,6 +34,11 @@ open class BaseFragment : Fragment() {
         get() = (this.activity as BaseActivity).appViewModel.HistoryManga
 
     protected open fun getContentBackground() {
+    }
+
+    override fun onAttach(context: Context?) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     protected open fun startAsyncTask() {
