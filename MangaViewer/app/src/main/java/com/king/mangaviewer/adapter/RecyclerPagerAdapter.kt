@@ -1,12 +1,11 @@
 package com.king.mangaviewer.adapter
 
-import android.view.ViewGroup
-import android.support.v4.view.PagerAdapter
 import android.view.View
+import android.view.ViewGroup
 import com.king.mangaviewer.util.Logger
 import java.util.Stack
 
-abstract class RecyclerPagerAdapter<T : View> : PagerAdapter() {
+abstract class RecyclerPagerAdapter<T : View> : androidx.viewpager.widget.PagerAdapter() {
 
     private val mViewPool: Stack<T> = Stack()
 

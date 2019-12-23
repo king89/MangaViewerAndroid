@@ -1,12 +1,6 @@
 package com.king.mangaviewer.ui.chapter
 
-import android.arch.lifecycle.Observer
 import android.content.Intent
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED
-import android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
@@ -14,6 +8,11 @@ import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import androidx.lifecycle.Observer
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.OnItemClickListener
@@ -247,12 +246,12 @@ class MangaChapterActivity : BaseActivity() {
     private fun setupChapterList() {
         val adapter = MangaChapterItemAdapter(this,
             onItemClickListener, onSelectedChangeListener)
-        rvChapterList.layoutManager = LinearLayoutManager(this)
+        rvChapterList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         rvChapterList.adapter = adapter
 
         val lastReadAdapter = MangaChapterItemAdapter(this,
             onItemClickListener)
-        rvLastRead.layoutManager = LinearLayoutManager(this)
+        rvLastRead.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         rvLastRead.adapter = lastReadAdapter
     }
 

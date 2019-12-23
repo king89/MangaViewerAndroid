@@ -1,19 +1,16 @@
 package com.king.mangaviewer.ui.main.local
 
-import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.content.ContextCompat
-import android.support.v4.util.Pair
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.util.Pair
+import androidx.lifecycle.Observer
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.king.mangaviewer.R
 import com.king.mangaviewer.R.integer
 import com.king.mangaviewer.adapter.LocalMangaMenuItemAdapter
@@ -34,10 +31,10 @@ import com.king.mangaviewer.util.withViewModel
 import javax.inject.Inject
 
 class LocalFragment : BaseFragment(), HasFloatActionButton {
-    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mRecyclerView: androidx.recyclerview.widget.RecyclerView
     private lateinit var localMangaMenuItemAdapter: LocalMangaMenuItemAdapter
-    private lateinit var gridLayoutManager: GridLayoutManager
-    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var gridLayoutManager: androidx.recyclerview.widget.GridLayoutManager
+    private lateinit var mSwipeRefreshLayout: androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     private lateinit var tv: TextView
     private lateinit var fab: FloatingActionButton
     lateinit var viewModel: LocalFragmentViewModel
@@ -68,8 +65,9 @@ class LocalFragment : BaseFragment(), HasFloatActionButton {
 
         val rootView = inflater.inflate(R.layout.fragment_local, container, false)
 
-        mRecyclerView = rootView.findViewById<View>(R.id.viewPager) as RecyclerView
-        gridLayoutManager = GridLayoutManager(activity,
+        mRecyclerView = rootView.findViewById<View>(
+            R.id.viewPager) as androidx.recyclerview.widget.RecyclerView
+        gridLayoutManager = androidx.recyclerview.widget.GridLayoutManager(activity,
             resources.getInteger(integer.gridvivew_column_num))
         mRecyclerView.layoutManager = gridLayoutManager
         localMangaMenuItemAdapter = LocalMangaMenuItemAdapter(object : MangaMenuAdapterListener {
@@ -87,7 +85,7 @@ class LocalFragment : BaseFragment(), HasFloatActionButton {
 
         tv = rootView.findViewById<View>(R.id.textView) as TextView
         mSwipeRefreshLayout = rootView.findViewById<View>(
-            R.id.swipeRefreshLayout) as SwipeRefreshLayout
+            R.id.swipeRefreshLayout) as androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         mSwipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh(false)
         }

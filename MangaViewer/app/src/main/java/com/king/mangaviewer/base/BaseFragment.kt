@@ -2,11 +2,11 @@ package com.king.mangaviewer.base
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.king.mangaviewer.R
 import com.king.mangaviewer.viewmodel.HistoryViewModel
 import com.king.mangaviewer.viewmodel.MangaViewModel
@@ -20,7 +20,7 @@ import io.reactivex.schedulers.Schedulers
 /**
  * A simple [Fragment] subclass.
  */
-open class BaseFragment : Fragment() {
+open class BaseFragment : androidx.fragment.app.Fragment() {
 
     protected val disposable = CompositeDisposable()
 

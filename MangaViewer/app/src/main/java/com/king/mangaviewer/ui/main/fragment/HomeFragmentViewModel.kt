@@ -1,7 +1,7 @@
 package com.king.mangaviewer.ui.main.fragment
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.king.mangaviewer.base.BaseFragmentViewModel
 import com.king.mangaviewer.base.ErrorMessage.GenericError
 import com.king.mangaviewer.base.ErrorMessage.NoError

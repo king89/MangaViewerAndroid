@@ -4,9 +4,9 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.preference.DialogPreference;
 import android.util.AttributeSet;
+import androidx.appcompat.app.AlertDialog;
+import androidx.preference.DialogPreference;
 
 /**
  * Created by KinG on 8/22/2015.

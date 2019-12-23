@@ -13,7 +13,7 @@
     app:layout_constraintTop_toTopOf="parent"
     tools:showIn="@layout/activity_manga_page_v2"
     >
-  <android.support.constraint.ConstraintLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/bottomSheetTopView"
       android:layout_width="match_parent"
       android:layout_height="56dp"
@@ -54,8 +54,8 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView"
         app:layout_constraintVertical_bias="0.0"
         />
-  </android.support.constraint.ConstraintLayout>
-  <android.support.v7.widget.RecyclerView
+  </androidx.constraintlayout.widget.ConstraintLayout>
+  <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/rvChapterList"
       android:layout_width="match_parent"
       android:layout_height="match_parent"

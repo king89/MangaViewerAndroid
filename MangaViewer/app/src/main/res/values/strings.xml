@@ -144,6 +144,7 @@
   <string name="add">Add</string>
   <string name="choose_folder">Choose manga folder</string>
   <string name="bottom_sheet_button_remove">Remove</string>
+  <string name="manga_updated_count">%d manga updated</string>
 
   <plurals name="item_selected">
     <item quantity="one">%d item selected</item>

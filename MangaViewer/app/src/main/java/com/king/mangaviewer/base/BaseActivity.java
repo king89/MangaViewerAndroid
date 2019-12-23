@@ -1,16 +1,13 @@
 package com.king.mangaviewer.base;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import com.king.mangaviewer.R;
-import com.king.mangaviewer.ui.main.MainActivity;
-import com.king.mangaviewer.util.Logger;
 import com.king.mangaviewer.viewmodel.AppViewModel;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;

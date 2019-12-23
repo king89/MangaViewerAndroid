@@ -1,16 +1,16 @@
 package com.king.mangaviewer.ui.page.fragment
 
-import android.arch.lifecycle.Observer
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.support.v4.view.ViewPager.OnPageChangeListener
-import android.support.v4.view.ViewPager.VISIBLE
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import androidx.viewpager.widget.ViewPager.VISIBLE
 import com.king.mangaviewer.R
 import com.king.mangaviewer.R.string
 import com.king.mangaviewer.adapter.MangaPageItemAdapterV2

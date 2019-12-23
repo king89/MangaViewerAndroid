@@ -1,6 +1,6 @@
 package com.king.mangaviewer.ui.main
 
-import android.support.design.widget.FloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 interface HasFloatActionButton {
     fun initFab(fab: FloatingActionButton)

@@ -10,9 +10,9 @@ import android.content.Intent
 import android.os.Handler
 import android.os.PowerManager
 import android.preference.PreferenceManager
-import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import com.king.mangaviewer.R
 import com.king.mangaviewer.common.Constants
 import com.king.mangaviewer.di.RepositoryModule
@@ -55,7 +55,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
         msgStr.append(formatter.format(Date()))
 
         Toast.makeText(context, msgStr, Toast.LENGTH_LONG).show()
-        Log.i("AlarmReceiver", msgStr.toString())
+        Log.i(TAG, msgStr.toString())
 
         Thread(Runnable {
             if (checkManga(context)) {
@@ -67,7 +67,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
     }
 
     private fun checkManga(context: Context): Boolean {
-        Log.i("AutoNotify", "checkManga")
+        Log.i(TAG, "checkManga")
         val delayTimeMillis = 5000L
         val dataSource = RepositoryModule.provideDb(context).favouriteMangaDAO()
         val svm = SettingViewModel.loadSetting(context)
@@ -126,12 +126,17 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_ONE_SHOT)
 
         val updatedContentText = updatedNames
-        val builder = NotificationCompat.Builder(context)
-            .setContentTitle(context.getString(R.string.msg_notify_updated_service_title))
-            .setContentText(updatedContentText)
+        val bigText = NotificationCompat.BigTextStyle()
+        bigText.bigText(updatedContentText)
+        val summary = (updatedNames?.split(",")?.size?.minus(1) ?: 0).let {
+            context.getString(R.string.manga_updated_count, it)
+        }
+
+        val builder = NotificationCompat.Builder(context, NotificationHelper.CHANNEL_ID)
+            .setContentTitle(summary)
             .setContentIntent(pendingIntent)
+            .setStyle(bigText)
             .setSmallIcon(R.mipmap.ic_icon_pure)
-            .setChannelId(NotificationHelper.CHANNEL_ID)
             .setAutoCancel(true)
         nm!!.notify(0, builder.build())
     }
@@ -142,7 +147,8 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
         if (t < 0) {
             val sp = PreferenceManager.getDefaultSharedPreferences(context)
             val hour = Integer.parseInt(sp.getString(
-                context.resources.getString(R.string.pref_key_auto_update_hours), "6"))
+                context.resources.getString(R.string.pref_key_auto_update_hours),
+                "$DEFAULT_UPDATE_HOURS"))
             t = AlarmManager.INTERVAL_HOUR * hour
         }
 
@@ -157,7 +163,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
         val pi = PendingIntent.getBroadcast(context, 0, intent, 0)
         //After after t seconds
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.timeInMillis, t, pi)
-        Log.i("AlarmReceiver", "setAlarm:$t")
+        Log.i(TAG, "setAlarm:$t")
     }
 
     fun cancelAlarm(context: Context) {
@@ -165,7 +171,7 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
         val sender = PendingIntent.getBroadcast(context, 0, intent, 0)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(sender)
-        Log.i("AlarmReceiver", "cancelAlarm")
+        Log.i(TAG, "cancelAlarm")
     }
 
     fun setOnetimeTimer(context: Context) {
@@ -177,8 +183,9 @@ class AutoUpdateAlarmReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        val ONE_TIME = "onetime"
-        val AUTO_UPDATE_SERVICE = "AUTO_UPDATE_SERVICE"
+        const val ONE_TIME = "onetime"
+        const val AUTO_UPDATE_SERVICE = "AUTO_UPDATE_SERVICE"
+        const val DEFAULT_UPDATE_HOURS = 6
         const val TAG = "AutoUpdateAlarm"
     }
 

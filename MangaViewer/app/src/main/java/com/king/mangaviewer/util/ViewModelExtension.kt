@@ -1,30 +1,27 @@
 package com.king.mangaviewer.util
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
-import com.king.mangaviewer.base.BaseFragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 
-inline fun <reified T : ViewModel> FragmentActivity.getViewModel(
+inline fun <reified T : ViewModel> androidx.fragment.app.FragmentActivity.getViewModel(
         viewModelFactory: ViewModelProvider.Factory): T {
     return ViewModelProviders.of(this, viewModelFactory)[T::class.java]
 }
 
-inline fun <reified T : ViewModel> Fragment.getViewModel(
+inline fun <reified T : ViewModel> androidx.fragment.app.Fragment.getViewModel(
         viewModelFactory: ViewModelProvider.Factory): T {
     return ViewModelProviders.of(this, viewModelFactory)[T::class.java]
 }
 
-inline fun <reified T : ViewModel> FragmentActivity.withViewModel(
+inline fun <reified T : ViewModel> androidx.fragment.app.FragmentActivity.withViewModel(
         viewModelFactory: ViewModelProvider.Factory, body: T.() -> Unit): T {
     val vm = getViewModel<T>(viewModelFactory)
     vm.body()
     return vm
 }
 
-inline fun <reified T : ViewModel> Fragment.withViewModel(
+inline fun <reified T : ViewModel> androidx.fragment.app.Fragment.withViewModel(
         viewModelFactory: ViewModelProvider.Factory, body: T.() -> Unit): T {
     val vm = getViewModel<T>(viewModelFactory)
     vm.body()

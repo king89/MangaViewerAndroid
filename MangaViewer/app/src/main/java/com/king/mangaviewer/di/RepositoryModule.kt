@@ -1,7 +1,7 @@
 package com.king.mangaviewer.di
 
-import android.arch.persistence.room.Room
 import android.content.Context
+import androidx.room.Room
 import com.king.mangaviewer.BuildConfig
 import com.king.mangaviewer.di.annotation.ApplicationScope
 import com.king.mangaviewer.domain.data.local.DownloadedMangaDAO

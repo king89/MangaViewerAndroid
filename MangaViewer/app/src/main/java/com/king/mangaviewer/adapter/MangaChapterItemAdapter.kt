@@ -1,9 +1,6 @@
 package com.king.mangaviewer.adapter
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -14,6 +11,8 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.RecyclerViewHolders
 import com.king.mangaviewer.domain.data.local.DownloadState
@@ -103,7 +102,8 @@ class MangaChapterItemAdapter(private val context: Context,
         )
     }
 
-    inner class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class RecyclerViewHolders(
+        itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         val textView: TextView by lazy { itemView.findViewById<View>(R.id.textView) as TextView }
         val viewHeader: View by lazy { itemView.findViewById<View>(R.id.viewHeader) as View }
         val ivState by lazy { itemView.findViewById<ImageView>(R.id.ivState) }
@@ -168,14 +168,14 @@ class MangaChapterItemAdapter(private val context: Context,
 
     companion object {
         val diffCallBack = object : DiffUtil.ItemCallback<MangaChapterItem>() {
-            override fun areItemsTheSame(oldItem: MangaChapterItem?,
-                newItem: MangaChapterItem?): Boolean {
-                return oldItem?.hash == newItem?.hash
+            override fun areItemsTheSame(oldItem: MangaChapterItem,
+                newItem: MangaChapterItem): Boolean {
+                return oldItem.hash == newItem.hash
 
             }
 
-            override fun areContentsTheSame(oldItem: MangaChapterItem?,
-                newItem: MangaChapterItem?): Boolean {
+            override fun areContentsTheSame(oldItem: MangaChapterItem,
+                newItem: MangaChapterItem): Boolean {
                 return oldItem == newItem
             }
         }

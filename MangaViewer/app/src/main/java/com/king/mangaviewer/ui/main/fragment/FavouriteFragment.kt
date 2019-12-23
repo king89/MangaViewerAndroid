@@ -1,19 +1,20 @@
 package com.king.mangaviewer.ui.main.fragment
 
-import android.arch.lifecycle.Observer
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v4.util.Pair
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.util.Pair
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.king.mangaviewer.R
+import com.king.mangaviewer.R.integer
 import com.king.mangaviewer.adapter.FavouriteMangaItemAdapter
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter.MangaMenuAdapterListener
 import com.king.mangaviewer.base.BaseFragment
@@ -61,9 +62,10 @@ class FavouriteFragment : BaseFragment() {
         savedInstanceState: Bundle?): View? {
 
         val rootView = inflater.inflate(R.layout.fragment_favourite, container, false)
-        mRecyclerView = rootView.findViewById<View>(R.id.viewPager) as RecyclerView
+        mRecyclerView = rootView.findViewById<View>(
+            R.id.viewPager) as RecyclerView
         gridLayoutManager = GridLayoutManager(activity,
-            resources.getInteger(R.integer.gridvivew_column_num))
+            resources.getInteger(integer.gridvivew_column_num))
         mRecyclerView.layoutManager = gridLayoutManager
         mRecyclerView.adapter = FavouriteMangaItemAdapter(object : MangaMenuAdapterListener {
             override fun onItemClicked(view: View, item: MangaMenuItem) {

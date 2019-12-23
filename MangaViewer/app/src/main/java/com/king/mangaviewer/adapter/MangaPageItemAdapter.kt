@@ -1,7 +1,6 @@
 package com.king.mangaviewer.adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,7 @@ import com.king.mangaviewer.util.Logger
 
 class MangaPageItemAdapter(protected var context: Context,
         protected var pageList: List<TitleAndUrl>) :
-        RecyclerView.Adapter<RecyclerViewHolders>() {
+    androidx.recyclerview.widget.RecyclerView.Adapter<RecyclerViewHolders>() {
     override fun onBindViewHolder(holder: RecyclerViewHolders, position: Int) {
 
         holder.textView.text = "$position"
@@ -39,7 +38,8 @@ class MangaPageItemAdapter(protected var context: Context,
         return RecyclerViewHolders(layoutView)
     }
 
-    inner class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class RecyclerViewHolders(
+        itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
         val imageView: ImageView by lazy {
             itemView.findViewById<View>(R.id.imageView) as ImageView

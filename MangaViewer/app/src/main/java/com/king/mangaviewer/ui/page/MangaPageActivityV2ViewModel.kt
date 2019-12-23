@@ -1,8 +1,8 @@
 package com.king.mangaviewer.ui.page
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.king.mangaviewer.MyApplication
 import com.king.mangaviewer.base.BaseActivityViewModel
 import com.king.mangaviewer.base.ErrorMessage
