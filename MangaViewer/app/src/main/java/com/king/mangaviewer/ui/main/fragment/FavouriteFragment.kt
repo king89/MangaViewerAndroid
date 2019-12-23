@@ -10,6 +10,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.util.Pair
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.king.mangaviewer.R
 import com.king.mangaviewer.R.integer
 import com.king.mangaviewer.adapter.FavouriteMangaItemAdapter
@@ -27,9 +30,9 @@ import javax.inject.Inject
 
 class FavouriteFragment : BaseFragment() {
 
-    private lateinit var mRecyclerView: androidx.recyclerview.widget.RecyclerView
-    private lateinit var gridLayoutManager: androidx.recyclerview.widget.GridLayoutManager
-    private lateinit var mSwipeRefreshLayout: androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var gridLayoutManager: GridLayoutManager
+    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var tv: TextView
 
     lateinit var viewModel: FavouriteFragmentViewModel
@@ -60,8 +63,8 @@ class FavouriteFragment : BaseFragment() {
 
         val rootView = inflater.inflate(R.layout.fragment_favourite, container, false)
         mRecyclerView = rootView.findViewById<View>(
-            R.id.viewPager) as androidx.recyclerview.widget.RecyclerView
-        gridLayoutManager = androidx.recyclerview.widget.GridLayoutManager(activity,
+            R.id.viewPager) as RecyclerView
+        gridLayoutManager = GridLayoutManager(activity,
             resources.getInteger(integer.gridvivew_column_num))
         mRecyclerView.layoutManager = gridLayoutManager
         mRecyclerView.adapter = FavouriteMangaItemAdapter(object : MangaMenuAdapterListener {
@@ -73,7 +76,7 @@ class FavouriteFragment : BaseFragment() {
 
         tv = rootView.findViewById<View>(R.id.textView) as TextView
         mSwipeRefreshLayout = rootView.findViewById<View>(
-            R.id.swipeRefreshLayout) as androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            R.id.swipeRefreshLayout) as SwipeRefreshLayout
         mSwipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh(false)
         }

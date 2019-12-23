@@ -14,6 +14,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.util.Pair
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
@@ -33,7 +35,7 @@ import javax.inject.Inject
 
 class HistoryFragment : BaseFragment() {
 
-    private var recyclerView: androidx.recyclerview.widget.RecyclerView? = null
+    private var recyclerView: RecyclerView? = null
     private var adapter: HistoryChapterItemAdapter? = null
         get() = recyclerView?.adapter as? HistoryChapterItemAdapter
     lateinit var tv: TextView
@@ -81,8 +83,8 @@ class HistoryFragment : BaseFragment() {
 
         val rootView = inflater.inflate(R.layout.fragment_history, container, false)
         recyclerView = rootView.findViewById<View>(
-            R.id.listView) as androidx.recyclerview.widget.RecyclerView
-        recyclerView!!.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+            R.id.listView) as RecyclerView
+        recyclerView!!.layoutManager = LinearLayoutManager(context)
         tv = rootView.findViewById<View>(R.id.textView) as TextView
         return rootView
     }

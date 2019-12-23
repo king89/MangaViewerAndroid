@@ -18,6 +18,8 @@ import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -297,7 +299,7 @@ class MainActivity : BaseActivity() {
             }
             mTwoTapToExit++
             exitAppHandler.removeCallbacks(exitAppRunable)
-            exitAppHandler.postDelayed(exitAppRunable, DELAYTIME)
+            exitAppHandler.postDelayed(exitAppRunable, DELAY_TIME)
             Toast.makeText(this, getString(R.string.msg_tap_two_to_exit), Toast.LENGTH_LONG).show()
         } else {
             super.onBackPressed()
@@ -305,8 +307,8 @@ class MainActivity : BaseActivity() {
 
     }
 
-    class ViewPagerAdapter(manager: androidx.fragment.app.FragmentManager) :
-        androidx.fragment.app.FragmentStatePagerAdapter(manager) {
+    class ViewPagerAdapter(manager: FragmentManager) :
+        FragmentStatePagerAdapter(manager) {
         private val mFragmentList = ArrayList<androidx.fragment.app.Fragment>()
         private val mFragmentTitleList = ArrayList<String>()
 
@@ -331,7 +333,7 @@ class MainActivity : BaseActivity() {
 
     companion object {
 
-        private val DELAYTIME: Long = 5000
-        private val STATE_KEY_POSITION = "state_key_position"
+        private const val DELAY_TIME: Long = 5000
+        private const val STATE_KEY_POSITION = "state_key_position"
     }
 }

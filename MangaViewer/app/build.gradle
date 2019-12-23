@@ -42,6 +42,7 @@ android {
         minSdkVersion versions.androidMinSdk
         targetSdkVersion versions.androidTargetSdk
         compileSdkVersion versions.androidCompileSdk
+        buildToolsVersion versions.androidBuildTools
         versionCode buildVersionCode()
         versionName VERSION_NAME as String
         multiDexEnabled true
@@ -63,7 +64,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    buildToolsVersion versions.androidBuildTools
 
     kapt {
         arguments {

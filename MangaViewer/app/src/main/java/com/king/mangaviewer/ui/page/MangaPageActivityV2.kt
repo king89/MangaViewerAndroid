@@ -20,6 +20,7 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
@@ -304,7 +305,7 @@ class MangaPageActivityV2 : BaseActivity(),
                     hideSystemUI()
                 }
             })
-            rvChapterList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+            rvChapterList.layoutManager = LinearLayoutManager(this)
             rvChapterList.adapter = adapter
             ViewCompat.setNestedScrollingEnabled(rvChapterList, false)
             val list = viewModel.chapterList

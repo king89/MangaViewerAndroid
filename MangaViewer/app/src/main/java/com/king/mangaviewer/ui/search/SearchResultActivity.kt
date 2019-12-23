@@ -15,6 +15,7 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter.MangaMenuAdapterListener
@@ -43,7 +44,7 @@ class SearchResultActivity : BaseActivity() {
 
     lateinit var gv: MangaGridView
     internal var state = HashMap<String, Any>()
-    lateinit var mSwipeRefreshLayout: androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private var searchView: SearchView? = null
     private var queryString = ""
     lateinit var mangaSourceTv: TextView
@@ -60,7 +61,7 @@ class SearchResultActivity : BaseActivity() {
 
         gv = this.findViewById<View>(R.id.gridView) as MangaGridView
         mSwipeRefreshLayout = this.findViewById<View>(
-            R.id.swipeRefreshLayout) as androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            R.id.swipeRefreshLayout) as SwipeRefreshLayout
         mSwipeRefreshLayout.setOnRefreshListener {
             getQueryResult(queryString)
             mSwipeRefreshLayout.isRefreshing = false
