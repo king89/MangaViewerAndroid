@@ -1,7 +1,7 @@
 package com.king.mangaviewer.viewmodel
 
 import android.content.Context
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 
 import com.king.mangaviewer.datasource.HistoryMangaDataSource
 import com.king.mangaviewer.model.HistoryMangaChapterItem

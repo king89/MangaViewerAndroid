@@ -1,9 +1,8 @@
 package com.king.mangaviewer.adapter
 
-import android.support.v7.recyclerview.extensions.ListAdapter
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 
-abstract class BaseRecyclerViewAdapter<U, T : RecyclerView.ViewHolder>(
+abstract class BaseRecyclerViewAdapter<U, T : androidx.recyclerview.widget.RecyclerView.ViewHolder>(
         diffCallback: DiffUtil.ItemCallback<U>) : ListAdapter<U, T>(diffCallback) {
 }

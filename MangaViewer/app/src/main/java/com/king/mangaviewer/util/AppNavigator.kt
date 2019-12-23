@@ -2,11 +2,10 @@ package com.king.mangaviewer.util
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.util.Pair
 import android.view.View
 import android.view.Window
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import com.king.mangaviewer.R
 import com.king.mangaviewer.ui.chapter.MangaChapterActivity
 import javax.inject.Inject

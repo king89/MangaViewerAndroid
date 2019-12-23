@@ -1,9 +1,9 @@
 package com.king.mangaviewer.adapter
 
-import android.support.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import com.king.mangaviewer.R
 import com.king.mangaviewer.model.FavouriteMangaMenuItem
 import com.king.mangaviewer.model.MangaMenuItem

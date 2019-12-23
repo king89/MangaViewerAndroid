@@ -6,9 +6,6 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Environment
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
@@ -36,7 +33,7 @@ import java.util.Collections
 import javax.inject.Inject
 
 
-class AddLocalFragment : DialogFragment() {
+class AddLocalFragment : androidx.fragment.app.DialogFragment() {
     private val disposable = CompositeDisposable()
 
     // Stores names of traversed directories
@@ -44,7 +41,7 @@ class AddLocalFragment : DialogFragment() {
     lateinit var adapter: LocalFileItemAdapter
     // Check if the first level of the directory structure is the one showing
     private var firstLvl: Boolean? = true
-    private var recyclerView: RecyclerView? = null
+    private var recyclerView: androidx.recyclerview.widget.RecyclerView? = null
     private var fileList: MutableList<Item>? = null
     private var path: File? = null
     private var chosenFile: String = ""
@@ -116,8 +113,9 @@ class AddLocalFragment : DialogFragment() {
             dismiss()
         }
 
-        recyclerView = rootView.findViewById<View>(R.id.listView) as RecyclerView
-        recyclerView!!.layoutManager = LinearLayoutManager(context)
+        recyclerView = rootView.findViewById<View>(
+            R.id.listView) as androidx.recyclerview.widget.RecyclerView
+        recyclerView!!.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         recyclerView!!.adapter = LocalFileItemAdapter(context, null, null)
         tv.text = extraPath
         //showDialog(DIALOG_LOAD_FILE);

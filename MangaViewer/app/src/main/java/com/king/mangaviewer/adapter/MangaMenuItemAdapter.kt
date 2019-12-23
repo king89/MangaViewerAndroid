@@ -1,14 +1,13 @@
 package com.king.mangaviewer.adapter
 
 import android.annotation.SuppressLint
-import android.support.annotation.LayoutRes
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.DiffUtil
 import com.king.mangaviewer.R
 import com.king.mangaviewer.model.LoadingState
 import com.king.mangaviewer.model.LoadingState.Idle
@@ -20,7 +19,8 @@ import io.reactivex.disposables.CompositeDisposable
 
 open class MangaMenuItemAdapter(
     protected val listener: MangaMenuAdapterListener? = null) :
-    BaseRecyclerViewAdapter<MangaMenuItem, RecyclerView.ViewHolder>(diffCallBack) {
+    BaseRecyclerViewAdapter<MangaMenuItem, androidx.recyclerview.widget.RecyclerView.ViewHolder>(
+        diffCallBack) {
 
     private var mLoadingState: LoadingState = Idle
 
@@ -28,7 +28,8 @@ open class MangaMenuItemAdapter(
         return super.getItemCount() + if (mLoadingState is Loading) 1 else 0
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup,
+        viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_FOOTER -> {
                 FooterViewHolder.createHolder(parent)
@@ -43,7 +44,8 @@ open class MangaMenuItemAdapter(
     protected open fun createDataViewHolder(
         parent: ViewGroup) = DataViewHolder.createHolder(parent, R.layout.list_manga_menu_item)
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder,
+        position: Int) {
         when (holder) {
             is FooterViewHolder -> {
 
@@ -75,7 +77,7 @@ open class MangaMenuItemAdapter(
         mLoadingState = loadingState
     }
 
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+    override fun onViewRecycled(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder) {
         holder as RecyclerViewHolders
         holder.recycle()
         super.onViewRecycled(holder)
@@ -86,7 +88,8 @@ open class MangaMenuItemAdapter(
         return position.toLong()
     }
 
-    abstract class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract class RecyclerViewHolders(
+        itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         open fun recycle() {
         }
 
@@ -157,14 +160,14 @@ open class MangaMenuItemAdapter(
         val TYPE_FOOTER = 1
 
         val diffCallBack = object : DiffUtil.ItemCallback<MangaMenuItem>() {
-            override fun areItemsTheSame(oldItem: MangaMenuItem?,
-                newItem: MangaMenuItem?): Boolean {
-                return oldItem?.hash == newItem?.hash
+            override fun areItemsTheSame(oldItem: MangaMenuItem,
+                newItem: MangaMenuItem): Boolean {
+                return oldItem.hash == newItem.hash
             }
 
             @SuppressLint("DiffUtilEquals")
-            override fun areContentsTheSame(oldItem: MangaMenuItem?,
-                newItem: MangaMenuItem?): Boolean {
+            override fun areContentsTheSame(oldItem: MangaMenuItem,
+                newItem: MangaMenuItem): Boolean {
                 return oldItem == newItem
             }
         }

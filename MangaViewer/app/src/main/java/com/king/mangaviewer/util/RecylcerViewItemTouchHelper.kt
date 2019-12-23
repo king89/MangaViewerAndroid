@@ -1,9 +1,9 @@
 package com.king.mangaviewer.util
 
 import android.graphics.Canvas
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 
 class RecyclerItemTouchHelper(dragDirs: Int, swipeDirs: Int,
         private val listener: (viewHolder: RecyclerView.ViewHolder, direction: Int, position: Int) -> Unit) :
@@ -29,7 +29,7 @@ class RecyclerItemTouchHelper(dragDirs: Int, swipeDirs: Int,
                 actionState, isCurrentlyActive)
     }
 
-    override fun clearView(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder) {
+    override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         val foregroundView = (viewHolder as SwipeViewHolder).getForeground()
         getDefaultUIUtil().clearView(foregroundView)
     }

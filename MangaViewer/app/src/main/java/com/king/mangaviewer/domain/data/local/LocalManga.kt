@@ -1,8 +1,8 @@
 package com.king.mangaviewer.domain.data.local
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.king.mangaviewer.model.MangaMenuItem
 import org.joda.time.DateTime
 

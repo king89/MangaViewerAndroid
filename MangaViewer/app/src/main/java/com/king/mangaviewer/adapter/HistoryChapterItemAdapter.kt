@@ -1,14 +1,13 @@
 package com.king.mangaviewer.adapter
 
 import android.content.Context
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import com.king.mangaviewer.R
 import com.king.mangaviewer.common.Constants.DATE_FORMAT_SHORT
 import com.king.mangaviewer.model.HistoryMangaChapterItem
@@ -61,7 +60,8 @@ class HistoryChapterItemAdapter(private val context: Context,
     fun getItemByPos(position: Int): HistoryMangaChapterItem =
             getItem(position)
 
-    inner class RecyclerViewHolders(itemView: View) : RecyclerView.ViewHolder(itemView),
+    inner class RecyclerViewHolders(
+        itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView),
             SwipeViewHolder {
 
         var imageView: ImageView
@@ -99,13 +99,13 @@ class HistoryChapterItemAdapter(private val context: Context,
         const val TAG = "HistoryChapterItemAdapter"
 
         val diffCallBack = object : DiffUtil.ItemCallback<HistoryMangaChapterItem>() {
-            override fun areItemsTheSame(oldItem: HistoryMangaChapterItem?,
-                    newItem: HistoryMangaChapterItem?): Boolean {
-                return oldItem?.hash == newItem?.hash
+            override fun areItemsTheSame(oldItem: HistoryMangaChapterItem,
+                newItem: HistoryMangaChapterItem): Boolean {
+                return oldItem.hash == newItem.hash
             }
 
-            override fun areContentsTheSame(oldItem: HistoryMangaChapterItem?,
-                    newItem: HistoryMangaChapterItem?): Boolean {
+            override fun areContentsTheSame(oldItem: HistoryMangaChapterItem,
+                newItem: HistoryMangaChapterItem): Boolean {
                 return oldItem == newItem
             }
         }

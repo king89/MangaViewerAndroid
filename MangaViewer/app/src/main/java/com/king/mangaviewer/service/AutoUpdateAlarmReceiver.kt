@@ -10,9 +10,9 @@ import android.content.Intent
 import android.os.Handler
 import android.os.PowerManager
 import android.preference.PreferenceManager
-import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import com.king.mangaviewer.R
 import com.king.mangaviewer.common.Constants
 import com.king.mangaviewer.di.RepositoryModule

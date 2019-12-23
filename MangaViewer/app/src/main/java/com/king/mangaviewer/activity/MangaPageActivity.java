@@ -4,7 +4,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -15,7 +14,7 @@ import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
+import androidx.appcompat.widget.SwitchCompat;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -24,7 +23,6 @@ import com.king.mangaviewer.base.BaseActivity;
 import com.king.mangaviewer.component.MyViewFlipper;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
-
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 

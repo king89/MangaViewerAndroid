@@ -1,6 +1,6 @@
 package com.king.mangaviewer.util
 
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 import com.king.mangaviewer.MyApplication
 import com.king.mangaviewer.domain.external.mangaprovider.ProviderFactory
 import com.king.mangaviewer.model.MangaChapterItem

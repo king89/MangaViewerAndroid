@@ -1,6 +1,6 @@
 package com.king.mangaviewer.base
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import com.king.mangaviewer.di.annotation.FragmentScoped
 import com.king.mangaviewer.di.annotation.FragmentScopedFactory
 import dagger.Binds

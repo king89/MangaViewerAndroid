@@ -2,13 +2,12 @@ package com.king.mangaviewer.component
 
 import android.content.Context
 import android.graphics.Rect
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.CoordinatorLayout
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.ACTION_DOWN
 import android.view.View
-import com.king.mangaviewer.util.Logger
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 
 class ChapterListBottomSheetBehavior<V : View> : BottomSheetBehavior<V> {
@@ -28,7 +27,7 @@ class ChapterListBottomSheetBehavior<V : View> : BottomSheetBehavior<V> {
         this.topView = view
     }
 
-    override fun onInterceptTouchEvent(parent: CoordinatorLayout?, child: V,
+    override fun onInterceptTouchEvent(parent: CoordinatorLayout, child: V,
         event: MotionEvent): Boolean {
         if (event.action == ACTION_DOWN) {
             val rect = Rect()

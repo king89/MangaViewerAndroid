@@ -1,9 +1,9 @@
 package com.king.mangaviewer.domain.data.local
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Embedded
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 class HistoryMangaMenu(
         @PrimaryKey

@@ -1,20 +1,14 @@
 package com.king.mangaviewer.component
 
 import android.content.Context
-import android.support.v4.view.NestedScrollingParent2
-import android.support.v4.view.NestedScrollingParentHelper
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.LinearSnapHelper
-import android.support.v7.widget.PagerSnapHelper
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SnapHelper
 import android.util.AttributeSet
-import android.view.GestureDetector
-import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import android.view.MotionEvent.ACTION_UP
 import android.view.View
-import android.view.animation.LinearInterpolator
+import androidx.core.view.NestedScrollingParent2
+import androidx.core.view.NestedScrollingParentHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.king.mangaviewer.util.Logger
 
 class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
@@ -94,7 +88,7 @@ class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
         return nestedScrollingParentHelper.nestedScrollAxes
     }
 
-    val snapHelper = LinearSnapHelper()
+    val snapHelper = androidx.recyclerview.widget.LinearSnapHelper()
 
     constructor(context: Context) :
             super(context)
@@ -155,13 +149,13 @@ class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
 //    }
 
     override fun onTouchEvent(e: MotionEvent?): Boolean {
-        Logger.d("$TAG", "onTouchEvent")
+        Logger.d(TAG, "onTouchEvent")
         val result = super.onTouchEvent(e)
         if (e?.action == ACTION_UP) {
             //snap to position
             val view = snapHelper.findSnapView(layoutManager)
-            val array = snapHelper.calculateDistanceToFinalSnap(layoutManager, view!!)!!
-            Logger.d("$TAG", "snapHelper ${array[0]},${array[1]}")
+            val array = snapHelper.calculateDistanceToFinalSnap(layoutManager!!, view!!)!!
+            Logger.d(TAG, "snapHelper ${array[0]},${array[1]}")
 
             smoothScrollBy(array[0], array[0])
         }
@@ -178,7 +172,7 @@ class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
     }
 
     private fun notifyPageChanged() {
-        Logger.d("$TAG", "notifyPageChanged, Page:$snapPosition")
+        Logger.d(TAG, "notifyPageChanged, Page:$snapPosition")
 
         val view = findViewHolderForAdapterPosition(snapPosition)?.itemView
         view?.run {
@@ -201,8 +195,8 @@ class NestedRecyclerView : RecyclerView, NestedScrollingParent2 {
     }
 
     private fun SnapHelper.getSnapPosition(recyclerView: RecyclerView): Int {
-        val layoutManager = recyclerView.layoutManager ?: return RecyclerView.NO_POSITION
-        val snapView = findSnapView(layoutManager) ?: return RecyclerView.NO_POSITION
+        val layoutManager = recyclerView.layoutManager ?: return NO_POSITION
+        val snapView = findSnapView(layoutManager) ?: return NO_POSITION
         return layoutManager.getPosition(snapView)
     }
 

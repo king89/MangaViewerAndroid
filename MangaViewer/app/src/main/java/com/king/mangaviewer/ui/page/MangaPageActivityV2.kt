@@ -1,22 +1,11 @@
 package com.king.mangaviewer.ui.page
 
 import android.annotation.SuppressLint
-import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Rect
 import android.os.Bundle
 import android.provider.Settings
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED
-import android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.design.widget.Snackbar.LENGTH_SHORT
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.TooltipCompat
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.MotionEvent.ACTION_DOWN
@@ -27,6 +16,16 @@ import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.TooltipCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.lifecycle.Observer
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
 import com.king.mangaviewer.R
 import com.king.mangaviewer.R.string
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter
@@ -305,7 +304,7 @@ class MangaPageActivityV2 : BaseActivity(),
                     hideSystemUI()
                 }
             })
-            rvChapterList.layoutManager = LinearLayoutManager(this)
+            rvChapterList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
             rvChapterList.adapter = adapter
             ViewCompat.setNestedScrollingEnabled(rvChapterList, false)
             val list = viewModel.chapterList

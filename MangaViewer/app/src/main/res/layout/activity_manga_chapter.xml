@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/overview_coordinator_layout"
@@ -9,7 +9,7 @@
     android:fitsSystemWindows="true"
     >
 
-  <android.support.design.widget.AppBarLayout
+  <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/app_bar_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
       >
 
-    <android.support.design.widget.CollapsingToolbarLayout
+    <com.google.android.material.appbar.CollapsingToolbarLayout
         android:id="@+id/collapsing_toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,7 +30,7 @@
         app:layout_scrollFlags="scroll|exitUntilCollapsed"
         >
 
-      <android.support.constraint.ConstraintLayout
+      <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:fitsSystemWindows="true"
@@ -75,7 +75,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view"
             />
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
             app:srcCompat="@drawable/ic_share"
             style="@style/AppTheme.PlainFab"
             />
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabSort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
             style="@style/AppTheme.PlainFab"
             />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabFavorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -164,9 +164,9 @@
             app:layout_constraintTop_toBottomOf="@+id/fabFavorite"
             tools:text="This TitleThis TitleThis TitleThis TitleThis Title"
             />
-      </android.support.constraint.ConstraintLayout>
+      </androidx.constraintlayout.widget.ConstraintLayout>
 
-      <android.support.v7.widget.Toolbar
+      <androidx.appcompat.widget.Toolbar
           android:id="@+id/app_bar"
           android:layout_width="match_parent"
           android:layout_height="?attr/actionBarSize"
@@ -174,16 +174,16 @@
           app:layout_scrollFlags="enterAlways|scroll"
           />
 
-    </android.support.design.widget.CollapsingToolbarLayout>
-  </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.CollapsingToolbarLayout>
+  </com.google.android.material.appbar.AppBarLayout>
 
-  <android.support.v4.widget.NestedScrollView
+  <androidx.core.widget.NestedScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:fillViewport="true"
       app:layout_behavior="@string/appbar_scrolling_view_behavior"
       >
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
         app:layout_constraintStart_toStartOf="@+id/manga_source_textView"
         app:layout_constraintTop_toBottomOf="@+id/manga_source_textView"
         >
-      <android.support.constraint.ConstraintLayout
+      <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           >
@@ -214,7 +214,7 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvLastRead"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -247,7 +247,7 @@
             app:layout_constraintTop_toBottomOf="@+id/rvLastRead"
             />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvChapterList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -294,17 +294,17 @@
             app:srcCompat="@drawable/ic_download"
             />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/groupLastRead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="tvLastRead,rvLastRead"
             />
-      </android.support.constraint.ConstraintLayout>
+      </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
-  </android.support.v4.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+  </androidx.core.widget.NestedScrollView>
 
   <include layout="@layout/bottom_sheet_download"/>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -7,17 +7,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.NavigationView
-import android.support.design.widget.TabLayout
-import android.support.design.widget.TabLayout.OnTabSelectedListener
-import android.support.design.widget.TabLayout.Tab
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v4.view.ViewPager
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -27,6 +16,12 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.PopupWindow
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.SearchView
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.android.material.tabs.TabLayout.Tab
 import com.king.mangaviewer.R
 import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
@@ -51,15 +46,15 @@ class MainActivity : BaseActivity() {
 
     internal var mTitle: CharSequence = ""
     internal var mDrawerTitle: CharSequence = ""
-    lateinit var mDrawerLayout: DrawerLayout
+    lateinit var mDrawerLayout: androidx.drawerlayout.widget.DrawerLayout
     lateinit var mTabLayout: TabLayout
     lateinit var mDrawerToggle: ActionBarDrawerToggle
     lateinit var mViewPagerAdapter: ViewPagerAdapter
     private var searchView: SearchView? = null
-    private var fragment: Fragment? = null
+    private var fragment: androidx.fragment.app.Fragment? = null
     // slide menu items
     lateinit var navigationView: NavigationView
-    lateinit var mViewPager: ViewPager
+    lateinit var mViewPager: androidx.viewpager.widget.ViewPager
     private val mSelectedPosition: Int = 0
     private var mTwoTapToExit: Int = 0
 
@@ -126,7 +121,8 @@ class MainActivity : BaseActivity() {
             true
         }
 
-        mDrawerLayout = findViewById<View>(R.id.drawer_layout) as DrawerLayout
+        mDrawerLayout = findViewById<View>(
+            R.id.drawer_layout) as androidx.drawerlayout.widget.DrawerLayout
         mDrawerTitle = title
         mTitle = mDrawerTitle
         mDrawerToggle = object : ActionBarDrawerToggle(this, mDrawerLayout,
@@ -247,7 +243,7 @@ class MainActivity : BaseActivity() {
     override fun initControl() {
         setContentView(R.layout.activity_main_menu)
         mTabLayout = findViewById<View>(R.id.tabLayout) as TabLayout
-        mViewPager = findViewById<View>(R.id.viewPager) as ViewPager
+        mViewPager = findViewById<View>(R.id.viewPager) as androidx.viewpager.widget.ViewPager
         setupViewPager(mViewPager)
         tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabReselected(tab: Tab?) {
@@ -279,7 +275,7 @@ class MainActivity : BaseActivity() {
         mTwoTapToExit = 0
     }
 
-    private fun setupViewPager(viewPager: ViewPager) {
+    private fun setupViewPager(viewPager: androidx.viewpager.widget.ViewPager) {
         mViewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
 
         mViewPagerAdapter.addFragment(FavouriteFragment(), getString(R.string.nav_favourite))
@@ -309,12 +305,12 @@ class MainActivity : BaseActivity() {
 
     }
 
-    class ViewPagerAdapter(manager: FragmentManager) :
-            FragmentStatePagerAdapter(manager) {
-        private val mFragmentList = ArrayList<Fragment>()
+    class ViewPagerAdapter(manager: androidx.fragment.app.FragmentManager) :
+        androidx.fragment.app.FragmentStatePagerAdapter(manager) {
+        private val mFragmentList = ArrayList<androidx.fragment.app.Fragment>()
         private val mFragmentTitleList = ArrayList<String>()
 
-        override fun getItem(position: Int): Fragment {
+        override fun getItem(position: Int): androidx.fragment.app.Fragment {
             return mFragmentList[position]
         }
 
@@ -322,7 +318,7 @@ class MainActivity : BaseActivity() {
             return mFragmentList.size
         }
 
-        fun addFragment(fragment: Fragment, title: String) {
+        fun addFragment(fragment: androidx.fragment.app.Fragment, title: String) {
             mFragmentList.add(fragment)
             mFragmentTitleList.add(title)
         }

@@ -8,18 +8,16 @@ import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.opengl.GLES10;
-import android.support.v4.view.GestureDetectorCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.OverScroller;
-
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.view.GestureDetectorCompat;
+import androidx.core.view.ViewCompat;
 import com.king.mangaviewer.util.Util;
-
 import javax.microedition.khronos.opengles.GL10;
 
 /**

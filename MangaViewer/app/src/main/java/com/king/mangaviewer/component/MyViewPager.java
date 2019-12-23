@@ -8,8 +8,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -19,7 +17,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import com.king.mangaviewer.MyApplication;
 import com.king.mangaviewer.R;
 import com.king.mangaviewer.base.BaseActivity;
@@ -28,7 +27,6 @@ import com.king.mangaviewer.util.MangaHelper;
 import com.king.mangaviewer.util.MangaHelperV2;
 import com.king.mangaviewer.viewmodel.MangaViewModel;
 import com.king.mangaviewer.viewmodel.SettingViewModel;
-
 import java.util.ArrayList;
 import java.util.List;
 

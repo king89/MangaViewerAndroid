@@ -1,12 +1,6 @@
 package com.king.mangaviewer.ui.main.fragment
 
-import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.v4.util.Pair
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -15,6 +9,12 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.util.Pair
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter.MangaMenuAdapterListener
@@ -80,12 +80,12 @@ open class HomeFragment : BaseFragment(), HasFloatActionButton {
             }
         })
         gv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0 || dy < 0 && fab?.isShown == true)
                     fab?.hide()
             }
 
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     fab?.show()
@@ -128,7 +128,7 @@ open class HomeFragment : BaseFragment(), HasFloatActionButton {
                 }
             })
 
-            errorMessage.observe(this@HomeFragment, Observer { it ->
+            errorMessage.observe(this@HomeFragment, Observer {
                 when (it!!) {
                     NoError -> {
                         gv.visibility = VISIBLE
@@ -155,6 +155,7 @@ open class HomeFragment : BaseFragment(), HasFloatActionButton {
     override fun onClick() {
     }
 
-    open val TAG = "HomeFragment"
-
+    companion object {
+        const val TAG = "HomeFragment"
+    }
 }

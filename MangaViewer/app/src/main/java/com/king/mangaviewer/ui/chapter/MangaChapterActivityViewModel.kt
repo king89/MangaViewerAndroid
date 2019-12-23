@@ -1,7 +1,7 @@
 package com.king.mangaviewer.ui.chapter
 
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.king.mangaviewer.adapter.MangaChapterStateItem
 import com.king.mangaviewer.base.BaseActivityViewModel
 import com.king.mangaviewer.domain.data.local.DownloadState

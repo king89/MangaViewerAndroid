@@ -1,16 +1,16 @@
 package com.king.mangaviewer.component
 
 import android.content.Context
-import android.support.animation.DynamicAnimation
-import android.support.animation.FlingAnimation
-import android.support.v4.view.NestedScrollingChild2
-import android.support.v4.view.NestedScrollingChildHelper
-import android.support.v4.view.ViewCompat.TYPE_TOUCH
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import android.widget.HorizontalScrollView
+import androidx.core.view.NestedScrollingChild2
+import androidx.core.view.NestedScrollingChildHelper
+import androidx.core.view.ViewCompat.TYPE_TOUCH
+import androidx.dynamicanimation.animation.DynamicAnimation
+import androidx.dynamicanimation.animation.FlingAnimation
 import com.king.mangaviewer.util.Logger
 
 class CustomScrollView @JvmOverloads constructor(context: Context,

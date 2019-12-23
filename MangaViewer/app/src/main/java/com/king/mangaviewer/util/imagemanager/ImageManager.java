@@ -4,13 +4,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.util.LruCache;
-import android.widget.ImageView;
-
+import androidx.collection.LruCache;
 import com.king.mangaviewer.component.MyImageView;
 import com.king.mangaviewer.model.MangaMenuItem;
-
-import java.net.URL;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
