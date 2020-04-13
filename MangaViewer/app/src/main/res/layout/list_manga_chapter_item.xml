@@ -23,7 +23,7 @@
         />
 
 
-    <me.grantland.widget.AutofitTextView
+    <TextView
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -33,6 +33,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:text="Medium Text"
+        android:ellipsize="end"
+        android:maxLines="2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivState"
         app:layout_constraintStart_toEndOf="@+id/viewHeader"

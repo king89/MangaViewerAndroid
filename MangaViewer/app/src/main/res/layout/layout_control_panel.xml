@@ -83,31 +83,29 @@
         />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/frButton"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        style="@style/AppTheme.PlainFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/button_tooltip_prev_chapter"
         app:layout_constraintBottom_toBottomOf="@+id/ffButton"
         app:layout_constraintEnd_toStartOf="@+id/ffButton"
-        app:srcCompat="@mipmap/ic_fast_rewind_white"
-        style="@style/AppTheme.PlainFab"
+        app:srcCompat="@drawable/ic_fast_rewind"
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/ffButton"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginBottom="8dp"
+        style="@style/AppTheme.PlainFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/button_tooltip_next_chapter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@mipmap/ic_fast_forward_white"
-        style="@style/AppTheme.PlainFab"
+        app:srcCompat="@drawable/ic_fast_forward"
 
         />
     <com.google.android.material.floatingactionbutton.FloatingActionButton

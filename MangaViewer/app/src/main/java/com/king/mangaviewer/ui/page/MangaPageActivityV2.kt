@@ -206,7 +206,7 @@ class MangaPageActivityV2 : BaseActivity(),
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 syncTextView()
                 mReaderFragment?.showThumbnail(progress)
-
+                viewModel.updateCurrentPageIndex(progress)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -216,6 +216,7 @@ class MangaPageActivityV2 : BaseActivity(),
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 val pos = seekBar.progress
                 mReaderFragment?.smoothScrollToPage(pos)
+                viewModel.updateCurrentPageIndex(pos)
             }
         })
 
@@ -343,6 +344,11 @@ class MangaPageActivityV2 : BaseActivity(),
 
             totalPageNum.observe(this@MangaPageActivityV2, Observer {
                 syncTextView()
+                syncSeekBar(sb)
+            })
+            currentPageIndex.observe(this@MangaPageActivityV2, Observer {
+                syncTextView()
+                syncSeekBar(sb)
             })
 
             selectedChapterName.observe(this@MangaPageActivityV2, Observer {
@@ -390,13 +396,12 @@ class MangaPageActivityV2 : BaseActivity(),
     }
 
     fun syncTextView() {
-        if (sb.max > 0) {
-            val totalNum = sb.max + 1
-            val currentPage = sb.progress + 1
-            viewModel.currentPageNum = sb.progress
-            tvProgress.text = "$currentPage / $totalNum"
+        if (viewModel.totalPageNum.value != 0) {
+            val totalNum = viewModel.totalPageNum.value
+            val currentPage = (viewModel.currentPageIndex.value ?: 0) + 1
+            tvProgress.text = getString(R.string.page_indicator, currentPage, totalNum)
         } else {
-            tvProgress.text = "- / -"
+            tvProgress.text = getString(R.string.page_indicator_invalid)
         }
     }
 
@@ -422,18 +427,12 @@ class MangaPageActivityV2 : BaseActivity(),
     }
 
     private fun syncSeekBar(seekBar: SeekBar) {
-        seekBar.max = mReaderFragment?.getTotalPageNum()?.minus(1) ?: 0
-        seekBar.progress = mReaderFragment?.getCurrentPageNum() ?: 0
+        seekBar.max = viewModel.totalPageNum.value ?: 0
+        seekBar.progress = viewModel.currentPageIndex.value ?: 0
     }
 
     override fun onPageChanged(currentPage: Int) {
         syncControlPanel()
-    }
-
-    override fun goBack() {
-//        mMangaViewModel.nowPagePosition = 0
-//        mMangaViewModel.mangaPageList = null
-        super.goBack()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

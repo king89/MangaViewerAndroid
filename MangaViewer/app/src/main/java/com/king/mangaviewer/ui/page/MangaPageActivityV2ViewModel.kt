@@ -49,8 +49,10 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     val chapterList get() = appRepository.appViewModel.Manga.mangaChapterList ?: emptyList()
     val currentChapter get() = appRepository.appViewModel.Manga.selectedMangaChapterItem
 
-    var currentPageNum = 0
-    val totalPageNum = Transformations.map(dataList) {
+    private var _currentPageIndex = MutableLiveData<Int>().apply { value = 0 }
+    var currentPageIndex: LiveData<Int> = _currentPageIndex
+
+    val totalPageNum: LiveData<Int> = Transformations.map(dataList) {
         it!!.size
     }
 
@@ -82,6 +84,10 @@ class MangaPageActivityV2ViewModel @Inject constructor(
 
     }
 
+    fun updateCurrentPageIndex(index: Int) {
+        _currentPageIndex.value = index
+    }
+
     override fun attachToView() {
         showChapterLoading()
         getPageList()
@@ -109,8 +115,8 @@ class MangaPageActivityV2ViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .doAfterTerminate { hideChapterLoading() }
             .doAfterSuccess {
-                currentPageNum = appRepository.appViewModel.Manga.nowPagePosition
-                Logger.d(TAG, "start with page: ${currentPageNum}")
+                _currentPageIndex.value = appRepository.appViewModel.Manga.nowPagePosition
+                Logger.d(TAG, "start with page: ${currentPageIndex}")
                 mDataList.value = it
                 prevAndNextChapterName.value = (getPrevChapter()?.title to getNextChapter()?.title)
                 Logger.d(TAG, "getPageListObservable doAfterSuccess")
@@ -201,7 +207,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
 
     fun saveCurrentReadPage() {
         addToHistoryUseCase.execute(appRepository.appViewModel.Manga.selectedMangaChapterItem,
-            currentPageNum)
+            currentPageIndex.value!!)
             .subscribeOn(Schedulers.newThread())
             .doOnError { Logger.e(TAG, it) }
             .onErrorComplete()

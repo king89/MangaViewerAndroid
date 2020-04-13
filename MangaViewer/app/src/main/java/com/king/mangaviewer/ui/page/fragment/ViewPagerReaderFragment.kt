@@ -45,8 +45,8 @@ open class ViewPagerReaderFragment : ReaderFragment() {
     private var shouldChangeChapter: ShouldChangeChapter = Idle
     protected open val isLeftToRight = true
 
-    var leftChapterName = ""
-    var rightChapterName = ""
+    private var leftChapterName = ""
+    private var rightChapterName = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
@@ -64,8 +64,8 @@ open class ViewPagerReaderFragment : ReaderFragment() {
             }
 
             override fun onPageSelected(position: Int) {
-                val pageNum = position
-                readerListener?.onPageChanged(pageNum)
+                readerListener?.onPageChanged(position)
+                viewModel.updateCurrentPageIndex(getCurrentPageNum())
             }
         })
 
@@ -87,7 +87,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
 
             dataList.observe(this@ViewPagerReaderFragment, Observer {
                 setupAdapter(dataList.value!!, GestureDetector(context, TapDetector()))
-                setPage(viewModel.currentPageNum)
+                setPage(viewModel.currentPageIndex.value!!)
             })
 
         }
@@ -164,7 +164,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
                 }
                 STATE_BOUNCE_BACK -> {
                     if (Util.dpFromPx(context,
-                            abs(decor.view.translationX )) > THRESHOLD_SCROLL_DP) {
+                            abs(decor.view.translationX)) > THRESHOLD_SCROLL_DP) {
                         shouldChangeChapter = when (oldState) {
                             STATE_DRAG_START_SIDE -> if (isLeftToRight) PrevChapter else NextChapter
                             STATE_DRAG_END_SIDE -> if (isLeftToRight) NextChapter else PrevChapter
