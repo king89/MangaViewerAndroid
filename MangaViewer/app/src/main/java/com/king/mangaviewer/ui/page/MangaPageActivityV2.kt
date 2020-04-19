@@ -427,7 +427,7 @@ class MangaPageActivityV2 : BaseActivity(),
     }
 
     private fun syncSeekBar(seekBar: SeekBar) {
-        seekBar.max = viewModel.totalPageNum.value ?: 0
+        seekBar.max = viewModel.totalPageNum.value?.let { it - 1 } ?: 0
         seekBar.progress = viewModel.currentPageIndex.value ?: 0
     }
 
