@@ -48,6 +48,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
 
     val chapterList get() = appRepository.appViewModel.Manga.mangaChapterList ?: emptyList()
     val currentChapter get() = appRepository.appViewModel.Manga.selectedMangaChapterItem
+    val lastReadIndex: Int get() = appRepository.appViewModel.Manga.nowPagePosition
 
     private var _currentPageIndex = MutableLiveData<Int>().apply { value = 0 }
     var currentPageIndex: LiveData<Int> = _currentPageIndex
@@ -85,6 +86,7 @@ class MangaPageActivityV2ViewModel @Inject constructor(
     }
 
     fun updateCurrentPageIndex(index: Int) {
+        Logger.d(TAG, "updateCurrentPageIndex : $index")
         _currentPageIndex.value = index
     }
 
@@ -115,8 +117,6 @@ class MangaPageActivityV2ViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .doAfterTerminate { hideChapterLoading() }
             .doAfterSuccess {
-                _currentPageIndex.value = appRepository.appViewModel.Manga.nowPagePosition
-                Logger.d(TAG, "start with page: ${currentPageIndex}")
                 mDataList.value = it
                 prevAndNextChapterName.value = (getPrevChapter()?.title to getNextChapter()?.title)
                 Logger.d(TAG, "getPageListObservable doAfterSuccess")
