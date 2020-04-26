@@ -13,8 +13,10 @@ import com.king.mangaviewer.domain.usecase.GetDownloadStateUseCase
 import com.king.mangaviewer.domain.usecase.GetFavoriteStateUseCase
 import com.king.mangaviewer.domain.usecase.GetReadChapterUseCase
 import com.king.mangaviewer.domain.usecase.RemoveFromFavoriteUseCase
+import com.king.mangaviewer.domain.usecase.SelectHistoryChapterUseCase
 import com.king.mangaviewer.domain.usecase.SelectMangaChapterUseCase
 import com.king.mangaviewer.domain.usecase.StartDownloadUseCase
+import com.king.mangaviewer.model.HistoryMangaChapterItem
 import com.king.mangaviewer.model.LoadingState
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
@@ -32,6 +34,7 @@ class MangaChapterActivityViewModel @Inject constructor(
     private val getChapterListUseCase: GetChapterListUseCase,
     private val getReadChapterUseCase: GetReadChapterUseCase,
     private val selectMangaChapterUseCase: SelectMangaChapterUseCase,
+    private val selectHistoryChapterUseCase: SelectHistoryChapterUseCase,
     private val addToFavoriteUseCase: AddToFavoriteUseCase,
     private val removeFromFavoriteUseCase: RemoveFromFavoriteUseCase,
     private val getFavouriteStateUseCase: GetFavoriteStateUseCase,
@@ -217,6 +220,15 @@ class MangaChapterActivityViewModel @Inject constructor(
     @Synchronized
     private fun setLoadingState(state: LoadingState) {
         mLoadingState.value = state
+    }
+
+    fun selectHistoryChapter(chapter: HistoryMangaChapterItem, callback: () -> Unit) {
+        selectHistoryChapterUseCase.execute(chapter)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ callback() },
+                { Logger.e(TAG, it) })
+            .apply { disposable.add(this) }
     }
 
     companion object {

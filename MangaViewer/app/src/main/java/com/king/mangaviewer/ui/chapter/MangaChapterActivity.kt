@@ -21,6 +21,7 @@ import com.king.mangaviewer.adapter.MangaChapterStateItem
 import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
 import com.king.mangaviewer.di.annotation.ActivityScopedFactory
+import com.king.mangaviewer.model.HistoryMangaChapterItem
 import com.king.mangaviewer.model.LoadingState.Idle
 import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaChapterItem
@@ -228,6 +229,15 @@ class MangaChapterActivity : BaseActivity() {
             }
         }
     }
+    private val onHistoryItemClickListener = object : OnItemClickListener {
+        override fun onClick(chapter: MangaChapterItem) {
+            viewModel?.selectHistoryChapter(chapter as HistoryMangaChapterItem) {
+                startActivity(Intent(this@MangaChapterActivity, MangaPageActivityV2::class.java))
+                overridePendingTransition(R.anim.in_rightleft,
+                    R.anim.out_rightleft)
+            }
+        }
+    }
     private val onSelectedChangeListener = object : OnSelectedChangeListener {
         override fun onChange(chapterList: List<MangaChapterItem>) {
             viewModel?.selectedDownloadList?.value = chapterList
@@ -250,7 +260,7 @@ class MangaChapterActivity : BaseActivity() {
         rvChapterList.adapter = adapter
 
         val lastReadAdapter = MangaChapterItemAdapter(this,
-            onItemClickListener)
+            onHistoryItemClickListener)
         rvLastRead.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         rvLastRead.adapter = lastReadAdapter
     }
