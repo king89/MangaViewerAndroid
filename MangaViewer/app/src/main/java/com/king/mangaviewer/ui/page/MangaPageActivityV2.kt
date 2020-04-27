@@ -206,7 +206,6 @@ class MangaPageActivityV2 : BaseActivity(),
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 syncTextView()
                 mReaderFragment?.showThumbnail(progress)
-                viewModel.updateCurrentPageIndex(progress)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -216,7 +215,6 @@ class MangaPageActivityV2 : BaseActivity(),
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 val pos = seekBar.progress
                 mReaderFragment?.smoothScrollToPage(pos)
-                viewModel.updateCurrentPageIndex(pos)
             }
         })
 

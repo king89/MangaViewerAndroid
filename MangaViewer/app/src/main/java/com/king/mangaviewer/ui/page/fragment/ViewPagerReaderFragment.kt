@@ -89,6 +89,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
                 setupAdapter(dataList.value!!, GestureDetector(context, TapDetector()))
                 Logger.d(TAG, "Set last read index")
                 setPage(viewModel.lastReadIndex)
+                updateCurrentPageIndex(viewModel.lastReadIndex)
             })
         }
     }
