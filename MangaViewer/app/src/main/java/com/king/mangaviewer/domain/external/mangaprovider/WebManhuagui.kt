@@ -189,7 +189,7 @@ class WebManhuagui @Inject constructor() : MangaProvider() {
                     index++
 
                 }
-//                Logger.d(TAG, "$stringBuilder")
+                Logger.d(TAG, "$stringBuilder")
 
                 val imageInfo = GsonHelper.fromJson<ImageInfo>(stringBuilder.toString(),
                     ImageInfo::class.java)
@@ -197,7 +197,7 @@ class WebManhuagui @Inject constructor() : MangaProvider() {
                 for (i in imageInfo.files!!) {
                     resultList.add(i.let {
                         val imageServer = "https://i.hamreus.com"
-                        "$imageServer${imageInfo.path}$i?cid=${imageInfo.cid}&md5=${imageInfo.sl?.md5}"
+                        "$imageServer${imageInfo.path}$i?e=${imageInfo.sl?.e}&m=${imageInfo.sl?.m}"
                     })
                 }
                 resultList
@@ -249,5 +249,6 @@ data class ImageInfo(
 )
 
 data class Sl(
-    val md5: String? = null
+    val e: String? = null,
+    val m: String? = null
 )
