@@ -59,8 +59,8 @@ class WebManhuaguiTest {
 
         val url = "https://www.manhuagui.com/comic/29239/387999.html"
         val list = wbp.getPageList(url)
-        println(list.first())
-        println(list)
+        println("First item: ${list.first()}")
+        println("Whole list: $list")
         assertTrue(list.isNotEmpty())
 
     }
