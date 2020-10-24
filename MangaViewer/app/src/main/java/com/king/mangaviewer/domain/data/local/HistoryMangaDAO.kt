@@ -36,6 +36,6 @@ interface HistoryMangaDAO {
     fun getLastReadItem(): Single<HistoryManga>
 
     @Query(
-        "select * from (select * from history_manga order by last_read_time) as a group by menu_hash order by last_read_time desc")
+        "select * from (select * from history_manga order by last_read_time desc) group by menu_hash order by last_read_time desc")
     fun getLastReadMangaItem(): Single<List<HistoryManga>>
 }
