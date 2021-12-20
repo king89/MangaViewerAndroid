@@ -41,7 +41,7 @@ class WebManhuagui @Inject constructor() : MangaProvider() {
                 } else {
                     it.attr("src")
                 }
-            }
+            }.addHttps()
             topMangaList.add(TitleAndUrl(title, url, imageUrl))
         }
 
@@ -69,7 +69,7 @@ class WebManhuagui @Inject constructor() : MangaProvider() {
                 } else {
                     it.attr("src")
                 }
-            }
+            }.addHttps()
             mangaList.add(TitleAndUrl(title, url, imageUrl))
         }
 
@@ -224,6 +224,14 @@ class WebManhuagui @Inject constructor() : MangaProvider() {
         }
 
         return result
+    }
+
+    private fun String.addHttps(): String {
+        return if (this.startsWith("//")) {
+            this.replace("//", "https://")
+        } else {
+            this
+        }
     }
 
     companion object {

@@ -34,7 +34,7 @@ class WebManhuaguiTest {
 
         val hashMap = HashMap<String, Any>()
         val list = wbp.getLatestMangaList(hashMap)!!
-        println(list.first())
+        println(list.map { "(${it.title}, ${it.url})" }.first())
         assertTrue(list.isNotEmpty())
     }
 
@@ -57,7 +57,7 @@ class WebManhuaguiTest {
     @Test
     fun getPageList() {
 
-        val url = "https://www.manhuagui.com/comic/29239/387999.html"
+        val url = "https://m.manhuagui.com/comic/1128/"
         val list = wbp.getPageList(url)
         println("First item: ${list.first()}")
         println("Whole list: $list")
