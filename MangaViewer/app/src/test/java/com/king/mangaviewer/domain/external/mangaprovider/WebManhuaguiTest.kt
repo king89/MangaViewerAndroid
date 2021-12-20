@@ -34,7 +34,7 @@ class WebManhuaguiTest {
 
         val hashMap = HashMap<String, Any>()
         val list = wbp.getLatestMangaList(hashMap)!!
-        println(list.first())
+        println(list.map { "(${it.title}, ${it.url})" }.first())
         assertTrue(list.isNotEmpty())
     }
 
