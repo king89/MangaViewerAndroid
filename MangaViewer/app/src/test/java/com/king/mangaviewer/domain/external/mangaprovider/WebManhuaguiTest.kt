@@ -57,7 +57,7 @@ class WebManhuaguiTest {
     @Test
     fun getPageList() {
 
-        val url = "https://m.manhuagui.com/comic/1128/"
+        val url = "https://www.manhuagui.com/comic/29239/387999.html"
         val list = wbp.getPageList(url)
         println("First item: ${list.first()}")
         println("Whole list: $list")
