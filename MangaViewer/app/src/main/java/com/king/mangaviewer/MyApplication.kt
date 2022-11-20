@@ -6,8 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
 import androidx.multidex.MultiDex
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
 import com.king.mangaviewer.di.AppComponent
 import com.king.mangaviewer.di.DaggerAppComponent
 import com.king.mangaviewer.domain.data.local.MangaDataBase
@@ -18,7 +16,6 @@ import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.viewmodel.AppViewModel
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
-import io.fabric.sdk.android.Fabric
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -55,8 +52,6 @@ class MyApplication : DaggerApplication() {
 
     override fun onCreate() {
         super.onCreate()
-        val core = CrashlyticsCore.Builder().build()
-        Fabric.with(this, Crashlytics.Builder().core(core).build())
         setupRxExceptionHandler()
         //notify service
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
