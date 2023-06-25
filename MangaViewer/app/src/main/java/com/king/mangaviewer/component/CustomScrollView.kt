@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.widget.HorizontalScrollView
 import androidx.core.view.NestedScrollingChild2
 import androidx.core.view.NestedScrollingChildHelper
+import androidx.core.view.ViewCompat
 import androidx.core.view.ViewCompat.TYPE_TOUCH
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.FlingAnimation
@@ -66,16 +67,20 @@ class CustomScrollView @JvmOverloads constructor(context: Context,
     val gestureDetector: GestureDetector
     var canScroll = true
     val scrollDetecter = object : SimpleOnGestureListener() {
-        override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float,
-                distanceY: Float): Boolean {
+        override fun onScroll(
+            e1: MotionEvent, e2: MotionEvent, distanceX: Float,
+            distanceY: Float
+        ): Boolean {
             Logger.d("-=-=", "CustomScrollView x: ${this@CustomScrollView.x}")
 
             Logger.d("-=-=", "CustomScrollView onScroll: distanceX:$distanceX, e1:$e1, e2:$e2")
 
             if (canScroll && canScroll(distanceX)) {
                 scrollBy(distanceX.toInt(), distanceY.toInt())
-                this@CustomScrollView.dispatchNestedScroll(distanceX.toInt(), 0, 0, 0, null,
-                        TYPE_TOUCH)
+                this@CustomScrollView.dispatchNestedScroll(
+                    distanceX.toInt(), 0, 0, 0, null,
+                    TYPE_TOUCH
+                )
 
             } else {
                 canScroll = false
@@ -89,17 +94,20 @@ class CustomScrollView @JvmOverloads constructor(context: Context,
         }
 
         var flingAnimation: FlingAnimation? = null
-        override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float,
-                velocityY: Float): Boolean {
+        override fun onFling(
+            e1: MotionEvent, e2: MotionEvent, velocityX: Float,
+            velocityY: Float
+        ): Boolean {
             val childHeight = getChildAt(0)?.width ?: 0
 
             val maxScroll = -width + (childHeight + paddingLeft + paddingRight)
             flingAnimation?.cancel()
-            flingAnimation = FlingAnimation(this@CustomScrollView, DynamicAnimation.SCROLL_X).apply {
-                setStartVelocity(-velocityX)
-                setMinValue(0f)
-                setMaxValue(maxScroll.toFloat())
-                friction = 1.1f
+            flingAnimation =
+                FlingAnimation(this@CustomScrollView, DynamicAnimation.SCROLL_X).apply {
+                    setStartVelocity(-velocityX)
+                    setMinValue(0f)
+                    setMaxValue(maxScroll.toFloat())
+                    friction = 1.1f
                 start()
             }
             return true
@@ -110,7 +118,7 @@ class CustomScrollView @JvmOverloads constructor(context: Context,
             flingAnimation?.cancel()
 
             canScroll = true
-            this@CustomScrollView.startNestedScroll(SCROLL_AXIS_VERTICAL, TYPE_TOUCH)
+            this@CustomScrollView.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, TYPE_TOUCH)
             return true
         }
 

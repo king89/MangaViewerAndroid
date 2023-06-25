@@ -28,8 +28,6 @@ import com.king.mangaviewer.model.LoadingState.Loading
 import com.king.mangaviewer.model.MangaMenuItem
 import com.king.mangaviewer.ui.chapter.MangaChapterActivity
 import com.king.mangaviewer.util.withViewModel
-import java.util.ArrayList
-import java.util.HashMap
 import javax.inject.Inject
 
 /**
@@ -112,13 +110,14 @@ class SearchResultActivity : BaseActivity() {
     }
 
     override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
         handleIntent(intent)
     }
 
     private fun handleIntent(intent: Intent) {
 
         if (Intent.ACTION_SEARCH == intent.action) {
-            queryString = intent.getStringExtra(SearchManager.QUERY)
+            queryString = intent.getStringExtra(SearchManager.QUERY).toString()
             //use the query to search
             this.supportActionBar!!.title = queryString
             getQueryResult(queryString)

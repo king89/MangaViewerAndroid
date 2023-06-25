@@ -22,6 +22,7 @@
         android:name=".ui.main.MainActivity"
         android:configChanges="orientation|screenSize"
         android:label="@string/app_name"
+        android:exported="true"
         android:launchMode="singleTask">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -37,12 +38,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppThemeTransparent">
     </activity>
-    <activity
-        android:name=".activity.MangaPageActivity"
-        android:configChanges="orientation|screenSize"
-        android:label="@string/title_activity_manga_page">
 
-    </activity>
     <activity
         android:name=".ui.page.MangaPageActivityV2"
         android:configChanges="orientation|screenSize"
@@ -53,6 +49,7 @@
     </activity>
     <activity
         android:name=".ui.search.SearchResultActivity"
+        android:exported="true"
         android:launchMode="singleTask">
       <intent-filter>
         <action android:name="android.intent.action.SEARCH"/>

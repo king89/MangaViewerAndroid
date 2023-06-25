@@ -1,5 +1,6 @@
 package com.king.mangaviewer.service.download
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.app.DownloadManager.Request.NETWORK_WIFI
 import android.app.DownloadManager.Request.VISIBILITY_VISIBLE
@@ -47,7 +48,7 @@ class MangaDownloadService : IntentService("MangaDownloadService") {
         super.onCreate()
     }
 
-    override fun onHandleIntent(intent: Intent) {
+    override fun onHandleIntent(p0: Intent?) {
         val task = downloadTaskRepository.popTask().blockingGet()
         task?.let {
             Logger.d(TAG, "get download task: $task")
@@ -133,6 +134,7 @@ class MangaDownloadService : IntentService("MangaDownloadService") {
 
     }
 
+    @SuppressLint("Range")
     private fun checkAllSuccess(jobIdList: MutableList<Long>): Boolean {
         var result = true
         val cursor: Cursor? = downloadManager.query(
