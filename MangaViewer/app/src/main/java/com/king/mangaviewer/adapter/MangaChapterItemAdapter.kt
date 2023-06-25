@@ -14,12 +14,14 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import com.king.mangaviewer.R
+import com.king.mangaviewer.R.drawable
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.RecyclerViewHolders
 import com.king.mangaviewer.domain.data.local.DownloadState
 import com.king.mangaviewer.domain.data.local.DownloadState.DOWNLOADING
 import com.king.mangaviewer.domain.data.local.DownloadState.ERROR
 import com.king.mangaviewer.domain.data.local.DownloadState.FINISHED
 import com.king.mangaviewer.domain.data.local.DownloadState.NONE
+import com.king.mangaviewer.domain.data.local.DownloadState.PAUSE
 import com.king.mangaviewer.domain.data.local.DownloadState.PENDING
 import com.king.mangaviewer.model.MangaChapterItem
 
@@ -128,22 +130,28 @@ class MangaChapterItemAdapter(private val context: Context,
                 FINISHED -> {
                     ivState.visibility = VISIBLE
                     progressBar.visibility = INVISIBLE
-                    ivState.setImageResource(R.drawable.ic_checked)
+                    ivState.setImageResource(drawable.ic_checked)
                 }
                 PENDING -> {
                     ivState.visibility = VISIBLE
                     progressBar.visibility = INVISIBLE
-                    ivState.setImageResource(R.drawable.ic_pending)
+                    ivState.setImageResource(drawable.ic_pending)
                 }
+
                 DOWNLOADING -> {
                     ivState.visibility = INVISIBLE
                     progressBar.visibility = VISIBLE
-                    ivState.setImageResource(R.drawable.ic_downloading)
+                    ivState.setImageResource(drawable.ic_downloading)
                 }
+
                 ERROR -> {
                     ivState.visibility = VISIBLE
                     progressBar.visibility = INVISIBLE
-                    ivState.setImageResource(R.drawable.ic_error)
+                    ivState.setImageResource(drawable.ic_error)
+                }
+
+                PAUSE -> {
+                    //do nothing
                 }
             }
         }

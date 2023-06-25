@@ -2,21 +2,22 @@ package com.king.mangaviewer.ui.page.fragment
 
 import android.graphics.Bitmap
 import android.view.GestureDetector
+import androidx.viewpager.widget.ViewPager
+import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.RtlMangaPageItemAdapterV2
 import com.king.mangaviewer.model.MangaUri
-import kotlinx.android.synthetic.main.fragment_viewpager_reader.viewPager
 import kotlin.math.max
 
 class RtlViewPagerReaderFragment : ViewPagerReaderFragment() {
 
     override val isLeftToRight: Boolean = false
-
+    private val viewPager: ViewPager? by lazy { this.view?.findViewById(R.id.viewPager) }
     override fun setPage(page: Int) {
-        viewPager.setCurrentItem(page.invertIndex(), false)
+        viewPager?.setCurrentItem(page.invertIndex(), false)
     }
 
     override fun smoothScrollToPage(pageNum: Int) {
-        viewPager.setCurrentItem(pageNum.invertIndex(), true)
+        viewPager?.setCurrentItem(pageNum.invertIndex(), true)
     }
 
     override fun getCurrentPageNum(): Int {
@@ -36,7 +37,7 @@ class RtlViewPagerReaderFragment : ViewPagerReaderFragment() {
     }
 
     override fun setupAdapter(mangaList: List<MangaUri>, gestureDetector: GestureDetector) {
-        viewPager.adapter = RtlMangaPageItemAdapterV2(mangaList, gestureDetector)
+        viewPager?.adapter = RtlMangaPageItemAdapterV2(mangaList, gestureDetector)
     }
 
     private fun Int.invertIndex(): Int {
@@ -46,8 +47,9 @@ class RtlViewPagerReaderFragment : ViewPagerReaderFragment() {
 
     companion object {
         val TAG = "RtlViewPagerReaderFragment"
+
         @JvmStatic
         fun newInstance() =
-                RtlViewPagerReaderFragment()
+            RtlViewPagerReaderFragment()
     }
 }

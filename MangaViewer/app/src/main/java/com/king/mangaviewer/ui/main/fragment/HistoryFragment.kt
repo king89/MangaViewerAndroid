@@ -58,22 +58,22 @@ class HistoryFragment : BaseFragment() {
         viewModel.refresh(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        menu!!.clear()
-        inflater!!.inflate(R.menu.history_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.history_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.menu_delete) {
-            AlertDialog.Builder(this.activity!!)
-                    .setTitle(getString(R.string.msg_history_dialog_title))
-                    .setMessage(getString(R.string.msg_history_dialog_message))
-                    .setPositiveButton(getString(R.string.clear)) { dialog, which ->
-                        viewModel.clearAllHistory()
-                    }
-                    .setNegativeButton(getString(R.string.cancel), null)
-                    .show()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_delete) {
+            AlertDialog.Builder(this.requireActivity())
+                .setTitle(getString(R.string.msg_history_dialog_title))
+                .setMessage(getString(R.string.msg_history_dialog_message))
+                .setPositiveButton(getString(R.string.clear)) { dialog, which ->
+                    viewModel.clearAllHistory()
+                }
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -121,8 +121,10 @@ class HistoryFragment : BaseFragment() {
             } else {
                 item.menu.title
             }
-            val snackbar = Snackbar.make(this.view!!,
-                    getString(R.string.history_item_removed, itemTitle), LENGTH_LONG)
+            val snackbar = Snackbar.make(
+                this.requireView(),
+                getString(R.string.history_item_removed, itemTitle), LENGTH_LONG
+            )
             var undo = false
             snackbar.setAction(getString(R.string.undo)) {
                 undo = true

@@ -17,10 +17,12 @@ import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
@@ -33,6 +35,7 @@ import com.king.mangaviewer.adapter.MangaChapterItemAdapter
 import com.king.mangaviewer.adapter.MangaChapterItemAdapter.OnItemClickListener
 import com.king.mangaviewer.base.BaseActivity
 import com.king.mangaviewer.base.ViewModelFactory
+import com.king.mangaviewer.component.BrightnessBar
 import com.king.mangaviewer.component.ChapterListBottomSheetBehavior
 import com.king.mangaviewer.component.HasFullScreenControl
 import com.king.mangaviewer.component.ReaderCallback
@@ -54,11 +57,6 @@ import com.king.mangaviewer.viewmodel.SettingViewModel
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_manga_page_v2.brightnessBar
-import kotlinx.android.synthetic.main.activity_manga_page_v2.bsChapters
-import kotlinx.android.synthetic.main.bottom_sheet_chapter_list.bottomSheetTopView
-import kotlinx.android.synthetic.main.bottom_sheet_chapter_list.rvChapterList
-import kotlinx.android.synthetic.main.list_manga_page_item_v2.clLoading
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.inject.Inject
 
@@ -75,10 +73,10 @@ class MangaPageActivityV2 : BaseActivity(),
     private lateinit var mDecorView: View
     private lateinit var sb: SeekBar
 
-    val mMangaViewModel: MangaViewModel by lazy { appViewModel.Manga }
-    val mSettingViewModel: SettingViewModel by lazy { appViewModel.Setting }
+    private val mMangaViewModel: MangaViewModel by lazy { appViewModel.Manga }
+    private val mSettingViewModel: SettingViewModel by lazy { appViewModel.Setting }
 
-    internal var mIsLoadFromHistory: Boolean = false
+    private var mIsLoadFromHistory: Boolean = false
 
     private val mFFImageButton by lazy { findViewById<View>(R.id.ffButton) as ImageButton }
     private val mFRImageButton by lazy { findViewById<View>(R.id.frButton) as ImageButton }
@@ -88,6 +86,12 @@ class MangaPageActivityV2 : BaseActivity(),
     private val fabChapters by lazy { findViewById<FloatingActionButton>(R.id.fabChapters) }
     private val fabDirection by lazy { findViewById<FloatingActionButton>(R.id.fabDirection) }
     private val fabRotation by lazy { findViewById<FloatingActionButton>(R.id.fabRotation) }
+
+    private val brightnessBar by lazy { findViewById<BrightnessBar>(R.id.brightnessBar) }
+    private val bsChapters by lazy { findViewById<ConstraintLayout>(R.id.bsChapters) }
+    private val bottomSheetTopView by lazy { findViewById<ConstraintLayout>(R.id.bottomSheetTopView) }
+    private val rvChapterList by lazy { findViewById<RecyclerView>(R.id.rvChapterList) }
+    private val clLoading by lazy { findViewById<View>(R.id.clLoading) }
 
     protected var mReaderFragment: ReaderFragment? = null
 

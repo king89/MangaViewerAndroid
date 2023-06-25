@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import com.king.mangaviewer.R
-import kotlinx.android.synthetic.main.view_brightness_bar.view.pbBrightness
 
 class BrightnessBar @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null,
     defStyle: Int = 0) :
@@ -16,7 +16,7 @@ class BrightnessBar @JvmOverloads constructor(context: Context, attributeSet: At
     }
 
     fun setProgress(value: Int) {
-        pbBrightness.progress = value
+        this.findViewById<ProgressBar>(R.id.pbBrightness).progress = value
     }
 
 }

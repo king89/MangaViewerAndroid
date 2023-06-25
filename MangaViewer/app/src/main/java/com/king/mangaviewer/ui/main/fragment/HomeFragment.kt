@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.king.mangaviewer.R
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter
 import com.king.mangaviewer.adapter.MangaMenuItemAdapter.MangaMenuAdapterListener
@@ -30,7 +29,6 @@ import com.king.mangaviewer.ui.main.HasFloatActionButton
 import com.king.mangaviewer.util.AppNavigator
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.withViewModel
-import kotlinx.android.synthetic.main.fragment_manga_gridview.layout_error
 import javax.inject.Inject
 
 open class HomeFragment : BaseFragment(), HasFloatActionButton {
@@ -40,9 +38,9 @@ open class HomeFragment : BaseFragment(), HasFloatActionButton {
     lateinit var gv: MangaGridView
     lateinit var tvMangaSource: TextView
     lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
-    private var snackbar: Snackbar? = null
     private var rootView: View? = null
     private var fab: FloatingActionButton? = null
+    private val layoutError: View? by lazy { this.view?.findViewById(R.id.layout_error) }
 
     @Inject
     @field:FragmentScopedFactory
@@ -57,19 +55,22 @@ open class HomeFragment : BaseFragment(), HasFloatActionButton {
         viewModel.getData()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return activity!!.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return requireActivity().onOptionsItemSelected(item)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         val rootView = inflater.inflate(R.layout.fragment_manga_gridview, container, false)
         tvMangaSource = rootView.findViewById<View>(R.id.manga_source_textView) as TextView
         val selectedMangaSourceName = settingViewModel.selectedWebSource.displayName
         tvMangaSource.text = selectedMangaSourceName
         mSwipeRefreshLayout = rootView.findViewById<View>(
-                R.id.swipeRefreshLayout) as SwipeRefreshLayout
+            R.id.swipeRefreshLayout
+        ) as SwipeRefreshLayout
         mSwipeRefreshLayout.setOnRefreshListener { refresh() }
 
         gv = rootView.findViewById<View>(R.id.gridView) as MangaGridView
@@ -114,6 +115,7 @@ open class HomeFragment : BaseFragment(), HasFloatActionButton {
                         mSwipeRefreshLayout.isRefreshing = true
                         Logger.d(TAG, "start refreshing")
                     }
+
                     is Idle -> {
                         mSwipeRefreshLayout.isRefreshing = false
                         Logger.d(TAG, "stop refreshing")
@@ -132,11 +134,12 @@ open class HomeFragment : BaseFragment(), HasFloatActionButton {
                 when (it!!) {
                     NoError -> {
                         gv.visibility = VISIBLE
-                        layout_error.visibility = GONE
+                        layoutError?.visibility = GONE
                     }
+
                     else -> {
                         gv.visibility = GONE
-                        layout_error.visibility = VISIBLE
+                        layoutError?.visibility = VISIBLE
                     }
                 }
 

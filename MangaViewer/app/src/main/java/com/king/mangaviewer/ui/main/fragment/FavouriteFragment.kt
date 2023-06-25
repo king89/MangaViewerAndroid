@@ -53,18 +53,22 @@ class FavouriteFragment : BaseFragment() {
         viewModel.refresh(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        menu!!.clear()
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         val rootView = inflater.inflate(R.layout.fragment_favourite, container, false)
         mRecyclerView = rootView.findViewById<View>(
-            R.id.viewPager) as RecyclerView
-        gridLayoutManager = GridLayoutManager(activity,
+            R.id.viewPager
+        ) as RecyclerView
+        gridLayoutManager = GridLayoutManager(
+            activity,
             resources.getInteger(integer.gridvivew_column_num))
         mRecyclerView.layoutManager = gridLayoutManager
         mRecyclerView.adapter = FavouriteMangaItemAdapter(object : MangaMenuAdapterListener {
@@ -118,7 +122,7 @@ class FavouriteFragment : BaseFragment() {
 
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         gridLayoutManager.spanCount = resources.getInteger(R.integer.gridvivew_column_num)
     }

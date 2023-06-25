@@ -5,10 +5,16 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
@@ -32,20 +38,6 @@ import com.king.mangaviewer.util.VersionUtil
 import com.king.mangaviewer.util.glide.BlurTransformation
 import com.king.mangaviewer.util.glide.CropImageTransformation
 import com.king.mangaviewer.util.withViewModel
-import kotlinx.android.synthetic.main.activity_manga_chapter.btDownload
-import kotlinx.android.synthetic.main.activity_manga_chapter.fabShare
-import kotlinx.android.synthetic.main.activity_manga_chapter.fabSort
-import kotlinx.android.synthetic.main.activity_manga_chapter.groupLastRead
-import kotlinx.android.synthetic.main.activity_manga_chapter.ivCover
-import kotlinx.android.synthetic.main.activity_manga_chapter.rvChapterList
-import kotlinx.android.synthetic.main.activity_manga_chapter.rvLastRead
-import kotlinx.android.synthetic.main.activity_manga_chapter.swipeRefreshLayout
-import kotlinx.android.synthetic.main.activity_manga_chapter.tvLastRead
-import kotlinx.android.synthetic.main.activity_manga_chapter.tvTitle
-import kotlinx.android.synthetic.main.bottom_sheet_download.bsDownload
-import kotlinx.android.synthetic.main.bottom_sheet_download.btCancel
-import kotlinx.android.synthetic.main.bottom_sheet_download.btStartDownload
-import kotlinx.android.synthetic.main.bottom_sheet_download.tvSelectedCount
 import javax.inject.Inject
 
 class MangaChapterActivity : BaseActivity() {
@@ -55,6 +47,21 @@ class MangaChapterActivity : BaseActivity() {
     lateinit var activityScopedFactory: ViewModelFactory
     var viewModel: MangaChapterActivityViewModel? = null
     lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+
+    private val btDownload: ImageButton by lazy { findViewById(R.id.btDownload) }
+    private val fabShare: FloatingActionButton by lazy { findViewById(R.id.fabShare) }
+    private val fabSort: FloatingActionButton by lazy { findViewById(R.id.fabSort) }
+    private val groupLastRead: Group by lazy { findViewById(R.id.groupLastRead) }
+    private val ivCover: ImageView by lazy { findViewById(R.id.ivCover) }
+    private val rvChapterList: RecyclerView by lazy { findViewById(R.id.rvChapterList) }
+    private val rvLastRead: RecyclerView by lazy { findViewById(R.id.rvLastRead) }
+    private val swipeRefreshLayout: SwipeRefreshLayout by lazy { findViewById(R.id.swipeRefreshLayout) }
+    private val tvLastRead: TextView by lazy { findViewById(R.id.tvLastRead) }
+    private val tvTitle: TextView by lazy { findViewById(R.id.tvTitle) }
+    private val bsDownload: LinearLayout by lazy { findViewById(R.id.bsDownload) }
+    private val btCancel: Button by lazy { findViewById(R.id.btCancel) }
+    private val btStartDownload: Button by lazy { findViewById(R.id.btStartDownload) }
+    private val tvSelectedCount: TextView by lazy { findViewById(R.id.tvSelectedCount) }
 
     private val imageView: ImageView by lazy {
         findViewById<ImageView>(R.id.imageView)
@@ -117,8 +124,10 @@ class MangaChapterActivity : BaseActivity() {
             toggleSelectableMode()
         }
         btStartDownload.setOnClickListener {
-            Logger.d(TAG,
-                "Selected item: ${viewModel?.selectedDownloadList?.value?.map { it.title }}")
+            Logger.d(
+                TAG,
+                "Selected item: ${viewModel?.selectedDownloadList?.value?.map { it.title }}"
+            )
             viewModel?.startDownload()
             toggleSelectableMode()
         }
@@ -128,8 +137,10 @@ class MangaChapterActivity : BaseActivity() {
         val count = list.size
         if (count > 0) {
             bottomSheetBehavior.state = STATE_EXPANDED
-            tvSelectedCount.text = resources.getQuantityString(R.plurals.item_selected, count,
-                count)
+            tvSelectedCount.text = resources.getQuantityString(
+                R.plurals.item_selected, count,
+                count
+            )
         } else {
             bottomSheetBehavior.state = STATE_HIDDEN
         }
@@ -143,6 +154,7 @@ class MangaChapterActivity : BaseActivity() {
                     is Loading -> {
                         showLoading()
                     }
+
                     is Idle -> {
                         hideLoading()
                     }
@@ -159,8 +171,11 @@ class MangaChapterActivity : BaseActivity() {
                     (rvLastRead.adapter as? MangaChapterItemAdapter)?.apply {
                         val item = it.first()
                         submitList(listOf(item))
-                        submitStateMap(mapOf(
-                            Pair(item.hash, MangaChapterStateItem(isRead = true))))
+                        submitStateMap(
+                            mapOf(
+                                Pair(item.hash, MangaChapterStateItem(isRead = true))
+                            )
+                        )
                     }
                 }
                 tvLastRead.postDelayed({
@@ -224,8 +239,10 @@ class MangaChapterActivity : BaseActivity() {
         override fun onClick(chapter: MangaChapterItem) {
             viewModel?.selectChapter(chapter) {
                 startActivity(Intent(this@MangaChapterActivity, MangaPageActivityV2::class.java))
-                overridePendingTransition(R.anim.in_rightleft,
-                    R.anim.out_rightleft)
+                overridePendingTransition(
+                    R.anim.in_rightleft,
+                    R.anim.out_rightleft
+                )
             }
         }
     }
@@ -233,8 +250,10 @@ class MangaChapterActivity : BaseActivity() {
         override fun onClick(chapter: MangaChapterItem) {
             viewModel?.selectHistoryChapter(chapter as HistoryMangaChapterItem) {
                 startActivity(Intent(this@MangaChapterActivity, MangaPageActivityV2::class.java))
-                overridePendingTransition(R.anim.in_rightleft,
-                    R.anim.out_rightleft)
+                overridePendingTransition(
+                    R.anim.in_rightleft,
+                    R.anim.out_rightleft
+                )
             }
         }
     }
@@ -254,13 +273,17 @@ class MangaChapterActivity : BaseActivity() {
     }
 
     private fun setupChapterList() {
-        val adapter = MangaChapterItemAdapter(this,
-            onItemClickListener, onSelectedChangeListener)
+        val adapter = MangaChapterItemAdapter(
+            this,
+            onItemClickListener, onSelectedChangeListener
+        )
         rvChapterList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         rvChapterList.adapter = adapter
 
-        val lastReadAdapter = MangaChapterItemAdapter(this,
-            onHistoryItemClickListener)
+        val lastReadAdapter = MangaChapterItemAdapter(
+            this,
+            onHistoryItemClickListener
+        )
         rvLastRead.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         rvLastRead.adapter = lastReadAdapter
     }

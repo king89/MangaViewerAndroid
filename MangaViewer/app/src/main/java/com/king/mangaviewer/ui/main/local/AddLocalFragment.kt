@@ -28,7 +28,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FilenameFilter
-import java.util.ArrayList
 import java.util.Collections
 import javax.inject.Inject
 
@@ -71,27 +70,30 @@ class AddLocalFragment : androidx.fragment.app.DialogFragment() {
         if (dialog != null) {
             val width = ViewGroup.LayoutParams.MATCH_PARENT
             val height = ViewGroup.LayoutParams.MATCH_PARENT
-            dialog.window.setLayout(width, height)
+            dialog.window?.setLayout(width, height)
         }
-        return dialog
+        return dialog!!
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        menu!!.clear()
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         //TODO
         path = File(Environment.getExternalStorageDirectory().toString())
         val childFolders = extraPath?.split(
-            "/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray() ?: emptyArray()
+            "/".toRegex()
+        )?.dropLastWhile { it.isEmpty() }?.toTypedArray() ?: emptyArray()
         for (s in childFolders) {
             if (!s.isEmpty()) {
                 str.add(s)

@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply from: "../dependencies.gradle"
 apply plugin: 'kotlin-kapt'
+
 
 repositories {
     mavenCentral()
@@ -57,12 +58,17 @@ android {
             arg("room.schemaLocation", "$projectDir/schemas".toString())
         }
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation libraries.appCompatV7
     implementation libraries.androidCardView
+    implementation libraries.androidFragment
     implementation libraries.preference
     implementation libraries.androidSupport
     implementation libraries.androidDesign
@@ -102,12 +108,8 @@ dependencies {
     implementation "org.jsoup:jsoup:1.8.2"
     implementation "me.grantland:autofittextview:0.2.1"
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
-    implementation "io.github.everythingme:overscroll-decor-android:1.1.1"
+    implementation 'me.everything:overscroll-decor-android:1.0.4'
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
-
-
-    implementation libraries.butterKnife
-    kapt libraries.butterKnifeCompiler
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 

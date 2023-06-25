@@ -51,7 +51,6 @@
         android:theme="@style/ReaderTheme">
 
     </activity>
-    <activity android:name=".activity.LocalReadActivity"/>
     <activity
         android:name=".ui.search.SearchResultActivity"
         android:launchMode="singleTask">

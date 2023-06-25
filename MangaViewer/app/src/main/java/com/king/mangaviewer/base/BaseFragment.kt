@@ -36,7 +36,7 @@ open class BaseFragment : androidx.fragment.app.Fragment() {
     protected open fun getContentBackground() {
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
     }

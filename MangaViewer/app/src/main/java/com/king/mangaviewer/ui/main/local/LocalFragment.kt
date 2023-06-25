@@ -55,18 +55,21 @@ class LocalFragment : BaseFragment(), HasFloatActionButton {
         viewModel.refresh(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        menu!!.clear()
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         val rootView = inflater.inflate(R.layout.fragment_local, container, false)
 
         mRecyclerView = rootView.findViewById<View>(
-            R.id.viewPager) as androidx.recyclerview.widget.RecyclerView
+            R.id.viewPager
+        ) as androidx.recyclerview.widget.RecyclerView
         gridLayoutManager = androidx.recyclerview.widget.GridLayoutManager(activity,
             resources.getInteger(integer.gridvivew_column_num))
         mRecyclerView.layoutManager = gridLayoutManager
@@ -100,18 +103,19 @@ class LocalFragment : BaseFragment(), HasFloatActionButton {
     private fun initViewModel() {
         withViewModel<LocalFragmentViewModel>(fragmentViewModelFactory) {
             viewModel = this
-            this.loadingState.observe(this@LocalFragment, Observer {
+            this.loadingState.observe(viewLifecycleOwner, Observer {
                 when (it) {
                     is Loading -> {
                         mSwipeRefreshLayout.isRefreshing = true
                     }
+
                     is Idle -> {
                         mSwipeRefreshLayout.isRefreshing = false
                     }
                 }
             })
 
-            this.mangaList.observe(this@LocalFragment, Observer {
+            this.mangaList.observe(viewLifecycleOwner, Observer {
                 Logger.d(TAG, "manga list observe, size: ${it!!.size}")
                 if (it!!.isEmpty()) {
                     tv.visibility = View.VISIBLE
@@ -146,7 +150,7 @@ class LocalFragment : BaseFragment(), HasFloatActionButton {
                         viewModel.refresh(true)
                     }
                 })
-            }.show(this.fragmentManager, "")
+            }.show(this.parentFragmentManager, "")
         }
     }
 

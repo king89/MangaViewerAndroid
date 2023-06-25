@@ -20,6 +20,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -37,14 +38,10 @@ import com.king.mangaviewer.ui.main.local.LocalFragment
 import com.king.mangaviewer.ui.search.SearchResultActivity
 import com.king.mangaviewer.ui.setting.SettingsActivity
 import com.king.mangaviewer.util.AppNavigator
-import kotlinx.android.synthetic.main.activity_main_menu.fab
-import kotlinx.android.synthetic.main.activity_main_menu.tabLayout
-import java.util.ArrayList
 import javax.inject.Inject
 
 class MainActivity : BaseActivity() {
-    private val FAVOURITE_POS = 0
-    private val ALL_POS = 1
+
 
     internal var mTitle: CharSequence = ""
     internal var mDrawerTitle: CharSequence = ""
@@ -54,11 +51,14 @@ class MainActivity : BaseActivity() {
     lateinit var mViewPagerAdapter: ViewPagerAdapter
     private var searchView: SearchView? = null
     private var fragment: androidx.fragment.app.Fragment? = null
+
     // slide menu items
     lateinit var navigationView: NavigationView
     lateinit var mViewPager: androidx.viewpager.widget.ViewPager
     private val mSelectedPosition: Int = 0
     private var mTwoTapToExit: Int = 0
+    private val fab: FloatingActionButton by lazy { this.findViewById(R.id.fab) }
+    private val tabLayout: TabLayout by lazy { this.findViewById(R.id.tabLayout) }
 
     @Inject
     @field:ActivityScopedFactory
@@ -78,8 +78,11 @@ class MainActivity : BaseActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         //Log.i("MainActivity", "OnNewIntent");
-        if (intent.getBooleanExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE,
-                        false)) {
+        if (intent.getBooleanExtra(
+                AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE,
+                false
+            )
+        ) {
             intent.putExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false)
             //            displayView(getResources().getInteger(R.integer.menu_favourite_pos));
             mViewPager.currentItem = FAVOURITE_POS
@@ -114,7 +117,9 @@ class MainActivity : BaseActivity() {
                 R.id.menu_history -> mViewPager.currentItem = 3
                 R.id.menu_local -> mViewPager.currentItem = 4
                 R.id.menu_all_settings -> startActivity(
-                        Intent(this@MainActivity, SettingsActivity::class.java))
+                    Intent(this@MainActivity, SettingsActivity::class.java)
+                )
+
                 else -> {
                 }
             }
@@ -124,12 +129,14 @@ class MainActivity : BaseActivity() {
         }
 
         mDrawerLayout = findViewById<View>(
-            R.id.drawer_layout) as androidx.drawerlayout.widget.DrawerLayout
+            R.id.drawer_layout
+        ) as androidx.drawerlayout.widget.DrawerLayout
         mDrawerTitle = title
         mTitle = mDrawerTitle
-        mDrawerToggle = object : ActionBarDrawerToggle(this, mDrawerLayout,
-                R.string.app_name, // nav drawer open - description for accessibility
-                R.string.app_name // nav drawer close - description for accessibility
+        mDrawerToggle = object : ActionBarDrawerToggle(
+            this, mDrawerLayout,
+            R.string.app_name, // nav drawer open - description for accessibility
+            R.string.app_name // nav drawer close - description for accessibility
         ) {
             override fun onDrawerClosed(view: View) {
                 supportActionBar!!.setTitle(mTitle)
@@ -148,9 +155,13 @@ class MainActivity : BaseActivity() {
         if (savedInstanceState == null) {
             // on first time display view for first nav item
             if (intent.getBooleanExtra(
-                            AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false)) {
-                intent.putExtra(AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE,
-                        false)
+                    AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE, false
+                )
+            ) {
+                intent.putExtra(
+                    AutoUpdateAlarmReceiver.AUTO_UPDATE_SERVICE,
+                    false
+                )
                 mViewPager.currentItem = ALL_POS
             } else {
                 //
@@ -164,8 +175,10 @@ class MainActivity : BaseActivity() {
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchView = menu.findItem(R.id.menu_search).actionView as SearchView
         searchView?.setSearchableInfo(
-                searchManager.getSearchableInfo(
-                        ComponentName(this, SearchResultActivity::class.java)))
+            searchManager.getSearchableInfo(
+                ComponentName(this, SearchResultActivity::class.java)
+            )
+        )
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -202,11 +215,15 @@ class MainActivity : BaseActivity() {
             }
         }
 
-        lv.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_single_choice,
-                source)
+        lv.adapter = ArrayAdapter(
+            this, android.R.layout.simple_list_item_single_choice,
+            source
+        )
         lv.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            appViewModel.Setting.setSelectedWebSource(mws!![position],
-                    this@MainActivity)
+            appViewModel.Setting.setSelectedWebSource(
+                mws!![position],
+                this@MainActivity
+            )
             appViewModel.Manga.mangaMenuList = null
             val currPos = mViewPager.currentItem
             mViewPager.adapter = mViewPagerAdapter
@@ -332,7 +349,8 @@ class MainActivity : BaseActivity() {
     }
 
     companion object {
-
+        private const val FAVOURITE_POS = 0
+        private const val ALL_POS = 1
         private const val DELAY_TIME: Long = 5000
         private const val STATE_KEY_POSITION = "state_key_position"
     }

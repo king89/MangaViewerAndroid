@@ -8,7 +8,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import androidx.viewpager.widget.ViewPager.VISIBLE
 import com.king.mangaviewer.R
@@ -24,14 +28,6 @@ import com.king.mangaviewer.ui.page.fragment.ViewPagerReaderFragment.ShouldChang
 import com.king.mangaviewer.util.Logger
 import com.king.mangaviewer.util.Util
 import com.king.mangaviewer.util.withViewModel
-import kotlinx.android.synthetic.main.fragment_viewpager_reader.clMask
-import kotlinx.android.synthetic.main.fragment_viewpager_reader.groupLeft
-import kotlinx.android.synthetic.main.fragment_viewpager_reader.groupRight
-import kotlinx.android.synthetic.main.fragment_viewpager_reader.tvLeft
-import kotlinx.android.synthetic.main.fragment_viewpager_reader.tvRight
-import kotlinx.android.synthetic.main.fragment_viewpager_reader.tvToChapter
-import kotlinx.android.synthetic.main.fragment_viewpager_reader.tvToChapterTitle
-import kotlinx.android.synthetic.main.fragment_viewpager_reader.viewPager
 import me.everything.android.ui.overscroll.IOverScrollState.STATE_BOUNCE_BACK
 import me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_END_SIDE
 import me.everything.android.ui.overscroll.IOverScrollState.STATE_DRAG_START_SIDE
@@ -48,8 +44,21 @@ open class ViewPagerReaderFragment : ReaderFragment() {
     private var leftChapterName = ""
     private var rightChapterName = ""
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View {
+    private val clMask by lazy { this.requireView().findViewById<ConstraintLayout>(R.id.clMask) }
+    private val groupLeft by lazy { this.requireView().findViewById<Group>(R.id.groupLeft) }
+    private val groupRight by lazy { this.requireView().findViewById<Group>(R.id.groupRight) }
+    private val tvLeft by lazy { this.requireView().findViewById<TextView>(R.id.tvLeft) }
+    private val tvRight by lazy { this.requireView().findViewById<TextView>(R.id.tvRight) }
+    private val tvToChapter by lazy { this.requireView().findViewById<TextView>(R.id.tvToChapter) }
+    private val tvToChapterTitle by lazy {
+        this.requireView().findViewById<TextView>(R.id.tvToChapterTitle)
+    }
+    private val viewPager by lazy { this.requireView().findViewById<ViewPager>(R.id.viewPager) }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         return inflater.inflate(R.layout.fragment_viewpager_reader, container, false)
     }
 
@@ -81,11 +90,11 @@ open class ViewPagerReaderFragment : ReaderFragment() {
     private fun initViewModel() {
         withViewModel<MangaPageActivityV2ViewModel>(activityScopedFactory) {
             viewModel = this
-            prevAndNextChapterName.observe(this@ViewPagerReaderFragment, Observer {
+            prevAndNextChapterName.observe(viewLifecycleOwner, Observer {
                 setPrevAndNextChapterTitle(it)
             })
 
-            dataList.observe(this@ViewPagerReaderFragment, Observer {
+            dataList.observe(viewLifecycleOwner, Observer {
                 setupAdapter(dataList.value!!, GestureDetector(context, TapDetector()))
                 Logger.d(TAG, "Set last read index")
                 setPage(viewModel.lastReadIndex)
@@ -139,6 +148,7 @@ open class ViewPagerReaderFragment : ReaderFragment() {
                     when (shouldChangeChapter) {
                         PrevChapter -> callback.prevChapter()
                         NextChapter -> callback.nextChapter()
+                        else -> {}
                     }
                     shouldChangeChapter = Idle
                 }
